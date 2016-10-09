@@ -19,7 +19,7 @@ class CommandoClient extends discord.Client {
 	 * @param {CommandoClientOptions} [options] - Options for the client
 	 */
 	constructor(options = {}) {
-		if(typeof options.selfbot === 'undefined') options.selfbot = true;
+		if(typeof options.selfbot === 'undefined') options.selfbot = false;
 		if(typeof options.commandPrefix === 'undefined') options.commandPrefix = '!';
 		if(typeof options.commandEditableDuration === 'undefined') options.commandEditableDuration = 30;
 		if(typeof options.nonCommandEditable === 'undefined') options.nonCommandEditable = true;
