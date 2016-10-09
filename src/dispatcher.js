@@ -68,9 +68,9 @@ module.exports = class CommandDispatcher extends EventEmitter {
 			}
 
 			cmdMsg._finalize(responses);
-		} else if(oldCmdMsg && this.client.options.nonCommandEditable) {
-			cmdMsg = oldCmdMsg;
-			cmdMsg._finalize(null);
+		} else if(oldCmdMsg) {
+			oldCmdMsg._finalize(null);
+			if(this.client.options.nonCommandEditable <= 0) this._results.delete(message.id);
 		}
 
 		// Cache the message
