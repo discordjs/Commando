@@ -74,7 +74,7 @@ module.exports = class HelpCommand extends Command {
 						}
 					`).join('\n\n')
 				}
-			`)];
+			`, { split: true })];
 			if(message.channel.type !== 'dm') promises.push(message.reply('Sent a DM to you with information.'));
 			return Promise.all(promises);
 		}
