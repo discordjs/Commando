@@ -72,11 +72,11 @@ module.exports = class CommandMessage {
 	async run() {
 		// Make sure the command is usable
 		if(this.command.guildOnly && !this.message.guild) {
-			this.client.emit('commandBlocked', 'guildOnly');
+			this.client.emit('commandBlocked', this, 'guildOnly');
 			return await this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
 		}
 		if(!this.command.hasPermission(this)) {
-			this.client.emit('commandBlocked', 'permission');
+			this.client.emit('commandBlocked', this, 'permission');
 			return await this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
 		}
 
@@ -106,15 +106,16 @@ module.exports = class CommandMessage {
 		}
 	}
 
-	respond({ type = 'reply', content, options, lang }) {
-		if(this.responses) {
+	respond({ type = 'reply', content, options, lang, fromEdit = false }) {
+		const shouldEdit = this.responses && !fromEdit;
+		if(shouldEdit) {
 			if(options && options.split && typeof options.split !== 'object') options.split = {};
 			this.responseIndex++;
 		}
 
 		if(type === 'reply' && this.message.channel.type === 'dm') type = 'plain';
 		if(type !== 'direct') {
-			if(!this.message.channel.permissionsFor(this.client.user).hasPermission('SEND_MESSAGES')) {
+			if(this.message.guild && !this.message.channel.permissionsFor(this.client.user).hasPermission('SEND_MESSAGES')) {
 				type = 'direct';
 			}
 		}
@@ -123,17 +124,17 @@ module.exports = class CommandMessage {
 
 		switch(type) {
 			case 'plain':
-				if(!this.responses) return this.message.channel.sendMessage(content, options);
+				if(!shouldEdit) return this.message.channel.sendMessage(content, options);
 				return this.editResponse(this.responses[this.responseIndex], { type, content, options });
 			case 'reply':
-				if(!this.responses) return this.message.reply(content, options);
+				if(!shouldEdit) return this.message.reply(content, options);
 				if(options && options.split && !options.split.prepend) options.split.prepend = `${this.message.author}, `;
 				return this.editResponse(this.responses[this.responseIndex], { type, content, options });
 			case 'direct':
-				if(!this.responses) return this.message.author.sendMessage(content, options);
+				if(!shouldEdit) return this.message.author.sendMessage(content, options);
 				return this.editResponse(this.responses[this.responseIndex], { type, content, options });
 			case 'code':
-				if(!this.responses) return this.message.channel.sendCode(lang, content, options);
+				if(!shouldEdit) return this.message.channel.sendCode(lang, content, options);
 				if(options && options.split) {
 					if(!options.split.prepend) options.split.prepend = `\`\`\`${lang ? lang : ''}\n`;
 					if(!options.split.append) options.split.append = '\n```';
@@ -146,7 +147,7 @@ module.exports = class CommandMessage {
 	}
 
 	editResponse(response, { type, content, options }) {
-		if(!response) throw new Error('hmm');
+		if(!response) return this.respond({ type, content, options, fromEdit: true });
 		if(options && options.split) content = discord.splitMessage(content, options.split);
 
 		let prepend = '';

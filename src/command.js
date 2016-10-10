@@ -222,7 +222,7 @@ class Command {
 	}
 
 	makeUsage(argString, guild = null, onlyMention = false) {
-		return this.constructor.usage(this.client, `${this.name}${argString ? `${argString} ` : ''}`, guild, onlyMention);
+		return this.constructor.usage(this.client, `${this.name}${argString ? ` ${argString}` : ''}`, guild, onlyMention);
 	}
 
 	static usage(client, command, guild = null, onlyMention = false) {
