@@ -218,7 +218,7 @@ class Command {
 	 */
 	isUsable(message = null) {
 		if(this.guildOnly && message && !message.guild) return false;
-		return !message || (this.isEnabledIn(message.guild) && this.hasPermission(message));
+		return !message || !message.guild || (this.isEnabledIn(message.guild) && this.hasPermission(message));
 	}
 
 	makeUsage(argString, guild = null, onlyMention = false) {
