@@ -12,7 +12,7 @@ module.exports = class GuildExtension {
 	set commandPrefix(prefix) {
 		if(prefix === this.client.options.commandPrefix) this._commandPrefix = null;
 		else this._commandPrefix = prefix;
-		this.client.emit('guildCommandPrefixChange', this, this._commandPrefix);
+		this.client.emit('commandPrefixChange', this, this._commandPrefix);
 	}
 
 	setCommandEnabled(command, enabled) {
