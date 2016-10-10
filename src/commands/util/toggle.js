@@ -33,7 +33,8 @@ module.exports = class ToggleCommandCommand extends Command {
 			if(groups[0].guarded) return msg.reply(`You cannot toggle the ${groups[0].name} group.`);
 			const enabled = groups[0].isEnabledIn(msg.guild);
 			groups[0].setEnabledIn(msg.guild, enabled);
-			return msg.reply(`${enabled ? 'Enabled' : 'Disabled'} ${groups[0].name} group.`);
+			msg.reply(`${enabled ? 'Enabled' : 'Disabled'} ${groups[0].name} group.`);
+			return null;
 		} else if(groups.length > 0) {
 			return msg.reply(disambiguation(groups, 'groups'));
 		} else {
@@ -42,7 +43,8 @@ module.exports = class ToggleCommandCommand extends Command {
 				if(commands[0].guarded) return msg.reply(`You cannot toggle the \`${commands[0].name}\` command.`);
 				const enabled = commands[0].isEnabledIn(msg.guild);
 				commands[0].setEnabledIn(msg.guild, enabled);
-				return msg.reply(`${enabled ? 'Enabled' : 'Disabled'} \`${commands[0].name}\` command.`);
+				msg.reply(`${enabled ? 'Enabled' : 'Disabled'} \`${commands[0].name}\` command.`);
+				return null;
 			} else if(commands.length > 1) {
 				return msg.reply(`No groups found. ${disambiguation(commands, 'commands')}`);
 			} else {

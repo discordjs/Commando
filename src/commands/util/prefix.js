@@ -39,7 +39,8 @@ module.exports = class PrefixCommand extends Command {
 			const pattern = this.client.dispatcher._buildCommandPattern(message.guild, message.client.user);
 			this.client.dispatcher._guildCommandPatterns[message.guild.id] = pattern;
 
-			return message.reply(`${response} To run commands, use ${Command.usage(this.client, 'command', message.guild)}.`);
+			message.reply(`${response} To run commands, use ${Command.usage(this.client, 'command', message.guild)}.`)
+			return null;
 		} else {
 			const prefix = message.guild ? message.guild.commandPrefix : this.client.options.commandPrefix;
 			return message.reply(stripIndents`

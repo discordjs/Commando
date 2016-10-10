@@ -32,7 +32,8 @@ module.exports = class EnableCommandCommand extends Command {
 		if(groups.length === 1) {
 			if(groups[0].isEnabledIn(msg.guild)) return msg.reply(`The ${groups[0].name} group is already enabled.`);
 			groups[0].setEnabledIn(msg.guild, true);
-			return msg.reply(`Enabled ${groups[0].name} group.`);
+			msg.reply(`Enabled ${groups[0].name} group.`);
+			return null;
 		} else if(groups.length > 0) {
 			return msg.reply(disambiguation(groups, 'groups'));
 		} else {
@@ -42,7 +43,8 @@ module.exports = class EnableCommandCommand extends Command {
 					return msg.reply(`The \`${commands[0].name}\` command is already enabled.`);
 				}
 				commands[0].setEnabledIn(msg.guild, true);
-				return msg.reply(`Enabled \`${commands[0].name}\` command.`);
+				msg.reply(`Enabled \`${commands[0].name}\` command.`);
+				return null;
 			} else if(commands.length > 1) {
 				return msg.reply(`No groups found. ${disambiguation(commands, 'commands')}`);
 			} else {

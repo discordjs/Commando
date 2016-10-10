@@ -33,7 +33,8 @@ module.exports = class DisableCommandCommand extends Command {
 			if(groups[0].guarded) return msg.reply(`You cannot disable the ${groups[0].name} group.`);
 			if(!groups[0].isEnabledIn(msg.guild)) return msg.reply(`The ${groups[0].name} group is already disabled.`);
 			groups[0].setEnabledIn(msg.guild, false);
-			return msg.reply(`Disabled ${groups[0].name} group.`);
+			msg.reply(`Disabled ${groups[0].name} group.`);
+			return null;
 		} else if(groups.length > 0) {
 			return msg.reply(disambiguation(groups, 'groups'));
 		} else {
@@ -44,7 +45,8 @@ module.exports = class DisableCommandCommand extends Command {
 					return msg.reply(`The \`${commands[0].name}\` command is already disabled.`);
 				}
 				commands[0].setEnabledIn(msg.guild, false);
-				return msg.reply(`Disabled \`${commands[0].name}\` command.`);
+				msg.reply(`Disabled \`${commands[0].name}\` command.`);
+				return null;
 			} else if(commands.length > 1) {
 				return msg.reply(`No groups found. ${disambiguation(commands, 'commands')}`);
 			} else {
