@@ -1,5 +1,5 @@
 const discord = require('discord.js');
-const { stripIndents, oneLine } = require('common-tags');
+const stripIndents = require('common-tags').stripIndents;
 const FriendlyError = require('./errors/friendly');
 
 /** A container for a message that triggers a command, that command, and methods to respond */
@@ -54,8 +54,8 @@ module.exports = class CommandMessage {
 		this.responseIndex = -1;
 	}
 
-	commandUsage(onlyMention = false) {
-		return this.command.usage(this.message.guild, onlyMention);
+	commandUsage(argString, onlyMention = false) {
+		return this.command.usage(argString, this.message.guild, onlyMention);
 	}
 
 	parseArgs() {
@@ -95,13 +95,12 @@ module.exports = class CommandMessage {
 				return await this.reply(err.message);
 			} else {
 				const owner = this.client.options.owner ? this.client.users.get(this.client.options.owner) : null;
+				const ownerName = owner ? `${discord.escapeMarkdown(owner.username)}#${owner.discriminator}` : 'the bot owner';
+				const invite = this.client.options.invite;
 				return await this.reply(stripIndents`
 					An error occurred while running the command: \`${err.name}: ${err.message}\`
 					You shouldn't ever receive an error like this.
-					${oneLine`
-						Please contact ${owner ? `${owner.username}#${owner.discriminator}` : 'the bot owner'}
-						${this.client.options.invite ? 'in this server: ${this.client.options.invite}' : '.'}
-					`}
+					Please contact ${ownerName}${invite ? ` in this server: ${invite}` : '.'}
 				`);
 			}
 		}
@@ -139,7 +138,7 @@ module.exports = class CommandMessage {
 					if(!options.split.prepend) options.split.prepend = `\`\`\`${lang ? lang : ''}\n`;
 					if(!options.split.append) options.split.append = '\n```';
 				}
-				content = content.replace(/```/g, '`\u200b``');
+				content = discord.escapeMarkdown(content, true);
 				return this.editResponse(this.responses[this.responseIndex], { type, content, options });
 			default:
 				throw new RangeError(`Unknown response type "${type}".`);
@@ -426,45 +425,45 @@ module.exports = class CommandMessage {
 	}
 
 	/**
-   * Shortcut to `this.message.edit(content)`
-   * @param {StringResolvable} content - New content for the message
-   * @returns {Promise<Message>}
-   */
+	 * Shortcut to `this.message.edit(content)`
+	 * @param {StringResolvable} content - New content for the message
+	 * @returns {Promise<Message>}
+	 */
 	edit(content) {
 		return this.message.edit(content);
 	}
 
 	/**
-   * Shortcut to `this.message.editCode(content)`
-   * @param {string} lang - Language for the code block
-   * @param {StringResolvable} content - New content for the message
-   * @returns {Promise<Message>}
-   */
+	 * Shortcut to `this.message.editCode(content)`
+	 * @param {string} lang - Language for the code block
+	 * @param {StringResolvable} content - New content for the message
+	 * @returns {Promise<Message>}
+	 */
 	editCode(lang, content) {
 		return this.message.editCode(lang, content);
 	}
 
 	/**
-   * Shortcut to `this.message.pin()`
-   * @returns {Promise<Message>}
-   */
+	 * Shortcut to `this.message.pin()`
+	 * @returns {Promise<Message>}
+	 */
 	pin() {
 		return this.message.pin();
 	}
 
 	/**
-   * Shortcut to `this.message.unpin()`
-   * @returns {Promise<Message>}
-   */
+	 * Shortcut to `this.message.unpin()`
+	 * @returns {Promise<Message>}
+	 */
 	unpin() {
 		return this.message.unpin();
 	}
 
 	/**
-   * Shortcut to `this.message.delete()`
-   * @param {number} [timeout=0] - How long to wait to delete the message in milliseconds
-   * @returns {Promise<Message>}
-   */
+	 * Shortcut to `this.message.delete()`
+	 * @param {number} [timeout=0] - How long to wait to delete the message in milliseconds
+	 * @returns {Promise<Message>}
+	 */
 	delete(timeout) {
 		return this.message.delete(timeout);
 	}
