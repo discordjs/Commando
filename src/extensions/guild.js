@@ -26,6 +26,7 @@ module.exports = class GuildExtension {
 
 	isCommandEnabled(command) {
 		command = this.client.registry.resolveCommand(command);
+		if(command.guarded) return true;
 		if(!this._commandsEnabled || typeof this._commandsEnabled[command] === 'undefined') return true;
 		return this._commandsEnabled[command.name];
 	}
@@ -41,6 +42,7 @@ module.exports = class GuildExtension {
 
 	isGroupEnabled(group) {
 		group = this.client.registry.resolveGroup(group);
+		if(group.guarded) return true;
 		if(!this._groupsEnabled || typeof this._groupsEnabled[group] === 'undefined') return true;
 		return this._groupsEnabled[group];
 	}

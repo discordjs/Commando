@@ -60,7 +60,9 @@ class CommandGroup {
 	 * @return {boolean} Whether or not the group is enabled
 	 */
 	isEnabledIn(guild) {
+		if(this.guarded) return true;
 		guild = this.client.resolver.resolveGuild(guild);
+		if(!guild) return true;
 		return guild.isGroupEnabled(this);
 	}
 }

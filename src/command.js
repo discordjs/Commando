@@ -185,7 +185,7 @@ class Command {
 	 * @param {Message} message - The message the command is being run for
 	 * @param {string[]} args - The arguments for the command, or the matches from a pattern
 	 * @param {boolean} fromPattern - Whether or not the command is being run from a pattern match or not
-	 * @return {Promise<CommandResult|string[]|string>} The result of running the command
+	 * @return {Promise<?Message|?Array<Message>>}
 	 */
 	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars
 		throw new Error(`${this.constructor.name} doesn't have a run() method.`);
@@ -204,21 +204,23 @@ class Command {
 	/**
 	 * Checks if the command is enabled in a guild
 	 * @param {GuildResolvable} guild - Guild to check in
-	 * @return {boolean} Whether or not the command is enabled
+	 * @return {boolean}
 	 */
 	isEnabledIn(guild) {
+		if(this.guarded) return true;
 		guild = this.client.resolver.resolveGuild(guild);
-		return guild.isCommandEnabled(this);
+		if(!guild) return true;
+		return guild.isGroupEnabled(this.group) && guild.isCommandEnabled(this);
 	}
 
 	/**
 	 * Checks if the command is usable for a message
 	 * @param {?Message} message - The message
-	 * @return {boolean} Whether or not the command is usable
+	 * @return {boolean}
 	 */
 	isUsable(message = null) {
 		if(this.guildOnly && message && !message.guild) return false;
-		return !message || !message.guild || (this.isEnabledIn(message.guild) && this.hasPermission(message));
+		return !message || (this.isEnabledIn(message.guild) && this.hasPermission(message));
 	}
 
 	makeUsage(argString, guild = null, onlyMention = false) {
