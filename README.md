@@ -15,5 +15,5 @@ This is the WIP official command framework for discord.js.
 - Command editing
 
 ## Documentation
-[View it here.](https://gawdl3y.github.io/discord.js-commando/)  
+[View it here.](https://gawdl3y.github.io/discord.js-commando/0.1.0/)  
 See the [discord.js documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master/file/general/Welcome) as well.
