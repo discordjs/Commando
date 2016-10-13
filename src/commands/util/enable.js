@@ -17,17 +17,17 @@ module.exports = class EnableCommandCommand extends Command {
 				Only administrators may use this command.
 			`,
 			examples: ['enable util', 'enable Utility', 'enable prefix'],
-			guildOnly: true,
 			guarded: true
 		});
 	}
 
 	hasPermission(msg) {
+		if(!msg.guild) return msg.author.id === this.client.options.owner;
 		return msg.member.hasPermission('ADMINISTRATOR');
 	}
 
 	async run(msg, arg) {
-		if(!arg) throw new CommandFormatError(this, msg.guild);
+		if(!arg) throw new CommandFormatError(msg);
 		const groups = this.client.registry.findGroups(arg);
 		if(groups.length === 1) {
 			if(groups[0].isEnabledIn(msg.guild)) return msg.reply(`The ${groups[0].name} group is already enabled.`);
@@ -50,7 +50,7 @@ module.exports = class EnableCommandCommand extends Command {
 			} else {
 				return msg.reply(oneLine`
 					Unable to identify command or group.
-					Use ${msg.guild.commandUsage('groups', msg.guild)} to view the list of groups.
+					Use ${msg.commandUsage('groups')} to view the list of groups.
 				`);
 			}
 		}

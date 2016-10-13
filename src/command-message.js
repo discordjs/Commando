@@ -1,16 +1,17 @@
 const discord = require('discord.js');
 const stripIndents = require('common-tags').stripIndents;
+const Command = require('./command');
 const FriendlyError = require('./errors/friendly');
 
 /** A container for a message that triggers a command, that command, and methods to respond */
-module.exports = class CommandMessage {
+class CommandMessage {
 	/**
 	 * @param {Message} message - Message that triggers the command
-	 * @param {Command} command - Command the message triggers
-	 * @param {string} argString - Argument string for the command
-	 * @param {?Array<string>} patternMatches - Command pattern matches (if from a pattern trigger)
+	 * @param {Command} [command] - Command the message triggers
+	 * @param {string} [argString] - Argument string for the command
+	 * @param {?Array<string>} [patternMatches] - Command pattern matches (if from a pattern trigger)
 	 */
-	constructor(message, command, argString = null, patternMatches = null) {
+	constructor(message, command = null, argString = null, patternMatches = null) {
 		/**
 		 * Client that the message was sent from
 		 * @type {CommandoClient}
@@ -24,8 +25,8 @@ module.exports = class CommandMessage {
 		this.message = message;
 
 		/**
-		 * Command that the message triggers
-		 * @type {Command}
+		 * Command that the message triggers, if any
+		 * @type {?Command}
 		 */
 		this.command = command;
 
@@ -42,22 +43,39 @@ module.exports = class CommandMessage {
 		this.patternMatches = patternMatches;
 
 		/**
-		 * Response messages sent (set by the dispatcher after running the command)
-		 * @type {?Message[]}
+		 * Response messages sent, mapped by channel type (set by the dispatcher after running the command)
+		 * @type {?Object}
 		 */
 		this.responses = null;
 
 		/**
-		 * The index of the current response that will be edited
-		 * @type {number}
+		 * The index of the current response that will be edited, mapped by channel type
+		 * @type {?Object}
 		 */
-		this.responseIndex = -1;
+		this.responsePositions = null;
 	}
 
-	commandUsage(argString, onlyMention = false) {
-		return this.command.usage(argString, this.message.guild, onlyMention);
+	/**
+	 * Creates a usage string for the command
+	 * @param {string} [command] - A command + arg string
+	 * @param {string} [prefix=this.message.guild.commandPrefix || this.client.commandPrefix] - Prefix to use for the
+	 * prefixed command format
+	 * @param {User} [user=this.client.user] - User to use for the mention command format
+	 * @return {string}
+	 */
+	commandUsage(command, prefix, user = this.client.user) {
+		if(typeof prefix === 'undefined') {
+			if(this.message.guild) prefix = this.message.guild.commandPrefix;
+			else prefix = this.client.commandPrefix;
+		}
+		return Command.usage(command, prefix, user);
 	}
 
+	/**
+	 * Parses the argString into usable arguments, based on the argsType of the command
+	 * @return {string|string[]}
+	 * @see {@link Command#run}
+	 */
 	parseArgs() {
 		switch(this.command.argsType) {
 			case 'single':
@@ -69,6 +87,36 @@ module.exports = class CommandMessage {
 		}
 	}
 
+	/**
+	 * Emitted when running a command
+	 * @event CommandoClient#commandRun
+	 * @param {Command} command - Command that is being run
+	 * @param {Promise} promise - Promise for the command result
+	 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
+	 * @param {string|string[]} args - Arguments for the command (see {@link Command#run})
+	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
+	 */
+
+	/**
+	 * Emitted when a command produces an error while running
+	 * @event CommandoClient#commandError
+	 * @param {Command} command - Command that produced an error
+	 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
+	 * @param {string|string[]} args - Arguments for the command (see {@link Command#run})
+	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
+	 */
+
+	/**
+	 * Emitted when a command is prevented from running
+	 * @event CommandoClient#commandBlocked
+	 * @param {CommandMessage} message - Command message that the command is running from
+	 * @param {string} reason - Reason that the command was blocked
+	 */
+
+	/**
+	 * Runs the command
+	 * @return {Promise<?Message|?Array<Message>>}
+	 */
 	async run() {
 		// Make sure the command is usable
 		if(this.command.guildOnly && !this.message.guild) {
@@ -85,6 +133,7 @@ module.exports = class CommandMessage {
 		const fromPattern = Boolean(this.patternMatches);
 		const typingCount = this.message.channel.typingCount;
 		try {
+			this.client.emit('debug', `Running command ${this.command.groupID}:${this.command.memberName}.`);
 			const promise = this.command.run(this, args, fromPattern);
 			this.client.emit('commandRun', this.command, promise, this, args, fromPattern);
 			return await promise;
@@ -106,11 +155,16 @@ module.exports = class CommandMessage {
 		}
 	}
 
+	/**
+	 * Responds to the command message
+	 * @param {Object} options - Options for the response
+	 * @return {Message|Message[]}
+	 * @private
+	 */
 	respond({ type = 'reply', content, options, lang, fromEdit = false }) {
 		const shouldEdit = this.responses && !fromEdit;
 		if(shouldEdit) {
 			if(options && options.split && typeof options.split !== 'object') options.split = {};
-			this.responseIndex++;
 		}
 
 		if(type === 'reply' && this.message.channel.type === 'dm') type = 'plain';
@@ -125,14 +179,14 @@ module.exports = class CommandMessage {
 		switch(type) {
 			case 'plain':
 				if(!shouldEdit) return this.message.channel.sendMessage(content, options);
-				return this.editResponse(this.responses[this.responseIndex], { type, content, options });
+				return this.editCurrentResponse(this.message.channel.type, { type, content, options });
 			case 'reply':
 				if(!shouldEdit) return this.message.reply(content, options);
 				if(options && options.split && !options.split.prepend) options.split.prepend = `${this.message.author}, `;
-				return this.editResponse(this.responses[this.responseIndex], { type, content, options });
+				return this.editCurrentResponse(this.message.channel.type, { type, content, options });
 			case 'direct':
 				if(!shouldEdit) return this.message.author.sendMessage(content, options);
-				return this.editResponse(this.responses[this.responseIndex], { type, content, options });
+				return this.editCurrentResponse('dm', { type, content, options });
 			case 'code':
 				if(!shouldEdit) return this.message.channel.sendCode(lang, content, options);
 				if(options && options.split) {
@@ -140,12 +194,19 @@ module.exports = class CommandMessage {
 					if(!options.split.append) options.split.append = '\n```';
 				}
 				content = discord.escapeMarkdown(content, true);
-				return this.editResponse(this.responses[this.responseIndex], { type, content, options });
+				return this.editCurrentResponse(this.message.channel.type, { type, content, options });
 			default:
 				throw new RangeError(`Unknown response type "${type}".`);
 		}
 	}
 
+	/**
+	 * Edits a response to the command message
+	 * @param {Message|Message[]} response - The response message(s) to edit
+	 * @param {Object} options - Options for the response
+	 * @return {Promise<Message|Message[]>}
+	 * @private
+	 */
 	editResponse(response, { type, content, options }) {
 		if(!response) return this.respond({ type, content, options, fromEdit: true });
 		if(options && options.split) content = discord.splitMessage(content, options.split);
@@ -177,26 +238,86 @@ module.exports = class CommandMessage {
 		}
 	}
 
+	/**
+	 * Edits the current response
+	 * @param {string} type - The type of the channel the response is in
+	 * @param {Object} options - Options for the response
+	 * @return {Promise<Message|Message[]>}
+	 * @private
+	 */
+	editCurrentResponse(type, options) {
+		if(typeof this.responses[type] === 'undefined') this.responses[type] = [];
+		if(typeof this.responsePositions[type] === 'undefined') this.responsePositions[type] = -1;
+		this.responsePositions[type]++;
+		return this.editResponse(this.responses[type][this.responsePositions[type]], options);
+	}
+
+	/**
+	 * Responds with a plain message
+	 * @param {StringResolvable} content - Content for the message
+	 * @param {MessageOptions} options - Options for the message
+	 * @return {Promise<Message|Message[]>}
+	 */
 	say(content, options) {
 		return this.respond({ type: 'plain', content, options });
 	}
 
+	/**
+	 * Responds with a reply message
+	 * @param {StringResolvable} content - Content for the message
+	 * @param {MessageOptions} options - Options for the message
+	 * @return {Promise<Message|Message[]>}
+	 */
 	reply(content, options) {
 		return this.respond({ type: 'reply', content, options });
 	}
 
+	/**
+	 * Responds with a direct message
+	 * @param {StringResolvable} content - Content for the message
+	 * @param {MessageOptions} options - Options for the message
+	 * @return {Promise<Message|Message[]>}
+	 */
 	direct(content, options) {
 		return this.respond({ type: 'direct', content, options });
 	}
 
+	/**
+	 * Responds with a code message
+	 * @param {string} lang - Language for the code block
+	 * @param {StringResolvable} content - Content for the message
+	 * @param {MessageOptions} options - Options for the message
+	 * @return {Promise<Message|Message[]>}
+	 */
 	code(lang, content, options) {
 		return this.respond({ type: 'code', content, options, lang });
 	}
 
 	_finalize(responses) {
-		if(this.responses) {
-			for(let i = this.responseIndex + 1; i < this.responses.length; i++) {
-				const response = this.responses[i];
+		if(this.responses) this._deleteRemainingResponses();
+		this.responses = {};
+		this.responsePositions = {};
+
+		if(responses instanceof Array) {
+			for(const response of responses) {
+				const type = (response instanceof Array ? response[0] : response).channel.type;
+				if(!this.responses[type]) {
+					this.responses[type] = [];
+					this.responsePositions[type] = -1;
+				}
+				this.responses[type].push(response);
+			}
+		} else if(responses) {
+			this.responses[responses.channel.type] = [responses];
+			this.responsePositions[responses.channel.type] = -1;
+		}
+	}
+
+	_deleteRemainingResponses() {
+		for(const type of Object.keys(this.responses)) {
+			const responses = this.responses[type];
+			for(let i = this.responsePositions[type] + 1; i < responses.length; i++) {
+				const response = responses[i];
 				if(response instanceof Array) {
 					for(const resp of response) resp.delete();
 				} else {
@@ -204,9 +325,6 @@ module.exports = class CommandMessage {
 				}
 			}
 		}
-
-		this.responses = !responses || responses instanceof Array ? responses : [responses];
-		this.responseIndex = -1;
 	}
 
 	/**
@@ -468,4 +586,6 @@ module.exports = class CommandMessage {
 	delete(timeout) {
 		return this.message.delete(timeout);
 	}
-};
+}
+
+module.exports = CommandMessage;

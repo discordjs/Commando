@@ -7,7 +7,7 @@ class CommandGroup {
 	 * @param {boolean} [guarded=false] - Whether the group should be protected from disabling
 	 * @param {Command[]} [commands=[]] - The commands that the group contains
 	 */
-	constructor(client, id, name, guarded, commands) {
+	constructor(client, id, name, guarded = false, commands = []) {
 		if(!client) throw new Error('A client must be specified.');
 		if(!id) throw new Error('An ID must be specified.');
 		if(commands && !Array.isArray(commands)) throw new TypeError('Commands must be an array.');
@@ -35,13 +35,15 @@ class CommandGroup {
 		 * The commands in this group (added upon their registration)
 		 * @type {Command[]}
 		 */
-		this.commands = commands || [];
+		this.commands = commands;
 
 		/**
 		 * Whether or not this group is protected from being disabled
 		 * @type {boolean}
 		 */
-		this.guarded = guarded || false;
+		this.guarded = guarded;
+
+		this._globalEnabled = true;
 	}
 
 	/**
@@ -50,6 +52,14 @@ class CommandGroup {
 	 * @param {boolean} enabled - Whether the group should be enabled or disabled
 	 */
 	setEnabledIn(guild, enabled) {
+		if(typeof guild === 'undefined') throw new TypeError('Guild must not be undefined.');
+		if(typeof enabled === 'undefined') throw new TypeError('Enabled must not be undefined.');
+		if(this.guarded) throw new Error('The group is guarded.');
+		if(!guild) {
+			this._globalEnabled = enabled;
+			this.client.emit('groupStatusChange', null, this, enabled);
+			return;
+		}
 		guild = this.client.resolver.resolveGuild(guild);
 		guild.setGroupEnabled(this, enabled);
 	}
@@ -61,8 +71,8 @@ class CommandGroup {
 	 */
 	isEnabledIn(guild) {
 		if(this.guarded) return true;
+		if(!guild) return this._globalEnabled;
 		guild = this.client.resolver.resolveGuild(guild);
-		if(!guild) return true;
 		return guild.isGroupEnabled(this);
 	}
 }

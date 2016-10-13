@@ -17,17 +17,17 @@ module.exports = class DisableCommandCommand extends Command {
 				Only administrators may use this command.
 			`,
 			examples: ['disable util', 'disable Utility', 'disable prefix'],
-			guildOnly: true,
 			guarded: true
 		});
 	}
 
 	hasPermission(msg) {
+		if(!msg.guild) return msg.author.id === this.client.options.owner;
 		return msg.member.hasPermission('ADMINISTRATOR');
 	}
 
 	async run(msg, arg) {
-		if(!arg) throw new CommandFormatError(this, msg.guild);
+		if(!arg) throw new CommandFormatError(msg);
 		const groups = this.client.registry.findGroups(arg);
 		if(groups.length === 1) {
 			if(groups[0].guarded) return msg.reply(`You cannot disable the ${groups[0].name} group.`);
@@ -52,7 +52,7 @@ module.exports = class DisableCommandCommand extends Command {
 			} else {
 				return msg.reply(oneLine`
 					Unable to identify command or group.
-					Use ${msg.guild.commandUsage('groups', msg.guild)} to view the list of groups.
+					Use ${msg.commandUsage('groups')} to view the list of groups.
 				`);
 			}
 		}

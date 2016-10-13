@@ -4,53 +4,111 @@ const Command = require('../Command');
  * Additional methods added to Guild objects
  * @interface
  */
-module.exports = class GuildExtension {
+class GuildExtension {
+	/**
+	 * Emitted whenever a guild's command prefix is changed
+	 * @event CommandoClient#commandPrefixChange
+	 * @param {?Guild} guild - Guild that the prefix was changed in (null for global)
+	 * @param {?string} prefix - New command prefix (null for default)
+	 */
+
+	/**
+	 * The command prefix in the guild - modifying this will emit {@link CommandoClient#commandPrefixChange}.
+	 * @type {string}
+	 */
 	get commandPrefix() {
-		return this._commandPrefix ? this._commandPrefix : this.client.options.commandPrefix;
+		return this._commandPrefix ? this._commandPrefix : this.client.commandPrefix;
 	}
 
 	set commandPrefix(prefix) {
-		if(prefix === this.client.options.commandPrefix) this._commandPrefix = null;
-		else this._commandPrefix = prefix;
+		this._commandPrefix = prefix || null;
 		this.client.emit('commandPrefixChange', this, this._commandPrefix);
 	}
 
+	/**
+	 * Emitted whenever a command is enabled/disabled in a guild
+	 * @event CommandoClient#commandStatusChange
+	 * @param {?Guild} guild - Guild that the command was enabled/disabled in (null for global)
+	 * @param {Command} command - Command that was enabled/disabled
+	 * @param {boolean} enabled - Whether the command is enabled
+	 */
+
+	/**
+	 * Sets whether a command is enabled in the guild
+	 * @param {CommandResolvable} command - Command to set status of
+	 * @param {boolean} enabled - Whether the command should be enabled
+	 */
 	setCommandEnabled(command, enabled) {
 		command = this.client.registry.resolveCommand(command);
-		if(typeof enabled !== 'boolean') throw new TypeError('Enabled must be a boolean.');
 		if(command.guarded) throw new Error('The command is guarded.');
+		if(typeof enabled === 'undefined') throw new TypeError('Enabled must not be undefined.');
+		enabled = Boolean(enabled);
 		if(!this._commandsEnabled) this._commandsEnabled = {};
 		this._commandsEnabled[command.name] = enabled;
 		this.client.emit('commandStatusChange', this, command, enabled);
 	}
 
+	/**
+	 * Checks whether a command is enabled in the guild (does not take the command's group status into account)
+	 * @param {CommandResolvable} command - Command to check status of
+	 * @return {boolean}
+	 */
 	isCommandEnabled(command) {
 		command = this.client.registry.resolveCommand(command);
 		if(command.guarded) return true;
-		if(!this._commandsEnabled || typeof this._commandsEnabled[command] === 'undefined') return true;
+		if(!this._commandsEnabled || typeof this._commandsEnabled[command] === 'undefined') return command._globalEnabled;
 		return this._commandsEnabled[command.name];
 	}
 
+	/**
+	 * Emitted whenever a command group is enabled/disabled in a guild
+	 * @event CommandoClient#groupStatusChange
+	 * @param {?Guild} guild - Guild that the group was enabled/disabled in (null for global)
+	 * @param {CommandGroup} group - Group that was enabled/disabled
+	 * @param {boolean} enabled - Whether the group is enabled
+	 */
+
+	/**
+	 * Sets whether a command group is enabled in the guild
+	 * @param {CommandGroupResolvable} group - Command to set status of
+	 * @param {boolean} enabled - Whether the group should be enabled
+	 */
 	setGroupEnabled(group, enabled) {
 		group = this.client.registry.resolveGroup(group);
-		if(typeof enabled !== 'boolean') throw new TypeError('Enabled must be a boolean.');
 		if(group.guarded) throw new Error('The group is guarded.');
+		if(typeof enabled === 'undefined') throw new TypeError('Enabled must not be undefined.');
+		enabled = Boolean(enabled);
 		if(!this._groupsEnabled) this._groupsEnabled = {};
-		this._groupsEnabled[group.name] = enabled;
+		this._groupsEnabled[group.id] = enabled;
 		this.client.emit('groupStatusChange', this, group, enabled);
 	}
 
+	/**
+	 * Checks whether a command group is enabled in the guild
+	 * @param {CommandGroupResolvable} group - Group to check status of
+	 * @return {boolean}
+	 */
 	isGroupEnabled(group) {
 		group = this.client.registry.resolveGroup(group);
 		if(group.guarded) return true;
-		if(!this._groupsEnabled || typeof this._groupsEnabled[group] === 'undefined') return true;
-		return this._groupsEnabled[group];
+		if(!this._groupsEnabled || typeof this._groupsEnabled[group.id] === 'undefined') return group._globalEnabled;
+		return this._groupsEnabled[group.id];
 	}
 
-	commandUsage(command, onlyMention = false) {
-		return Command.usage(this.client, command, this, onlyMention);
+	/**
+	 * Creates a command usage string using the guild's prefix
+	 * @param {string} [command] - A command + arg string
+	 * @param {User} [user=this.client.user] - User to use for the mention command format
+	 * @return {string}
+	 */
+	commandUsage(command, user = this.client.user) {
+		return Command.usage(command, this.commandPrefix, user);
 	}
 
+	/**
+	 * Applies the interface to a class prototype
+	 * @param {function} target - The constructor function to apply to the prototype of
+	 */
 	static applyToClass(target) {
 		for(const prop of [
 			'commandPrefix',
@@ -63,4 +121,6 @@ module.exports = class GuildExtension {
 			Object.defineProperty(target.prototype, prop, Object.getOwnPropertyDescriptor(this.prototype, prop));
 		}
 	}
-};
+}
+
+module.exports = GuildExtension;

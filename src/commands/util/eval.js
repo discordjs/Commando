@@ -23,31 +23,31 @@ module.exports = class EvalCommand extends Command {
 		this.objects = client.registry.evalObjects;
 	}
 
-	hasPermission(cmdMsg) {
-		return cmdMsg.author.id === this.client.options.owner;
+	hasPermission(msg) {
+		return msg.author.id === this.client.options.owner;
 	}
 
-	async run(message, script) {
-		if(!script) throw new CommandFormatError(this, message.guild);
+	async run(msg, script) {
+		if(!script) throw new CommandFormatError(msg);
 
 		// Make a bunch of helpers
 		/* eslint-disable no-unused-vars */
-		const msg = message;
-		const client = message.client;
+		const message = msg;
+		const client = msg.client;
 		const objects = this.objects;
 		const doReply = val => {
 			if(val instanceof Error) {
-				message.reply(`Callback error: \`${val}\``);
+				msg.reply(`Callback error: \`${val}\``);
 			} else {
 				const result = this.makeResultMessages(val, process.hrtime(this.hrStart));
 				if(Array.isArray(result)) {
 					for(const item of result) {
-						if(this.client.options.selfbot) message.say(item); else message.reply(item);
+						if(this.client.options.selfbot) msg.say(item); else msg.reply(item);
 					}
 				} else if(this.client.options.selfbot) {
-					message.say(result);
+					msg.say(result);
 				} else {
-					message.reply(result);
+					msg.reply(result);
 				}
 			}
 		};
@@ -65,17 +65,17 @@ module.exports = class EvalCommand extends Command {
 
 		// Prepare for callback time and respond
 		this.hrStart = process.hrtime();
-		let response = this.makeResultMessages(this.lastResult, hrDiff, script, message.editable);
-		if(message.editable) {
+		let response = this.makeResultMessages(this.lastResult, hrDiff, script, msg.editable);
+		if(msg.editable) {
 			if(response instanceof Array) {
 				if(response.length > 0) response = response.slice(1, response.length - 1);
-				for(const re of response) message.say(re);
+				for(const re of response) msg.say(re);
 				return null;
 			} else {
-				return message.edit(response);
+				return msg.edit(response);
 			}
 		} else {
-			return message.reply(response);
+			return msg.reply(response);
 		}
 	}
 

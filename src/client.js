@@ -37,6 +37,8 @@ class CommandoClient extends discord.Client {
 		 */
 		this.dispatcher = new CommandDispatcher(this, this.registry);
 
+		this._commandPrefix = null;
+
 		// Set up command handling
 		const msgErr = err => { this.emit('error', err); };
 		this.on('message', message => { this.dispatcher.handleMessage(message).catch(msgErr); });
@@ -50,6 +52,20 @@ class CommandoClient extends discord.Client {
 				this.fetchUser(options.owner).catch((err) => { this.emit('error', err); });
 			});
 		}
+	}
+
+	/**
+	 * The global command prefix - modifying this will emit {@link CommandoClient#commandPrefixChange}.
+	 * @type {string}
+	 */
+	get commandPrefix() {
+		if(!this._commandPrefix) return this.options.commandPrefix;
+		return this._commandPrefix;
+	}
+
+	set commandPrefix(prefix) {
+		this._commandPrefix = prefix || null;
+		this.emit('commandPrefixChange', null, this._commandPrefix);
 	}
 }
 

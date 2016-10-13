@@ -43,11 +43,17 @@ class CommandRegistry {
 	}
 
 	/**
+	 * Emitted when a group is registered
+	 * @event CommandoClient#groupRegister
+	 * @param {CommandGroup} group - Group that was registered
+	 * @param {CommandRegistry} registry - Registry that the group was registered to
+	 */
+
+	/**
 	 * Registers multiple groups
 	 * @param {CommandGroup[]|function[]|Array<string>[]} groups - An array of CommandGroup instances, constructors,
 	 * or arrays of [ID, Name]
 	 * @return {CommandRegistry} This registry
-	 * @emits Client#groupRegister When a group is registered, with the group and registry passed
 	 */
 	registerGroups(groups) {
 		if(!Array.isArray(groups)) throw new TypeError('Groups must be an array.');
@@ -80,10 +86,16 @@ class CommandRegistry {
 	}
 
 	/**
+	 * Emitted when a command is registered
+	 * @event CommandoClient#commandRegister
+	 * @param {CommandGroup} command - Command that was registered
+	 * @param {CommandRegistry} registry - Registry that the command was registered to
+	 */
+
+	/**
 	 * Registers multiple commands
 	 * @param {Command[]|CommandBuilder[]|function[]} commands - An array of Command instances or constructors
 	 * @return {CommandRegistry} This registry
-	 * @emits Client#commandRegister When a command is registered, with the command and registry passed
 	 */
 	registerCommands(commands) {
 		if(!Array.isArray(commands)) throw new TypeError('Commands must be an array.');
@@ -92,22 +104,18 @@ class CommandRegistry {
 			else if(command instanceof CommandBuilder) command = command.command;
 
 			// Make sure there aren't any conflicts
-			if(this.commands.some(cmd => cmd.name === command.name)) {
-				throw new Error(`A command with the name "${command.name}" is already registered.`);
+			if(this.commands.some(cmd => cmd.name === command.name || cmd.aliases.includes(command.name))) {
+				throw new Error(`A command with the name/alias "${command.name}" is already registered.`);
+			}
+			for(const alias of command.aliases) {
+				if(this.commands.some(cmd => cmd.name === alias || cmd.aliases.some(ali => ali === alias))) {
+					throw new Error(`A command with the name/alias "${alias}" is already registered.`);
+				}
 			}
 			const group = this.groups.find(grp => grp.id === command.groupID);
 			if(!group) throw new Error(`Group "${command.groupID}" is not registered.`);
 			if(group.commands.some(cmd => cmd.memberName === command.memberName)) {
 				throw new Error(`A command with the member name "${command.memberName}" is already registered in ${group.id}`);
-			}
-
-			// Make sure there aren't any conflicts for the aliases, and add dehyphenated aliases
-			if(command.name.includes('-')) command.aliases.push(command.name.replace(/-/g, ''));
-			for(const alias of command.aliases) {
-				if(this.commands.some(cmd => cmd.aliases.some(ali => ali === alias))) {
-					throw new Error(`A command with the alias "${alias}" is already registered.`);
-				}
-				if(alias.includes('-')) command.aliases.push(alias.replace(/-/g, ''));
 			}
 
 			// Add the command

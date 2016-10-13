@@ -10,20 +10,20 @@ module.exports = class ListModulesCommand extends Command {
 			memberName: 'list',
 			description: 'Lists all command groups.',
 			details: 'Only administrators may use this command.',
-			guildOnly: true,
 			guarded: true
 		});
 	}
 
-	hasPermission(cmdMsg) {
-		return cmdMsg.member.hasPermission('ADMINISTRATOR');
+	hasPermission(msg) {
+		if(!msg.guild) return msg.author.id === this.client.options.owner;
+		return msg.member.hasPermission('ADMINISTRATOR');
 	}
 
-	async run(message) {
-		return message.reply(stripIndents`
+	async run(msg) {
+		return msg.reply(stripIndents`
 			__**Groups**__
 			${this.client.registry.groups.map(grp =>
-				`**${grp.name}:** ${grp.isEnabledIn(message.guild) ? 'Enabled' : 'Disabled'}`
+				`**${grp.name}:** ${grp.isEnabledIn(msg.guild) ? 'Enabled' : 'Disabled'}`
 			).join('\n')}
 		`);
 	}

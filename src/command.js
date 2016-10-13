@@ -4,6 +4,7 @@ class Command {
 	 * @typedef {Object} CommandInfo
 	 * @property {string} name - The name of the command (must be lowercase)
 	 * @property {string[]} [aliases] - Alternative names for the command (all must be lowercase)
+	 * @property {boolean} [autoAliases=true] - Whether automatic aliases should be added
 	 * @property {string} group - The ID of the group the command belongs to (must be lowercase)
 	 * @property {string} memberName - The member name of the command in the group (must be lowercase)
 	 * @property {string} description - A short description of the command
@@ -62,21 +63,24 @@ class Command {
 		/**
 		 * Name of this command
 		 * @type {string}
-		 * @see {@link CommandInfo}
 		 */
 		this.name = info.name;
 
 		/**
 		 * Aliases for this command
 		 * @type {string[]}
-		 * @see {@link CommandInfo}
 		 */
 		this.aliases = info.aliases || [];
+		if(typeof info.autoAliases === 'undefined' || info.autoAliases) {
+			if(this.name.includes('-')) this.aliases.push(this.name.replace(/-/g, ''));
+			for(const alias of this.aliases) {
+				if(alias.includes('-')) this.aliases.push(alias.replace(/-/g, ''));
+			}
+		}
 
 		/**
 		 * ID of the group the command belongs to
 		 * @type {string}
-		 * @see {@link CommandInfo}
 		 */
 		this.groupID = info.group;
 
@@ -89,77 +93,66 @@ class Command {
 		/**
 		 * Name of the command within the group
 		 * @type {string}
-		 * @see {@link CommandInfo}
 		 */
 		this.memberName = info.memberName;
 
 		/**
 		 * Short description of the command
 		 * @type {string}
-		 * @see {@link CommandInfo}
 		 */
 		this.description = info.description;
 
 		/**
 		 * Usage format string of the command
 		 * @type {string}
-		 * @see {@link CommandInfo}
 		 */
 		this.usage = info.usage || info.name;
 
 		/**
 		 * Long description of the command
 		 * @type {?string}
-		 * @see {@link CommandInfo}
 		 */
 		this.details = info.details || null;
 
 		/**
 		 * Example usage strings
 		 * @type {?string[]}
-		 * @see {@link CommandInfo}
 		 */
 		this.examples = info.examples || null;
 
 		/**
 		 * Whether the command can only be run in a guild channel
 		 * @type {boolean}
-		 * @see {@link CommandInfo}
 		 */
 		this.guildOnly = !!info.guildOnly;
 
 		/**
 		 * Whether the default command handling is enabled for the command
 		 * @type {boolean}
-		 * @see {@link CommandInfo}
 		 */
 		this.defaultHandling = 'defaultHandling' in info ? info.defaultHandling : true;
 
 		/**
 		 * How the arguments are split when passed to the command's run method
 		 * @type {string}
-		 * @see {@link CommandInfo}
 		 */
 		this.argsType = info.argsType || 'single';
 
 		/**
 		 * Maximum number of arguments that will be split
 		 * @type {number}
-		 * @see {@link CommandInfo}
 		 */
 		this.argsCount = info.argsCount || 0;
 
 		/**
 		 * Whether single quotes are allowed to encapsulate an argument
 		 * @type {boolean}
-		 * @see {@link CommandInfo}
 		 */
 		this.argsSingleQuotes = 'argsSingleQuotes' in info ? info.argsSingleQuotes : true;
 
 		/**
 		 * Regular expression triggers
 		 * @type {RegExp[]}
-		 * @see {@link CommandInfo}
 		 */
 		this.patterns = info.patterns || null;
 
@@ -168,23 +161,27 @@ class Command {
 		 * @type {boolean}
 		 */
 		this.guarded = info.guarded || false;
+
+		this._globalEnabled = true;
 	}
 
 	/**
 	 * Checks a user's permission in a guild
-	 * @param {Guild} guild - The guild to test the user's permission in
-	 * @param {User} user - The user to test the permission of
-	 * @return {boolean} Whether or not the user has permission to use the command
+	 * @param {CommandMessage} message - The triggering command message
+	 * @return {boolean}
 	 */
-	hasPermission(guild, user) { // eslint-disable-line no-unused-vars
+	hasPermission(message) { // eslint-disable-line no-unused-vars
 		return true;
 	}
 
+	// eslint-disable-next-line valid-jsdoc
 	/**
 	 * Runs the command
-	 * @param {Message} message - The message the command is being run for
-	 * @param {string[]} args - The arguments for the command, or the matches from a pattern
-	 * @param {boolean} fromPattern - Whether or not the command is being run from a pattern match or not
+	 * @param {CommandMessage} message - The message the command is being run for
+	 * @param {string|string[]} args - The arguments for the command, or the matches from a pattern. If argsType is
+	 * single, then only one string will be passed. If multiple, an array of strings will be passed. When fromPattern
+	 * is true, this is the matches array from the pattern match.
+	 * @param {boolean} fromPattern - Whether or not the command is being run from a pattern match
 	 * @return {Promise<?Message|?Array<Message>>}
 	 */
 	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars
@@ -193,23 +190,31 @@ class Command {
 
 	/**
 	 * Enables or disables the command in a guild
-	 * @param {GuildResolvable} guild - Guild to enable/disable the command in
+	 * @param {?GuildResolvable} guild - Guild to enable/disable the command in
 	 * @param {boolean} enabled - Whether the command should be enabled or disabled
 	 */
 	setEnabledIn(guild, enabled) {
+		if(typeof guild === 'undefined') throw new TypeError('Guild must not be undefined.');
+		if(typeof enabled === 'undefined') throw new TypeError('Enabled must not be undefined.');
+		if(this.guarded) throw new Error('The command is guarded.');
+		if(!guild) {
+			this._globalEnabled = enabled;
+			this.client.emit('commandStatusChange', null, this, enabled);
+			return;
+		}
 		guild = this.client.resolver.resolveGuild(guild);
 		guild.setCommandEnabled(this, enabled);
 	}
 
 	/**
 	 * Checks if the command is enabled in a guild
-	 * @param {GuildResolvable} guild - Guild to check in
+	 * @param {?GuildResolvable} guild - Guild to check in
 	 * @return {boolean}
 	 */
 	isEnabledIn(guild) {
 		if(this.guarded) return true;
+		if(!guild) return this.group._globalEnabled && this._globalEnabled;
 		guild = this.client.resolver.resolveGuild(guild);
-		if(!guild) return true;
 		return guild.isGroupEnabled(this.group) && guild.isCommandEnabled(this);
 	}
 
@@ -219,26 +224,44 @@ class Command {
 	 * @return {boolean}
 	 */
 	isUsable(message = null) {
+		if(!message) return this._defaultEnabled;
 		if(this.guildOnly && message && !message.guild) return false;
-		return !message || (this.isEnabledIn(message.guild) && this.hasPermission(message));
+		return this.isEnabledIn(message.guild) && this.hasPermission(message);
 	}
 
-	makeUsage(argString, guild = null, onlyMention = false) {
-		return this.constructor.usage(this.client, `${this.name}${argString ? ` ${argString}` : ''}`, guild, onlyMention);
+	/**
+	 * Creates a usage string for the command
+	 * @param {string} [argString] - A string of arguments for the command
+	 * @param {string} [prefix] - Prefix to use for the prefixed command format
+	 * @param {User} [user=this.client.user] - User to use for the mention command format
+	 * @return {string}
+	 */
+	makeUsage(argString, prefix, user = this.client.user) {
+		return this.constructor.usage(`${this.name}${argString ? ` ${argString}` : ''}`, prefix, user);
 	}
 
-	static usage(client, command, guild = null, onlyMention = false) {
+	/**
+	 * Creates a usage string for a command
+	 * @param {string} command - A command + arg string
+	 * @param {string} [prefix] - Prefix to use for the prefixed command format
+	 * @param {User} [user] - User to use for the mention command format
+	 * @return {string}
+	 */
+	static usage(command, prefix = null, user = null) {
 		const nbcmd = command.replace(/ /g, '\xa0');
-		if(!guild && !onlyMention) return `\`${nbcmd}\``;
-		if(guild) guild = client.resolver.resolveGuild(guild);
-		let prefixAddon = '';
-		if(!onlyMention) {
-			let prefix = (guild ? guild.commandPrefix : client.options.commandPrefix).replace(/ /g, '\xa0');
-			if(prefix.length > 1 && !prefix.endsWith('\xa0')) prefix += '\xa0';
-			prefixAddon = prefix ? `\`${prefix}${nbcmd}\` or ` : '';
+		if(!prefix && !user) return `\`${nbcmd}\``;
+
+		let prefixPart;
+		if(prefix) {
+			if(prefix.length > 1 && !prefix.endsWith(' ')) prefix += ' ';
+			prefix = prefix.replace(/ /g, '\xa0');
+			prefixPart = `\`${prefix}${nbcmd}\``;
 		}
-		const user = `${client.user.username.replace(/ /g, '\xa0')}#${client.user.discriminator}`;
-		return `${prefixAddon}\`@${user}\xa0${nbcmd}\``;
+
+		let mentionPart;
+		if(user) mentionPart = `\`@${user.username.replace(/ /g, '\xa0')}#${user.discriminator}\xa0${nbcmd}\``;
+
+		return `${prefixPart || ''}${prefix && user ? ' or ' : ''}${mentionPart || ''}`;
 	}
 }
 

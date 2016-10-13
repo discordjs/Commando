@@ -19,33 +19,37 @@ module.exports = class PrefixCommand extends Command {
 		});
 	}
 
-	async run(message, arg) {
-		if(arg && message.guild) {
-			if(!message.member.hasPermission('ADMINISTRATOR')) return 'Only administrators may change the command prefix.';
+	async run(msg, arg) {
+		if(arg) {
+			if(msg.guild) {
+				if(!msg.member.hasPermission('ADMINISTRATOR')) {
+					return msg.reply('Only administrators may change the command prefix.');
+				}
+			} else if(msg.author.id !== this.client.options.owner) {
+				return msg.reply('Only the bot owner may change the global command prefix.');
+			}
 
 			// Save the prefix
 			const lowercase = arg.toLowerCase();
 			const prefix = lowercase === 'none' ? '' : arg;
 			let response;
 			if(lowercase === 'default') {
-				message.guild.commandPrefix = null;
+				if(msg.guild) msg.guild.commandPrefix = null; else this.client.commandPrefix = null;
 				response = `Reset the command prefix to the default (currently \`${this.client.options.commandPrefix}\`).`;
 			} else {
-				message.guild.commandPrefix = prefix;
+				if(msg.guild) msg.guild.commandPrefix = prefix; else this.client.commandPrefix = prefix;
 				response = prefix ? `Set the command prefix to \`${arg}\`.` : 'Removed the command prefix entirely.';
 			}
 
 			// Build the pattern
-			const pattern = this.client.dispatcher._buildCommandPattern(message.guild, message.client.user);
-			this.client.dispatcher._guildCommandPatterns[message.guild.id] = pattern;
-
-			message.reply(`${response} To run commands, use ${Command.usage(this.client, 'command', message.guild)}.`)
+			this.client.dispatcher._buildCommandPattern(msg.guild, msg.client.user);
+			msg.reply(`${response} To run commands, use ${msg.commandUsage('command')}.`);
 			return null;
 		} else {
-			const prefix = message.guild ? message.guild.commandPrefix : this.client.options.commandPrefix;
-			return message.reply(stripIndents`
+			const prefix = msg.guild ? msg.guild.commandPrefix : this.client.options.commandPrefix;
+			return msg.reply(stripIndents`
 				${prefix ? `The command prefix is \`${prefix}\`.` : 'There is no command prefix.'}
-				To run commands, use ${Command.usage(this.client, 'command', message.guild)}.
+				To run commands, use ${msg.commandUsage('command')}.
 			`);
 		}
 	}

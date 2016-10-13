@@ -4,7 +4,7 @@ const Command = require('./command');
 const CommandMessage = require('./command-message');
 
 /** Handles parsing messages and running commands from them */
-module.exports = class CommandDispatcher extends EventEmitter {
+class CommandDispatcher extends EventEmitter {
 	/**
 	 * @param {CommandoClient} client - Client the dispatcher is for
 	 * @param {CommandRegistry} registry - Registry the dispatcher will use
@@ -24,10 +24,56 @@ module.exports = class CommandDispatcher extends EventEmitter {
 		 */
 		this.registry = registry;
 
-		this._guildCommandPatterns = {};
+		/**
+		 * Functions that can block commands from running
+		 * @type {Set<function>}
+		 */
+		this.inhibitors = new Set();
+
+		this._commandPatterns = {};
 		this._results = new Map();
 	}
 
+	/**
+	 * A function that can block the usage of a command - these functions are passed the command message that is
+	 * triggering the command. They should return `false` if the command should *not* be blocked. If the command *should*
+	 * be blocked, they should return one of the following:
+	 * - A single string identifying the reason the command is blocked
+	 * - An array of the above string as element 0, and a response promise or `null` as element 1
+	 * @typedef {function} Inhibitor
+	 */
+
+	/**
+	 * Adds an inhibitor
+	 * @param {Inhibitor} inhibitor - The inhibitor function to add
+	 * @return {boolean} Whether the addition was successful
+	 * @example
+	 * client.dispatcher.addInhibitor(msg => {
+	 *   if(blacklistedUsers.has(msg.author.id)) return 'blacklisted';
+	 * });
+	 * @example
+	 * client.dispatcher.addInhibitor(msg => {
+	 * 	if(!coolUsers.has(msg.author.id)) return ['cool', msg.reply('You\'re not cool enough!')];
+	 * });
+	 */
+	addInhibitor(inhibitor) {
+		if(typeof inhibitor !== 'function') throw new TypeError('The inhibitor must be a function.');
+		if(this.inhibitors.has(inhibitor)) return false;
+		this.inhibitors.add(inhibitor);
+		return true;
+	}
+
+	/**
+	 * Removes an inhibitor
+	 * @param {Inhibitor} inhibitor - The inhibitor function to remove
+	 * @return {boolean} Whether the removal was successful
+	 */
+	removeInhibitor(inhibitor) {
+		if(typeof inhibitor !== 'function') throw new TypeError('The inhibitor must be a function.');
+		return this.inhibitors.delete(inhibitor);
+	}
+
+	// eslint-disable-next-line valid-jsdoc
 	/**
 	 * Handle a new message or a message update
 	 * @param {Message} message - The message to handle
@@ -47,24 +93,35 @@ module.exports = class CommandDispatcher extends EventEmitter {
 		let oldCmdMsg;
 		if(oldMessage) {
 			oldCmdMsg = this._results.get(oldMessage.id);
-			if(cmdMsg && oldCmdMsg) cmdMsg.responses = oldCmdMsg.responses;
+			if(cmdMsg && oldCmdMsg) {
+				cmdMsg.responses = oldCmdMsg.responses;
+				cmdMsg.responsePositions = oldCmdMsg.responsePositions;
+			}
 		}
 
 		// Run the command, or reply with an error
 		let responses;
 		if(cmdMsg) {
-			if(cmdMsg.command) {
-				if(message.guild && !message.guild.isCommandEnabled(cmdMsg.command)) {
-					responses = await cmdMsg.reply(`The \`${cmdMsg.command.name}\` command is disabled.`);
-				} else if(!oldMessage || typeof oldCmdMsg !== 'undefined') {
-					responses = await cmdMsg.run();
-					if(typeof responses === 'undefined') responses = null;
+			const inhibited = this._inhibit(cmdMsg);
+
+			if(!inhibited) {
+				if(cmdMsg.command) {
+					if(message.guild && !message.guild.isCommandEnabled(cmdMsg.command)) {
+						responses = await cmdMsg.reply(`The \`${cmdMsg.command.name}\` command is disabled.`);
+					} else if(!oldMessage || typeof oldCmdMsg !== 'undefined') {
+						responses = await cmdMsg.run();
+						if(typeof responses === 'undefined') responses = null;
+					}
+				} else {
+					this.client.emit('unknownCommand', cmdMsg);
+					responses = await cmdMsg.reply(
+						`Unknown command. Use ${Command.usage(
+							'help', message.guild ? message.guild.commandPrefix : null, message.guild ? this.client.user : null
+						)} to view the list of all commands.`
+					);
 				}
 			} else {
-				this.client.emit('unknownCommand', cmdMsg);
-				responses = await cmdMsg.reply(
-					`Unknown command. Use ${Command.usage(this.client, 'help', message.guild)} to view the list of all commands.`
-				);
+				responses = await inhibited[1];
 			}
 
 			cmdMsg._finalize(responses);
@@ -73,7 +130,28 @@ module.exports = class CommandDispatcher extends EventEmitter {
 			if(this.client.options.nonCommandEditable <= 0) this._results.delete(message.id);
 		}
 
-		// Cache the message
+		this._cacheCommandMessage(message, oldMessage, cmdMsg, responses);
+	}
+
+	_inhibit(cmdMsg) {
+		for(const inhibitor of this.inhibitors) {
+			const inhibited = inhibitor(cmdMsg);
+			if(inhibited) {
+				this.client.emit('commandBlocked', cmdMsg, inhibited instanceof Array ? inhibited[0] : inhibited);
+				return inhibited instanceof Array ? inhibited : [inhibited, undefined];
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Caches a command message to be editable
+	 * @param {Message} message - Triggering message
+	 * @param {Message} oldMessage - Triggering message's old version
+	 * @param {CommandMessage} cmdMsg - Command message to cache
+	 * @param {Message|Message[]} responses - Responses to the message
+	 */
+	_cacheCommandMessage(message, oldMessage, cmdMsg, responses) {
 		if(this.client.options.commandEditableDuration > 0) {
 			if(cmdMsg || this.client.options.nonCommandEditable) {
 				if(responses !== null) {
@@ -104,9 +182,9 @@ module.exports = class CommandDispatcher extends EventEmitter {
 		}
 
 		// Find the command to run with default command handling
-		const gp = message.guild ? message.guild.id : '-';
-		if(!this._guildCommandPatterns[gp]) this._guildCommandPatterns[gp] = this._buildCommandPattern(message.guild);
-		let cmdMsg = this._matchDefault(message, this._guildCommandPatterns[gp], 2);
+		const gp = message.guild ? message.guild.id : 'global';
+		if(!this._commandPatterns[gp]) this._buildCommandPattern(message.guild);
+		let cmdMsg = this._matchDefault(message, this._commandPatterns[gp], 2);
 		if(!cmdMsg && !message.guild && !this.client.options.selfbot) cmdMsg = this._matchDefault(message, /^([^\s]+)/i);
 		return cmdMsg;
 	}
@@ -140,15 +218,10 @@ module.exports = class CommandDispatcher extends EventEmitter {
 		const pattern = new RegExp(
 			`^(${prefixPatternPiece}<@!?${this.client.user.id}>\\s+(?:${escapedPrefix})?)([^\\s]+)`, 'i'
 		);
+		this._commandPatterns[guild ? guild.id : 'global'] = pattern;
 		this.client.emit('commandPatternBuilt', guild, prefix, pattern);
 		return pattern;
 	}
-};
+}
 
-/**
- * @typedef {Object} CommandResult
- * @property {string[]} [plain] - Strings to send plain messages for
- * @property {string[]} [reply] - Strings to send reply messages for
- * @property {string[]} [direct] - Strings to send direct messages for
- * @property {boolean} [editable=true] - Whether or not the command message is editable
- */
+module.exports = CommandDispatcher;

@@ -4,6 +4,8 @@ module.exports = {
 	Client: require('./client'),
 	Command: require('./command'),
 	CommandGroup: require('./command-group'),
+	FriendlyError: require('./errors/friendly'),
+	CommandFormatError: require('./errors/command-format'),
 
 	version: require('../package').version
 };
