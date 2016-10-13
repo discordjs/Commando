@@ -5,7 +5,7 @@
 [![Dependency status](https://david-dm.org/Gawdl3y/discord.js-commands.svg)](https://david-dm.org/Gawdl3y/discord.js-commands)
 [![License](https://img.shields.io/npm/l/discord.js-commands.svg)](LICENSE)
 
-This is the official command framework for discord.js.
+This is the WIP official command framework for discord.js.
 
 ## Features
 - Plain names and aliases
@@ -13,3 +13,7 @@ This is the official command framework for discord.js.
 - Regular expression triggers
 - Multiple responses
 - Command editing
+
+## Documentation
+[View it here.](https://gawdl3y.github.io/discord.js-commando/)  
+See the [discord.js documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master/file/general/Welcome) as well.

@@ -1,7 +1,7 @@
 const FriendlyError = require('./friendly');
 
 /** Has a descriptive message for a command not having proper format */
-module.exports = class CommandFormatError extends FriendlyError {
+class CommandFormatError extends FriendlyError {
 	/**
 	 * @param {CommandMessage} msg - The command message the error is for
 	 */
@@ -10,4 +10,6 @@ module.exports = class CommandFormatError extends FriendlyError {
 		/** @ignore */
 		this.name = 'CommandFormatError';
 	}
-};
+}
+
+module.exports = CommandFormatError;

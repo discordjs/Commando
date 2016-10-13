@@ -79,6 +79,7 @@ class CommandDispatcher extends EventEmitter {
 	 * @param {Message} message - The message to handle
 	 * @param {Message} [oldMessage] - The old message before the update
 	 * @return {Promise<void>}
+	 * @private
 	 */
 	async handleMessage(message, oldMessage) {
 		if(message.author.bot) return;
@@ -89,7 +90,7 @@ class CommandDispatcher extends EventEmitter {
 		if(oldMessage && message.content === oldMessage.content) return;
 
 		// Parse the message, and get the old result if it exists
-		let cmdMsg = this._parseMessage(message);
+		let cmdMsg = this.parseMessage(message);
 		let oldCmdMsg;
 		if(oldMessage) {
 			oldCmdMsg = this._results.get(oldMessage.id);
@@ -130,10 +131,16 @@ class CommandDispatcher extends EventEmitter {
 			if(this.client.options.nonCommandEditable <= 0) this._results.delete(message.id);
 		}
 
-		this._cacheCommandMessage(message, oldMessage, cmdMsg, responses);
+		this.cacheCommandMessage(message, oldMessage, cmdMsg, responses);
 	}
 
-	_inhibit(cmdMsg) {
+	/**
+	 * Inhibits a command message
+	 * @param {CommandMessage} cmdMsg - Command message to inhibit
+	 * @return {?Array} [reason, ?response]
+	 * @private
+	 */
+	inhibit(cmdMsg) {
 		for(const inhibitor of this.inhibitors) {
 			const inhibited = inhibitor(cmdMsg);
 			if(inhibited) {
@@ -150,8 +157,9 @@ class CommandDispatcher extends EventEmitter {
 	 * @param {Message} oldMessage - Triggering message's old version
 	 * @param {CommandMessage} cmdMsg - Command message to cache
 	 * @param {Message|Message[]} responses - Responses to the message
+	 * @private
 	 */
-	_cacheCommandMessage(message, oldMessage, cmdMsg, responses) {
+	cacheCommandMessage(message, oldMessage, cmdMsg, responses) {
 		if(this.client.options.commandEditableDuration > 0) {
 			if(cmdMsg || this.client.options.nonCommandEditable) {
 				if(responses !== null) {
@@ -170,8 +178,9 @@ class CommandDispatcher extends EventEmitter {
 	 * Parses a message to find details about command usage in it
 	 * @param {Message} message - The message
 	 * @return {?CommandMessage}
+	 * @private
 	 */
-	_parseMessage(message) {
+	parseMessage(message) {
 		// Find the command to run by patterns
 		for(const command of this.client.registry.commands) {
 			if(!command.patterns) continue;
@@ -183,9 +192,9 @@ class CommandDispatcher extends EventEmitter {
 
 		// Find the command to run with default command handling
 		const gp = message.guild ? message.guild.id : 'global';
-		if(!this._commandPatterns[gp]) this._buildCommandPattern(message.guild);
-		let cmdMsg = this._matchDefault(message, this._commandPatterns[gp], 2);
-		if(!cmdMsg && !message.guild && !this.client.options.selfbot) cmdMsg = this._matchDefault(message, /^([^\s]+)/i);
+		if(!this._commandPatterns[gp]) this.buildCommandPattern(message.guild);
+		let cmdMsg = this.matchDefault(message, this._commandPatterns[gp], 2);
+		if(!cmdMsg && !message.guild && !this.client.options.selfbot) cmdMsg = this.matchDefault(message, /^([^\s]+)/i);
 		return cmdMsg;
 	}
 
@@ -195,8 +204,9 @@ class CommandDispatcher extends EventEmitter {
 	 * @param {RegExp} pattern - The pattern to match against
 	 * @param {number} commandNameIndex - The index of the command name in the pattern matches
 	 * @return {?CommandMessage}
+	 * @private
 	 */
-	_matchDefault(message, pattern, commandNameIndex = 1) {
+	matchDefault(message, pattern, commandNameIndex = 1) {
 		const matches = pattern.exec(message.content);
 		if(!matches) return null;
 		const commands = this.client.registry.findCommands(matches[commandNameIndex]);
@@ -209,8 +219,9 @@ class CommandDispatcher extends EventEmitter {
 	 * Creates a regular expression to match the command prefix and name in a message
 	 * @param {?Guild} guild - The Guild that the message is from
 	 * @return {RegExp}
+	 * @private
 	 */
-	_buildCommandPattern(guild) {
+	buildCommandPattern(guild) {
 		let prefix = guild ? guild.commandPrefix : this.client.options.commandPrefix;
 		if(prefix === 'none') prefix = '';
 		const escapedPrefix = escapeRegex(prefix);

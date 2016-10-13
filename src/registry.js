@@ -51,7 +51,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers multiple groups
-	 * @param {CommandGroup[]|function[]|Array<string>[]} groups - An array of CommandGroup instances, constructors,
+	 * @param {CommandGroup[]|function[]|Array<Array<string>>} groups - An array of CommandGroup instances, constructors,
 	 * or arrays of [ID, Name]
 	 * @return {CommandRegistry} This registry
 	 */

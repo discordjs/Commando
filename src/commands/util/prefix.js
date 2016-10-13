@@ -42,7 +42,7 @@ module.exports = class PrefixCommand extends Command {
 			}
 
 			// Build the pattern
-			this.client.dispatcher._buildCommandPattern(msg.guild, msg.client.user);
+			this.client.dispatcher.buildCommandPattern(msg.guild, msg.client.user);
 			msg.reply(`${response} To run commands, use ${msg.commandUsage('command')}.`);
 			return null;
 		} else {

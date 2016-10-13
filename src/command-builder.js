@@ -45,7 +45,7 @@ class CommandBuilder {
 	/**
 	 * Sets the command's run method
 	 * @param {function} fn - The function to use
-	 * @param {*[]} [extras=[]] - Extra values to pass to the function
+	 * @param {Array<*>} [extras=[]] - Extra values to pass to the function
 	 * @return {CommandBuilder} This builder
 	 */
 	run(fn, extras = []) {
@@ -58,7 +58,7 @@ class CommandBuilder {
 	/**
 	 * Sets the command's hasPermission method
 	 * @param {function} fn - The function to use
-	 * @param {*[]} [extras=[]] - Extra values to pass to the function
+	 * @param {Array<*>} [extras=[]] - Extra values to pass to the function
 	 * @return {CommandBuilder} This builder
 	 */
 	hasPermission(fn, extras = []) {
