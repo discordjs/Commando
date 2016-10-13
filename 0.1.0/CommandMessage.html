@@ -1,0 +1,4493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>CommandMessage - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Command.html">Command</a><ul class='methods'><li data-type='method'><a href="Command.html#.usage">usage</a></li><li data-type='method'><a href="Command.html#hasPermission">hasPermission</a></li><li data-type='method'><a href="Command.html#isEnabledIn">isEnabledIn</a></li><li data-type='method'><a href="Command.html#isUsable">isUsable</a></li><li data-type='method'><a href="Command.html#makeUsage">makeUsage</a></li><li data-type='method'><a href="Command.html#run">run</a></li><li data-type='method'><a href="Command.html#setEnabledIn">setEnabledIn</a></li></ul></li><li><a href="CommandBuilder.html">CommandBuilder</a><ul class='methods'><li data-type='method'><a href="CommandBuilder.html#hasPermission">hasPermission</a></li><li data-type='method'><a href="CommandBuilder.html#info">info</a></li><li data-type='method'><a href="CommandBuilder.html#register">register</a></li><li data-type='method'><a href="CommandBuilder.html#run">run</a></li></ul></li><li><a href="CommandDispatcher.html">CommandDispatcher</a><ul class='methods'><li data-type='method'><a href="CommandDispatcher.html#addInhibitor">addInhibitor</a></li><li data-type='method'><a href="CommandDispatcher.html#removeInhibitor">removeInhibitor</a></li></ul></li><li><a href="CommandFormatError.html">CommandFormatError</a></li><li><a href="CommandGroup.html">CommandGroup</a><ul class='methods'><li data-type='method'><a href="CommandGroup.html#isEnabledIn">isEnabledIn</a></li><li data-type='method'><a href="CommandGroup.html#setEnabledIn">setEnabledIn</a></li></ul></li><li><a href="CommandMessage.html">CommandMessage</a><ul class='methods'><li data-type='method'><a href="CommandMessage.html#.parseArgs">parseArgs</a></li><li data-type='method'><a href="CommandMessage.html#code">code</a></li><li data-type='method'><a href="CommandMessage.html#commandUsage">commandUsage</a></li><li data-type='method'><a href="CommandMessage.html#delete">delete</a></li><li data-type='method'><a href="CommandMessage.html#direct">direct</a></li><li data-type='method'><a href="CommandMessage.html#edit">edit</a></li><li data-type='method'><a href="CommandMessage.html#editCode">editCode</a></li><li data-type='method'><a href="CommandMessage.html#isMentioned">isMentioned</a></li><li data-type='method'><a href="CommandMessage.html#parseArgs">parseArgs</a></li><li data-type='method'><a href="CommandMessage.html#pin">pin</a></li><li data-type='method'><a href="CommandMessage.html#reply">reply</a></li><li data-type='method'><a href="CommandMessage.html#run">run</a></li><li data-type='method'><a href="CommandMessage.html#say">say</a></li><li data-type='method'><a href="CommandMessage.html#unpin">unpin</a></li></ul></li><li><a href="CommandoClient.html">CommandoClient</a></li><li><a href="CommandRegistry.html">CommandRegistry</a><ul class='methods'><li data-type='method'><a href="CommandRegistry.html#buildCommand">buildCommand</a></li><li data-type='method'><a href="CommandRegistry.html#findCommands">findCommands</a></li><li data-type='method'><a href="CommandRegistry.html#findGroups">findGroups</a></li><li data-type='method'><a href="CommandRegistry.html#registerCommand">registerCommand</a></li><li data-type='method'><a href="CommandRegistry.html#registerCommands">registerCommands</a></li><li data-type='method'><a href="CommandRegistry.html#registerCommandsIn">registerCommandsIn</a></li><li data-type='method'><a href="CommandRegistry.html#registerDefaultCommands">registerDefaultCommands</a></li><li data-type='method'><a href="CommandRegistry.html#registerDefaultGroups">registerDefaultGroups</a></li><li data-type='method'><a href="CommandRegistry.html#registerDefaults">registerDefaults</a></li><li data-type='method'><a href="CommandRegistry.html#registerEvalObject">registerEvalObject</a></li><li data-type='method'><a href="CommandRegistry.html#registerEvalObjects">registerEvalObjects</a></li><li data-type='method'><a href="CommandRegistry.html#registerGroup">registerGroup</a></li><li data-type='method'><a href="CommandRegistry.html#registerGroups">registerGroups</a></li><li data-type='method'><a href="CommandRegistry.html#resolveCommand">resolveCommand</a></li><li data-type='method'><a href="CommandRegistry.html#resolveGroup">resolveGroup</a></li></ul></li><li><a href="FriendlyError.html">FriendlyError</a></li></ul><h3>Externals</h3><ul><li><a href="external-Channel.html">Channel</a></li><li><a href="external-ClientOptions.html">ClientOptions</a></li><li><a href="external-Guild.html">Guild</a></li><li><a href="external-GuildMember.html">GuildMember</a></li><li><a href="external-GuildResolvable.html">GuildResolvable</a></li><li><a href="external-Message.html">Message</a></li><li><a href="external-StringResolvable.html">StringResolvable</a></li><li><a href="external-User.html">User</a></li></ul><h3>Events</h3><ul><li><a href="CommandoClient.html#event:commandBlocked">commandBlocked</a></li><li><a href="CommandoClient.html#event:commandError">commandError</a></li><li><a href="CommandoClient.html#event:commandPrefixChange">commandPrefixChange</a></li><li><a href="CommandoClient.html#event:commandRegister">commandRegister</a></li><li><a href="CommandoClient.html#event:commandRun">commandRun</a></li><li><a href="CommandoClient.html#event:commandStatusChange">commandStatusChange</a></li><li><a href="CommandoClient.html#event:groupRegister">groupRegister</a></li><li><a href="CommandoClient.html#event:groupStatusChange">groupStatusChange</a></li></ul><h3>Interfaces</h3><ul><li><a href="GuildExtension.html">GuildExtension</a><ul class='methods'><li data-type='method'><a href="GuildExtension.html#.applyToClass">applyToClass</a></li><li data-type='method'><a href="GuildExtension.html#commandUsage">commandUsage</a></li><li data-type='method'><a href="GuildExtension.html#isCommandEnabled">isCommandEnabled</a></li><li data-type='method'><a href="GuildExtension.html#isGroupEnabled">isGroupEnabled</a></li><li data-type='method'><a href="GuildExtension.html#setCommandEnabled">setCommandEnabled</a></li><li data-type='method'><a href="GuildExtension.html#setGroupEnabled">setGroupEnabled</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">CommandMessage</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        CommandMessage
+        </h2>
+        
+            <div class="class-description"><p>A container for a message that triggers a command, that command, and methods to respond</p></div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    <h4 class="name" id="CommandMessage"><span class="type-signature"></span>new CommandMessage<span class="signature">(message, command<span class="signature-attributes">opt</span>, argString<span class="signature-attributes">opt</span>, patternMatches<span class="signature-attributes">opt, nullable</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Message</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Message that triggers the command</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>command</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Command.html">Command</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last"><p>Command the message triggers</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>argString</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last"><p>Argument string for the command</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>patternMatches</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                    &lt;nullable><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last"><p>Command pattern matches (if from a pattern trigger)</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line7">line 7</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="argString"><span class="type-signature">(nullable) </span>argString<span class="type-signature"> :string</span></h4>
+
+
+
+
+<div class="description">
+    <p>Argument string for the command</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line37">line 37</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="attachments"><span class="type-signature"></span>attachments<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.attachments</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line453">line 453</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="author"><span class="type-signature"></span>author<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.author</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line381">line 381</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="channel"><span class="type-signature"></span>channel<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.channel</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line389">line 389</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="cleanContent"><span class="type-signature"></span>cleanContent<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.cleanContent</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line501">line 501</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="client"><span class="type-signature"></span>client<span class="type-signature"> :<a href="CommandoClient.html">CommandoClient</a></span></h4>
+
+
+
+
+<div class="description">
+    <p>Client that the message was sent from</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="CommandoClient.html">CommandoClient</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line19">line 19</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="command"><span class="type-signature">(nullable) </span>command<span class="type-signature"> :<a href="Command.html">Command</a></span></h4>
+
+
+
+
+<div class="description">
+    <p>Command that the message triggers, if any</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="Command.html">Command</a></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line31">line 31</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="content"><span class="type-signature"></span>content<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.content</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line373">line 373</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="createdAt"><span class="type-signature"></span>createdAt<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.createdAt</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line469">line 469</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="createdTimestamp"><span class="type-signature"></span>createdTimestamp<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.createdTimestamp</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line461">line 461</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="deletable"><span class="type-signature"></span>deletable<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.deletable</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line525">line 525</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="editable"><span class="type-signature"></span>editable<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.editable</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line517">line 517</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="editedAt"><span class="type-signature"></span>editedAt<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.editedAt</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line485">line 485</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="editedTimestamp"><span class="type-signature"></span>editedTimestamp<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.editedTimestamp</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line477">line 477</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="edits"><span class="type-signature"></span>edits<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.edits</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line509">line 509</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="embeds"><span class="type-signature"></span>embeds<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.embeds</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line445">line 445</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="guild"><span class="type-signature"></span>guild<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.guild</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line397">line 397</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="id"><span class="type-signature"></span>id<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.id</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line365">line 365</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="member"><span class="type-signature"></span>member<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.member</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line405">line 405</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="mentions"><span class="type-signature"></span>mentions<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.mentions</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line493">line 493</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="message"><span class="type-signature"></span>message<span class="type-signature"> :Message</span></h4>
+
+
+
+
+<div class="description">
+    <p>Message that triggers the command</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Message</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line25">line 25</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="nonce"><span class="type-signature"></span>nonce<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.nonce</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line429">line 429</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="patternMatches"><span class="type-signature">(nullable) </span>patternMatches<span class="type-signature"> :Array.&lt;string></span></h4>
+
+
+
+
+<div class="description">
+    <p>Pattern matches (if from a pattern trigger)</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Array.&lt;string></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line43">line 43</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="pinnable"><span class="type-signature"></span>pinnable<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.pinnable</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line533">line 533</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="pinned"><span class="type-signature"></span>pinned<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.pinned</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line413">line 413</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="responsePositions"><span class="type-signature">(nullable) </span>responsePositions<span class="type-signature"> :Object</span></h4>
+
+
+
+
+<div class="description">
+    <p>The index of the current response that will be edited, mapped by channel type</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line55">line 55</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="responses"><span class="type-signature">(nullable) </span>responses<span class="type-signature"> :Object</span></h4>
+
+
+
+
+<div class="description">
+    <p>Response messages sent, mapped by channel type (set by the dispatcher after running the command)</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line49">line 49</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="system"><span class="type-signature"></span>system<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.system</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line437">line 437</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="tts"><span class="type-signature"></span>tts<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.tts</code></p>
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line421">line 421</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".parseArgs"><span class="type-signature">(static) </span>parseArgs<span class="signature">(argString, argCount<span class="signature-attributes">opt</span>, allowSingleQuote<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;string>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Parses an argument string into an array of arguments</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>argString</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The argument string to parse</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>argCount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The number of arguments to extract from the string</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>allowSingleQuote</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether or not single quotes should be allowed to wrap arguments,
+in addition to double quotes</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line338">line 338</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The array of arguments</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;string></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="code"><span class="type-signature"></span>code<span class="signature">(lang, content, options)</span><span class="type-signature"> &rarr; {Promise.&lt;(Message|Array.&lt;Message>)>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Responds with a code message</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>lang</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Language for the code block</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>content</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">StringResolvable</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Content for the message</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">MessageOptions</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Options for the message</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line292">line 292</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;(Message|Array.&lt;Message>)></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="commandUsage"><span class="type-signature"></span>commandUsage<span class="signature">(command<span class="signature-attributes">opt</span>, prefix<span class="signature-attributes">opt</span>, user<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Creates a usage string for the command</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>command</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>A command + arg string</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>prefix</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    this.message.guild.commandPrefix || this.client.commandPrefix
+                
+                </td>
+            
+
+            <td class="description last"><p>Prefix to use for the
+prefixed command format</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>user</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">User</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    this.client.user
+                
+                </td>
+            
+
+            <td class="description last"><p>User to use for the mention command format</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line66">line 66</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="delete"><span class="type-signature"></span>delete<span class="signature">(timeout<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Promise.&lt;Message>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.delete()</code></p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>timeout</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last"><p>How long to wait to delete the message in milliseconds</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line586">line 586</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Message></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="direct"><span class="type-signature"></span>direct<span class="signature">(content, options)</span><span class="type-signature"> &rarr; {Promise.&lt;(Message|Array.&lt;Message>)>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Responds with a direct message</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>content</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">StringResolvable</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Content for the message</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">MessageOptions</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Options for the message</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line281">line 281</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;(Message|Array.&lt;Message>)></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="edit"><span class="type-signature"></span>edit<span class="signature">(content)</span><span class="type-signature"> &rarr; {Promise.&lt;Message>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.edit(content)</code></p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>content</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">StringResolvable</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>New content for the message</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line551">line 551</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Message></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="editCode"><span class="type-signature"></span>editCode<span class="signature">(lang, content)</span><span class="type-signature"> &rarr; {Promise.&lt;Message>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.editCode(content)</code></p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>lang</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Language for the code block</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>content</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">StringResolvable</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>New content for the message</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line561">line 561</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Message></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="isMentioned"><span class="type-signature"></span>isMentioned<span class="signature">(data)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.isMentioned(data)</code></p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">GuildChannel</span>
+|
+
+<span class="param-type">User</span>
+|
+
+<span class="param-type">Role</span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>A guild channel, user, or a role, or the ID of any of these</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line542">line 542</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="parseArgs"><span class="type-signature"></span>parseArgs<span class="signature">()</span><span class="type-signature"> &rarr; {string|Array.&lt;string>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Parses the argString into usable arguments, based on the argsType of the command</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line79">line 79</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="Command.html#run">Command#run</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+|
+
+<span class="param-type">Array.&lt;string></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="pin"><span class="type-signature"></span>pin<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Message>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.pin()</code></p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line569">line 569</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Message></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="reply"><span class="type-signature"></span>reply<span class="signature">(content, options)</span><span class="type-signature"> &rarr; {Promise.&lt;(Message|Array.&lt;Message>)>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Responds with a reply message</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>content</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">StringResolvable</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Content for the message</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">MessageOptions</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Options for the message</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line271">line 271</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;(Message|Array.&lt;Message>)></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="run"><span class="type-signature"></span>run<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;(?Message|?Array.&lt;Message>)>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Runs the command</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line120">line 120</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;(?Message|?Array.&lt;Message>)></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="say"><span class="type-signature"></span>say<span class="signature">(content, options)</span><span class="type-signature"> &rarr; {Promise.&lt;(Message|Array.&lt;Message>)>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Responds with a plain message</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>content</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">StringResolvable</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Content for the message</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>options</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">MessageOptions</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Options for the message</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line261">line 261</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;(Message|Array.&lt;Message>)></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="unpin"><span class="type-signature"></span>unpin<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Message>}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Shortcut to <code>this.message.unpin()</code></p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-message.js.html">command-message.js</a>, <a href="command-message.js.html#line577">line 577</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Message></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Thu Oct 13 2016 02:59:17 GMT-0400 (Eastern Daylight Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
