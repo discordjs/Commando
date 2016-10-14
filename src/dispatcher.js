@@ -103,7 +103,7 @@ class CommandDispatcher extends EventEmitter {
 		// Run the command, or reply with an error
 		let responses;
 		if(cmdMsg) {
-			const inhibited = this._inhibit(cmdMsg);
+			const inhibited = this.inhibit(cmdMsg);
 
 			if(!inhibited) {
 				if(cmdMsg.command) {
