@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
+const commando = require('../src');
+const path = require('path');
 const oneLine = require('common-tags').oneLine;
-const commando = require('../src/index');
 const token = require('./auth.json').token;
 
 const client = new commando.Client({
@@ -48,6 +49,9 @@ client.on('error', console.error)
 		`);
 	});
 
-client.registry.registerDefaults();
+client.registry
+	.registerGroup('math', 'Math')
+	.registerDefaults()
+	.registerCommandsIn(path.join(__dirname, 'commands'));
 
 client.login(token);

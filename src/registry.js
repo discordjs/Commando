@@ -30,15 +30,24 @@ class CommandRegistry {
 		 * @type {Object}
 		 */
 		this.evalObjects = {};
+
+		/**
+		 * Fully resolved path to the bot's commands directory
+		 * @type {?string}
+		 */
+		this.commandsPath = null;
 	}
 
 	/**
 	 * Registers a single group
-	 * @param {CommandGroup|function|string[]} group - A CommandGroup instance, a constructor, or an array of [ID, Name]
-	 * @return {CommandRegistry} This registry
+	 * @param {CommandGroup|function|string[]|string} group - A CommandGroup instance, a constructor,
+	 * an array of [ID, Name], or the group ID
+	 * @param {string} [name] name - Name for the group (if the first argument is the group ID)
+	 * @return {CommandRegistry}
 	 * @see {@link CommandRegistry#registerGroups}
 	 */
-	registerGroup(group) {
+	registerGroup(group, name) {
+		if(typeof group === 'string') return this.registerGroups([[group, name]]);
 		return this.registerGroups([group]);
 	}
 
@@ -53,7 +62,7 @@ class CommandRegistry {
 	 * Registers multiple groups
 	 * @param {CommandGroup[]|function[]|Array<Array<string>>} groups - An array of CommandGroup instances, constructors,
 	 * or arrays of [ID, Name]
-	 * @return {CommandRegistry} This registry
+	 * @return {CommandRegistry}
 	 */
 	registerGroups(groups) {
 		if(!Array.isArray(groups)) throw new TypeError('Groups must be an array.');
@@ -78,7 +87,7 @@ class CommandRegistry {
 	/**
 	 * Registers a single command
 	 * @param {Command|CommandBuilder|function} command - Either a Command instance, or a constructor for one
-	 * @return {CommandRegistry} This registry
+	 * @return {CommandRegistry}
 	 * @see {@link CommandRegistry#registerCommands}
 	 */
 	registerCommand(command) {
@@ -95,7 +104,7 @@ class CommandRegistry {
 	/**
 	 * Registers multiple commands
 	 * @param {Command[]|CommandBuilder[]|function[]} commands - An array of Command instances or constructors
-	 * @return {CommandRegistry} This registry
+	 * @return {CommandRegistry}
 	 */
 	registerCommands(commands) {
 		if(!Array.isArray(commands)) throw new TypeError('Commands must be an array.');
@@ -133,28 +142,62 @@ class CommandRegistry {
 	 * Registers all commands in a given directory. The files must export a Command class constructor or instance,
 	 * or a CommandBuilder instance.
 	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
-	 * @return {CommandRegistry} This registry
+	 * @return {CommandRegistry}
 	 */
 	registerCommandsIn(options) {
-		const requireAll = require('require-all');
-		return this.registerCommands(requireAll(options));
+		const obj = require('require-all')(options);
+		const commands = [];
+		for(const group of Object.values(obj)) {
+			for(const command of Object.values(group)) commands.push(command);
+		}
+		if(typeof options === 'string' && !this.commandsPath) this.commandsPath = options;
+		return this.registerCommands(commands);
 	}
 
 	/**
 	 * Registers both the default groups and commands
+	 * @return {CommandRegistry}
 	 */
 	registerDefaults() {
 		this.registerDefaultGroups();
 		this.registerDefaultCommands();
+		return this;
 	}
 
 	/**
 	 * Registers the default groups
+	 * @return {CommandRegistry}
 	 */
 	registerDefaultGroups() {
-		this.registerGroups([
+		return this.registerGroups([
 			['util', 'Utility']
 		]);
+	}
+
+	/**
+	 * Registers the default commands to the bot's registry
+	 * @param {Object} [options] - Object specifying what commands to register
+	 * @param {boolean} [options.help=true] - Whether or not to register the built-in help command
+	 * @param {boolean} [options.prefix=true] - Whether or not to register the built-in prefix command
+	 * @param {boolean} [options.eval_=true] - Whether or not to register the built-in eval command
+	 * @param {boolean} [options.commandState=true] - Whether or not to register the built-in command state commands
+	 * (enable, disable, toggle, list groups)
+	 * @return {CommandRegistry}
+	 */
+	registerDefaultCommands({ help = true, prefix = true, eval_ = true, commandState = true } = {}) {
+		if(help) this.registerCommand(require('./commands/util/help'));
+		if(prefix) this.registerCommand(require('./commands/util/prefix'));
+		if(eval_) this.registerCommand(require('./commands/util/eval'));
+		if(commandState) {
+			this.registerCommands([
+				require('./commands/util/list-groups'),
+				require('./commands/util/toggle'),
+				require('./commands/util/enable'),
+				require('./commands/util/disable'),
+				require('./commands/util/reload')
+			]);
+		}
+		return this;
 	}
 
 	/**
@@ -179,46 +222,10 @@ class CommandRegistry {
 	}
 
 	/**
-	 * Create a command builder
-	 * @param {CommandInfo} [info] - The command information
-	 * @param {CommandBuilderFunctions} [funcs] - The command functions to set
-	 * @return {CommandBuilder} The builder
-	 */
-	buildCommand(info = null, funcs = null) {
-		return new CommandBuilder(this, info, funcs);
-	}
-
-	/**
-	 * Registers the default commands to the bot's registry
-	 * @param {Object} [options] - Object specifying what commands to register
-	 * @param {boolean} [options.help=true] - Whether or not to register the built-in help command
-	 * @param {boolean} [options.prefix=true] - Whether or not to register the built-in prefix command
-	 * @param {boolean} [options.eval_=true] - Whether or not to register the built-in eval command
-	 * @param {boolean} [options.commandState=true] - Whether or not to register the built-in command state commands
-	 * (enable, disable, toggle, list groups)
-	 * @return {Bot} This bot
-	 */
-	registerDefaultCommands({ help = true, prefix = true, eval_ = true, commandState = true } = {}) {
-		if(help) this.registerCommand(require('./commands/util/help'));
-		if(prefix) this.registerCommand(require('./commands/util/prefix'));
-		if(eval_) this.registerCommand(require('./commands/util/eval'));
-		if(commandState) {
-			this.registerCommands([
-				require('./commands/util/list-groups'),
-				require('./commands/util/toggle'),
-				require('./commands/util/enable'),
-				require('./commands/util/disable'),
-				require('./commands/util/reload')
-			]);
-		}
-		return this;
-	}
-
-	/**
 	 * Registers a single object to be usable by the eval command
 	 * @param {string} key - The key for the object
 	 * @param {Object} obj - The object
-	 * @return {Bot} This bot
+	 * @return {CommandRegistry}
 	 * @see {@link Bot#registerEvalObjects}
 	 */
 	registerEvalObject(key, obj) {
@@ -230,11 +237,21 @@ class CommandRegistry {
 	/**
 	 * Registers multiple objects to be usable by the eval command
 	 * @param {Object} obj - An object of keys: values
-	 * @return {Bot} This bot
+	 * @return {CommandRegistry}
 	 */
 	registerEvalObjects(obj) {
 		Object.assign(this.evalObjects, obj);
 		return this;
+	}
+
+	/**
+	 * Create a command builder
+	 * @param {CommandInfo} [info] - The command information
+	 * @param {CommandBuilderFunctions} [funcs] - The command functions to set
+	 * @return {CommandBuilder} The builder
+	 */
+	buildCommand(info = null, funcs = null) {
+		return new CommandBuilder(this, info, funcs);
 	}
 
 	/**
