@@ -158,6 +158,27 @@ class CommandRegistry {
 	}
 
 	/**
+	 * Emitted when a command is reregistered
+	 * @event CommandoClient#commandReregister
+	 * @param {Command} newCommand - New command
+	 * @param {Command} oldCommand - Old command
+	 */
+
+	/**
+	 * Reregisters a command (does not support changing groups)
+	 * @param {Command|CommandBuilder|function} command - New command
+	 * @param {Command} oldCommand - Old command
+	 */
+	reregisterCommand(command, oldCommand) {
+		if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
+		else if(command instanceof CommandBuilder) command = command.command;
+		command.group = this.resolveGroup(command.groupID);
+		this.commands[this.commands.indexOf(oldCommand)] = command;
+		command.group.commands[oldCommand.group.commands.indexOf(oldCommand)] = command;
+		this.client.emit('commandReregister', command, oldCommand);
+	}
+
+	/**
 	 * Create a command builder
 	 * @param {CommandInfo} [info] - The command information
 	 * @param {CommandBuilderFunctions} [funcs] - The command functions to set
@@ -186,7 +207,8 @@ class CommandRegistry {
 				require('./commands/util/list-groups'),
 				require('./commands/util/toggle'),
 				require('./commands/util/enable'),
-				require('./commands/util/disable')
+				require('./commands/util/disable'),
+				require('./commands/util/reload')
 			]);
 		}
 		return this;
@@ -253,7 +275,7 @@ class CommandRegistry {
 	resolveGroup(group) {
 		if(group instanceof CommandGroup) return group;
 		if(typeof group === 'string') {
-			const groups = this.findCommands(group, true);
+			const groups = this.findGroups(group, true);
 			if(groups.length === 1) return groups[0];
 		}
 		throw new Error('Unable to resolve group.');

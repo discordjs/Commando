@@ -1,3 +1,5 @@
+const path = require('path');
+
 /** A command that can be run in a client */
 class Command {
 	/**
@@ -238,6 +240,34 @@ class Command {
 	 */
 	makeUsage(argString, prefix, user = this.client.user) {
 		return this.constructor.usage(`${this.name}${argString ? ` ${argString}` : ''}`, prefix, user);
+	}
+
+	/**
+	 * Reloads the command
+	 * @return {boolean} Whether the reload was successful
+	 */
+	reload() {
+		let cmdPath, cached, newCmd;
+		try {
+			cmdPath = path.join(this.client.registry.commandsPath, this.groupID, `${this.memberName}.js`);
+			cached = require.cache[cmdPath];
+			delete require.cache[cmdPath];
+			newCmd = require(cmdPath);
+		} catch(err) {
+			if(cached) require.cache[cmdPath] = cached;
+			try {
+				cmdPath = path.join(__dirname, 'commands', this.groupID, `${this.memberName}.js`);
+				cached = require.cache[cmdPath];
+				delete require.cache[cmdPath];
+				newCmd = require(cmdPath);
+			} catch(err2) {
+				if(cached) require.cache[cmdPath] = cached;
+				return false;
+			}
+		}
+
+		this.client.registry.reregisterCommand(newCmd, this);
+		return true;
 	}
 
 	/**
