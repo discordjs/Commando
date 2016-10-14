@@ -165,7 +165,7 @@ class CommandRegistry {
 	 */
 
 	/**
-	 * Reregisters a command (does not support changing groups)
+	 * Reregisters a command (does not support changing name, group, or memberName)
 	 * @param {Command|CommandBuilder|function} command - New command
 	 * @param {Command} oldCommand - Old command
 	 */
