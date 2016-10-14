@@ -22,7 +22,7 @@ module.exports = class HelpCommand extends Command {
 
 	async run(msg, arg) {
 		const groups = this.client.registry.groups;
-		const commands = this.client.registry.findCommands(arg, msg);
+		const commands = this.client.registry.findCommands(arg, false, msg);
 		const showAll = arg && arg.toLowerCase() === 'all';
 		if(arg && !showAll) {
 			if(commands.length === 1) {
