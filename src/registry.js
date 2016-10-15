@@ -361,14 +361,12 @@ class CommandRegistry {
 	}
 
 	_exactCommandFilter(cmd) {
-		console.log('searching exact', cmd.name);
 		return cmd.name === this ||
 			(cmd.aliases && cmd.aliases.some(ali => ali === this)) ||
 			`${cmd.groupID}:${cmd.memberName}` === this;
 	}
 
 	_inexactCommandFilter(cmd) {
-		console.log('searching inexact', cmd.name);
 		return cmd.name.includes(this) ||
 			`${cmd.groupID}:${cmd.memberName}` === this ||
 			(cmd.aliases && cmd.aliases.some(ali => ali.includes(this)));
