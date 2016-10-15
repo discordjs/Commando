@@ -9,7 +9,7 @@ module.exports = class AddNumbersCommand extends commando.Command {
 			group: 'math',
 			memberName: 'add',
 			description: 'Adds numbers together.',
-			usage: 'add-numbers <number> [number2] [number3...]',
+			usage: '<number> [number2] [number3...]',
 			details: oneLine`
 				This is an incredibly useful command that finds the sum of numbers.
 				This command is the envy of all other commands.
