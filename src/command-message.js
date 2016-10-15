@@ -43,13 +43,13 @@ class CommandMessage {
 		this.patternMatches = patternMatches;
 
 		/**
-		 * Response messages sent, mapped by channel type (set by the dispatcher after running the command)
+		 * Response messages sent, mapped by channel ID (set by the dispatcher after running the command)
 		 * @type {?Object}
 		 */
 		this.responses = null;
 
 		/**
-		 * The index of the current response that will be edited, mapped by channel type
+		 * The index of the current response that will be edited, mapped by channel ID
 		 * @type {?Object}
 		 */
 		this.responsePositions = null;
@@ -179,22 +179,22 @@ class CommandMessage {
 		switch(type) {
 			case 'plain':
 				if(!shouldEdit) return this.message.channel.sendMessage(content, options);
-				return this.editCurrentResponse(this.message.channel.type, { type, content, options });
+				return this.editCurrentResponse(this.message.channel.id, { type, content, options });
 			case 'reply':
 				if(!shouldEdit) return this.message.reply(content, options);
 				if(options && options.split && !options.split.prepend) options.split.prepend = `${this.message.author}, `;
-				return this.editCurrentResponse(this.message.channel.type, { type, content, options });
+				return this.editCurrentResponse(this.message.channel.id, { type, content, options });
 			case 'direct':
 				if(!shouldEdit) return this.message.author.sendMessage(content, options);
 				return this.editCurrentResponse('dm', { type, content, options });
 			case 'code':
 				if(!shouldEdit) return this.message.channel.sendCode(lang, content, options);
 				if(options && options.split) {
-					if(!options.split.prepend) options.split.prepend = `\`\`\`${lang ? lang : ''}\n`;
+					if(!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
 					if(!options.split.append) options.split.append = '\n```';
 				}
 				content = `\`\`\`${lang || ''}\n${discord.escapeMarkdown(content, true)}\n\`\`\``;
-				return this.editCurrentResponse(this.message.channel.type, { type, content, options });
+				return this.editCurrentResponse(this.message.channel.id, { type, content, options });
 			default:
 				throw new RangeError(`Unknown response type "${type}".`);
 		}
@@ -240,16 +240,16 @@ class CommandMessage {
 
 	/**
 	 * Edits the current response
-	 * @param {string} type - The type of the channel the response is in
+	 * @param {string} id - The ID of the channel the response is in ("DM" for direct messages)
 	 * @param {Object} options - Options for the response
 	 * @return {Promise<Message|Message[]>}
 	 * @private
 	 */
-	editCurrentResponse(type, options) {
-		if(typeof this.responses[type] === 'undefined') this.responses[type] = [];
-		if(typeof this.responsePositions[type] === 'undefined') this.responsePositions[type] = -1;
-		this.responsePositions[type]++;
-		return this.editResponse(this.responses[type][this.responsePositions[type]], options);
+	editCurrentResponse(id, options) {
+		if(typeof this.responses[id] === 'undefined') this.responses[id] = [];
+		if(typeof this.responsePositions[id] === 'undefined') this.responsePositions[id] = -1;
+		this.responsePositions[id]++;
+		return this.editResponse(this.responses[id][this.responsePositions[id]], options);
 	}
 
 	/**
@@ -300,23 +300,25 @@ class CommandMessage {
 
 		if(responses instanceof Array) {
 			for(const response of responses) {
-				const type = (response instanceof Array ? response[0] : response).channel.type;
-				if(!this.responses[type]) {
-					this.responses[type] = [];
-					this.responsePositions[type] = -1;
+				const channel = (response instanceof Array ? response[0] : response).channel;
+				const id = channel.type !== 'dm' ? channel.id : 'dm';
+				if(!this.responses[id]) {
+					this.responses[id] = [];
+					this.responsePositions[id] = -1;
 				}
-				this.responses[type].push(response);
+				this.responses[id].push(response);
 			}
 		} else if(responses) {
-			this.responses[responses.channel.type] = [responses];
-			this.responsePositions[responses.channel.type] = -1;
+			const id = responses.channel.type !== 'dm' ? responses.channel.id : 'dm';
+			this.responses[id] = [responses];
+			this.responsePositions[id] = -1;
 		}
 	}
 
 	_deleteRemainingResponses() {
-		for(const type of Object.keys(this.responses)) {
-			const responses = this.responses[type];
-			for(let i = this.responsePositions[type] + 1; i < responses.length; i++) {
+		for(const id of Object.keys(this.responses)) {
+			const responses = this.responses[id];
+			for(let i = this.responsePositions[id] + 1; i < responses.length; i++) {
 				const response = responses[i];
 				if(response instanceof Array) {
 					for(const resp of response) resp.delete();
