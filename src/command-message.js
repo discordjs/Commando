@@ -227,7 +227,7 @@ class CommandMessage {
 					promises.push(response.channel.sendMessage(`${prepend}${content[i]}`));
 				}
 			}
-			return promises;
+			return Promise.all(promises);
 		} else {
 			if(response instanceof Array) { // eslint-disable-line no-lonely-if
 				for(let i = response.length - 1; i > 0; i--) response[i].delete();
