@@ -209,7 +209,7 @@ class CommandDispatcher extends EventEmitter {
 	matchDefault(message, pattern, commandNameIndex = 1) {
 		const matches = pattern.exec(message.content);
 		if(!matches) return null;
-		const commands = this.client.registry.findCommands(matches[commandNameIndex]);
+		const commands = this.client.registry.findCommands(matches[commandNameIndex], true);
 		if(commands.length !== 1 || !commands[0].defaultHandling) return new CommandMessage(message, null);
 		const argString = message.content.substring(matches[1].length + (matches[2] ? matches[2].length : 0));
 		return new CommandMessage(message, commands[0], argString);

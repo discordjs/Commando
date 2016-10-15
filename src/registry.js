@@ -1,3 +1,4 @@
+const discord = require('discord.js');
 const Command = require('./command');
 const CommandGroup = require('./command-group');
 const CommandBuilder = require('./command-builder');
@@ -15,15 +16,15 @@ class CommandRegistry {
 
 		/**
 		 * Registered commands
-		 * @type {Command[]}
+		 * @type {Collection<string, Command>}
 		 */
-		this.commands = [];
+		this.commands = new discord.Collection();
 
 		/**
 		 * Registered command groups
-		 * @type {CommandGroup[]}
+		 * @type {Collection<string, Command>}
 		 */
-		this.groups = [];
+		this.groups = new discord.Collection();
 
 		/**
 		 * Registered objects for the eval command
@@ -76,7 +77,7 @@ class CommandRegistry {
 				existing.name = group.name;
 				this.client.emit('debug', `Group ${group.id} is already registered; renamed it to "${group.name}".`);
 			} else {
-				this.groups.push(group);
+				this.groups.set(group.id, group);
 				this.client.emit('debug', `Registered group ${group.id}.`);
 				this.client.emit('groupRegister', group, this);
 			}
@@ -129,8 +130,8 @@ class CommandRegistry {
 
 			// Add the command
 			command.group = group;
-			group.commands.push(command);
-			this.commands.push(command);
+			group.commands.set(command.name, command);
+			this.commands.set(command.name, command);
 			this.client.emit('commandRegister', command, this);
 			this.client.emit('debug', `Registered command ${group.id}:${command.memberName}.`);
 		}
@@ -215,9 +216,12 @@ class CommandRegistry {
 	reregisterCommand(command, oldCommand) {
 		if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
 		else if(command instanceof CommandBuilder) command = command.command;
+		if(command.name !== oldCommand.name) throw new Error('Command name cannot change.');
+		if(command.groupID !== oldCommand.groupID) throw new Error('Command group cannot change.');
+		if(command.memberName !== oldCommand.memberName) throw new Error('Command memberName cannot change.');
 		command.group = this.resolveGroup(command.groupID);
-		this.commands[this.commands.indexOf(oldCommand)] = command;
-		command.group.commands[oldCommand.group.commands.indexOf(oldCommand)] = command;
+		command.group.commands.set(command.name, command);
+		this.commands.set(command.name, command);
 		this.client.emit('commandReregister', command, oldCommand);
 	}
 
@@ -265,7 +269,7 @@ class CommandRegistry {
 
 		// Find all matches
 		const lcSearch = searchString.toLowerCase();
-		const matchedGroups = this.groups.filter(
+		const matchedGroups = this.groups.filterArray(
 			exact ? this._exactGroupFilter.bind(lcSearch) : this._inexactGroupFilter.bind(lcSearch)
 		);
 		if(exact) return matchedGroups;
@@ -306,11 +310,11 @@ class CommandRegistry {
 	 * @return {Command[]} All commands that are found
 	 */
 	findCommands(searchString = null, exact = false, message = null) {
-		if(!searchString) return message ? this.commands.filter(cmd => cmd.isUsable(message)) : this.commands;
+		if(!searchString) return message ? this.commands.filterArray(cmd => cmd.isUsable(message)) : this.commands;
 
 		// Find all matches
 		const lcSearch = searchString.toLowerCase();
-		const matchedCommands = this.commands.filter(
+		const matchedCommands = this.commands.filterArray(
 			exact ? this._exactCommandFilter.bind(lcSearch) : this._inexactCommandFilter.bind(lcSearch)
 		);
 		if(exact) return matchedCommands;
@@ -357,12 +361,14 @@ class CommandRegistry {
 	}
 
 	_exactCommandFilter(cmd) {
+		console.log('searching exact', cmd.name);
 		return cmd.name === this ||
 			(cmd.aliases && cmd.aliases.some(ali => ali === this)) ||
 			`${cmd.groupID}:${cmd.memberName}` === this;
 	}
 
 	_inexactCommandFilter(cmd) {
+		console.log('searching inexact', cmd.name);
 		return cmd.name.includes(this) ||
 			`${cmd.groupID}:${cmd.memberName}` === this ||
 			(cmd.aliases && cmd.aliases.some(ali => ali.includes(this)));

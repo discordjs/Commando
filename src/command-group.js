@@ -1,3 +1,5 @@
+const discord = require('discord.js');
+
 /** A group for commands. Whodathunkit? */
 class CommandGroup {
 	/**
@@ -5,9 +7,9 @@ class CommandGroup {
 	 * @param {string} id - The ID for the group
 	 * @param {string} [name=id] - The name of the group
 	 * @param {boolean} [guarded=false] - Whether the group should be protected from disabling
-	 * @param {Command[]} [commands=[]] - The commands that the group contains
+	 * @param {Command[]} [commands] - The commands that the group contains
 	 */
-	constructor(client, id, name, guarded = false, commands = []) {
+	constructor(client, id, name, guarded = false, commands = null) {
 		if(!client) throw new Error('A client must be specified.');
 		if(!id) throw new Error('An ID must be specified.');
 		if(commands && !Array.isArray(commands)) throw new TypeError('Commands must be an array.');
@@ -33,9 +35,12 @@ class CommandGroup {
 
 		/**
 		 * The commands in this group (added upon their registration)
-		 * @type {Command[]}
+		 * @type {Collection<string, Command>}
 		 */
-		this.commands = commands;
+		this.commands = new discord.Collection();
+		if(commands) {
+			for(const command of commands) this.commands.set(command.name, command);
+		}
 
 		/**
 		 * Whether or not this group is protected from being disabled
