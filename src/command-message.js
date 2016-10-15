@@ -193,7 +193,7 @@ class CommandMessage {
 					if(!options.split.prepend) options.split.prepend = `\`\`\`${lang ? lang : ''}\n`;
 					if(!options.split.append) options.split.append = '\n```';
 				}
-				content = discord.escapeMarkdown(content, true);
+				content = `\`\`\`${lang || ''}\n${discord.escapeMarkdown(content, true)}\n\`\`\``;
 				return this.editCurrentResponse(this.message.channel.type, { type, content, options });
 			default:
 				throw new RangeError(`Unknown response type "${type}".`);
