@@ -10,7 +10,7 @@
 	},
 	"bugs": {
 		"url": "https://github.com/Gawdl3y/discord.js-commando/issues"
-  },
+	},
 	"keywords": [
 		"discord",
 		"bot",
@@ -30,7 +30,7 @@
 	"devDependencies": {
 		"eslint": "^3.7.0",
 		"jsdoc": "^3.4.0",
-    "minami": "^1.1.0",
+		"minami": "^1.1.0",
 		"jsdoc-strip-async-await": "^0.1.0"
 	},
 	"engines": {
