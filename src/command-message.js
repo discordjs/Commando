@@ -210,7 +210,6 @@ class CommandMessage {
 	editResponse(response, { type, content, options }) {
 		if(!response) return this.respond({ type, content, options, fromEdit: true });
 		if(options && options.split) content = discord.splitMessage(content, options.split);
-		console.log('content', content instanceof Array, 'response', response instanceof Array);
 
 		let prepend = '';
 		if(type === 'reply') prepend = `${this.message.author}, `;
@@ -231,11 +230,7 @@ class CommandMessage {
 			return Promise.all(promises);
 		} else {
 			if(response instanceof Array) { // eslint-disable-line no-lonely-if
-				for(let i = response.length - 1; i > 0; i--) {
-					response[i].delete();
-					console.log('deleted', i, response[i].id);
-				}
-				console.log('editing', 0, response[0].id);
+				for(let i = response.length - 1; i > 0; i--) response[i].delete();
 				return response[0].edit(`${prepend}${content}`);
 			} else {
 				return response.edit(`${prepend}${content}`);
