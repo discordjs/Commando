@@ -19,6 +19,6 @@ module.exports = class SplitCommand extends commando.Command {
 		if(isNaN(length) || length < 1) throw new commando.CommandFormatError(msg);
 		let content = '';
 		for(let i = 0; i < length; i++) content += `${i % 500 === 0 ? '\n' : ''}a`;
-		return msg.reply(content, { split: true });
+		return [await msg.reply(content, { split: true })];
 	}
 };

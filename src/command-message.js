@@ -179,11 +179,11 @@ class CommandMessage {
 		switch(type) {
 			case 'plain':
 				if(!shouldEdit) return this.message.channel.sendMessage(content, options);
-				return this.editCurrentResponse(this.message.channel.id, { type, content, options });
+				return this.editCurrentResponse(channelIDOrDM(this.message.channel), { type, content, options });
 			case 'reply':
 				if(!shouldEdit) return this.message.reply(content, options);
 				if(options && options.split && !options.split.prepend) options.split.prepend = `${this.message.author}, `;
-				return this.editCurrentResponse(this.message.channel.id, { type, content, options });
+				return this.editCurrentResponse(channelIDOrDM(this.message.channel), { type, content, options });
 			case 'direct':
 				if(!shouldEdit) return this.message.author.sendMessage(content, options);
 				return this.editCurrentResponse('dm', { type, content, options });
@@ -194,7 +194,7 @@ class CommandMessage {
 					if(!options.split.append) options.split.append = '\n```';
 				}
 				content = `\`\`\`${lang || ''}\n${discord.escapeMarkdown(content, true)}\n\`\`\``;
-				return this.editCurrentResponse(this.message.channel.id, { type, content, options });
+				return this.editCurrentResponse(channelIDOrDM(this.message.channel), { type, content, options });
 			default:
 				throw new RangeError(`Unknown response type "${type}".`);
 		}
@@ -210,6 +210,7 @@ class CommandMessage {
 	editResponse(response, { type, content, options }) {
 		if(!response) return this.respond({ type, content, options, fromEdit: true });
 		if(options && options.split) content = discord.splitMessage(content, options.split);
+		console.log('content', content instanceof Array, 'response', response instanceof Array);
 
 		let prepend = '';
 		if(type === 'reply') prepend = `${this.message.author}, `;
@@ -230,7 +231,11 @@ class CommandMessage {
 			return Promise.all(promises);
 		} else {
 			if(response instanceof Array) { // eslint-disable-line no-lonely-if
-				for(let i = response.length - 1; i > 0; i--) response[i].delete();
+				for(let i = response.length - 1; i > 0; i--) {
+					response[i].delete();
+					console.log('deleted', i, response[i].id);
+				}
+				console.log('editing', 0, response[0].id);
 				return response[0].edit(`${prepend}${content}`);
 			} else {
 				return response.edit(`${prepend}${content}`);
@@ -301,7 +306,7 @@ class CommandMessage {
 		if(responses instanceof Array) {
 			for(const response of responses) {
 				const channel = (response instanceof Array ? response[0] : response).channel;
-				const id = channel.type !== 'dm' ? channel.id : 'dm';
+				const id = channelIDOrDM(channel);
 				if(!this.responses[id]) {
 					this.responses[id] = [];
 					this.responsePositions[id] = -1;
@@ -309,7 +314,7 @@ class CommandMessage {
 				this.responses[id].push(response);
 			}
 		} else if(responses) {
-			const id = responses.channel.type !== 'dm' ? responses.channel.id : 'dm';
+			const id = channelIDOrDM(responses.channel);
 			this.responses[id] = [responses];
 			this.responsePositions[id] = -1;
 		}
@@ -588,6 +593,11 @@ class CommandMessage {
 	delete(timeout) {
 		return this.message.delete(timeout);
 	}
+}
+
+function channelIDOrDM(channel) {
+	if(channel.type !== 'dm') return channel.id;
+	return 'dm';
 }
 
 module.exports = CommandMessage;
