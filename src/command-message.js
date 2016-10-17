@@ -56,14 +56,30 @@ class CommandMessage {
 	}
 
 	/**
-	 * Creates a usage string for the command
+	 * Creates a usage string for the message's command
+	 * @param {string} [argString] - A string of arguments for the command
+	 * @param {string} [prefix=this.message.guild.commandPrefix || this.client.commandPrefix] - Prefix to use for the
+	 * prefixed command format
+	 * @param {User} [user=this.client.user] - User to use for the mention command format
+	 * @return {string}
+	 */
+	usage(argString, prefix, user = this.client.user) {
+		if(typeof prefix === 'undefined') {
+			if(this.message.guild) prefix = this.message.guild.commandPrefix;
+			else prefix = this.client.commandPrefix;
+		}
+		return this.command.usage(argString, prefix, user);
+	}
+
+	/**
+	 * Creates a usage string for any command
 	 * @param {string} [command] - A command + arg string
 	 * @param {string} [prefix=this.message.guild.commandPrefix || this.client.commandPrefix] - Prefix to use for the
 	 * prefixed command format
 	 * @param {User} [user=this.client.user] - User to use for the mention command format
 	 * @return {string}
 	 */
-	commandUsage(command, prefix, user = this.client.user) {
+	anyUsage(command, prefix, user = this.client.user) {
 		if(typeof prefix === 'undefined') {
 			if(this.message.guild) prefix = this.message.guild.commandPrefix;
 			else prefix = this.client.commandPrefix;

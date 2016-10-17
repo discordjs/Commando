@@ -11,7 +11,7 @@ module.exports = class DisableCommandCommand extends Command {
 			group: 'util',
 			memberName: 'disable',
 			description: 'Disables a command or command group.',
-			usage: '<command|group>',
+			format: '<command|group>',
 			details: oneLine`
 				The argument must be the name/ID (partial or whole) of a command or command group.
 				Only administrators may use this command.
@@ -52,7 +52,7 @@ module.exports = class DisableCommandCommand extends Command {
 			} else {
 				return msg.reply(oneLine`
 					Unable to identify command or group.
-					Use ${msg.commandUsage('groups')} to view the list of groups.
+					Use ${msg.anyUsage('groups')} to view the list of groups.
 				`);
 			}
 		}

@@ -11,7 +11,7 @@ module.exports = class ReloadCommandCommand extends Command {
 			group: 'util',
 			memberName: 'reload',
 			description: 'Reloads a command.',
-			usage: '<command>',
+			format: '<command>',
 			details: oneLine`
 				The argument must be the name (partial or whole) of a command.
 				Only the bot owner may use this command.

@@ -117,7 +117,9 @@ class CommandDispatcher extends EventEmitter {
 					this.client.emit('unknownCommand', cmdMsg);
 					responses = await cmdMsg.reply(
 						`Unknown command. Use ${Command.usage(
-							'help', message.guild ? message.guild.commandPrefix : null, message.guild ? this.client.user : null
+							'help',
+							message.guild ? message.guild.commandPrefix : null,
+							message.guild ? this.client.user : null
 						)} to view the list of all commands.`
 					);
 				}

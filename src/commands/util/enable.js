@@ -11,7 +11,7 @@ module.exports = class EnableCommandCommand extends Command {
 			group: 'util',
 			memberName: 'enable',
 			description: 'Enables a command or command group.',
-			usage: '<command|group>',
+			format: '<command|group>',
 			details: oneLine`
 				The argument must be the name/ID (partial or whole) of a command or command group.
 				Only administrators may use this command.
@@ -50,7 +50,7 @@ module.exports = class EnableCommandCommand extends Command {
 			} else {
 				return msg.reply(oneLine`
 					Unable to identify command or group.
-					Use ${msg.commandUsage('groups')} to view the list of groups.
+					Use ${msg.anyUsage('groups')} to view the list of groups.
 				`);
 			}
 		}

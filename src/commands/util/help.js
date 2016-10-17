@@ -10,7 +10,7 @@ module.exports = class HelpCommand extends Command {
 			memberName: 'help',
 			aliases: ['commands'],
 			description: 'Displays a list of available commands, or detailed information for a specified command.',
-			usage: '[command]',
+			format: '[command]',
 			details: oneLine`
 				The command may be part of a command name or a whole command name.
 				If it isn't specified, all available commands will be listed.
@@ -32,7 +32,7 @@ module.exports = class HelpCommand extends Command {
 						${commands[0].guildOnly ? ' (Usable only in servers)' : ''}
 					`}
 
-					**Usage:** ${commands[0].makeUsage(commands[0].usage, msg.guild)}
+					**Format:** ${msg.usage(commands[0].format)}
 				`;
 				if(commands[0].aliases.length > 0) help += `\n**Aliases:** ${commands[0].aliases.join(', ')}`;
 				help += `\n${oneLine`
@@ -48,7 +48,7 @@ module.exports = class HelpCommand extends Command {
 				return msg.reply(disambiguation(commands, 'commands'));
 			} else {
 				return msg.reply(
-					`Unable to identify command. Use ${this.usage(null, msg.guild)} to view the list of all commands.`
+					`Unable to identify command. Use ${msg.anyUsage(`help`)} to view the list of all commands.`
 				);
 			}
 		} else {
@@ -59,10 +59,9 @@ module.exports = class HelpCommand extends Command {
 					For example, ${Command.usage('prefix', msg.guild ? msg.guild.commandPrefix : null, this.client.user)}.
 				`}
 				To run a command in this DM, simply use ${Command.usage('command', null, null)} with no prefix.
-				Hyphens (\`-\`) are always optional in commands.
 
-				Use ${this.makeUsage('<command>', null, null)} to view detailed information about a specific command.
-				Use ${this.makeUsage('all', null, null)} to view a list of *all* commands, not just available ones.
+				Use ${this.usage('<command>', null, null)} to view detailed information about a specific command.
+				Use ${this.usage('all', null, null)} to view a list of *all* commands, not just available ones.
 
 				__**${showAll ? 'All commands' : `Available commands in ${msg.guild || 'this DM'}`}**__
 

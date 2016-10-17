@@ -8,7 +8,7 @@ module.exports = class PrefixCommand extends Command {
 			group: 'util',
 			memberName: 'prefix',
 			description: 'Shows or sets the command prefix.',
-			usage: '[prefix|"default"|"none"]',
+			format: '[prefix|"default"|"none"]',
 			details: oneLine`
 				If no prefix is provided, the current prefix will be shown.
 				If the prefix is "default", the prefix will be reset to the bot's default prefix.
@@ -43,13 +43,13 @@ module.exports = class PrefixCommand extends Command {
 
 			// Build the pattern
 			this.client.dispatcher.buildCommandPattern(msg.guild, msg.client.user);
-			msg.reply(`${response} To run commands, use ${msg.commandUsage('command')}.`);
+			msg.reply(`${response} To run commands, use ${msg.anyUsage('command')}.`);
 			return null;
 		} else {
 			const prefix = msg.guild ? msg.guild.commandPrefix : this.client.options.commandPrefix;
 			return msg.reply(stripIndents`
 				${prefix ? `The command prefix is \`${prefix}\`.` : 'There is no command prefix.'}
-				To run commands, use ${msg.commandUsage('command')}.
+				To run commands, use ${msg.anyUsage('command')}.
 			`);
 		}
 	}

@@ -10,7 +10,7 @@ class Command {
 	 * @property {string} group - The ID of the group the command belongs to (must be lowercase)
 	 * @property {string} memberName - The member name of the command in the group (must be lowercase)
 	 * @property {string} description - A short description of the command
-	 * @property {string} [usage=name] - The command usage format string
+	 * @property {string} [format=name] - The command usage format string
 	 * @property {string} [details] - A detailed description of the command and its functionality
 	 * @property {string[]} [examples] - Usage examples of the command
 	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
@@ -108,7 +108,7 @@ class Command {
 		 * Usage format string of the command
 		 * @type {string}
 		 */
-		this.usage = info.usage || info.name;
+		this.format = info.format || info.name;
 
 		/**
 		 * Long description of the command
@@ -234,11 +234,11 @@ class Command {
 	/**
 	 * Creates a usage string for the command
 	 * @param {string} [argString] - A string of arguments for the command
-	 * @param {string} [prefix] - Prefix to use for the prefixed command format
+	 * @param {string} [prefix=this.client.commandPrefix] - Prefix to use for the prefixed command format
 	 * @param {User} [user=this.client.user] - User to use for the mention command format
 	 * @return {string}
 	 */
-	makeUsage(argString, prefix, user = this.client.user) {
+	usage(argString, prefix = this.client.commandPrefix, user = this.client.user) {
 		return this.constructor.usage(`${this.name}${argString ? ` ${argString}` : ''}`, prefix, user);
 	}
 
