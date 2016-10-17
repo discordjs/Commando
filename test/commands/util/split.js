@@ -7,7 +7,7 @@ module.exports = class SplitCommand extends commando.Command {
 			group: 'util',
 			memberName: 'split',
 			description: 'Sends split messages with a specific total length.',
-			usage: '<length>',
+			format: '<length>',
 			details: 'This command is for testing split messages. The length must be at least 1.',
 			examples: ['split 3000']
 		});
