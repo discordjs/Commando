@@ -1,6 +1,5 @@
 const EventEmitter = require('events').EventEmitter;
 const escapeRegex = require('escape-string-regexp');
-const Command = require('./command');
 const CommandMessage = require('./command-message');
 
 /** Handles parsing messages and running commands from them */
@@ -90,7 +89,7 @@ class CommandDispatcher extends EventEmitter {
 		if(oldMessage && message.content === oldMessage.content) return;
 
 		// Parse the message, and get the old result if it exists
-		let cmdMsg = this.parseMessage(message);
+		const cmdMsg = this.parseMessage(message);
 		let oldCmdMsg;
 		if(oldMessage) {
 			oldCmdMsg = this._results.get(oldMessage.id);
@@ -115,13 +114,17 @@ class CommandDispatcher extends EventEmitter {
 					}
 				} else {
 					this.client.emit('unknownCommand', cmdMsg);
-					responses = await cmdMsg.reply(
-						`Unknown command. Use ${Command.usage(
-							'help',
-							message.guild ? message.guild.commandPrefix : null,
-							message.guild ? this.client.user : null
-						)} to view the list of all commands.`
-					);
+					if(this.client.options.unknownCommandResponse) {
+						responses = await cmdMsg.reply(
+							`Unknown command. Use ${cmdMsg.anyUsage(
+								'help',
+								message.guild ? undefined : null,
+								message.guild ? undefined : null
+							)} to view the list of all commands.`
+						);
+					} else {
+						responses = null;
+					}
 				}
 			} else {
 				responses = await inhibited[1];

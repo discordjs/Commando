@@ -11,6 +11,7 @@ class CommandoClient extends discord.Client {
 	 * @property {string} [commandPrefix=!] - Default command prefix
 	 * @property {number} [commandEditableDuration=30] - Time in seconds that command messages should be editable
 	 * @property {boolean} [nonCommandEditable=true] - Whether messages without commands can be edited to a command
+	 * @property {boolean} [unknownCommandResponse=true] - Whether the bot should respond to an unknown command
 	 * @property {string} [owner] - ID of the bot owner's Discord user
 	 * @property {string} [invite] - Invite URL to the bot's support server
 	 */
