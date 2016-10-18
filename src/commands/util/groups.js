@@ -7,7 +7,7 @@ module.exports = class ListModulesCommand extends Command {
 			name: 'groups',
 			aliases: ['list-groups', 'show-groups'],
 			group: 'util',
-			memberName: 'list',
+			memberName: 'groups',
 			description: 'Lists all command groups.',
 			details: 'Only administrators may use this command.',
 			guarded: true
