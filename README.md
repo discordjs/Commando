@@ -5,7 +5,8 @@
 [![Dependency status](https://david-dm.org/Gawdl3y/discord.js-commando.svg)](https://david-dm.org/Gawdl3y/discord.js-commando)
 [![License](https://img.shields.io/npm/l/discord.js-commando.svg)](LICENSE)
 
-This is the WIP official command framework for discord.js' indev branch.
+This is the __**WIP**__ official command framework for discord.js' indev branch.
+It makes full use of ES2017's `async`/`await`.
 
 ## Features
 - Plain names and aliases
@@ -15,6 +16,13 @@ This is the WIP official command framework for discord.js' indev branch.
 - Command editing
 - Command reloading
 
-## Documentation
+## Installation
+**Node 7.0.0 or newer is required.** Use a nightly or beta version.  
+`npm install --save discord.js-commando`
+
+When running a bot using Commando, make sure to run Node with the `--harmony` flag. Example:  
+`node --harmony somebot.js`
+
+## Documentation (WIP)
 [View it here.](https://gawdl3y.github.io/discord.js-commando/0.1.0/)  
 See the [discord.js documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/indev/file/general/Welcome) as well.
