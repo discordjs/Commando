@@ -1,4 +1,4 @@
-const Command = require('../Command');
+const Command = require('../command');
 
 /**
  * Additional methods added to Guild objects
