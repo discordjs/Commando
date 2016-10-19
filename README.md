@@ -24,7 +24,7 @@ It makes full use of ES2017's `async`/`await`.
 
 When running a bot using Commando, make sure to run Node with the `--harmony` flag. Examples:
 - `node --harmony somebot.js`
-- `pm2 start somebot.js --node-flags='--harmony'`
+- `pm2 start somebot.js --node-args='--harmony'`
 
 ## Documentation (WIP)
 [View the docs here.](https://gawdl3y.github.io/discord.js-commando/0.2.0/)  
