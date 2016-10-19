@@ -1,4 +1,5 @@
 const path = require('path');
+const CommandArgument = require('./command-argument');
 
 /** A command that can be run in a client */
 class Command {
@@ -48,6 +49,7 @@ class Command {
 		if(info.memberName !== info.memberName.toLowerCase()) throw new Error('Command memberName must be lowercase.');
 		if(!info.description) throw new Error('Command must have a description specified.');
 		if(info.examples && !Array.isArray(info.examples)) throw new TypeError('Command examples must be an array.');
+		if(info.args && !Array.isArray(info.args)) throw new TypeError('Command args must be an array.');
 		if(info.argsType && !['single', 'multiple'].includes(info.argsType)) {
 			throw new RangeError('Command argsType must be one of "single" or "multiple".');
 		}
@@ -133,6 +135,15 @@ class Command {
 		 * @type {boolean}
 		 */
 		this.defaultHandling = 'defaultHandling' in info ? info.defaultHandling : true;
+
+		/**
+		 * The arguments for the command
+		 * @type {?CommandArgument[]}
+		 */
+		this.args = info.args || null;
+		if(this.args) {
+			for(let i = 0; i < this.args.length; i++) this.args[i] = new CommandArgument(this, this.args[i]);
+		}
 
 		/**
 		 * How the arguments are split when passed to the command's run method

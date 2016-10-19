@@ -104,30 +104,24 @@ class CommandMessage {
 	}
 
 	/**
-	 * Emitted when running a command
-	 * @event CommandoClient#commandRun
-	 * @param {Command} command - Command that is being run
-	 * @param {Promise} promise - Promise for the command result
-	 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
-	 * @param {string|string[]} args - Arguments for the command (see {@link Command#run})
-	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
+	 * Obtains the values for the arguments
+	 * @return {*[]}
 	 */
-
-	/**
-	 * Emitted when a command produces an error while running
-	 * @event CommandoClient#commandError
-	 * @param {Command} command - Command that produced an error
-	 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
-	 * @param {string|string[]} args - Arguments for the command (see {@link Command#run})
-	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
-	 */
-
-	/**
-	 * Emitted when a command is prevented from running
-	 * @event CommandoClient#commandBlocked
-	 * @param {CommandMessage} message - Command message that the command is running from
-	 * @param {string} reason - Reason that the command was blocked
-	 */
+	async obtainArgs() {
+		this.client.dispatcher._awaiting.add(this.message.author.id + this.message.channel.id);
+		const provided = this.constructor.parseArgs(this.argString.trim(), this.command.args.length, this.argsSingleQuotes);
+		const values = {};
+		for(let i = 0; i < this.command.args.length; i++) {
+			const value = await this.command.args[i].obtain(this.message, provided[i]);
+			if(value === null) {
+				this.client.dispatcher._awaiting.delete(this.message.author.id + this.message.channel.id);
+				return null;
+			}
+			values[this.command.args[i].key] = value;
+		}
+		this.client.dispatcher._awaiting.delete(this.message.author.id + this.message.channel.id);
+		return values;
+	}
 
 	/**
 	 * Runs the command
@@ -136,6 +130,12 @@ class CommandMessage {
 	async run() {
 		// Make sure the command is usable
 		if(this.command.guildOnly && !this.message.guild) {
+			/**
+			 * Emitted when a command is prevented from running
+			 * @event CommandoClient#commandBlocked
+			 * @param {CommandMessage} message - Command message that the command is running from
+			 * @param {string} reason - Reason that the command was blocked
+			 */
 			this.client.emit('commandBlocked', this, 'guildOnly');
 			return await this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
 		}
@@ -144,16 +144,40 @@ class CommandMessage {
 			return await this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
 		}
 
-		// Run the command
-		const args = this.patternMatches || this.parseArgs();
+		// Figure out the command arguments
+		let args = this.patternMatches;
+		if(!args && this.command.args) {
+			args = await this.obtainArgs();
+			if(!args) return await this.reply('Cancelled command.');
+		}
+		if(!args) args = this.parseArgs();
 		const fromPattern = Boolean(this.patternMatches);
+
+		// Run the command
 		const typingCount = this.message.channel.typingCount;
 		try {
 			this.client.emit('debug', `Running command ${this.command.groupID}:${this.command.memberName}.`);
 			const promise = this.command.run(this, args, fromPattern);
+			/**
+			 * Emitted when running a command
+			 * @event CommandoClient#commandRun
+			 * @param {Command} command - Command that is being run
+			 * @param {Promise} promise - Promise for the command result
+			 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
+			 * @param {string|string[]} args - Arguments for the command (see {@link Command#run})
+			 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
+			 */
 			this.client.emit('commandRun', this.command, promise, this, args, fromPattern);
 			return await promise;
 		} catch(err) {
+			/**
+			 * Emitted when a command produces an error while running
+			 * @event CommandoClient#commandError
+			 * @param {Command} command - Command that produced an error
+			 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
+			 * @param {string|string[]} args - Arguments for the command (see {@link Command#run})
+			 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
+			 */
 			this.client.emit('commandError', this.command, err, this, args, fromPattern);
 			if(this.message.channel.typingCount > typingCount) this.message.channel.stopTyping();
 			if(err instanceof FriendlyError) {

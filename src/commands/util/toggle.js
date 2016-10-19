@@ -1,6 +1,5 @@
-const oneLine = require('common-tags').oneLine;
+const { oneLine, stripIndents } = require('common-tags');
 const Command = require('../../command');
-const CommandFormatError = require('../../errors/command-format');
 const disambiguation = require('../../util').disambiguation;
 
 module.exports = class ToggleCommandCommand extends Command {
@@ -17,7 +16,28 @@ module.exports = class ToggleCommandCommand extends Command {
 				Only administrators may use this command.
 			`,
 			examples: ['toggle util', 'toggle Utility', 'toggle prefix'],
-			guarded: true
+			guarded: true,
+
+			args: [
+				{
+					key: 'cmdOrGrp',
+					label: 'command/group',
+					prompt: 'Which command/group would you like to toggle?',
+					validate: val => {
+						if(!val) return false;
+						const groups = this.client.registry.findGroups(val);
+						if(groups.length === 1) return true;
+						const commands = this.client.registry.findCommands(val);
+						if(commands.length === 1) return true;
+						if(commands.length === 0 && groups.length === 0) return false;
+						return stripIndents`
+							${commands.length > 1 ? disambiguation(commands, 'commands') : ''}
+							${groups.length > 1 ? disambiguation(groups, 'groups') : ''}
+						`;
+					},
+					parse: val => this.client.registry.findCommands(val)[0] || this.client.registry.findGroups(val)[0]
+				}
+			]
 		});
 	}
 
@@ -26,33 +46,16 @@ module.exports = class ToggleCommandCommand extends Command {
 		return msg.member.hasPermission('ADMINISTRATOR');
 	}
 
-	async run(msg, arg) {
-		if(!arg) throw new CommandFormatError(msg);
-		const groups = this.client.registry.findGroups(arg);
-		if(groups.length === 1) {
-			if(groups[0].guarded) return msg.reply(`You cannot toggle the ${groups[0].name} group.`);
-			const enabled = !groups[0].isEnabledIn(msg.guild);
-			groups[0].setEnabledIn(msg.guild, enabled);
-			msg.reply(`${enabled ? 'Enabled' : 'Disabled'} ${groups[0].name} group.`);
-			return null;
-		} else if(groups.length > 0) {
-			return msg.reply(disambiguation(groups, 'groups'));
-		} else {
-			const commands = this.client.registry.findCommands(arg);
-			if(commands.length === 1) {
-				if(commands[0].guarded) return msg.reply(`You cannot toggle the \`${commands[0].name}\` command.`);
-				const enabled = !commands[0].isEnabledIn(msg.guild);
-				commands[0].setEnabledIn(msg.guild, enabled);
-				msg.reply(`${enabled ? 'Enabled' : 'Disabled'} \`${commands[0].name}\` command.`);
-				return null;
-			} else if(commands.length > 1) {
-				return msg.reply(`No groups found. ${disambiguation(commands, 'commands')}`);
-			} else {
-				return msg.reply(oneLine`
-					Unable to identify command or group.
-					Use ${msg.anyUsage('groups')} to view the list of groups.
-				`);
-			}
+	async run(msg, args) {
+		if(args.cmdOrGrp.guarded) {
+			return msg.reply(
+				`You cannot toggle the \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'}.`
+			);
 		}
+		const enabled = !args.cmdOrGrp.isEnabledIn(msg.guild);
+		args.cmdOrGrp.setEnabledIn(msg.guild, enabled);
+		return msg.reply(
+			`${enabled ? 'Enabled' : 'Disabled'} the \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'}.`
+		);
 	}
 };

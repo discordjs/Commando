@@ -31,6 +31,7 @@ class CommandDispatcher extends EventEmitter {
 
 		this._commandPatterns = {};
 		this._results = new Map();
+		this._awaiting = new Set();
 	}
 
 	/**
@@ -84,6 +85,9 @@ class CommandDispatcher extends EventEmitter {
 		if(message.author.bot) return;
 		else if(this.client.options.selfbot && message.author.id !== this.client.user.id) return;
 		else if(!this.client.options.selfbot && message.author.id === this.client.user.id) return;
+
+		// Ignore messages from users that the bot is already waiting for input from
+		if(this._awaiting.has(message.author.id + message.channel.id)) return;
 
 		// Make sure the edit actually changed the message content
 		if(oldMessage && message.content === oldMessage.content) return;

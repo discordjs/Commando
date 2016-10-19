@@ -3,7 +3,6 @@ const discord = require('discord.js');
 const tags = require('common-tags');
 const escapeRegex = require('escape-string-regexp');
 const Command = require('../../command');
-const CommandFormatError = require('../../errors/command-format');
 
 const nl = '!!NL!!';
 const nlPattern = new RegExp(nl, 'g');
@@ -16,7 +15,15 @@ module.exports = class EvalCommand extends Command {
 			memberName: 'eval',
 			description: 'Evaluates input as JavaScript.',
 			format: '<script>',
-			details: 'Only the bot owner may use this command.'
+			details: 'Only the bot owner may use this command.',
+
+			args: [
+				{
+					key: 'script',
+					prompt: 'What code would you like to evaluate?',
+					type: 'string'
+				}
+			]
 		});
 
 		this.lastResult = null;
@@ -27,9 +34,7 @@ module.exports = class EvalCommand extends Command {
 		return msg.author.id === this.client.options.owner;
 	}
 
-	async run(msg, script) {
-		if(!script) throw new CommandFormatError(msg);
-
+	async run(msg, args) {
 		// Make a bunch of helpers
 		/* eslint-disable no-unused-vars */
 		const message = msg;
@@ -57,7 +62,7 @@ module.exports = class EvalCommand extends Command {
 		let hrDiff;
 		try {
 			const hrStart = process.hrtime();
-			this.lastResult = eval(script);
+			this.lastResult = eval(args.script);
 			hrDiff = process.hrtime(hrStart);
 		} catch(err) {
 			return `Error while evaluating: \`${err}\``;
@@ -65,7 +70,7 @@ module.exports = class EvalCommand extends Command {
 
 		// Prepare for callback time and respond
 		this.hrStart = process.hrtime();
-		let response = this.makeResultMessages(this.lastResult, hrDiff, script, msg.editable);
+		let response = this.makeResultMessages(this.lastResult, hrDiff, args.script, msg.editable);
 		if(msg.editable) {
 			if(response instanceof Array) {
 				if(response.length > 0) response = response.slice(1, response.length - 1);

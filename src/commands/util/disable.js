@@ -1,6 +1,5 @@
-const oneLine = require('common-tags').oneLine;
+const { oneLine, stripIndents } = require('common-tags');
 const Command = require('../../command');
-const CommandFormatError = require('../../errors/command-format');
 const disambiguation = require('../../util').disambiguation;
 
 module.exports = class DisableCommandCommand extends Command {
@@ -17,7 +16,28 @@ module.exports = class DisableCommandCommand extends Command {
 				Only administrators may use this command.
 			`,
 			examples: ['disable util', 'disable Utility', 'disable prefix'],
-			guarded: true
+			guarded: true,
+
+			args: [
+				{
+					key: 'cmdOrGrp',
+					label: 'command/group',
+					prompt: 'Which command/group would you like to toggle?',
+					validate: val => {
+						if(!val) return false;
+						const groups = this.client.registry.findGroups(val);
+						if(groups.length === 1) return true;
+						const commands = this.client.registry.findCommands(val);
+						if(commands.length === 1) return true;
+						if(commands.length === 0 && groups.length === 0) return false;
+						return stripIndents`
+							${commands.length > 1 ? disambiguation(commands, 'commands') : ''}
+							${groups.length > 1 ? disambiguation(groups, 'groups') : ''}
+						`;
+					},
+					parse: val => this.client.registry.findCommands(val)[0] || this.client.registry.findGroups(val)[0]
+				}
+			]
 		});
 	}
 
@@ -26,35 +46,13 @@ module.exports = class DisableCommandCommand extends Command {
 		return msg.member.hasPermission('ADMINISTRATOR');
 	}
 
-	async run(msg, arg) {
-		if(!arg) throw new CommandFormatError(msg);
-		const groups = this.client.registry.findGroups(arg);
-		if(groups.length === 1) {
-			if(groups[0].guarded) return msg.reply(`You cannot disable the ${groups[0].name} group.`);
-			if(!groups[0].isEnabledIn(msg.guild)) return msg.reply(`The ${groups[0].name} group is already disabled.`);
-			groups[0].setEnabledIn(msg.guild, false);
-			msg.reply(`Disabled ${groups[0].name} group.`);
-			return null;
-		} else if(groups.length > 0) {
-			return msg.reply(disambiguation(groups, 'groups'));
-		} else {
-			const commands = this.client.registry.findCommands(arg);
-			if(commands.length === 1) {
-				if(commands[0].guarded) return msg.reply(`You cannot disable the \`${commands[0].name}\` command.`);
-				if(!commands[0].isEnabledIn(msg.guild)) {
-					return msg.reply(`The \`${commands[0].name}\` command is already disabled.`);
-				}
-				commands[0].setEnabledIn(msg.guild, false);
-				msg.reply(`Disabled \`${commands[0].name}\` command.`);
-				return null;
-			} else if(commands.length > 1) {
-				return msg.reply(`No groups found. ${disambiguation(commands, 'commands')}`);
-			} else {
-				return msg.reply(oneLine`
-					Unable to identify command or group.
-					Use ${msg.anyUsage('groups')} to view the list of groups.
-				`);
-			}
+	async run(msg, args) {
+		if(args.cmdOrGrp.guarded) {
+			return msg.reply(
+				`You cannot disable the \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'}.`
+			);
 		}
+		args.cmdOrGrp.setEnabledIn(msg.guild, false);
+		return msg.reply(`Disabled the \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'}.`);
 	}
 };
