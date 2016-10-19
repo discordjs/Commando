@@ -6,13 +6,6 @@ const Command = require('../command');
  */
 class GuildExtension {
 	/**
-	 * Emitted whenever a guild's command prefix is changed
-	 * @event CommandoClient#commandPrefixChange
-	 * @param {?Guild} guild - Guild that the prefix was changed in (null for global)
-	 * @param {?string} prefix - New command prefix (null for default)
-	 */
-
-	/**
 	 * The command prefix in the guild - modifying this will emit {@link CommandoClient#commandPrefixChange}.
 	 * @type {string}
 	 */
@@ -22,16 +15,14 @@ class GuildExtension {
 
 	set commandPrefix(prefix) {
 		this._commandPrefix = prefix || null;
+		/**
+		 * Emitted whenever a guild's command prefix is changed
+		 * @event CommandoClient#commandPrefixChange
+		 * @param {?Guild} guild - Guild that the prefix was changed in (null for global)
+		 * @param {?string} prefix - New command prefix (null for default)
+		 */
 		this.client.emit('commandPrefixChange', this, this._commandPrefix);
 	}
-
-	/**
-	 * Emitted whenever a command is enabled/disabled in a guild
-	 * @event CommandoClient#commandStatusChange
-	 * @param {?Guild} guild - Guild that the command was enabled/disabled in (null for global)
-	 * @param {Command} command - Command that was enabled/disabled
-	 * @param {boolean} enabled - Whether the command is enabled
-	 */
 
 	/**
 	 * Sets whether a command is enabled in the guild
@@ -45,6 +36,13 @@ class GuildExtension {
 		enabled = Boolean(enabled);
 		if(!this._commandsEnabled) this._commandsEnabled = {};
 		this._commandsEnabled[command.name] = enabled;
+		/**
+		 * Emitted whenever a command is enabled/disabled in a guild
+		 * @event CommandoClient#commandStatusChange
+		 * @param {?Guild} guild - Guild that the command was enabled/disabled in (null for global)
+		 * @param {Command} command - Command that was enabled/disabled
+		 * @param {boolean} enabled - Whether the command is enabled
+		 */
 		this.client.emit('commandStatusChange', this, command, enabled);
 	}
 
@@ -61,14 +59,6 @@ class GuildExtension {
 	}
 
 	/**
-	 * Emitted whenever a command group is enabled/disabled in a guild
-	 * @event CommandoClient#groupStatusChange
-	 * @param {?Guild} guild - Guild that the group was enabled/disabled in (null for global)
-	 * @param {CommandGroup} group - Group that was enabled/disabled
-	 * @param {boolean} enabled - Whether the group is enabled
-	 */
-
-	/**
 	 * Sets whether a command group is enabled in the guild
 	 * @param {CommandGroupResolvable} group - Command to set status of
 	 * @param {boolean} enabled - Whether the group should be enabled
@@ -80,6 +70,13 @@ class GuildExtension {
 		enabled = Boolean(enabled);
 		if(!this._groupsEnabled) this._groupsEnabled = {};
 		this._groupsEnabled[group.id] = enabled;
+		/**
+		 * Emitted whenever a command group is enabled/disabled in a guild
+		 * @event CommandoClient#groupStatusChange
+		 * @param {?Guild} guild - Guild that the group was enabled/disabled in (null for global)
+		 * @param {CommandGroup} group - Group that was enabled/disabled
+		 * @param {boolean} enabled - Whether the group is enabled
+		 */
 		this.client.emit('groupStatusChange', this, group, enabled);
 	}
 

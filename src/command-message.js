@@ -88,7 +88,7 @@ class CommandMessage {
 	}
 
 	/**
-	 * Parses the argString into usable arguments, based on the argsType of the command
+	 * Parses the argString into usable arguments, based on the argsType and argsCount of the command
 	 * @return {string|string[]}
 	 * @see {@link Command#run}
 	 */
@@ -104,8 +104,8 @@ class CommandMessage {
 	}
 
 	/**
-	 * Obtains the values for the arguments
-	 * @return {*[]}
+	 * Obtains the values for the command's arguments
+	 * @return {Array<*>}
 	 */
 	async obtainArgs() {
 		this.client.dispatcher._awaiting.add(this.message.author.id + this.message.channel.id);
@@ -205,7 +205,7 @@ class CommandMessage {
 	}
 
 	/**
-	 * Throttles the command if necessary - the owner is excluded.
+	 * Throttles the command if necessary (the owner is excluded)
 	 * @return {?Object}
 	 * @private
 	 */

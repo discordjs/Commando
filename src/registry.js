@@ -53,13 +53,6 @@ class CommandRegistry {
 	}
 
 	/**
-	 * Emitted when a group is registered
-	 * @event CommandoClient#groupRegister
-	 * @param {CommandGroup} group - Group that was registered
-	 * @param {CommandRegistry} registry - Registry that the group was registered to
-	 */
-
-	/**
 	 * Registers multiple groups
 	 * @param {CommandGroup[]|function[]|Array<Array<string>>} groups - An array of CommandGroup instances, constructors,
 	 * or arrays of [ID, Name]
@@ -78,8 +71,14 @@ class CommandRegistry {
 				this.client.emit('debug', `Group ${group.id} is already registered; renamed it to "${group.name}".`);
 			} else {
 				this.groups.set(group.id, group);
-				this.client.emit('debug', `Registered group ${group.id}.`);
+				/**
+				 * Emitted when a group is registered
+				 * @event CommandoClient#groupRegister
+				 * @param {CommandGroup} group - Group that was registered
+				 * @param {CommandRegistry} registry - Registry that the group was registered to
+				 */
 				this.client.emit('groupRegister', group, this);
+				this.client.emit('debug', `Registered group ${group.id}.`);
 			}
 		}
 		return this;
@@ -94,13 +93,6 @@ class CommandRegistry {
 	registerCommand(command) {
 		return this.registerCommands([command]);
 	}
-
-	/**
-	 * Emitted when a command is registered
-	 * @event CommandoClient#commandRegister
-	 * @param {CommandGroup} command - Command that was registered
-	 * @param {CommandRegistry} registry - Registry that the command was registered to
-	 */
 
 	/**
 	 * Registers multiple commands
@@ -132,6 +124,12 @@ class CommandRegistry {
 			command.group = group;
 			group.commands.set(command.name, command);
 			this.commands.set(command.name, command);
+			/**
+			 * Emitted when a command is registered
+			 * @event CommandoClient#commandRegister
+			 * @param {CommandGroup} command - Command that was registered
+			 * @param {CommandRegistry} registry - Registry that the command was registered to
+			 */
 			this.client.emit('commandRegister', command, this);
 			this.client.emit('debug', `Registered command ${group.id}:${command.memberName}.`);
 		}
@@ -204,13 +202,6 @@ class CommandRegistry {
 	}
 
 	/**
-	 * Emitted when a command is reregistered
-	 * @event CommandoClient#commandReregister
-	 * @param {Command} newCommand - New command
-	 * @param {Command} oldCommand - Old command
-	 */
-
-	/**
 	 * Reregisters a command (does not support changing name, group, or memberName)
 	 * @param {Command|CommandBuilder|function} command - New command
 	 * @param {Command} oldCommand - Old command
@@ -224,6 +215,12 @@ class CommandRegistry {
 		command.group = this.resolveGroup(command.groupID);
 		command.group.commands.set(command.name, command);
 		this.commands.set(command.name, command);
+		/**
+		 * Emitted when a command is reregistered
+		 * @event CommandoClient#commandReregister
+		 * @param {Command} newCommand - New command
+		 * @param {Command} oldCommand - Old command
+		 */
 		this.client.emit('commandReregister', command, oldCommand);
 	}
 

@@ -24,7 +24,8 @@ class Command {
 	 * @property {boolean} [defaultHandling=true] - Whether or not the default command handling should be used.
 	 * If false, then only patterns will trigger the command.
 	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
-	 * @property {string} [argsType=single] - One of 'single' or 'multiple'.
+	 * @property {CommandArgumentInfo[]} [args] - Arguments for the command.
+	 * @property {string} [argsType=single] - One of 'single' or 'multiple'. Only applicable if `args` is not specified.
 	 * When 'single', the entire argument string will be passed to run as one argument.
 	 * When 'multiple', it will be passed as multiple arguments.
 	 * @property {number} [argsCount=0] - The number of arguments to parse from the command string.
@@ -216,9 +217,11 @@ class Command {
 	/**
 	 * Runs the command
 	 * @param {CommandMessage} message - The message the command is being run for
-	 * @param {string|string[]} args - The arguments for the command, or the matches from a pattern. If argsType is
-	 * single, then only one string will be passed. If multiple, an array of strings will be passed. When fromPattern
-	 * is true, this is the matches array from the pattern match.
+	 * @param {Object|string|string[]} args - The arguments for the command, or the matches from a pattern.
+	 * If args is specified on the command, thise will be the argument values object. If argsType is single, then only
+	 * one string will be passed. If multiple, an array of strings will be passed. When fromPattern is true, this is the
+	 * matches array from the pattern match
+	 * (see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec}).
 	 * @param {boolean} fromPattern - Whether or not the command is being run from a pattern match
 	 * @return {Promise<?Message|?Array<Message>>}
 	 */

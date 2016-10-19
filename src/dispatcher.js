@@ -117,6 +117,11 @@ class CommandDispatcher extends EventEmitter {
 						if(typeof responses === 'undefined') responses = null;
 					}
 				} else {
+					/**
+					 * Emitted when an unknown command is triggered
+					 * @event CommandoClient#unknownCommand
+					 * @param {CommandMessage} message - Command message that triggered the command
+					 */
 					this.client.emit('unknownCommand', cmdMsg);
 					if(this.client.options.unknownCommandResponse) {
 						responses = await cmdMsg.reply(

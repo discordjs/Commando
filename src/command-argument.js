@@ -13,6 +13,20 @@ class CommandArgument {
 	 */
 
 	/**
+	 * Function that validates an input value string
+	 * @typedef {function} ArgumentValidator
+	 * @param {string} value - Value to check for validity
+	 * @return {boolean|string} If a string is returned, it is considered to be the error message for the validation.
+	 */
+
+	/**
+	 * Function that parses an input value string into a proper value for the argument
+	 * @typedef {function} ArgumentParser
+	 * @param {string} value - Value to parse
+	 * @return {*}
+	 */
+
+	/**
 	 * @param {Command} command - Command the argument is for
 	 * @param {CommandArgumentInfo} info - Information for the command argument
 	 */
