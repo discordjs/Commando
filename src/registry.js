@@ -222,6 +222,7 @@ class CommandRegistry {
 		 * @param {Command} oldCommand - Old command
 		 */
 		this.client.emit('commandReregister', command, oldCommand);
+		this.client.emit('debug', `Reregistered command ${command.groupID}:${command.memberName}`);
 	}
 
 	/**
