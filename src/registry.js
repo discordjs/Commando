@@ -193,7 +193,7 @@ class CommandRegistry {
 		if(ping) this.registerCommand(require('./commands/util/ping'));
 		if(commandState) {
 			this.registerCommands([
-				require('./commands/util/list-groups'),
+				require('./commands/util/groups'),
 				require('./commands/util/toggle'),
 				require('./commands/util/enable'),
 				require('./commands/util/disable'),
