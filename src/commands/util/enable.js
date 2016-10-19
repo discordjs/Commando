@@ -1,6 +1,5 @@
 const { oneLine, stripIndents } = require('common-tags');
 const Command = require('../../command');
-const CommandFormatError = require('../../errors/command-format');
 const disambiguation = require('../../util').disambiguation;
 
 module.exports = class EnableCommandCommand extends Command {
