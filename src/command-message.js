@@ -144,6 +144,15 @@ class CommandMessage {
 			return await this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
 		}
 
+		// Throttle the command
+		const throttle = this.throttleCommand();
+		if(throttle) {
+			const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
+			return await this.reply(
+				`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
+			);
+		}
+
 		// Figure out the command arguments
 		let args = this.patternMatches;
 		if(!args && this.command.args) {
@@ -193,6 +202,31 @@ class CommandMessage {
 				`);
 			}
 		}
+	}
+
+	/**
+	 * Throttles the command if necessary - the owner is excluded.
+	 * @return {?Object}
+	 * @private
+	 */
+	throttleCommand() {
+		if(!this.command.throttling) return null;
+		const id = this.message.author.id;
+		if(id === this.client.options.owner) return null;
+		let throttle = this.command._throttles.get(id);
+		if(!throttle) {
+			throttle = {
+				start: Date.now(),
+				usages: 0,
+				timeout: this.client.setTimeout(() => {
+					this.command._throttles.delete(id);
+				}, this.command.throttling.duration * 1000)
+			};
+			this.command._throttles.set(id, throttle);
+		}
+		throttle.usages++;
+		if(throttle.usages > this.command.throttling.usages) return throttle;
+		return null;
 	}
 
 	/**

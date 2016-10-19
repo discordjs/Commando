@@ -4,6 +4,12 @@ const CommandArgument = require('./command-argument');
 /** A command that can be run in a client */
 class Command {
 	/**
+	 * @typedef {Object} ThrottlingOptions
+	 * @property {number} usages - Maximum number of usages of the command allowed in the time frame.
+	 * @property {number} duration - Amount of time to count the usages of the command within (in seconds).
+	 */
+
+	/**
 	 * @typedef {Object} CommandInfo
 	 * @property {string} name - The name of the command (must be lowercase)
 	 * @property {string[]} [aliases] - Alternative names for the command (all must be lowercase)
@@ -17,6 +23,7 @@ class Command {
 	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
 	 * @property {boolean} [defaultHandling=true] - Whether or not the default command handling should be used.
 	 * If false, then only patterns will trigger the command.
+	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
 	 * @property {string} [argsType=single] - One of 'single' or 'multiple'.
 	 * When 'single', the entire argument string will be passed to run as one argument.
 	 * When 'multiple', it will be passed as multiple arguments.
@@ -49,6 +56,17 @@ class Command {
 		if(info.memberName !== info.memberName.toLowerCase()) throw new Error('Command memberName must be lowercase.');
 		if(!info.description) throw new Error('Command must have a description specified.');
 		if(info.examples && !Array.isArray(info.examples)) throw new TypeError('Command examples must be an array.');
+		if(info.throttling) {
+			if(typeof info.throttling !== 'object') throw new TypeError('Command throttling must be an object.');
+			if(typeof info.throttling.usages !== 'number' || isNaN(info.throttling.usages)) {
+				throw new TypeError('Command throttling usages must be a number.');
+			}
+			if(info.throttling.usages < 1) throw new RangeError('Command throttling usages must be at least 1.');
+			if(typeof info.throttling.duration !== 'number' || isNaN(info.throttling.duration)) {
+				throw new TypeError('Command throttling duration must be a number.');
+			}
+			if(info.throttling.duration < 1) throw new RangeError('Command throttling duration must be at least 1.');
+		}
 		if(info.args && !Array.isArray(info.args)) throw new TypeError('Command args must be an array.');
 		if(info.argsType && !['single', 'multiple'].includes(info.argsType)) {
 			throw new RangeError('Command argsType must be one of "single" or "multiple".');
@@ -137,6 +155,12 @@ class Command {
 		this.defaultHandling = 'defaultHandling' in info ? info.defaultHandling : true;
 
 		/**
+		 * Options for throttling command usages
+		 * @type {?ThrottlingOptions}
+		 */
+		this.throttling = info.throttling || null;
+
+		/**
 		 * The arguments for the command
 		 * @type {?CommandArgument[]}
 		 */
@@ -176,6 +200,7 @@ class Command {
 		this.guarded = info.guarded || false;
 
 		this._globalEnabled = true;
+		this._throttles = new Map();
 	}
 
 	/**
