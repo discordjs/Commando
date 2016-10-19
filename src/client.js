@@ -24,6 +24,7 @@ class CommandoClient extends discord.Client {
 		if(typeof options.commandPrefix === 'undefined') options.commandPrefix = '!';
 		if(typeof options.commandEditableDuration === 'undefined') options.commandEditableDuration = 30;
 		if(typeof options.nonCommandEditable === 'undefined') options.nonCommandEditable = true;
+		if(typeof options.unknownCommandResponse === 'undefined') options.unknownCommandResponse = true;
 		super(options);
 
 		/**
