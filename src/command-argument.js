@@ -140,6 +140,12 @@ class CommandArgument {
 		return this.parse(value);
 	}
 
+	/**
+	 * Prompts the user and obtains multiple values for the argument
+	 * @param {Message} msg - Message that triggered the command
+	 * @param {string[]} [values] - Pre-provided values for the argument
+	 * @return {Promise<?Array<*>>}
+	 */
 	async obtainInfinite(msg, values) {
 		const results = [];
 		let currentVal = 0;
@@ -167,6 +173,7 @@ class CommandArgument {
 						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
 					`);
 				}
+
 				const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
 					maxMatches: 1,
 					time: wait
