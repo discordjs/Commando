@@ -3,7 +3,9 @@ const discord = require('discord.js');
 module.exports = {
 	Client: require('./client'),
 	Command: require('./command'),
+	CommandArgument: require('./command-argument'),
 	CommandGroup: require('./command-group'),
+	CommandMessage: require('./command-message'),
 	FriendlyError: require('./errors/friendly'),
 	CommandFormatError: require('./errors/command-format'),
 
