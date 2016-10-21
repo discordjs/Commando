@@ -1,5 +1,5 @@
 const escapeMarkdown = require('discord.js').escapeMarkdown;
-const oneLine = require('common-tags').oneLine;
+const { oneLine, stripIndents } = require('common-tags');
 const disambiguation = require('./util').disambiguation;
 
 const types = ['string', 'integer', 'float', 'boolean', 'user', 'member', 'role', 'channel'];
@@ -129,10 +129,12 @@ class CommandArgument {
 		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		let valid = value ? await this.validate(value, msg) : false;
 		while(!valid || typeof valid === 'string') {
-			await msg.reply(oneLine`
+			await msg.reply(stripIndents`
 				${!value ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
-				Respond with \`cancel\` to cancel the command.
-				${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+				${oneLine`
+					Respond with \`cancel\` to cancel the command.
+					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+				`}
 			`);
 			const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
 				maxMatches: 1,
@@ -161,21 +163,25 @@ class CommandArgument {
 
 			while(!valid || typeof valid === 'string') {
 				if(!value) {
-					await msg.reply(oneLine`
+					await msg.reply(stripIndents`
 						${this.prompt}
-						Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
-						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+						${oneLine`
+							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
+							${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+						`}
 					`);
 				} else {
 					const escaped = escapeMarkdown(value);
-					await msg.reply(oneLine`
+					await msg.reply(stripIndents`
 						${valid ? valid : oneLine`
 							You provided an invalid ${this.label},
 							\`${escaped.length < 1850 ? escaped : '[too long]'}\`.
 							Please try again.
 						`}
-						Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
-						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+						${oneLine`
+							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
+							${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+						`}
 					`);
 				}
 
