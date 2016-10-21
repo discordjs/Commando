@@ -12,6 +12,7 @@ class CommandArgument {
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
 	 * @property {ArgumentValidator} [validate] - Validator function for the argument
 	 * @property {ArgumentParser} [parse] - Parser function for the argument
+	 * @property {number} [wait=30] - How long to wait for input (in seconds)
 	 */
 
 	/**
@@ -52,6 +53,9 @@ class CommandArgument {
 		}
 		if(!info.type && (!info.validate || !info.parse)) {
 			throw new Error('Command argument must have both validate and parse since it doesn\'t have a type.');
+		}
+		if(typeof info.wait !== 'undefined' && (typeof info.wait !== 'number' || Number.isNaN(info.wait))) {
+			throw new TypeError('Command argument wait must be a number.');
 		}
 
 		/**
@@ -101,6 +105,12 @@ class CommandArgument {
 		 * @type {ArgumentParser}
 		 */
 		this.parser = info.parse || null;
+
+		/**
+		 * How long to wait for input (in seconds)
+		 * @type {number}
+		 */
+		this.wait = typeof info.wait !== 'undefined' ? info.wait : 30;
 	}
 
 	/**
@@ -111,15 +121,17 @@ class CommandArgument {
 	 */
 	async obtain(msg, value) {
 		if(this.infinite) return this.obtainInfinite(msg, value);
+		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		let valid = value ? this.validate(value) : false;
 		while(!valid || typeof valid === 'string') {
 			await msg.reply(oneLine`
 				${!value ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
 				Respond with \`cancel\` to cancel the command.
+				${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
 			`);
 			const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
 				maxMatches: 1,
-				time: 30000
+				time: wait
 			});
 			if(responses && responses.size === 1) value = responses.first().content; else return null;
 			if(value.toLowerCase() === 'cancel') return null;
@@ -131,6 +143,7 @@ class CommandArgument {
 	async obtainInfinite(msg, values) {
 		const results = [];
 		let currentVal = 0;
+		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		while(true) { // eslint-disable-line no-constant-condition
 			let value = values && values[currentVal] ? values[currentVal] : null;
 			let valid = value ? this.validate(value) : false;
@@ -140,6 +153,7 @@ class CommandArgument {
 					await msg.reply(oneLine`
 						${this.prompt}
 						Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
+						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
 					`);
 				} else {
 					const escaped = escapeMarkdown(value);
@@ -150,11 +164,12 @@ class CommandArgument {
 							Please try again.
 						`}
 						Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
+						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
 					`);
 				}
 				const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
 					maxMatches: 1,
-					time: 30000
+					time: wait
 				});
 				if(responses && responses.size === 1) value = responses.first().content; else return null;
 				const lc = value.toLowerCase();
