@@ -1,5 +1,8 @@
 const escapeMarkdown = require('discord.js').escapeMarkdown;
 const oneLine = require('common-tags').oneLine;
+const disambiguation = require('./util').disambiguation;
+
+const types = ['string', 'integer', 'float', 'boolean', 'user', 'member', 'role', 'channel'];
 
 /** A fancy argument for a command */
 class CommandArgument {
@@ -8,7 +11,8 @@ class CommandArgument {
 	 * @property {string} key - Key for the argument
 	 * @property {string} [label=key] - Label for the argument
 	 * @property {string} prompt - First prompt for the argument when it wasn't specified
-	 * @property {string} [type] - Type of the argument ('string', 'integer', 'float', or 'boolean')
+	 * @property {string} [type] - Type of the argument
+	 * ('string', 'integer', 'float', 'user', 'member', 'role', or 'channel')
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
 	 * @property {ArgumentValidator} [validate] - Validator function for the argument
 	 * @property {ArgumentParser} [parse] - Parser function for the argument
@@ -19,14 +23,15 @@ class CommandArgument {
 	 * Function that validates an input value string
 	 * @typedef {function} ArgumentValidator
 	 * @param {string} value - Value to check for validity
-	 * @return {boolean|string} If a string is returned, it is considered to be the error message for the validation.
+	 * @return {Promise<boolean|string>|boolean|string} If a string is returned, it is considered to be the error message
+	 * for the validation.
 	 */
 
 	/**
 	 * Function that parses an input value string into a proper value for the argument
 	 * @typedef {function} ArgumentParser
 	 * @param {string} value - Value to parse
-	 * @return {*}
+	 * @return {Promise<*>|*}
 	 */
 
 	/**
@@ -42,7 +47,7 @@ class CommandArgument {
 		if(!info.type && !info.validate) {
 			throw new Error('Command argument must have either "type" or "validate" specified.');
 		}
-		if(info.type && !['string', 'integer', 'float', 'boolean'].includes(info.type)) {
+		if(info.type && !types.includes(info.type)) {
 			throw new RangeError('Command argument type must be one of "string", "integer", "float", or "boolean".');
 		}
 		if(info.validate && typeof info.validate !== 'function') {
@@ -83,7 +88,7 @@ class CommandArgument {
 		this.prompt = info.prompt;
 
 		/**
-		 * Type of the argument ('string', 'integer', 'float', or 'boolean')
+		 * Type of the argument ('string', 'integer', 'float', 'boolean', 'user', 'member', 'role', or 'channel')
 		 * @type {?string}
 		 */
 		this.type = info.type || null;
@@ -122,7 +127,7 @@ class CommandArgument {
 	async obtain(msg, value) {
 		if(this.infinite) return this.obtainInfinite(msg, value);
 		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
-		let valid = value ? this.validate(value) : false;
+		let valid = value ? await this.validate(value, msg) : false;
 		while(!valid || typeof valid === 'string') {
 			await msg.reply(oneLine`
 				${!value ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
@@ -135,9 +140,9 @@ class CommandArgument {
 			});
 			if(responses && responses.size === 1) value = responses.first().content; else return null;
 			if(value.toLowerCase() === 'cancel') return null;
-			valid = this.validate(value);
+			valid = await this.validate(value, msg);
 		}
-		return this.parse(value);
+		return this.parse(value, msg);
 	}
 
 	/**
@@ -182,10 +187,10 @@ class CommandArgument {
 				const lc = value.toLowerCase();
 				if(lc === 'cancel') return null;
 				if(lc === 'finish') return results.length > 0 ? results : null;
-				valid = this.validate(value);
+				valid = await this.validate(value, msg);
 			}
 
-			results.push(this.parse(value));
+			results.push(await this.parse(value, msg));
 
 			if(values) {
 				currentVal++;
@@ -197,9 +202,10 @@ class CommandArgument {
 	/**
 	 * Checks if a value is valid for the argument
 	 * @param {string} value - Value to check
-	 * @return {boolean|string}
+	 * @param {Message} msg - Message that triggered the command
+	 * @return {Promise<boolean|string>}
 	 */
-	validate(value) {
+	async validate(value, msg) {
 		if(this.validator) return this.validator(value);
 		switch(this.type) {
 			case 'string':
@@ -210,6 +216,14 @@ class CommandArgument {
 				return !Number.isNaN(Number.parseFloat(value));
 			case 'boolean':
 				return ['true', 'false', 'yes', 'no', 'on', 'off'].includes(value.toLowerCase());
+			case 'user':
+				return this.constructor.validateUser(value, msg);
+			case 'member':
+				return this.constructor.validateMember(value, msg);
+			case 'role':
+				return this.constructor.validateRole(value, msg);
+			case 'channel':
+				return this.constructor.validateChannel(value, msg);
 			default:
 				throw new RangeError('Unknown command argument type.');
 		}
@@ -218,9 +232,10 @@ class CommandArgument {
 	/**
 	 * Parses a value string into a proper value for the argument
 	 * @param {string} value - Value to parse
-	 * @return {*}
+	 * @param {Message} msg - Message that triggered the command
+	 * @return {Promise<*>}
 	 */
-	parse(value) {
+	async parse(value, msg) {
 		if(this.parser) return this.parser(value);
 		switch(this.type) {
 			case 'string':
@@ -233,10 +248,156 @@ class CommandArgument {
 				if(['true', 'yes', 'on'].includes(value.toLowerCase())) return true;
 				if(['false', 'no', 'off'].includes(value.toLowerCase())) return false;
 				throw new RangeError('Unknown boolean value.');
+			case 'user':
+				return this.constructor.parseUser(value, msg);
+			case 'member':
+				return this.constructor.parseMember(value, msg);
+			case 'role':
+				return this.constructor.parseRole(value, msg);
+			case 'channel':
+				return this.constructor.parseChannel(value, msg);
 			default:
 				throw new RangeError('Unknown command argument type.');
 		}
 	}
+
+	static async validateUser(value, msg) {
+		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
+		if(matches) {
+			try {
+				return await msg.client.fetchUser(matches[1]);
+			} catch(err) {
+				return false;
+			}
+		}
+		if(!msg.guild) return false;
+		const search = value.toLowerCase();
+		let members = msg.guild.members.filterArray(_filterMembersInexact.bind(search));
+		if(members.length === 0) return false;
+		if(members.length === 1) return true;
+		const exactMembers = members.filter(_filterMembersExact.bind(search));
+		if(exactMembers.length === 1) return true;
+		if(exactMembers.length > 0) members = exactMembers;
+		return members.length <= 15 ?
+			`${disambiguation(members.map(mem => `${mem.user.username}#${mem.user.discriminator}`), 'users', null)}\n` :
+			'Multiple users found. Please be more specific.';
+	}
+
+	static parseUser(value, msg) {
+		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
+		if(matches) return msg.client.users.get(matches[1]) || null;
+		if(!msg.guild) return null;
+		const search = value.toLowerCase();
+		const members = msg.guild.members.filterArray(_filterMembersInexact.bind(search));
+		if(members.length === 0) return null;
+		if(members.length === 1) return members[0].user;
+		const exactMembers = members.filter(_filterMembersExact.bind(search));
+		if(exactMembers.length === 1) return members[0].user;
+		return null;
+	}
+
+	static async validateMember(value, msg) {
+		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
+		if(matches) {
+			try {
+				return await msg.guild.fetchMember(await msg.client.fetchUser(matches[1]));
+			} catch(err) {
+				return false;
+			}
+		}
+		const search = value.toLowerCase();
+		let members = msg.guild.members.filterArray(_filterMembersInexact.bind(search));
+		if(members.length === 0) return false;
+		if(members.length === 1) return members[0];
+		const exactMembers = members.filter(_filterMembersExact.bind(search));
+		if(exactMembers.length === 1) return members[0];
+		if(exactMembers.length > 0) members = exactMembers;
+		return members.length <= 15 ?
+			`${disambiguation(members.map(mem => `${mem.user.username}#${mem.user.discriminator}`), 'users', null)}\n` :
+			'Multiple users found. Please be more specific.';
+	}
+
+	static parseMember(value, msg) {
+		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
+		if(matches) return msg.guild.member(matches[1]) || null;
+		const search = value.toLowerCase();
+		const members = msg.guild.members.filterArray(_filterMembersInexact.bind(search));
+		if(members.length === 0) return null;
+		if(members.length === 1) return members[0];
+		const exactMembers = members.filter(_filterMembersExact.bind(search));
+		if(exactMembers.length === 1) return members[0];
+		return null;
+	}
+
+	static validateRole(value, msg) {
+		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
+		if(matches) return msg.guild.roles.has(matches[1]);
+		const search = value.toLowerCase();
+		let roles = msg.guild.roles.filterArray(_filterNamesInexact.bind(search));
+		if(roles.length === 0) return false;
+		if(roles.length === 1) return true;
+		const exactRoles = roles.filter(_filterNamesExact.bind(search));
+		if(exactRoles.length === 1) return true;
+		if(exactRoles.length > 0) roles = exactRoles;
+		return `${disambiguation(roles.map(role => `\`${role.name}\``), 'roles', null)}\n`;
+	}
+
+	static parseRole(value, msg) {
+		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
+		if(matches) return msg.guild.roles.get(matches[1]) || null;
+		const search = value.toLowerCase();
+		const roles = msg.guild.roles.filterArray(_filterNamesInexact.bind(search));
+		if(roles.length === 0) return null;
+		if(roles.length === 1) return roles[0];
+		const exactRoles = roles.filter(_filterNamesExact.bind(search));
+		if(exactRoles.length === 1) return roles[0];
+		return null;
+	}
+
+	static validateChannel(value, msg) {
+		const matches = value.match(/^(?:<#)?([0-9]+)>?$/);
+		if(matches) return msg.guild.channels.has(matches[1]);
+		const search = value.toLowerCase();
+		let channels = msg.guild.channels.filterArray(_filterNamesInexact.bind(search));
+		if(channels.length === 0) return false;
+		if(channels.length === 1) return true;
+		const exactChannels = channels.filter(_filterNamesExact.bind(search));
+		if(exactChannels.length === 1) return true;
+		if(exactChannels.length > 0) channels = exactChannels;
+		return `${disambiguation(channels.map(role => `\`${role.name}\``), 'channels', null)}\n`;
+	}
+
+	static parseChannel(value, msg) {
+		const matches = value.match(/^(?:<#)?([0-9]+)>?$/);
+		if(matches) return msg.guild.channels.get(matches[1]) || null;
+		const search = value.toLowerCase();
+		const channels = msg.guild.channels.filterArray(_filterNamesInexact.bind(search));
+		if(channels.length === 0) return null;
+		if(channels.length === 1) return channels[0];
+		const exactChannels = channels.filter(_filterNamesExact.bind(search));
+		if(exactChannels.length === 1) return channels[0];
+		return null;
+	}
+}
+
+function _filterMembersExact(mem) {
+	return mem.user.username.toLowerCase() === this ||
+		(mem.nickname && mem.nickname.toLowerCase() === this) ||
+		`${mem.user.username.toLowerCase()}#${mem.user.discriminator}` === this;
+}
+
+function _filterMembersInexact(mem) {
+	return mem.user.username.toLowerCase().includes(this) ||
+		(mem.nickname && mem.nickname.toLowerCase().includes(this)) ||
+		`${mem.user.username.toLowerCase()}#${mem.user.discriminator}`.includes(this);
+}
+
+function _filterNamesExact(role) {
+	return role.name.toLowerCase() === this;
+}
+
+function _filterNamesInexact(role) {
+	return role.name.toLowerCase().includes(this);
 }
 
 module.exports = CommandArgument;
