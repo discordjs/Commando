@@ -80,6 +80,17 @@ class CommandGroup {
 		guild = this.client.resolver.resolveGuild(guild);
 		return guild.isGroupEnabled(this);
 	}
+
+	/**
+	 * Reloads all of the group's commands
+	 * @return {boolean} Whether the reload was successful
+	 */
+	reload() {
+		for(const command of this.commands.values()) {
+			if(!command.reload()) return false;
+		}
+		return true;
+	}
 }
 
 module.exports = CommandGroup;

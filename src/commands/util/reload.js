@@ -1,4 +1,4 @@
-const oneLine = require('common-tags').oneLine;
+const { oneLine, stripIndents } = require('common-tags');
 const Command = require('../../command');
 const disambiguation = require('../../util').disambiguation;
 
@@ -20,16 +20,21 @@ module.exports = class ReloadCommandCommand extends Command {
 
 			args: [
 				{
-					key: 'command',
+					key: 'cmdOrGrp',
 					prompt: 'Which command or group would you like to reload?',
 					validate: val => {
 						if(!val) return false;
+						const groups = this.client.registry.findGroups(val);
+						if(groups.length === 1) return true;
 						const commands = this.client.registry.findCommands(val);
-						if(commands.length === 0) return false;
-						if(commands.length > 1) return disambiguation(commands, 'commands');
-						return true;
+						if(commands.length === 1) return true;
+						if(commands.length === 0 && groups.length === 0) return false;
+						return stripIndents`
+							${commands.length > 1 ? disambiguation(commands, 'commands') : ''}
+							${groups.length > 1 ? disambiguation(groups, 'groups') : ''}
+						`;
 					},
-					parse: val => this.client.registry.findCommands(val)[0]
+					parse: val => this.client.registry.findCommands(val)[0] || this.client.registry.findGroups(val)[0]
 				}
 			]
 		});
@@ -40,8 +45,12 @@ module.exports = class ReloadCommandCommand extends Command {
 	}
 
 	async run(msg, args) {
-		args.command.reload();
-		msg.reply(`Reloaded \`${args.command.name}\` command.`);
+		args.cmdOrGrp.reload();
+		if(args.cmdOrGrp.group) {
+			msg.reply(`Reloaded \`${args.cmdOrGrp.name}\` command.`);
+		} else {
+			msg.reply(`Reloaded all of the commands in the \`${args.cmdOrGrp.name}\` group.`);
+		}
 		return null;
 	}
 };
