@@ -21,6 +21,7 @@ module.exports = class ReloadCommandCommand extends Command {
 			args: [
 				{
 					key: 'cmdOrGrp',
+					label: 'command/group',
 					prompt: 'Which command or group would you like to reload?',
 					validate: val => {
 						if(!val) return false;

@@ -22,7 +22,7 @@ module.exports = class EnableCommandCommand extends Command {
 				{
 					key: 'cmdOrGrp',
 					label: 'command/group',
-					prompt: 'Which command/group would you like to toggle?',
+					prompt: 'Which command or group would you like to toggle?',
 					validate: val => {
 						if(!val) return false;
 						const groups = this.client.registry.findGroups(val);
