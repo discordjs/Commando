@@ -171,11 +171,11 @@ class CommandArgument {
 						`}
 					`);
 				} else {
-					const escaped = escapeMarkdown(value);
+					const escaped = escapeMarkdown(value).replace(/@/g, '@\u200b');
 					await msg.reply(stripIndents`
 						${valid ? valid : oneLine`
 							You provided an invalid ${this.label},
-							\`${escaped.length < 1850 ? escaped : '[too long]'}\`.
+							"${escaped.length < 1850 ? escaped : '[too long]'}".
 							Please try again.
 						`}
 						${oneLine`
@@ -285,7 +285,9 @@ class CommandArgument {
 		if(exactMembers.length === 1) return true;
 		if(exactMembers.length > 0) members = exactMembers;
 		return members.length <= 15 ?
-			`${disambiguation(members.map(mem => `${mem.user.username}#${mem.user.discriminator}`), 'users', null)}\n` :
+			`${disambiguation(
+				members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), 'users', null
+			)}\n` :
 			'Multiple users found. Please be more specific.';
 	}
 
@@ -319,7 +321,9 @@ class CommandArgument {
 		if(exactMembers.length === 1) return members[0];
 		if(exactMembers.length > 0) members = exactMembers;
 		return members.length <= 15 ?
-			`${disambiguation(members.map(mem => `${mem.user.username}#${mem.user.discriminator}`), 'users', null)}\n` :
+			`${disambiguation(
+				members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), 'users', null
+			)}\n` :
 			'Multiple users found. Please be more specific.';
 	}
 
@@ -345,7 +349,7 @@ class CommandArgument {
 		const exactRoles = roles.filter(_filterNamesExact.bind(search));
 		if(exactRoles.length === 1) return true;
 		if(exactRoles.length > 0) roles = exactRoles;
-		return `${disambiguation(roles.map(role => `\`${role.name}\``), 'roles', null)}\n`;
+		return `${disambiguation(roles.map(role => `${escapeMarkdown(role.name)}`), 'roles', null)}\n`;
 	}
 
 	static parseRole(value, msg) {
@@ -370,7 +374,7 @@ class CommandArgument {
 		const exactChannels = channels.filter(_filterNamesExact.bind(search));
 		if(exactChannels.length === 1) return true;
 		if(exactChannels.length > 0) channels = exactChannels;
-		return `${disambiguation(channels.map(role => `\`${role.name}\``), 'channels', null)}\n`;
+		return `${disambiguation(channels.map(chan => escapeMarkdown(chan.name)), 'channels', null)}\n`;
 	}
 
 	static parseChannel(value, msg) {
