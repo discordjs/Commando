@@ -15,13 +15,21 @@ module.exports = class AddNumbersCommand extends commando.Command {
 				This command is the envy of all other commands.
 			`,
 			examples: ['add-numbers 42 1337'],
-			argsType: 'multiple'
+
+			args: [
+				{
+					key: 'numbers',
+					label: 'number',
+					prompt: 'What numbers would you like to add? I\'ll continue asking for each one.',
+					type: 'float',
+					infinite: true
+				}
+			]
 		});
 	}
 
 	async run(msg, args) {
-		if(!args[0]) throw new commando.CommandFormatError(msg);
-		const total = args.reduce((prev, arg) => prev + parseFloat(arg), 0);
+		const total = args.numbers.reduce((prev, arg) => prev + parseFloat(arg), 0);
 		return msg.reply(`**Sum:** ${total}`);
 	}
 };

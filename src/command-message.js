@@ -109,15 +109,17 @@ class CommandMessage {
 	 */
 	async obtainArgs() {
 		this.client.dispatcher._awaiting.add(this.message.author.id + this.message.channel.id);
-		const provided = this.constructor.parseArgs(this.argString.trim(), this.command.args.length, this.argsSingleQuotes);
+		const args = this.command.args;
+		const count = args[args.length - 1].infinite ? Infinity : args.length;
+		const provided = this.constructor.parseArgs(this.argString.trim(), count, this.argsSingleQuotes);
 		const values = {};
-		for(let i = 0; i < this.command.args.length; i++) {
-			const value = await this.command.args[i].obtain(this.message, provided[i]);
+		for(let i = 0; i < args.length; i++) {
+			const value = await args[i].obtain(this.message, args[i].infinite ? provided.slice(i) : provided[i]);
 			if(value === null) {
 				this.client.dispatcher._awaiting.delete(this.message.author.id + this.message.channel.id);
 				return null;
 			}
-			values[this.command.args[i].key] = value;
+			values[args[i].key] = value;
 		}
 		this.client.dispatcher._awaiting.delete(this.message.author.id + this.message.channel.id);
 		return values;

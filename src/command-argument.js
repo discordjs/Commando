@@ -1,4 +1,5 @@
-const stripIndents = require('common-tags').stripIndents;
+const escapeMarkdown = require('discord.js').escapeMarkdown;
+const oneLine = require('common-tags').oneLine;
 
 /** A fancy argument for a command */
 class CommandArgument {
@@ -8,6 +9,7 @@ class CommandArgument {
 	 * @property {string} [label=key] - Label for the argument
 	 * @property {string} prompt - First prompt for the argument when it wasn't specified
 	 * @property {string} [type] - Type of the argument ('string', 'integer', 'float', or 'boolean')
+	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
 	 * @property {ArgumentValidator} [validate] - Validator function for the argument
 	 * @property {ArgumentParser} [parse] - Parser function for the argument
 	 */
@@ -83,6 +85,12 @@ class CommandArgument {
 		this.type = info.type || null;
 
 		/**
+		 * Whether the argument accepts infinite values
+		 * @type {boolean}
+		 */
+		this.infinite = Boolean(info.infinite);
+
+		/**
 		 * Validator function for validating a value for the argument
 		 * @type {ArgumentValidator}
 		 */
@@ -96,16 +104,17 @@ class CommandArgument {
 	}
 
 	/**
-	 * Obtains the value for the argument
+	 * Prompts the user and obtains the value for the argument
 	 * @param {Message} msg - Message that triggered the command
 	 * @param {string} [value] - Pre-provided value for the argument
 	 * @return {Promise<?*>}
 	 */
 	async obtain(msg, value) {
-		let valid = this.validate(value);
+		if(this.infinite) return this.obtainInfinite(msg, value);
+		let valid = value ? this.validate(value) : false;
 		while(!valid || typeof valid === 'string') {
-			await msg.reply(stripIndents`
-				${!value ? this.prompt : valid ? valid : `You specified an invalid ${this.label}. Please try again.`}
+			await msg.reply(oneLine`
+				${!value ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
 				Respond with \`cancel\` to cancel the command.
 			`);
 			const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
@@ -117,6 +126,50 @@ class CommandArgument {
 			valid = this.validate(value);
 		}
 		return this.parse(value);
+	}
+
+	async obtainInfinite(msg, values) {
+		const results = [];
+		let currentVal = 0;
+		while(true) { // eslint-disable-line no-constant-condition
+			let value = values && values[currentVal] ? values[currentVal] : null;
+			let valid = value ? this.validate(value) : false;
+
+			while(!valid || typeof valid === 'string') {
+				if(!value) {
+					await msg.reply(oneLine`
+						${this.prompt}
+						Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
+					`);
+				} else {
+					const escaped = escapeMarkdown(value);
+					await msg.reply(oneLine`
+						${valid ? valid : oneLine`
+							You provided an invalid ${this.label},
+							\`${escaped.length < 1850 ? escaped : '[too long]'}\`.
+							Please try again.
+						`}
+						Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
+					`);
+				}
+				const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
+					maxMatches: 1,
+					time: 30000
+				});
+				if(responses && responses.size === 1) value = responses.first().content; else return null;
+				const lc = value.toLowerCase();
+				if(lc === 'cancel') return null;
+				if(lc === 'finish') return results.length > 0 ? results : null;
+				valid = this.validate(value);
+			}
+
+			results.push(this.parse(value));
+
+			if(values) {
+				currentVal++;
+				if(currentVal === values.length) return results;
+			}
+		}
 	}
 
 	/**

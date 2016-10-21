@@ -167,7 +167,12 @@ class Command {
 		 */
 		this.args = info.args || null;
 		if(this.args) {
-			for(let i = 0; i < this.args.length; i++) this.args[i] = new CommandArgument(this, this.args[i]);
+			let hasInfinite = false;
+			for(let i = 0; i < this.args.length; i++) {
+				if(hasInfinite) throw new Error('No other argument may come after an infinite argument.');
+				this.args[i] = new CommandArgument(this, this.args[i]);
+				if(this.args[i].infinite) hasInfinite = true;
+			}
 		}
 
 		/**
@@ -198,7 +203,7 @@ class Command {
 		 * Whether the command is protected from being disabled
 		 * @type {boolean}
 		 */
-		this.guarded = info.guarded || false;
+		this.guarded = Boolean(info.guarded);
 
 		this._globalEnabled = true;
 		this._throttles = new Map();
