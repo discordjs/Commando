@@ -126,7 +126,7 @@ module.exports = class EvalCommand extends Command {
 			if(client.token) pattern += escapeRegex(client.token);
 			if(client.email) pattern += (pattern.length > 0 ? '|' : '') + escapeRegex(client.email);
 			if(client.password) pattern += (pattern.length > 0 ? '|' : '') + escapeRegex(client.password);
-			this._sensitivePattern = new RegExp(pattern, 'gi');
+			Object.defineProperty(this, '_sensitivePattern', { value: new RegExp(pattern, 'gi') });
 		}
 		return this._sensitivePattern;
 	}
