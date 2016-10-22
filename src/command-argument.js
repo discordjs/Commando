@@ -162,15 +162,7 @@ class CommandArgument {
 			let valid = value ? await this.validate(value) : false;
 
 			while(!valid || typeof valid === 'string') {
-				if(!value) {
-					await msg.reply(stripIndents`
-						${this.prompt}
-						${oneLine`
-							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
-							${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-						`}
-					`);
-				} else {
+				if(value) {
 					const escaped = escapeMarkdown(value).replace(/@/g, '@\u200b');
 					await msg.reply(stripIndents`
 						${valid ? valid : oneLine`
@@ -181,6 +173,14 @@ class CommandArgument {
 						${oneLine`
 							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
 							${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+						`}
+					`);
+				} else if(results.length === 0) {
+					await msg.reply(stripIndents`
+						${this.prompt}
+						${oneLine`
+							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
+							${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
 						`}
 					`);
 				}
