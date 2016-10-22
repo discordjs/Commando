@@ -159,7 +159,7 @@ class CommandArgument {
 		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		while(true) { // eslint-disable-line no-constant-condition
 			let value = values && values[currentVal] ? values[currentVal] : null;
-			let valid = value ? this.validate(value) : false;
+			let valid = value ? await this.validate(value) : false;
 
 			while(!valid || typeof valid === 'string') {
 				if(!value) {
