@@ -278,10 +278,10 @@ class CommandArgument {
 		}
 		if(!msg.guild) return false;
 		const search = value.toLowerCase();
-		let members = msg.guild.members.filterArray(_filterMembersInexact.bind(search));
+		let members = msg.guild.members.filterArray(filterMembersInexact(search));
 		if(members.length === 0) return false;
 		if(members.length === 1) return true;
-		const exactMembers = members.filter(_filterMembersExact.bind(search));
+		const exactMembers = members.filter(filterMembersExact(search));
 		if(exactMembers.length === 1) return true;
 		if(exactMembers.length > 0) members = exactMembers;
 		return members.length <= 15 ?
@@ -296,10 +296,10 @@ class CommandArgument {
 		if(matches) return msg.client.users.get(matches[1]) || null;
 		if(!msg.guild) return null;
 		const search = value.toLowerCase();
-		const members = msg.guild.members.filterArray(_filterMembersInexact.bind(search));
+		const members = msg.guild.members.filterArray(filterMembersInexact(search));
 		if(members.length === 0) return null;
 		if(members.length === 1) return members[0].user;
-		const exactMembers = members.filter(_filterMembersExact.bind(search));
+		const exactMembers = members.filter(filterMembersExact(search));
 		if(exactMembers.length === 1) return members[0].user;
 		return null;
 	}
@@ -314,10 +314,10 @@ class CommandArgument {
 			}
 		}
 		const search = value.toLowerCase();
-		let members = msg.guild.members.filterArray(_filterMembersInexact.bind(search));
+		let members = msg.guild.members.filterArray(filterMembersInexact(search));
 		if(members.length === 0) return false;
 		if(members.length === 1) return members[0];
-		const exactMembers = members.filter(_filterMembersExact.bind(search));
+		const exactMembers = members.filter(filterMembersExact(search));
 		if(exactMembers.length === 1) return members[0];
 		if(exactMembers.length > 0) members = exactMembers;
 		return members.length <= 15 ?
@@ -331,10 +331,10 @@ class CommandArgument {
 		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) return msg.guild.member(matches[1]) || null;
 		const search = value.toLowerCase();
-		const members = msg.guild.members.filterArray(_filterMembersInexact.bind(search));
+		const members = msg.guild.members.filterArray(filterMembersInexact(search));
 		if(members.length === 0) return null;
 		if(members.length === 1) return members[0];
-		const exactMembers = members.filter(_filterMembersExact.bind(search));
+		const exactMembers = members.filter(filterMembersExact(search));
 		if(exactMembers.length === 1) return members[0];
 		return null;
 	}
@@ -343,10 +343,10 @@ class CommandArgument {
 		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
 		if(matches) return msg.guild.roles.has(matches[1]);
 		const search = value.toLowerCase();
-		let roles = msg.guild.roles.filterArray(_filterNamesInexact.bind(search));
+		let roles = msg.guild.roles.filterArray(filterNamesInexact(search));
 		if(roles.length === 0) return false;
 		if(roles.length === 1) return true;
-		const exactRoles = roles.filter(_filterNamesExact.bind(search));
+		const exactRoles = roles.filter(filterNamesExact(search));
 		if(exactRoles.length === 1) return true;
 		if(exactRoles.length > 0) roles = exactRoles;
 		return `${disambiguation(roles.map(role => `${escapeMarkdown(role.name)}`), 'roles', null)}\n`;
@@ -356,10 +356,10 @@ class CommandArgument {
 		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
 		if(matches) return msg.guild.roles.get(matches[1]) || null;
 		const search = value.toLowerCase();
-		const roles = msg.guild.roles.filterArray(_filterNamesInexact.bind(search));
+		const roles = msg.guild.roles.filterArray(filterNamesInexact(search));
 		if(roles.length === 0) return null;
 		if(roles.length === 1) return roles[0];
-		const exactRoles = roles.filter(_filterNamesExact.bind(search));
+		const exactRoles = roles.filter(filterNamesExact(search));
 		if(exactRoles.length === 1) return roles[0];
 		return null;
 	}
@@ -368,10 +368,10 @@ class CommandArgument {
 		const matches = value.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) return msg.guild.channels.has(matches[1]);
 		const search = value.toLowerCase();
-		let channels = msg.guild.channels.filterArray(_filterNamesInexact.bind(search));
+		let channels = msg.guild.channels.filterArray(filterNamesInexact(search));
 		if(channels.length === 0) return false;
 		if(channels.length === 1) return true;
-		const exactChannels = channels.filter(_filterNamesExact.bind(search));
+		const exactChannels = channels.filter(filterNamesExact(search));
 		if(exactChannels.length === 1) return true;
 		if(exactChannels.length > 0) channels = exactChannels;
 		return `${disambiguation(channels.map(chan => escapeMarkdown(chan.name)), 'channels', null)}\n`;
@@ -381,33 +381,33 @@ class CommandArgument {
 		const matches = value.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) return msg.guild.channels.get(matches[1]) || null;
 		const search = value.toLowerCase();
-		const channels = msg.guild.channels.filterArray(_filterNamesInexact.bind(search));
+		const channels = msg.guild.channels.filterArray(filterNamesInexact(search));
 		if(channels.length === 0) return null;
 		if(channels.length === 1) return channels[0];
-		const exactChannels = channels.filter(_filterNamesExact.bind(search));
+		const exactChannels = channels.filter(filterNamesExact(search));
 		if(exactChannels.length === 1) return channels[0];
 		return null;
 	}
 }
 
-function _filterMembersExact(mem) {
-	return mem.user.username.toLowerCase() === this ||
-		(mem.nickname && mem.nickname.toLowerCase() === this) ||
-		`${mem.user.username.toLowerCase()}#${mem.user.discriminator}` === this;
+function filterMembersExact(search) {
+	return mem => mem.user.username.toLowerCase() === search ||
+		(mem.nickname && mem.nickname.toLowerCase() === search) ||
+		`${mem.user.username.toLowerCase()}#${mem.user.discriminator}` === search;
 }
 
-function _filterMembersInexact(mem) {
-	return mem.user.username.toLowerCase().includes(this) ||
-		(mem.nickname && mem.nickname.toLowerCase().includes(this)) ||
-		`${mem.user.username.toLowerCase()}#${mem.user.discriminator}`.includes(this);
+function filterMembersInexact(search) {
+	return mem => mem.user.username.toLowerCase().includes(search) ||
+		(mem.nickname && mem.nickname.toLowerCase().includes(search)) ||
+		`${mem.user.username.toLowerCase()}#${mem.user.discriminator}`.includes(search);
 }
 
-function _filterNamesExact(role) {
-	return role.name.toLowerCase() === this;
+function filterNamesExact(search) {
+	return thing => thing.name.toLowerCase() === search;
 }
 
-function _filterNamesInexact(role) {
-	return role.name.toLowerCase().includes(this);
+function filterNamesInexact(search) {
+	return thing => thing.name.toLowerCase().includes(search);
 }
 
 module.exports = CommandArgument;

@@ -269,7 +269,7 @@ class CommandRegistry {
 		// Find all matches
 		const lcSearch = searchString.toLowerCase();
 		const matchedGroups = this.groups.filterArray(
-			exact ? _groupFilterExact.bind(lcSearch) : _groupFilterInexact.bind(lcSearch)
+			exact ? groupFilterExact(lcSearch) : groupFilterInexact(lcSearch)
 		);
 		if(exact) return matchedGroups;
 
@@ -314,7 +314,7 @@ class CommandRegistry {
 		// Find all matches
 		const lcSearch = searchString.toLowerCase();
 		const matchedCommands = this.commands.filterArray(
-			exact ? _commandFilterExact.bind(lcSearch) : _commandFilterInexact.bind(lcSearch)
+			exact ? commandFilterExact(lcSearch) : commandFilterInexact(lcSearch)
 		);
 		if(exact) return matchedCommands;
 
@@ -352,24 +352,24 @@ class CommandRegistry {
 	}
 }
 
-function _groupFilterExact(grp) {
-	return grp.id === this || grp.name.toLowerCase() === this;
+function groupFilterExact(search) {
+	return grp => grp.id === search || grp.name.toLowerCase() === search;
 }
 
-function _groupFilterInexact(grp) {
-	return grp.id.includes(this) || grp.name.toLowerCase().includes(this);
+function groupFilterInexact(search) {
+	return grp => grp.id.includes(search) || grp.name.toLowerCase().includes(search);
 }
 
-function _commandFilterExact(cmd) {
-	return cmd.name === this ||
-		(cmd.aliases && cmd.aliases.some(ali => ali === this)) ||
-		`${cmd.groupID}:${cmd.memberName}` === this;
+function commandFilterExact(search) {
+	return cmd => cmd.name === search ||
+		(cmd.aliases && cmd.aliases.some(ali => ali === search)) ||
+		`${cmd.groupID}:${cmd.memberName}` === search;
 }
 
-function _commandFilterInexact(cmd) {
-	return cmd.name.includes(this) ||
-		`${cmd.groupID}:${cmd.memberName}` === this ||
-		(cmd.aliases && cmd.aliases.some(ali => ali.includes(this)));
+function commandFilterInexact(search) {
+	return cmd => cmd.name.includes(search) ||
+		`${cmd.groupID}:${cmd.memberName}` === search ||
+		(cmd.aliases && cmd.aliases.some(ali => ali.includes(search)));
 }
 
 module.exports = CommandRegistry;
