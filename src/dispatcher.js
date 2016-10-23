@@ -110,7 +110,7 @@ class CommandDispatcher extends EventEmitter {
 
 			if(!inhibited) {
 				if(cmdMsg.command) {
-					if(message.guild && !message.guild.isCommandEnabled(cmdMsg.command)) {
+					if(!cmdMsg.command.isEnabledIn(message.guild)) {
 						responses = await cmdMsg.reply(`The \`${cmdMsg.command.name}\` command is disabled.`);
 					} else if(!oldMessage || typeof oldCmdMsg !== 'undefined') {
 						responses = await cmdMsg.run();
