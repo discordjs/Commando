@@ -54,7 +54,9 @@ class GuildExtension {
 	isCommandEnabled(command) {
 		command = this.client.registry.resolveCommand(command);
 		if(command.guarded) return true;
-		if(!this._commandsEnabled || typeof this._commandsEnabled[command] === 'undefined') return command._globalEnabled;
+		if(!this._commandsEnabled || typeof this._commandsEnabled[command.name] === 'undefined') {
+			return command._globalEnabled;
+		}
 		return this._commandsEnabled[command.name];
 	}
 
