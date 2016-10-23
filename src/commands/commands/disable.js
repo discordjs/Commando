@@ -35,7 +35,7 @@ module.exports = class DisableCommandCommand extends Command {
 							${groups.length > 1 ? disambiguation(groups, 'groups') : ''}
 						`;
 					},
-					parse: val => this.client.registry.findCommands(val)[0] || this.client.registry.findGroups(val)[0]
+					parse: val => this.client.registry.findGroups(val)[0] || this.client.registry.findCommands(val)[0]
 				}
 			]
 		});
