@@ -169,6 +169,7 @@ class CommandRegistry {
 	 */
 	registerDefaultGroups() {
 		return this.registerGroups([
+			['commands', 'Commands', true],
 			['util', 'Utility']
 		]);
 	}
@@ -181,20 +182,20 @@ class CommandRegistry {
 	 * @param {boolean} [options.eval_=true] - Whether or not to register the built-in eval command
 	 * @param {boolean} [options.ping=true] - Whether or not to register the built-in ping command
 	 * @param {boolean} [options.commandState=true] - Whether or not to register the built-in command state commands
-	 * (enable, disable, toggle, list groups)
+	 * (enable, disable, reload, list groups)
 	 * @return {CommandRegistry}
 	 */
-	registerDefaultCommands({ help = true, prefix = true, eval_ = true, ping = true, commandState = true } = {}) {
+	registerDefaultCommands({ help = true, prefix = true, ping = true, eval_ = true, commandState = true } = {}) {
 		if(help) this.registerCommand(require('./commands/util/help'));
 		if(prefix) this.registerCommand(require('./commands/util/prefix'));
-		if(eval_) this.registerCommand(require('./commands/util/eval'));
 		if(ping) this.registerCommand(require('./commands/util/ping'));
+		if(eval_) this.registerCommand(require('./commands/util/eval'));
 		if(commandState) {
 			this.registerCommands([
-				require('./commands/util/groups'),
-				require('./commands/util/enable'),
-				require('./commands/util/disable'),
-				require('./commands/util/reload')
+				require('./commands/commands/groups'),
+				require('./commands/commands/enable'),
+				require('./commands/commands/disable'),
+				require('./commands/commands/reload')
 			]);
 		}
 		return this;

@@ -2,27 +2,27 @@ const { oneLine, stripIndents } = require('common-tags');
 const Command = require('../../command');
 const disambiguation = require('../../util').disambiguation;
 
-module.exports = class ReloadCommandCommand extends Command {
+module.exports = class EnableCommandCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'reload',
-			aliases: ['reload-command'],
-			group: 'util',
-			memberName: 'reload',
-			description: 'Reloads a command.',
-			format: '<command>',
+			name: 'enable',
+			aliases: ['enable-command', 'cmd-on', 'command-on'],
+			group: 'commands',
+			memberName: 'enable',
+			description: 'Enables a command or command group.',
+			format: '<command|group>',
 			details: oneLine`
-				The argument must be the name (partial or whole) of a command.
-				Only the bot owner may use this command.
+				The argument must be the name/ID (partial or whole) of a command or command group.
+				Only administrators may use this command.
 			`,
-			examples: ['reload some-command'],
+			examples: ['enable util', 'enable Utility', 'enable prefix'],
 			guarded: true,
 
 			args: [
 				{
 					key: 'cmdOrGrp',
 					label: 'command/group',
-					prompt: 'Which command or group would you like to reload?',
+					prompt: 'Which command or group would you like to toggle?',
 					validate: val => {
 						if(!val) return false;
 						const groups = this.client.registry.findGroups(val);
@@ -42,16 +42,17 @@ module.exports = class ReloadCommandCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return msg.author.id === this.client.options.owner;
+		if(!msg.guild) return msg.author.id === this.client.options.owner;
+		return msg.member.hasPermission('ADMINISTRATOR');
 	}
 
 	async run(msg, args) {
-		args.cmdOrGrp.reload();
-		if(args.cmdOrGrp.group) {
-			msg.reply(`Reloaded \`${args.cmdOrGrp.name}\` command.`);
-		} else {
-			msg.reply(`Reloaded all of the commands in the \`${args.cmdOrGrp.name}\` group.`);
+		if(args.cmdOrGrp.isEnabledIn(msg.guild)) {
+			return msg.reply(
+				`The \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'} is already enabled.`
+			);
 		}
-		return null;
+		args.cmdOrGrp.setEnabledIn(msg.guild, true);
+		return msg.reply(`Enabled the \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'}.`);
 	}
 };

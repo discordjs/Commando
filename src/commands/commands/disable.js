@@ -7,7 +7,7 @@ module.exports = class DisableCommandCommand extends Command {
 		super(client, {
 			name: 'disable',
 			aliases: ['disable-command', 'cmd-off', 'command-off'],
-			group: 'util',
+			group: 'commands',
 			memberName: 'disable',
 			description: 'Disables a command or command group.',
 			format: '<command|group>',
