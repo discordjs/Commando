@@ -196,7 +196,7 @@ class CommandDispatcher extends EventEmitter {
 	 */
 	parseMessage(message) {
 		// Find the command to run by patterns
-		for(const command of this.client.registry.commands) {
+		for(const command of this.registry.commands) {
 			if(!command.patterns) continue;
 			for(const pattern of command.patterns) {
 				const matches = pattern.exec(message.content);
@@ -223,7 +223,7 @@ class CommandDispatcher extends EventEmitter {
 	matchDefault(message, pattern, commandNameIndex = 1) {
 		const matches = pattern.exec(message.content);
 		if(!matches) return null;
-		const commands = this.client.registry.findCommands(matches[commandNameIndex], true);
+		const commands = this.registry.findCommands(matches[commandNameIndex], true);
 		if(commands.length !== 1 || !commands[0].defaultHandling) return new CommandMessage(message, null);
 		const argString = message.content.substring(matches[1].length + (matches[2] ? matches[2].length : 0));
 		return new CommandMessage(message, commands[0], argString);

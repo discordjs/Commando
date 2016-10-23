@@ -270,7 +270,7 @@ class CommandRegistry {
 		// Find all matches
 		const lcSearch = searchString.toLowerCase();
 		const matchedGroups = this.groups.filterArray(
-			exact ? this._exactGroupFilter.bind(lcSearch) : this._inexactGroupFilter.bind(lcSearch)
+			exact ? _groupFilterExact.bind(lcSearch) : _groupFilterInexact.bind(lcSearch)
 		);
 		if(exact) return matchedGroups;
 
@@ -315,7 +315,7 @@ class CommandRegistry {
 		// Find all matches
 		const lcSearch = searchString.toLowerCase();
 		const matchedCommands = this.commands.filterArray(
-			exact ? this._exactCommandFilter.bind(lcSearch) : this._inexactCommandFilter.bind(lcSearch)
+			exact ? _commandFilterExact.bind(lcSearch) : _commandFilterInexact.bind(lcSearch)
 		);
 		if(exact) return matchedCommands;
 
@@ -351,26 +351,26 @@ class CommandRegistry {
 		}
 		throw new Error('Unable to resolve command.');
 	}
+}
 
-	_exactGroupFilter(grp) {
-		return grp.id === this || grp.name.toLowerCase() === this;
-	}
+function _groupFilterExact(grp) {
+	return grp.id === this || grp.name.toLowerCase() === this;
+}
 
-	_inexactGroupFilter(grp) {
-		return grp.id.includes(this) || grp.name.toLowerCase().includes(this);
-	}
+function _groupFilterInexact(grp) {
+	return grp.id.includes(this) || grp.name.toLowerCase().includes(this);
+}
 
-	_exactCommandFilter(cmd) {
-		return cmd.name === this ||
-			(cmd.aliases && cmd.aliases.some(ali => ali === this)) ||
-			`${cmd.groupID}:${cmd.memberName}` === this;
-	}
+function _commandFilterExact(cmd) {
+	return cmd.name === this ||
+		(cmd.aliases && cmd.aliases.some(ali => ali === this)) ||
+		`${cmd.groupID}:${cmd.memberName}` === this;
+}
 
-	_inexactCommandFilter(cmd) {
-		return cmd.name.includes(this) ||
-			`${cmd.groupID}:${cmd.memberName}` === this ||
-			(cmd.aliases && cmd.aliases.some(ali => ali.includes(this)));
-	}
+function _commandFilterInexact(cmd) {
+	return cmd.name.includes(this) ||
+		`${cmd.groupID}:${cmd.memberName}` === this ||
+		(cmd.aliases && cmd.aliases.some(ali => ali.includes(this)));
 }
 
 module.exports = CommandRegistry;
