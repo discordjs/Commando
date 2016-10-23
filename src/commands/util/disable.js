@@ -47,6 +47,11 @@ module.exports = class DisableCommandCommand extends Command {
 	}
 
 	async run(msg, args) {
+		if(!args.cmdOrGrp.isEnabledIn(msg.guild)) {
+			return msg.reply(
+				`The \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'} is already disabled.`
+			);
+		}
 		if(args.cmdOrGrp.guarded) {
 			return msg.reply(
 				`You cannot disable the \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'}.`

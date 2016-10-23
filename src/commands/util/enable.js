@@ -47,6 +47,11 @@ module.exports = class EnableCommandCommand extends Command {
 	}
 
 	async run(msg, args) {
+		if(args.cmdOrGrp.isEnabledIn(msg.guild)) {
+			return msg.reply(
+				`The \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'} is already enabled.`
+			);
+		}
 		args.cmdOrGrp.setEnabledIn(msg.guild, true);
 		return msg.reply(`Enabled the \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'}.`);
 	}
