@@ -192,7 +192,6 @@ class CommandRegistry {
 		if(commandState) {
 			this.registerCommands([
 				require('./commands/util/groups'),
-				require('./commands/util/toggle'),
 				require('./commands/util/enable'),
 				require('./commands/util/disable'),
 				require('./commands/util/reload')
