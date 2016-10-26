@@ -19,7 +19,7 @@ It makes full use of ES2017's `async`/`await`.
 - Automatic command argument prompting
 
 ## Installation
-**Node 7.0.0 or newer is required.**
+**Node 7.0.0 or newer is required.**  
 `npm install --save discord.js-commando`
 
 When running a bot using Commando, make sure to run Node with the `--harmony` flag. Examples:
@@ -27,5 +27,5 @@ When running a bot using Commando, make sure to run Node with the `--harmony` fl
 - `pm2 start somebot.js --node-args='--harmony'`
 
 ## Documentation (WIP)
-[View the docs here.](https://gawdl3y.github.io/discord.js-commando/0.2.0/)
+[View the docs here.](https://gawdl3y.github.io/discord.js-commando/0.2.0/)  
 See the [discord.js documentation](http://hydrabolt.github.io/discord.js/#!/docs/tag/master/file/general/Welcome) as well.
