@@ -5,7 +5,7 @@
 [![Dependency status](https://david-dm.org/Gawdl3y/discord.js-commando.svg)](https://david-dm.org/Gawdl3y/discord.js-commando)
 [![License](https://img.shields.io/npm/l/discord.js-commando.svg)](LICENSE)
 
-This is the __**WIP**__ official command framework for discord.js.
+This is the __**WIP**__ official command framework for [discord.js](https://github.com/Gawdl3y/discord.js-commando).
 It makes full use of ES2017's `async`/`await`.
 
 ## Features
