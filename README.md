@@ -28,4 +28,4 @@ When running a bot using Commando, make sure to run Node with the `--harmony` fl
 
 ## Documentation (WIP)
 [View the docs here.](https://gawdl3y.github.io/discord.js-commando/0.2.0/)  
-See the [discord.js documentation](https://discord.js.org/#!/docs/tag/master/file/general/Welcome) as well.
+See the [discord.js documentation](https://discord.js.org/#!/docs) as well.
