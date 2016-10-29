@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>command-argument.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Command.html">Command</a><ul class='methods'><li data-type='method'><a href="Command.html#.usage">usage</a></li><li data-type='method'><a href="Command.html#hasPermission">hasPermission</a></li><li data-type='method'><a href="Command.html#isEnabledIn">isEnabledIn</a></li><li data-type='method'><a href="Command.html#isUsable">isUsable</a></li><li data-type='method'><a href="Command.html#reload">reload</a></li><li data-type='method'><a href="Command.html#run">run</a></li><li data-type='method'><a href="Command.html#setEnabledIn">setEnabledIn</a></li><li data-type='method'><a href="Command.html#usage">usage</a></li></ul></li><li><a href="CommandArgument.html">CommandArgument</a><ul class='methods'><li data-type='method'><a href="CommandArgument.html#obtain">obtain</a></li><li data-type='method'><a href="CommandArgument.html#obtainInfinite">obtainInfinite</a></li><li data-type='method'><a href="CommandArgument.html#parse">parse</a></li><li data-type='method'><a href="CommandArgument.html#validate">validate</a></li></ul></li><li><a href="CommandBuilder.html">CommandBuilder</a><ul class='methods'><li data-type='method'><a href="CommandBuilder.html#hasPermission">hasPermission</a></li><li data-type='method'><a href="CommandBuilder.html#info">info</a></li><li data-type='method'><a href="CommandBuilder.html#register">register</a></li><li data-type='method'><a href="CommandBuilder.html#run">run</a></li></ul></li><li><a href="CommandDispatcher.html">CommandDispatcher</a><ul class='methods'><li data-type='method'><a href="CommandDispatcher.html#addInhibitor">addInhibitor</a></li><li data-type='method'><a href="CommandDispatcher.html#removeInhibitor">removeInhibitor</a></li></ul></li><li><a href="CommandFormatError.html">CommandFormatError</a></li><li><a href="CommandGroup.html">CommandGroup</a><ul class='methods'><li data-type='method'><a href="CommandGroup.html#isEnabledIn">isEnabledIn</a></li><li data-type='method'><a href="CommandGroup.html#reload">reload</a></li><li data-type='method'><a href="CommandGroup.html#setEnabledIn">setEnabledIn</a></li></ul></li><li><a href="CommandMessage.html">CommandMessage</a><ul class='methods'><li data-type='method'><a href="CommandMessage.html#.parseArgs">parseArgs</a></li><li data-type='method'><a href="CommandMessage.html#anyUsage">anyUsage</a></li><li data-type='method'><a href="CommandMessage.html#code">code</a></li><li data-type='method'><a href="CommandMessage.html#delete">delete</a></li><li data-type='method'><a href="CommandMessage.html#direct">direct</a></li><li data-type='method'><a href="CommandMessage.html#edit">edit</a></li><li data-type='method'><a href="CommandMessage.html#editCode">editCode</a></li><li data-type='method'><a href="CommandMessage.html#isMentioned">isMentioned</a></li><li data-type='method'><a href="CommandMessage.html#obtainArgs">obtainArgs</a></li><li data-type='method'><a href="CommandMessage.html#parseArgs">parseArgs</a></li><li data-type='method'><a href="CommandMessage.html#pin">pin</a></li><li data-type='method'><a href="CommandMessage.html#reply">reply</a></li><li data-type='method'><a href="CommandMessage.html#run">run</a></li><li data-type='method'><a href="CommandMessage.html#say">say</a></li><li data-type='method'><a href="CommandMessage.html#unpin">unpin</a></li><li data-type='method'><a href="CommandMessage.html#usage">usage</a></li></ul></li><li><a href="CommandoClient.html">CommandoClient</a></li><li><a href="CommandRegistry.html">CommandRegistry</a><ul class='methods'><li data-type='method'><a href="CommandRegistry.html#buildCommand">buildCommand</a></li><li data-type='method'><a href="CommandRegistry.html#findCommands">findCommands</a></li><li data-type='method'><a href="CommandRegistry.html#findGroups">findGroups</a></li><li data-type='method'><a href="CommandRegistry.html#registerCommand">registerCommand</a></li><li data-type='method'><a href="CommandRegistry.html#registerCommands">registerCommands</a></li><li data-type='method'><a href="CommandRegistry.html#registerCommandsIn">registerCommandsIn</a></li><li data-type='method'><a href="CommandRegistry.html#registerDefaultCommands">registerDefaultCommands</a></li><li data-type='method'><a href="CommandRegistry.html#registerDefaultGroups">registerDefaultGroups</a></li><li data-type='method'><a href="CommandRegistry.html#registerDefaults">registerDefaults</a></li><li data-type='method'><a href="CommandRegistry.html#registerEvalObject">registerEvalObject</a></li><li data-type='method'><a href="CommandRegistry.html#registerEvalObjects">registerEvalObjects</a></li><li data-type='method'><a href="CommandRegistry.html#registerGroup">registerGroup</a></li><li data-type='method'><a href="CommandRegistry.html#registerGroups">registerGroups</a></li><li data-type='method'><a href="CommandRegistry.html#reregisterCommand">reregisterCommand</a></li><li data-type='method'><a href="CommandRegistry.html#resolveCommand">resolveCommand</a></li><li data-type='method'><a href="CommandRegistry.html#resolveGroup">resolveGroup</a></li></ul></li><li><a href="FriendlyError.html">FriendlyError</a></li></ul><h3>Externals</h3><ul><li><a href="external-Channel.html">Channel</a></li><li><a href="external-ClientOptions.html">ClientOptions</a></li><li><a href="external-Guild.html">Guild</a></li><li><a href="external-GuildMember.html">GuildMember</a></li><li><a href="external-GuildResolvable.html">GuildResolvable</a></li><li><a href="external-Message.html">Message</a></li><li><a href="external-StringResolvable.html">StringResolvable</a></li><li><a href="external-User.html">User</a></li></ul><h3>Events</h3><ul><li><a href="CommandoClient.html#event:commandBlocked">commandBlocked</a></li><li><a href="CommandoClient.html#event:commandError">commandError</a></li><li><a href="CommandoClient.html#event:commandPrefixChange">commandPrefixChange</a></li><li><a href="CommandoClient.html#event:commandRegister">commandRegister</a></li><li><a href="CommandoClient.html#event:commandReregister">commandReregister</a></li><li><a href="CommandoClient.html#event:commandRun">commandRun</a></li><li><a href="CommandoClient.html#event:commandStatusChange">commandStatusChange</a></li><li><a href="CommandoClient.html#event:groupRegister">groupRegister</a></li><li><a href="CommandoClient.html#event:groupStatusChange">groupStatusChange</a></li><li><a href="CommandoClient.html#event:unknownCommand">unknownCommand</a></li></ul><h3>Interfaces</h3><ul><li><a href="GuildExtension.html">GuildExtension</a><ul class='methods'><li data-type='method'><a href="GuildExtension.html#.applyToClass">applyToClass</a></li><li data-type='method'><a href="GuildExtension.html#commandUsage">commandUsage</a></li><li data-type='method'><a href="GuildExtension.html#isCommandEnabled">isCommandEnabled</a></li><li data-type='method'><a href="GuildExtension.html#isGroupEnabled">isGroupEnabled</a></li><li data-type='method'><a href="GuildExtension.html#setCommandEnabled">setCommandEnabled</a></li><li data-type='method'><a href="GuildExtension.html#setGroupEnabled">setGroupEnabled</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">command-argument.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const escapeMarkdown = require('discord.js').escapeMarkdown;
+const { oneLine, stripIndents } = require('common-tags');
+const disambiguation = require('./util').disambiguation;
+
+const types = ['string', 'integer', 'float', 'boolean', 'user', 'member', 'role', 'channel'];
+
+/** A fancy argument for a command */
+class CommandArgument {
+	/**
+	 * @typedef {Object} CommandArgumentInfo
+	 * @property {string} key - Key for the argument
+	 * @property {string} [label=key] - Label for the argument
+	 * @property {string} prompt - First prompt for the argument when it wasn't specified
+	 * @property {string} [type] - Type of the argument
+	 * ('string', 'integer', 'float', 'user', 'member', 'role', or 'channel')
+	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
+	 * @property {ArgumentValidator} [validate] - Validator function for the argument
+	 * @property {ArgumentParser} [parse] - Parser function for the argument
+	 * @property {number} [wait=30] - How long to wait for input (in seconds)
+	 */
+
+	/**
+	 * Function that validates an input value string
+	 * @typedef {function} ArgumentValidator
+	 * @param {string} value - Value to check for validity
+	 * @return {Promise&lt;boolean|string>|boolean|string} If a string is returned, it is considered to be the error message
+	 * for the validation.
+	 */
+
+	/**
+	 * Function that parses an input value string into a proper value for the argument
+	 * @typedef {function} ArgumentParser
+	 * @param {string} value - Value to parse
+	 * @return {Promise&lt;*>|*}
+	 */
+
+	/**
+	 * @param {Command} command - Command the argument is for
+	 * @param {CommandArgumentInfo} info - Information for the command argument
+	 */
+	constructor(command, info) {
+		if(!command) throw new Error('The command must be specified.');
+		if(!info) throw new Error('The command argument info must be specified.');
+		if(typeof info.key !== 'string') throw new TypeError('Command argument key must be a string.');
+		if(info.label &amp;&amp; typeof info.label !== 'string') throw new TypeError('Command argument label must be a string.');
+		if(typeof info.prompt !== 'string') throw new TypeError('Command argument prompt must be a string.');
+		if(!info.type &amp;&amp; !info.validate) {
+			throw new Error('Command argument must have either "type" or "validate" specified.');
+		}
+		if(info.type &amp;&amp; !types.includes(info.type)) {
+			throw new RangeError('Command argument type must be one of "string", "integer", "float", or "boolean".');
+		}
+		if(info.validate &amp;&amp; typeof info.validate !== 'function') {
+			throw new TypeError('Command argument validate must be a function.');
+		}
+		if(info.parse &amp;&amp; typeof info.parse !== 'function') {
+			throw new TypeError('Command argument parse must be a function.');
+		}
+		if(!info.type &amp;&amp; (!info.validate || !info.parse)) {
+			throw new Error('Command argument must have both validate and parse since it doesn\'t have a type.');
+		}
+		if(typeof info.wait !== 'undefined' &amp;&amp; (typeof info.wait !== 'number' || Number.isNaN(info.wait))) {
+			throw new TypeError('Command argument wait must be a number.');
+		}
+
+		/**
+		 * Command the argument is for
+		 * @type {Command}
+		 */
+		this.command = command;
+
+		/**
+		 * Key for the argument
+		 * @type {string}
+		 */
+		this.key = info.key;
+
+		/**
+		 * Label for the argument
+		 * @type {string}
+		 */
+		this.label = info.label || info.key;
+
+		/**
+		 * Question prompt for the argument
+		 * @type {string}
+		 */
+		this.prompt = info.prompt;
+
+		/**
+		 * Type of the argument ('string', 'integer', 'float', 'boolean', 'user', 'member', 'role', or 'channel')
+		 * @type {?string}
+		 */
+		this.type = info.type || null;
+
+		/**
+		 * Whether the argument accepts infinite values
+		 * @type {boolean}
+		 */
+		this.infinite = Boolean(info.infinite);
+
+		/**
+		 * Validator function for validating a value for the argument
+		 * @type {ArgumentValidator}
+		 */
+		this.validator = info.validate || null;
+
+		/**
+		 * Parser function for parsing a value for the argument
+		 * @type {ArgumentParser}
+		 */
+		this.parser = info.parse || null;
+
+		/**
+		 * How long to wait for input (in seconds)
+		 * @type {number}
+		 */
+		this.wait = typeof info.wait !== 'undefined' ? info.wait : 30;
+	}
+
+	/**
+	 * Prompts the user and obtains the value for the argument
+	 * @param {Message} msg - Message that triggered the command
+	 * @param {string} [value] - Pre-provided value for the argument
+	 * @return {Promise&lt;?*>}
+	 */
+	async obtain(msg, value) {
+		if(this.infinite) return this.obtainInfinite(msg, value);
+		const wait = this.wait > 0 &amp;&amp; this.wait !== Infinity ? this.wait * 1000 : undefined;
+		let valid = value ? await this.validate(value, msg) : false;
+		while(!valid || typeof valid === 'string') {
+			await msg.reply(stripIndents`
+				${!value ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
+				${oneLine`
+					Respond with \`cancel\` to cancel the command.
+					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+				`}
+			`);
+			const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
+				maxMatches: 1,
+				time: wait
+			});
+			if(responses &amp;&amp; responses.size === 1) value = responses.first().content; else return null;
+			if(value.toLowerCase() === 'cancel') return null;
+			valid = await this.validate(value, msg);
+		}
+		return this.parse(value, msg);
+	}
+
+	/**
+	 * Prompts the user and obtains multiple values for the argument
+	 * @param {Message} msg - Message that triggered the command
+	 * @param {string[]} [values] - Pre-provided values for the argument
+	 * @return {Promise&lt;?Array&lt;*>>}
+	 */
+	async obtainInfinite(msg, values) {
+		const results = [];
+		let currentVal = 0;
+		const wait = this.wait > 0 &amp;&amp; this.wait !== Infinity ? this.wait * 1000 : undefined;
+		while(true) { // eslint-disable-line no-constant-condition
+			let value = values &amp;&amp; values[currentVal] ? values[currentVal] : null;
+			let valid = value ? await this.validate(value) : false;
+
+			while(!valid || typeof valid === 'string') {
+				if(value) {
+					const escaped = escapeMarkdown(value).replace(/@/g, '@\u200b');
+					await msg.reply(stripIndents`
+						${valid ? valid : oneLine`
+							You provided an invalid ${this.label},
+							"${escaped.length &lt; 1850 ? escaped : '[too long]'}".
+							Please try again.
+						`}
+						${oneLine`
+							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
+							${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+						`}
+					`);
+				} else if(results.length === 0) {
+					await msg.reply(stripIndents`
+						${this.prompt}
+						${oneLine`
+							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
+							${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
+						`}
+					`);
+				}
+
+				const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
+					maxMatches: 1,
+					time: wait
+				});
+				if(responses &amp;&amp; responses.size === 1) value = responses.first().content; else return null;
+				const lc = value.toLowerCase();
+				if(lc === 'cancel') return null;
+				if(lc === 'finish') return results.length > 0 ? results : null;
+				valid = await this.validate(value, msg);
+			}
+
+			results.push(await this.parse(value, msg));
+
+			if(values) {
+				currentVal++;
+				if(currentVal === values.length) return results;
+			}
+		}
+	}
+
+	/**
+	 * Checks if a value is valid for the argument
+	 * @param {string} value - Value to check
+	 * @param {Message} msg - Message that triggered the command
+	 * @return {Promise&lt;boolean|string>}
+	 */
+	async validate(value, msg) {
+		if(this.validator) return this.validator(value);
+		switch(this.type) {
+			case 'string':
+				return Boolean(value);
+			case 'integer':
+				return !Number.isNaN(Number.parseInt(value));
+			case 'float':
+				return !Number.isNaN(Number.parseFloat(value));
+			case 'boolean':
+				return ['true', 'false', 'yes', 'no', 'on', 'off'].includes(value.toLowerCase());
+			case 'user':
+				return this.constructor.validateUser(value, msg);
+			case 'member':
+				return this.constructor.validateMember(value, msg);
+			case 'role':
+				return this.constructor.validateRole(value, msg);
+			case 'channel':
+				return this.constructor.validateChannel(value, msg);
+			default:
+				throw new RangeError('Unknown command argument type.');
+		}
+	}
+
+	/**
+	 * Parses a value string into a proper value for the argument
+	 * @param {string} value - Value to parse
+	 * @param {Message} msg - Message that triggered the command
+	 * @return {Promise&lt;*>}
+	 */
+	async parse(value, msg) {
+		if(this.parser) return this.parser(value);
+		switch(this.type) {
+			case 'string':
+				return String(value);
+			case 'integer':
+				return Number.parseInt(value);
+			case 'float':
+				return Number.parseFloat(value);
+			case 'boolean':
+				if(['true', 'yes', 'on'].includes(value.toLowerCase())) return true;
+				if(['false', 'no', 'off'].includes(value.toLowerCase())) return false;
+				throw new RangeError('Unknown boolean value.');
+			case 'user':
+				return this.constructor.parseUser(value, msg);
+			case 'member':
+				return this.constructor.parseMember(value, msg);
+			case 'role':
+				return this.constructor.parseRole(value, msg);
+			case 'channel':
+				return this.constructor.parseChannel(value, msg);
+			default:
+				throw new RangeError('Unknown command argument type.');
+		}
+	}
+
+	static async validateUser(value, msg) {
+		const matches = value.match(/^(?:&lt;@!?)?([0-9]+)>?$/);
+		if(matches) {
+			try {
+				return await msg.client.fetchUser(matches[1]);
+			} catch(err) {
+				return false;
+			}
+		}
+		if(!msg.guild) return false;
+		const search = value.toLowerCase();
+		let members = msg.guild.members.filterArray(memberFilterInexact(search));
+		if(members.length === 0) return false;
+		if(members.length === 1) return true;
+		const exactMembers = members.filter(memberFilterExact(search));
+		if(exactMembers.length === 1) return true;
+		if(exactMembers.length > 0) members = exactMembers;
+		return members.length &lt;= 15 ?
+			`${disambiguation(
+				members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), 'users', null
+			)}\n` :
+			'Multiple users found. Please be more specific.';
+	}
+
+	static parseUser(value, msg) {
+		const matches = value.match(/^(?:&lt;@!?)?([0-9]+)>?$/);
+		if(matches) return msg.client.users.get(matches[1]) || null;
+		if(!msg.guild) return null;
+		const search = value.toLowerCase();
+		const members = msg.guild.members.filterArray(memberFilterInexact(search));
+		if(members.length === 0) return null;
+		if(members.length === 1) return members[0].user;
+		const exactMembers = members.filter(memberFilterExact(search));
+		if(exactMembers.length === 1) return members[0].user;
+		return null;
+	}
+
+	static async validateMember(value, msg) {
+		const matches = value.match(/^(?:&lt;@!?)?([0-9]+)>?$/);
+		if(matches) {
+			try {
+				return await msg.guild.fetchMember(await msg.client.fetchUser(matches[1]));
+			} catch(err) {
+				return false;
+			}
+		}
+		const search = value.toLowerCase();
+		let members = msg.guild.members.filterArray(memberFilterInexact(search));
+		if(members.length === 0) return false;
+		if(members.length === 1) return members[0];
+		const exactMembers = members.filter(memberFilterExact(search));
+		if(exactMembers.length === 1) return members[0];
+		if(exactMembers.length > 0) members = exactMembers;
+		return members.length &lt;= 15 ?
+			`${disambiguation(
+				members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), 'users', null
+			)}\n` :
+			'Multiple users found. Please be more specific.';
+	}
+
+	static parseMember(value, msg) {
+		const matches = value.match(/^(?:&lt;@!?)?([0-9]+)>?$/);
+		if(matches) return msg.guild.member(matches[1]) || null;
+		const search = value.toLowerCase();
+		const members = msg.guild.members.filterArray(memberFilterInexact(search));
+		if(members.length === 0) return null;
+		if(members.length === 1) return members[0];
+		const exactMembers = members.filter(memberFilterExact(search));
+		if(exactMembers.length === 1) return members[0];
+		return null;
+	}
+
+	static validateRole(value, msg) {
+		const matches = value.match(/^(?:&lt;@&amp;)?([0-9]+)>?$/);
+		if(matches) return msg.guild.roles.has(matches[1]);
+		const search = value.toLowerCase();
+		let roles = msg.guild.roles.filterArray(nameFilterInexact(search));
+		if(roles.length === 0) return false;
+		if(roles.length === 1) return true;
+		const exactRoles = roles.filter(nameFilterExact(search));
+		if(exactRoles.length === 1) return true;
+		if(exactRoles.length > 0) roles = exactRoles;
+		return `${disambiguation(roles.map(role => `${escapeMarkdown(role.name)}`), 'roles', null)}\n`;
+	}
+
+	static parseRole(value, msg) {
+		const matches = value.match(/^(?:&lt;@&amp;)?([0-9]+)>?$/);
+		if(matches) return msg.guild.roles.get(matches[1]) || null;
+		const search = value.toLowerCase();
+		const roles = msg.guild.roles.filterArray(nameFilterInexact(search));
+		if(roles.length === 0) return null;
+		if(roles.length === 1) return roles[0];
+		const exactRoles = roles.filter(nameFilterExact(search));
+		if(exactRoles.length === 1) return roles[0];
+		return null;
+	}
+
+	static validateChannel(value, msg) {
+		const matches = value.match(/^(?:&lt;#)?([0-9]+)>?$/);
+		if(matches) return msg.guild.channels.has(matches[1]);
+		const search = value.toLowerCase();
+		let channels = msg.guild.channels.filterArray(nameFilterInexact(search));
+		if(channels.length === 0) return false;
+		if(channels.length === 1) return true;
+		const exactChannels = channels.filter(nameFilterExact(search));
+		if(exactChannels.length === 1) return true;
+		if(exactChannels.length > 0) channels = exactChannels;
+		return `${disambiguation(channels.map(chan => escapeMarkdown(chan.name)), 'channels', null)}\n`;
+	}
+
+	static parseChannel(value, msg) {
+		const matches = value.match(/^(?:&lt;#)?([0-9]+)>?$/);
+		if(matches) return msg.guild.channels.get(matches[1]) || null;
+		const search = value.toLowerCase();
+		const channels = msg.guild.channels.filterArray(nameFilterInexact(search));
+		if(channels.length === 0) return null;
+		if(channels.length === 1) return channels[0];
+		const exactChannels = channels.filter(nameFilterExact(search));
+		if(exactChannels.length === 1) return channels[0];
+		return null;
+	}
+}
+
+function memberFilterExact(search) {
+	return mem => mem.user.username.toLowerCase() === search ||
+		(mem.nickname &amp;&amp; mem.nickname.toLowerCase() === search) ||
+		`${mem.user.username.toLowerCase()}#${mem.user.discriminator}` === search;
+}
+
+function memberFilterInexact(search) {
+	return mem => mem.user.username.toLowerCase().includes(search) ||
+		(mem.nickname &amp;&amp; mem.nickname.toLowerCase().includes(search)) ||
+		`${mem.user.username.toLowerCase()}#${mem.user.discriminator}`.includes(search);
+}
+
+function nameFilterExact(search) {
+	return thing => thing.name.toLowerCase() === search;
+}
+
+function nameFilterInexact(search) {
+	return thing => thing.name.toLowerCase().includes(search);
+}
+
+module.exports = CommandArgument;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Fri Oct 28 2016 23:08:54 GMT-0400 (Eastern Daylight Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
