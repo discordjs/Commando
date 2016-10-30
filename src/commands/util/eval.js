@@ -65,7 +65,7 @@ module.exports = class EvalCommand extends Command {
 			this.lastResult = eval(args.script);
 			hrDiff = process.hrtime(hrStart);
 		} catch(err) {
-			return `Error while evaluating: \`${err}\``;
+			return msg.reply(`Error while evaluating: \`${err}\``);
 		}
 
 		// Prepare for callback time and respond
