@@ -27,5 +27,5 @@ When running a bot using Commando, make sure to run Node with the `--harmony` fl
 - `pm2 start somebot.js --node-args='--harmony'`
 
 ## Documentation (WIP)
-[View the docs here.](https://gawdl3y.github.io/discord.js-commando/0.3.0/)  
+[View the docs here.](https://gawdl3y.github.io/discord.js-commando/0.4.0/)  
 See the [discord.js documentation](https://discord.js.org/#!/docs) as well.
