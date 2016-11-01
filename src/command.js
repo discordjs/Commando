@@ -168,8 +168,14 @@ class Command {
 		this.args = info.args || null;
 		if(this.args) {
 			let hasInfinite = false;
+			let hasOptional = false;
 			for(let i = 0; i < this.args.length; i++) {
 				if(hasInfinite) throw new Error('No other argument may come after an infinite argument.');
+				if(this.args[i].default !== null) {
+					hasOptional = true;
+				} else if(hasOptional) {
+					throw new Error('Required arguments may not come after optional arguments.');
+				}
 				this.args[i] = new CommandArgument(this, this.args[i]);
 				if(this.args[i].infinite) hasInfinite = true;
 			}

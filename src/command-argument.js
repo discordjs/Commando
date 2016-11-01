@@ -2,7 +2,7 @@ const escapeMarkdown = require('discord.js').escapeMarkdown;
 const { oneLine, stripIndents } = require('common-tags');
 const disambiguation = require('./util').disambiguation;
 
-const types = ['string', 'integer', 'float', 'boolean', 'user', 'member', 'role', 'channel', 'message'];
+const types = new Set(['string', 'integer', 'float', 'boolean', 'user', 'member', 'role', 'channel', 'message']);
 
 /** A fancy argument for a command */
 class CommandArgument {
@@ -17,6 +17,7 @@ class CommandArgument {
 	 * If type is 'string', this is the maximum length of the string.
 	 * @property {number} [min] - If type is 'integer' or 'float', this is the minimum value of the number.
 	 * If type is 'string', this is the minimum length of the string.
+	 * @property {*} [default] - Default value for the argument (makes the argument optional - cannot be `null`)
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
 	 * @property {ArgumentValidator} [validate] - Validator function for the argument
 	 * @property {ArgumentParser} [parse] - Parser function for the argument
@@ -51,7 +52,7 @@ class CommandArgument {
 		if(!info.type && !info.validate) {
 			throw new Error('Command argument must have either "type" or "validate" specified.');
 		}
-		if(info.type && !types.includes(info.type)) {
+		if(info.type && !types.has(info.type)) {
 			throw new RangeError(
 				'Command argument type must be one of "string", "integer", "float", "boolean", "user", ' +
 				'"member", "role", "channel", or "message".'
@@ -115,6 +116,12 @@ class CommandArgument {
 		this.min = info.min || null;
 
 		/**
+		 * The default value for the argument
+		 * @type {?*}
+		 */
+		this.default = typeof info.default !== 'undefined' ? info.default : null;
+
+		/**
 		 * Whether the argument accepts an infinite number of values
 		 * @type {boolean}
 		 */
@@ -146,6 +153,7 @@ class CommandArgument {
 	 * @return {Promise<?*>}
 	 */
 	async obtain(msg, value) {
+		if(!value && this.default !== null) return this.default;
 		if(this.infinite) return this.obtainInfinite(msg, value);
 		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		let valid = value ? await this.validate(value, msg) : false;

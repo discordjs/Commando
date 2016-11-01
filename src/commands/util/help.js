@@ -16,15 +16,24 @@ module.exports = class HelpCommand extends Command {
 				If it isn't specified, all available commands will be listed.
 			`,
 			examples: ['help', 'help roll'],
-			guarded: true
+			guarded: true,
+
+			args: [
+				{
+					key: 'command',
+					prompt: 'Which command would you like to view the help for?',
+					type: 'string',
+					default: ''
+				}
+			]
 		});
 	}
 
-	async run(msg, arg) {
+	async run(msg, args) {
 		const groups = this.client.registry.groups;
-		const commands = this.client.registry.findCommands(arg, false, msg);
-		const showAll = arg && arg.toLowerCase() === 'all';
-		if(arg && !showAll) {
+		const commands = this.client.registry.findCommands(args.command, false, msg);
+		const showAll = args.command && args.command.toLowerCase() === 'all';
+		if(args.command && !showAll) {
 			if(commands.length === 1) {
 				let help = stripIndents`
 					${oneLine`

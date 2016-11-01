@@ -15,12 +15,22 @@ module.exports = class PrefixCommand extends Command {
 				If the prefix is "none", the prefix will be removed entirely, only allowing mentions to run commands.
 				Only administrators may change the prefix.
 			`,
-			examples: ['prefix', 'prefix -', 'prefix omg!', 'prefix default', 'prefix none']
+			examples: ['prefix', 'prefix -', 'prefix omg!', 'prefix default', 'prefix none'],
+
+			args: [
+				{
+					key: 'prefix',
+					prompt: 'What would you like to set the bot\'s prefix to?',
+					type: 'string',
+					max: 15,
+					default: ''
+				}
+			]
 		});
 	}
 
-	async run(msg, arg) {
-		if(arg) {
+	async run(msg, args) {
+		if(args.prefix) {
 			if(msg.guild) {
 				if(!msg.member.hasPermission('ADMINISTRATOR')) {
 					return msg.reply('Only administrators may change the command prefix.');
@@ -30,15 +40,15 @@ module.exports = class PrefixCommand extends Command {
 			}
 
 			// Save the prefix
-			const lowercase = arg.toLowerCase();
-			const prefix = lowercase === 'none' ? '' : arg;
+			const lowercase = args.prefix.toLowerCase();
+			const prefix = lowercase === 'none' ? '' : args.prefix;
 			let response;
 			if(lowercase === 'default') {
 				if(msg.guild) msg.guild.commandPrefix = null; else this.client.commandPrefix = null;
 				response = `Reset the command prefix to the default (currently \`${this.client.options.commandPrefix}\`).`;
 			} else {
 				if(msg.guild) msg.guild.commandPrefix = prefix; else this.client.commandPrefix = prefix;
-				response = prefix ? `Set the command prefix to \`${arg}\`.` : 'Removed the command prefix entirely.';
+				response = prefix ? `Set the command prefix to \`${args.prefix}\`.` : 'Removed the command prefix entirely.';
 			}
 
 			// Build the pattern
