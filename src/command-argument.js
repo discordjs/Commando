@@ -373,7 +373,7 @@ class CommandArgument {
 	 * Parses a string into a User object
 	 * @param {string} value - String to parse
 	 * @param {CommandMessage} msg - Message that the value is from
-	 * @return {Promise<User>}
+	 * @return {User}
 	 */
 	static parseUser(value, msg) {
 		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
@@ -421,7 +421,7 @@ class CommandArgument {
 	 * Parses a string into a GuildMember object
 	 * @param {string} value - String to parse
 	 * @param {CommandMessage} msg - Message that the value is from
-	 * @return {Promise<GuildMember>}
+	 * @return {GuildMember}
 	 */
 	static parseMember(value, msg) {
 		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
@@ -439,7 +439,7 @@ class CommandArgument {
 	 * Checks if a string can be interpreted as a Role object
 	 * @param {string} value - String to validate
 	 * @param {CommandMessage} msg - Message that the value is from
-	 * @return {Promise<boolean>}
+	 * @return {boolean}
 	 */
 	static validateRole(value, msg) {
 		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
@@ -458,7 +458,7 @@ class CommandArgument {
 	 * Parses a string into a Role object
 	 * @param {string} value - String to parse
 	 * @param {CommandMessage} msg - Message that the value is from
-	 * @return {Promise<Role>}
+	 * @return {Role}
 	 */
 	static parseRole(value, msg) {
 		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
@@ -476,7 +476,7 @@ class CommandArgument {
 	 * Checks if a string can be interpreted as a Channel object
 	 * @param {string} value - String to validate
 	 * @param {CommandMessage} msg - Message that the value is from
-	 * @return {Promise<boolean>}
+	 * @return {boolean}
 	 */
 	static validateChannel(value, msg) {
 		const matches = value.match(/^(?:<#)?([0-9]+)>?$/);
@@ -495,7 +495,7 @@ class CommandArgument {
 	 * Parses a string into a Channel object
 	 * @param {string} value - String to parse
 	 * @param {CommandMessage} msg - Message that the value is from
-	 * @return {Promise<Channel>}
+	 * @return {Channel}
 	 */
 	static parseChannel(value, msg) {
 		const matches = value.match(/^(?:<#)?([0-9]+)>?$/);
