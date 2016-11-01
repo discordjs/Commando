@@ -28,6 +28,8 @@ class CommandArgument {
 	 * Function that validates an input value string
 	 * @typedef {function} ArgumentValidator
 	 * @param {string} value - Value to check for validity
+	 * @param {CommandMessage} msg - Message that the value came from
+	 * @param {CommandArgument} arg - Argument that the validator is for
 	 * @return {Promise<boolean|string>|boolean|string} If a string is returned, it is considered to be the error message
 	 * for the validation.
 	 */
@@ -36,6 +38,8 @@ class CommandArgument {
 	 * Function that parses an input value string into a proper value for the argument
 	 * @typedef {function} ArgumentParser
 	 * @param {string} value - Value to parse
+	 * @param {CommandMessage} msg - Message that the value came from
+	 * @param {CommandArgument} arg - Argument that the parser is for
 	 * @return {Promise<*>|*}
 	 */
 
