@@ -107,7 +107,7 @@ class CommandRegistry {
 
 			// Verify that it's an actual command
 			if(!command || !(command instanceof Command)) {
-				this.client.emit('warn', 'Attempting to register an invalid command object: ${command}; skipping');
+				this.client.emit('warn', 'Attempting to register an invalid command object: ${command}; skipping.');
 				continue;
 			}
 
@@ -230,7 +230,7 @@ class CommandRegistry {
 		 * @param {Command} oldCommand - Old command
 		 */
 		this.client.emit('commandReregister', command, oldCommand);
-		this.client.emit('debug', `Reregistered command ${command.groupID}:${command.memberName}`);
+		this.client.emit('debug', `Reregistered command ${command.groupID}:${command.memberName}.`);
 	}
 
 	/**
@@ -246,7 +246,7 @@ class CommandRegistry {
 		 * @param {Command} command - Command that was unregistered
 		 */
 		this.client.emit('commandUnregister', command);
-		this.client.emit('debug', `Unregistered command ${command.groupID}:${command.memberName}`);
+		this.client.emit('debug', `Unregistered command ${command.groupID}:${command.memberName}.`);
 	}
 
 	/**
