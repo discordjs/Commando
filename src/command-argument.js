@@ -13,6 +13,10 @@ class CommandArgument {
 	 * @property {string} prompt - First prompt for the argument when it wasn't specified
 	 * @property {string} [type] - Type of the argument
 	 * ('string', 'integer', 'float', 'user', 'member', 'role', or 'channel')
+	 * @property {number} [max] - If type is 'integer' or 'float', this is the maximum value of the number.
+	 * If type is 'string', this is the maximum length of the string.
+	 * @property {number} [min] - If type is 'integer' or 'float', this is the minimum value of the number.
+	 * If type is 'string', this is the minimum length of the string.
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
 	 * @property {ArgumentValidator} [validate] - Validator function for the argument
 	 * @property {ArgumentParser} [parse] - Parser function for the argument
@@ -38,7 +42,7 @@ class CommandArgument {
 	 * @param {Command} command - Command the argument is for
 	 * @param {CommandArgumentInfo} info - Information for the command argument
 	 */
-	constructor(command, info) {
+	constructor(command, info) { // eslint-disable-line complexity
 		if(!command) throw new Error('The command must be specified.');
 		if(!info) throw new Error('The command argument info must be specified.');
 		if(typeof info.key !== 'string') throw new TypeError('Command argument key must be a string.');
@@ -94,7 +98,21 @@ class CommandArgument {
 		this.type = info.type || null;
 
 		/**
-		 * Whether the argument accepts infinite values
+		 * If type is 'integer' or 'float', this is the maximum value of the number.
+		 * If type is 'string', this is the maximum length of the string.
+		 * @type {number}
+		 */
+		this.max = info.max || null;
+
+		/**
+		 * If type is 'integer' or 'float', this is the minimum value of the number.
+		 * If type is 'string', this is the minimum length of the string.
+		 * @type {number}
+		 */
+		this.min = info.min || null;
+
+		/**
+		 * Whether the argument accepts an infinite number of values
 		 * @type {boolean}
 		 */
 		this.infinite = Boolean(info.infinite);
@@ -212,16 +230,16 @@ class CommandArgument {
 	 * @return {Promise<boolean|string>}
 	 */
 	async validate(value, msg) {
-		if(this.validator) return this.validator(value);
+		if(this.validator) return this.validator(value, msg, this);
 		switch(this.type) {
 			case 'string':
-				return Boolean(value);
+				return this.validateString(value);
 			case 'integer':
-				return !Number.isNaN(Number.parseInt(value));
+				return this.validateInteger(value);
 			case 'float':
-				return !Number.isNaN(Number.parseFloat(value));
+				return this.validateFloat(value);
 			case 'boolean':
-				return ['true', 'false', 'yes', 'no', 'on', 'off'].includes(value.toLowerCase());
+				return this.constructor.validateBoolean(value);
 			case 'user':
 				return this.constructor.validateUser(value, msg);
 			case 'member':
@@ -242,7 +260,7 @@ class CommandArgument {
 	 * @return {Promise<*>}
 	 */
 	async parse(value, msg) {
-		if(this.parser) return this.parser(value);
+		if(this.parser) return this.parser(value, msg, this);
 		switch(this.type) {
 			case 'string':
 				return String(value);
@@ -251,9 +269,7 @@ class CommandArgument {
 			case 'float':
 				return Number.parseFloat(value);
 			case 'boolean':
-				if(['true', 'yes', 'on'].includes(value.toLowerCase())) return true;
-				if(['false', 'no', 'off'].includes(value.toLowerCase())) return false;
-				throw new RangeError('Unknown boolean value.');
+				return this.constructor.parseBoolean(value);
 			case 'user':
 				return this.constructor.parseUser(value, msg);
 			case 'member':
@@ -265,6 +281,37 @@ class CommandArgument {
 			default:
 				throw new RangeError('Unknown command argument type.');
 		}
+	}
+
+	validateString(value) {
+		return Boolean(value) &&
+			(this.min === null || typeof this.min === 'undefined' || value.length >= this.min) &&
+			(this.max === null || typeof this.max === 'undefined' || value.length <= this.max);
+	}
+
+	validateInteger(value) {
+		const int = Number.parseInt(value);
+		return !Number.isNaN(int) &&
+			(this.min === null || typeof this.min === 'undefined' || int >= this.min) &&
+			(this.max === null || typeof this.max === 'undefined' || int <= this.max);
+	}
+
+	validateFloat(value) {
+		const float = Number.parseFloat(value);
+		return !Number.isNaN(float) &&
+			(this.min === null || typeof this.min === 'undefined' || float >= this.min) &&
+			(this.max === null || typeof this.max === 'undefined' || float <= this.max);
+	}
+
+	static validateBoolean(value) {
+		return ['true', 'false', 'yes', 'no', 'on', 'off'].includes(value.toLowerCase());
+	}
+
+	static parseBoolean(value) {
+		const lc = value.toLowerCase();
+		if(['true', 'yes', 'on'].includes(lc)) return true;
+		if(['false', 'no', 'off'].includes(lc)) return false;
+		throw new RangeError('Unknown boolean value.');
 	}
 
 	static async validateUser(value, msg) {
