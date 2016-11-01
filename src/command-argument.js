@@ -283,12 +283,22 @@ class CommandArgument {
 		}
 	}
 
+	/**
+	 * Checks if a string is not empty, and is within the min and max limits, if set
+	 * @param {string} value - String to validate
+	 * @return {boolean}
+	 */
 	validateString(value) {
 		return Boolean(value) &&
 			(this.min === null || typeof this.min === 'undefined' || value.length >= this.min) &&
 			(this.max === null || typeof this.max === 'undefined' || value.length <= this.max);
 	}
 
+	/**
+	 * Checks if a string can be interpreted as an integer, and is within the min and max limits, if set
+	 * @param {string} value - String to validate
+	 * @return {boolean}
+	 */
 	validateInteger(value) {
 		const int = Number.parseInt(value);
 		return !Number.isNaN(int) &&
@@ -296,6 +306,11 @@ class CommandArgument {
 			(this.max === null || typeof this.max === 'undefined' || int <= this.max);
 	}
 
+	/**
+	 * Checks if a string can be interpreted as a float, and is within the min and max limits, if set
+	 * @param {string} value - String to validate
+	 * @return {boolean}
+	 */
 	validateFloat(value) {
 		const float = Number.parseFloat(value);
 		return !Number.isNaN(float) &&
@@ -303,10 +318,20 @@ class CommandArgument {
 			(this.max === null || typeof this.max === 'undefined' || float <= this.max);
 	}
 
+	/**
+	 * Checks if a string can be interpreted as a boolean
+	 * @param {string} value - String to validate
+	 * @return {boolean}
+	 */
 	static validateBoolean(value) {
 		return ['true', 'false', 'yes', 'no', 'on', 'off'].includes(value.toLowerCase());
 	}
 
+	/**
+	 * Parses a boolean out of a string
+	 * @param {string} value - String to parse
+	 * @return {boolean}
+	 */
 	static parseBoolean(value) {
 		const lc = value.toLowerCase();
 		if(['true', 'yes', 'on'].includes(lc)) return true;
@@ -314,6 +339,12 @@ class CommandArgument {
 		throw new RangeError('Unknown boolean value.');
 	}
 
+	/**
+	 * Checks if a string can be interpreted as a User object
+	 * @param {string} value - String to validate
+	 * @param {CommandMessage} msg - Message that the value is from
+	 * @return {Promise<boolean>}
+	 */
 	static async validateUser(value, msg) {
 		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) {
@@ -338,6 +369,12 @@ class CommandArgument {
 			'Multiple users found. Please be more specific.';
 	}
 
+	/**
+	 * Parses a string into a User object
+	 * @param {string} value - String to parse
+	 * @param {CommandMessage} msg - Message that the value is from
+	 * @return {Promise<User>}
+	 */
 	static parseUser(value, msg) {
 		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) return msg.client.users.get(matches[1]) || null;
@@ -351,6 +388,12 @@ class CommandArgument {
 		return null;
 	}
 
+	/**
+	 * Checks if a string can be interpreted as a GuildMember object
+	 * @param {string} value - String to validate
+	 * @param {CommandMessage} msg - Message that the value is from
+	 * @return {Promise<boolean>}
+	 */
 	static async validateMember(value, msg) {
 		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) {
@@ -374,6 +417,12 @@ class CommandArgument {
 			'Multiple users found. Please be more specific.';
 	}
 
+	/**
+	 * Parses a string into a GuildMember object
+	 * @param {string} value - String to parse
+	 * @param {CommandMessage} msg - Message that the value is from
+	 * @return {Promise<GuildMember>}
+	 */
 	static parseMember(value, msg) {
 		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) return msg.guild.member(matches[1]) || null;
@@ -386,6 +435,12 @@ class CommandArgument {
 		return null;
 	}
 
+	/**
+	 * Checks if a string can be interpreted as a Role object
+	 * @param {string} value - String to validate
+	 * @param {CommandMessage} msg - Message that the value is from
+	 * @return {Promise<boolean>}
+	 */
 	static validateRole(value, msg) {
 		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
 		if(matches) return msg.guild.roles.has(matches[1]);
@@ -399,6 +454,12 @@ class CommandArgument {
 		return `${disambiguation(roles.map(role => `${escapeMarkdown(role.name)}`), 'roles', null)}\n`;
 	}
 
+	/**
+	 * Parses a string into a Role object
+	 * @param {string} value - String to parse
+	 * @param {CommandMessage} msg - Message that the value is from
+	 * @return {Promise<Role>}
+	 */
 	static parseRole(value, msg) {
 		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
 		if(matches) return msg.guild.roles.get(matches[1]) || null;
@@ -411,6 +472,12 @@ class CommandArgument {
 		return null;
 	}
 
+	/**
+	 * Checks if a string can be interpreted as a Channel object
+	 * @param {string} value - String to validate
+	 * @param {CommandMessage} msg - Message that the value is from
+	 * @return {Promise<boolean>}
+	 */
 	static validateChannel(value, msg) {
 		const matches = value.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) return msg.guild.channels.has(matches[1]);
@@ -424,6 +491,12 @@ class CommandArgument {
 		return `${disambiguation(channels.map(chan => escapeMarkdown(chan.name)), 'channels', null)}\n`;
 	}
 
+	/**
+	 * Parses a string into a Channel object
+	 * @param {string} value - String to parse
+	 * @param {CommandMessage} msg - Message that the value is from
+	 * @return {Promise<Channel>}
+	 */
 	static parseChannel(value, msg) {
 		const matches = value.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) return msg.guild.channels.get(matches[1]) || null;
