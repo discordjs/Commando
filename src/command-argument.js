@@ -2,7 +2,7 @@ const escapeMarkdown = require('discord.js').escapeMarkdown;
 const { oneLine, stripIndents } = require('common-tags');
 const disambiguation = require('./util').disambiguation;
 
-const types = ['string', 'integer', 'float', 'boolean', 'user', 'member', 'role', 'channel'];
+const types = ['string', 'integer', 'float', 'boolean', 'user', 'member', 'role', 'channel', 'message'];
 
 /** A fancy argument for a command */
 class CommandArgument {
@@ -52,7 +52,10 @@ class CommandArgument {
 			throw new Error('Command argument must have either "type" or "validate" specified.');
 		}
 		if(info.type && !types.includes(info.type)) {
-			throw new RangeError('Command argument type must be one of "string", "integer", "float", or "boolean".');
+			throw new RangeError(
+				'Command argument type must be one of "string", "integer", "float", "boolean", "user", ' +
+				'"member", "role", "channel", or "message".'
+			);
 		}
 		if(info.validate && typeof info.validate !== 'function') {
 			throw new TypeError('Command argument validate must be a function.');
@@ -92,7 +95,7 @@ class CommandArgument {
 		this.prompt = info.prompt;
 
 		/**
-		 * Type of the argument ('string', 'integer', 'float', 'boolean', 'user', 'member', 'role', or 'channel')
+		 * Type of the argument ('string', 'integer', 'float', 'boolean', 'user', 'member', 'role', 'channel', or 'message')
 		 * @type {?string}
 		 */
 		this.type = info.type || null;
@@ -100,14 +103,14 @@ class CommandArgument {
 		/**
 		 * If type is 'integer' or 'float', this is the maximum value of the number.
 		 * If type is 'string', this is the maximum length of the string.
-		 * @type {number}
+		 * @type {?number}
 		 */
 		this.max = info.max || null;
 
 		/**
 		 * If type is 'integer' or 'float', this is the minimum value of the number.
 		 * If type is 'string', this is the minimum length of the string.
-		 * @type {number}
+		 * @type {?number}
 		 */
 		this.min = info.min || null;
 
@@ -248,6 +251,8 @@ class CommandArgument {
 				return this.constructor.validateRole(value, msg);
 			case 'channel':
 				return this.constructor.validateChannel(value, msg);
+			case 'message':
+				return this.constructor.validateMessage(value, msg);
 			default:
 				throw new RangeError('Unknown command argument type.');
 		}
@@ -278,6 +283,8 @@ class CommandArgument {
 				return this.constructor.parseRole(value, msg);
 			case 'channel':
 				return this.constructor.parseChannel(value, msg);
+			case 'message':
+				return this.constructor.parseMessage(value, msg);
 			default:
 				throw new RangeError('Unknown command argument type.');
 		}
@@ -507,6 +514,28 @@ class CommandArgument {
 		const exactChannels = channels.filter(nameFilterExact(search));
 		if(exactChannels.length === 1) return channels[0];
 		return null;
+	}
+
+	/**
+	 * Checks if a string can be interpreted as a Message object
+	 * @param {string} value - String to validate
+	 * @param {CommandMessage} msg - Message that the value is from
+	 * @return {Promise<boolean>}
+	 */
+	static async validateMessage(value, msg) {
+		if(!/^[0-9]+$/.test(value)) return false;
+		const message = await msg.channel.fetchMessage(value);
+		return Boolean(message);
+	}
+
+	/**
+	 * Parses a string into a Message object
+	 * @param {string} value - String to parse
+	 * @param {CommandMessage} msg - Message that the value is from
+	 * @return {Message}
+	 */
+	static parseMessage(value, msg) {
+		return msg.channel.messages.get(value);
 	}
 }
 
