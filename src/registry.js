@@ -195,7 +195,9 @@ class CommandRegistry {
 				require('./commands/commands/groups'),
 				require('./commands/commands/enable'),
 				require('./commands/commands/disable'),
-				require('./commands/commands/reload')
+				require('./commands/commands/reload'),
+				require('./commands/commands/load'),
+				require('./commands/commands/unload')
 			]);
 		}
 		return this;
@@ -223,6 +225,22 @@ class CommandRegistry {
 		 */
 		this.client.emit('commandReregister', command, oldCommand);
 		this.client.emit('debug', `Reregistered command ${command.groupID}:${command.memberName}`);
+	}
+
+	/**
+	 * Unregisters a command
+	 * @param {Command} command - Command to unregister
+	 */
+	unregisterCommand(command) {
+		this.commands.delete(command.name);
+		command.group.commands.delete(command.name);
+		/**
+		 * Emitted when a command is unregistered
+		 * @event CommandoClient#commandUnregister
+		 * @param {Command} command - Command that was unregistered
+		 */
+		this.client.emit('commandUnregister', command);
+		this.client.emit('debug', `Unregistered command ${command.groupID}:${command.memberName}`);
 	}
 
 	/**

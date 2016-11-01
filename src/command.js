@@ -288,7 +288,6 @@ class Command {
 
 	/**
 	 * Reloads the command
-	 * @return {boolean} Whether the reload was successful
 	 */
 	reload() {
 		let cmdPath, cached, newCmd;
@@ -306,12 +305,19 @@ class Command {
 				newCmd = require(cmdPath);
 			} catch(err2) {
 				if(cached) require.cache[cmdPath] = cached;
-				return false;
+				if(err2.message.includes('Cannot find module')) throw err; else throw err2;
 			}
 		}
 
 		this.client.registry.reregisterCommand(newCmd, this);
-		return true;
+	}
+
+	/**
+	 * Unloads the command
+	 */
+	unload() {
+		delete require.cache[path.join(this.client.registry.commandsPath, this.groupID, `${this.memberName}.js`)];
+		this.client.registry.unregisterCommand(this);
 	}
 
 	/**
