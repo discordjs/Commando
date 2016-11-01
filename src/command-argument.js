@@ -524,8 +524,7 @@ class CommandArgument {
 	 */
 	static async validateMessage(value, msg) {
 		if(!/^[0-9]+$/.test(value)) return false;
-		const message = await msg.channel.fetchMessage(value);
-		return Boolean(message);
+		return Boolean(await msg.channel.fetchMessage(value));
 	}
 
 	/**
