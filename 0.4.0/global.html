@@ -1,0 +1,2689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Global - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Command.html">Command</a><ul class='methods'><li data-type='method'><a href="Command.html#.usage">usage</a></li><li data-type='method'><a href="Command.html#hasPermission">hasPermission</a></li><li data-type='method'><a href="Command.html#isEnabledIn">isEnabledIn</a></li><li data-type='method'><a href="Command.html#isUsable">isUsable</a></li><li data-type='method'><a href="Command.html#reload">reload</a></li><li data-type='method'><a href="Command.html#run">run</a></li><li data-type='method'><a href="Command.html#setEnabledIn">setEnabledIn</a></li><li data-type='method'><a href="Command.html#unload">unload</a></li><li data-type='method'><a href="Command.html#usage">usage</a></li></ul></li><li><a href="CommandArgument.html">CommandArgument</a><ul class='methods'><li data-type='method'><a href="CommandArgument.html#.parseBoolean">parseBoolean</a></li><li data-type='method'><a href="CommandArgument.html#.parseChannel">parseChannel</a></li><li data-type='method'><a href="CommandArgument.html#.parseMember">parseMember</a></li><li data-type='method'><a href="CommandArgument.html#.parseMessage">parseMessage</a></li><li data-type='method'><a href="CommandArgument.html#.parseRole">parseRole</a></li><li data-type='method'><a href="CommandArgument.html#.parseUser">parseUser</a></li><li data-type='method'><a href="CommandArgument.html#.validateBoolean">validateBoolean</a></li><li data-type='method'><a href="CommandArgument.html#.validateChannel">validateChannel</a></li><li data-type='method'><a href="CommandArgument.html#.validateMember">validateMember</a></li><li data-type='method'><a href="CommandArgument.html#.validateMessage">validateMessage</a></li><li data-type='method'><a href="CommandArgument.html#.validateRole">validateRole</a></li><li data-type='method'><a href="CommandArgument.html#.validateUser">validateUser</a></li><li data-type='method'><a href="CommandArgument.html#obtain">obtain</a></li><li data-type='method'><a href="CommandArgument.html#obtainInfinite">obtainInfinite</a></li><li data-type='method'><a href="CommandArgument.html#parse">parse</a></li><li data-type='method'><a href="CommandArgument.html#validate">validate</a></li><li data-type='method'><a href="CommandArgument.html#validateFloat">validateFloat</a></li><li data-type='method'><a href="CommandArgument.html#validateInteger">validateInteger</a></li><li data-type='method'><a href="CommandArgument.html#validateString">validateString</a></li></ul></li><li><a href="CommandBuilder.html">CommandBuilder</a><ul class='methods'><li data-type='method'><a href="CommandBuilder.html#hasPermission">hasPermission</a></li><li data-type='method'><a href="CommandBuilder.html#info">info</a></li><li data-type='method'><a href="CommandBuilder.html#register">register</a></li><li data-type='method'><a href="CommandBuilder.html#run">run</a></li></ul></li><li><a href="CommandDispatcher.html">CommandDispatcher</a><ul class='methods'><li data-type='method'><a href="CommandDispatcher.html#addInhibitor">addInhibitor</a></li><li data-type='method'><a href="CommandDispatcher.html#removeInhibitor">removeInhibitor</a></li></ul></li><li><a href="CommandFormatError.html">CommandFormatError</a></li><li><a href="CommandGroup.html">CommandGroup</a><ul class='methods'><li data-type='method'><a href="CommandGroup.html#isEnabledIn">isEnabledIn</a></li><li data-type='method'><a href="CommandGroup.html#reload">reload</a></li><li data-type='method'><a href="CommandGroup.html#setEnabledIn">setEnabledIn</a></li></ul></li><li><a href="CommandMessage.html">CommandMessage</a><ul class='methods'><li data-type='method'><a href="CommandMessage.html#.parseArgs">parseArgs</a></li><li data-type='method'><a href="CommandMessage.html#anyUsage">anyUsage</a></li><li data-type='method'><a href="CommandMessage.html#code">code</a></li><li data-type='method'><a href="CommandMessage.html#delete">delete</a></li><li data-type='method'><a href="CommandMessage.html#direct">direct</a></li><li data-type='method'><a href="CommandMessage.html#edit">edit</a></li><li data-type='method'><a href="CommandMessage.html#editCode">editCode</a></li><li data-type='method'><a href="CommandMessage.html#isMentioned">isMentioned</a></li><li data-type='method'><a href="CommandMessage.html#obtainArgs">obtainArgs</a></li><li data-type='method'><a href="CommandMessage.html#parseArgs">parseArgs</a></li><li data-type='method'><a href="CommandMessage.html#pin">pin</a></li><li data-type='method'><a href="CommandMessage.html#reply">reply</a></li><li data-type='method'><a href="CommandMessage.html#run">run</a></li><li data-type='method'><a href="CommandMessage.html#say">say</a></li><li data-type='method'><a href="CommandMessage.html#unpin">unpin</a></li><li data-type='method'><a href="CommandMessage.html#usage">usage</a></li></ul></li><li><a href="CommandoClient.html">CommandoClient</a></li><li><a href="CommandRegistry.html">CommandRegistry</a><ul class='methods'><li data-type='method'><a href="CommandRegistry.html#buildCommand">buildCommand</a></li><li data-type='method'><a href="CommandRegistry.html#findCommands">findCommands</a></li><li data-type='method'><a href="CommandRegistry.html#findGroups">findGroups</a></li><li data-type='method'><a href="CommandRegistry.html#registerCommand">registerCommand</a></li><li data-type='method'><a href="CommandRegistry.html#registerCommands">registerCommands</a></li><li data-type='method'><a href="CommandRegistry.html#registerCommandsIn">registerCommandsIn</a></li><li data-type='method'><a href="CommandRegistry.html#registerDefaultCommands">registerDefaultCommands</a></li><li data-type='method'><a href="CommandRegistry.html#registerDefaultGroups">registerDefaultGroups</a></li><li data-type='method'><a href="CommandRegistry.html#registerDefaults">registerDefaults</a></li><li data-type='method'><a href="CommandRegistry.html#registerEvalObject">registerEvalObject</a></li><li data-type='method'><a href="CommandRegistry.html#registerEvalObjects">registerEvalObjects</a></li><li data-type='method'><a href="CommandRegistry.html#registerGroup">registerGroup</a></li><li data-type='method'><a href="CommandRegistry.html#registerGroups">registerGroups</a></li><li data-type='method'><a href="CommandRegistry.html#reregisterCommand">reregisterCommand</a></li><li data-type='method'><a href="CommandRegistry.html#resolveCommand">resolveCommand</a></li><li data-type='method'><a href="CommandRegistry.html#resolveGroup">resolveGroup</a></li><li data-type='method'><a href="CommandRegistry.html#unregisterCommand">unregisterCommand</a></li></ul></li><li><a href="FriendlyError.html">FriendlyError</a></li></ul><h3>Externals</h3><ul><li><a href="external-Channel.html">Channel</a></li><li><a href="external-ClientOptions.html">ClientOptions</a></li><li><a href="external-Guild.html">Guild</a></li><li><a href="external-GuildMember.html">GuildMember</a></li><li><a href="external-GuildResolvable.html">GuildResolvable</a></li><li><a href="external-Message.html">Message</a></li><li><a href="external-StringResolvable.html">StringResolvable</a></li><li><a href="external-User.html">User</a></li></ul><h3>Events</h3><ul><li><a href="CommandoClient.html#event:commandBlocked">commandBlocked</a></li><li><a href="CommandoClient.html#event:commandError">commandError</a></li><li><a href="CommandoClient.html#event:commandPrefixChange">commandPrefixChange</a></li><li><a href="CommandoClient.html#event:commandRegister">commandRegister</a></li><li><a href="CommandoClient.html#event:commandReregister">commandReregister</a></li><li><a href="CommandoClient.html#event:commandRun">commandRun</a></li><li><a href="CommandoClient.html#event:commandStatusChange">commandStatusChange</a></li><li><a href="CommandoClient.html#event:commandUnregister">commandUnregister</a></li><li><a href="CommandoClient.html#event:groupRegister">groupRegister</a></li><li><a href="CommandoClient.html#event:groupStatusChange">groupStatusChange</a></li><li><a href="CommandoClient.html#event:unknownCommand">unknownCommand</a></li></ul><h3>Interfaces</h3><ul><li><a href="GuildExtension.html">GuildExtension</a><ul class='methods'><li data-type='method'><a href="GuildExtension.html#.applyToClass">applyToClass</a></li><li data-type='method'><a href="GuildExtension.html#commandUsage">commandUsage</a></li><li data-type='method'><a href="GuildExtension.html#isCommandEnabled">isCommandEnabled</a></li><li data-type='method'><a href="GuildExtension.html#isGroupEnabled">isGroupEnabled</a></li><li data-type='method'><a href="GuildExtension.html#setCommandEnabled">setCommandEnabled</a></li><li data-type='method'><a href="GuildExtension.html#setGroupEnabled">setGroupEnabled</a></li></ul></li></ul><h3><a href="global.html">Global</a></h3>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">Global</h1>
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        
+                
+
+    
+
+    <h4 class="name" id="ArgumentParser"><span class="type-signature"></span>ArgumentParser<span class="signature">(value, msg, arg)</span><span class="type-signature"> &rarr; {Promise.&lt;*>|*}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Function that parses an input value string into a proper value for the argument</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Value to parse</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>msg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="CommandMessage.html">CommandMessage</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Message that the value came from</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="CommandArgument.html">CommandArgument</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Argument that the parser is for</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-argument.js.html">command-argument.js</a>, <a href="command-argument.js.html#line37">line 37</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;*></span>
+|
+
+<span class="param-type">*</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="ArgumentValidator"><span class="type-signature"></span>ArgumentValidator<span class="signature">(value, msg, arg)</span><span class="type-signature"> &rarr; {Promise.&lt;(boolean|string)>|boolean|string}</span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>Function that validates an input value string</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>value</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Value to check for validity</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>msg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="CommandMessage.html">CommandMessage</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Message that the value came from</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>arg</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="CommandArgument.html">CommandArgument</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Argument that the validator is for</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-argument.js.html">command-argument.js</a>, <a href="command-argument.js.html#line27">line 27</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>If a string is returned, it is considered to be the error message
+for the validation.</p>
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;(boolean|string)></span>
+|
+
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+            
+                
+<h4 class="name" id="CommandArgumentInfo">CommandArgumentInfo</h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>key</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Key for the argument</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>label</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    key
+                
+                </td>
+            
+
+            <td class="description last"><p>Label for the argument</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>prompt</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>First prompt for the argument when it wasn't specified</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Type of the argument
+('string', 'integer', 'float', 'user', 'member', 'role', or 'channel')</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>max</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>If type is 'integer' or 'float', this is the maximum value of the number.
+If type is 'string', this is the maximum length of the string.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>min</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>If type is 'integer' or 'float', this is the minimum value of the number.
+If type is 'string', this is the minimum length of the string.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>default</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Default value for the argument (makes the argument optional - cannot be <code>null</code>)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>infinite</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether the argument accepts infinite values</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>validate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#ArgumentValidator">ArgumentValidator</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Validator function for the argument</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>parse</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#ArgumentParser">ArgumentParser</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Parser function for the argument</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>wait</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    30
+                
+                </td>
+            
+
+            <td class="description last"><p>How long to wait for input (in seconds)</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-argument.js.html">command-argument.js</a>, <a href="command-argument.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="CommandBuilderFunctions">CommandBuilderFunctions</h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>run</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The run function to set</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>hasPermission</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last"><p>The hasPermission function to set</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command-builder.js.html">command-builder.js</a>, <a href="command-builder.js.html#line5">line 5</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="CommandGroupResolvable">CommandGroupResolvable</h4>
+
+
+
+
+<div class="description">
+    <p>A CommandGroupResolvable can be:</p>
+<ul>
+<li>A CommandGroup</li>
+<li>A group ID</li>
+</ul>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="CommandGroup.html">CommandGroup</a></span>
+|
+
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="registry.js.html">registry.js</a>, <a href="registry.js.html#line302">line 302</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="CommandInfo">CommandInfo</h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The name of the command (must be lowercase)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>aliases</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Alternative names for the command (all must be lowercase)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>autoAliases</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether automatic aliases should be added</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>group</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The ID of the group the command belongs to (must be lowercase)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>memberName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>The member name of the command in the group (must be lowercase)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>description</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>A short description of the command</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>format</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    name
+                
+                </td>
+            
+
+            <td class="description last"><p>The command usage format string</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>details</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>A detailed description of the command and its functionality</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>examples</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;string></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Usage examples of the command</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>guildOnly</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether or not the command should only function in a guild channel</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>defaultHandling</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether or not the default command handling should be used.
+If false, then only patterns will trigger the command.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>throttling</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#ThrottlingOptions">ThrottlingOptions</a></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Options for throttling usages of the command.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="global.html#CommandArgumentInfo">CommandArgumentInfo</a>></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Arguments for the command.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>argsType</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    single
+                
+                </td>
+            
+
+            <td class="description last"><p>One of 'single' or 'multiple'. Only applicable if <code>args</code> is not specified.
+When 'single', the entire argument string will be passed to run as one argument.
+When 'multiple', it will be passed as multiple arguments.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>argsCount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    0
+                
+                </td>
+            
+
+            <td class="description last"><p>The number of arguments to parse from the command string.
+Only applicable when argsType is 'multiple'. If nonzero, it should be at least 2.
+When this is 0, the command argument string will be split into as many arguments as it can be.
+When nonzero, it will be split into a maximum of this number of arguments.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>argsSingleQuotes</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether or not single quotes should be allowed to box-in arguments
+in the command string.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>patterns</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;RegExp></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Patterns to use for triggering the command</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>guarded</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether the command should be protected from disabling</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command.js.html">command.js</a>, <a href="command.js.html#line12">line 12</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="CommandoClientOptions">CommandoClientOptions</h4>
+
+
+
+
+<div class="description">
+    <p>Options for a CommandoClient</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">ClientOptions</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>selfbot</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether the command dispatcher should be in selfbot mode</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>commandPrefix</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    !
+                
+                </td>
+            
+
+            <td class="description last"><p>Default command prefix</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>commandEditableDuration</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    30
+                
+                </td>
+            
+
+            <td class="description last"><p>Time in seconds that command messages should be editable</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>nonCommandEditable</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether messages without commands can be edited to a command</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>unknownCommandResponse</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether the bot should respond to an unknown command</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>owner</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>ID of the bot owner's Discord user</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>invite</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"><p>Invite URL to the bot's support server</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="client.js.html">client.js</a>, <a href="client.js.html#line7">line 7</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="CommandResolvable">CommandResolvable</h4>
+
+
+
+
+<div class="description">
+    <p>A CommandResolvable can be:</p>
+<ul>
+<li>A Command</li>
+<li>A command name</li>
+<li>A CommandMessage</li>
+</ul>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type"><a href="Command.html">Command</a></span>
+|
+
+<span class="param-type">string</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="registry.js.html">registry.js</a>, <a href="registry.js.html#line350">line 350</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+
+    
+
+    <h4 class="name" id="Inhibitor"><span class="type-signature"></span>Inhibitor<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+<div class="description">
+    <p>A function that can block the usage of a command - these functions are passed the command message that is
+triggering the command. They should return <code>false</code> if the command should <em>not</em> be blocked. If the command <em>should</em>
+be blocked, they should return one of the following:</p>
+<ul>
+<li>A single string identifying the reason the command is blocked</li>
+<li>An array of the above string as element 0, and a response promise or <code>null</code> as element 1</li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="dispatcher.js.html">dispatcher.js</a>, <a href="dispatcher.js.html#line37">line 37</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="ThrottlingOptions">ThrottlingOptions</h4>
+
+
+
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>usages</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Maximum number of usages of the command allowed in the time frame.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>duration</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Amount of time to count the usages of the command within (in seconds).</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="command.js.html">command.js</a>, <a href="command.js.html#line6">line 6</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.2</a> on Tue Nov 01 2016 01:03:07 GMT-0400 (Eastern Daylight Time) using the Minami theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
