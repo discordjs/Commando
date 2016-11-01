@@ -139,9 +139,9 @@ class CommandDispatcher extends EventEmitter {
 				responses = await inhibited[1];
 			}
 
-			cmdMsg._finalize(responses);
+			cmdMsg.finalize(responses);
 		} else if(oldCmdMsg) {
-			oldCmdMsg._finalize(null);
+			oldCmdMsg.finalize(null);
 			if(this.client.options.nonCommandEditable <= 0) this._results.delete(message.id);
 		}
 

@@ -369,8 +369,13 @@ class CommandMessage {
 		return this.respond({ type: 'code', content, options, lang });
 	}
 
-	_finalize(responses) {
-		if(this.responses) this._deleteRemainingResponses();
+	/**
+	 * Finalizes the command message by setting the responses and deleting any remaining prior ones
+	 * @param {?Array<Message|Message[]>} responses - Responses to the message
+	 * @private
+	 */
+	finalize(responses) {
+		if(this.responses) this.deleteRemainingResponses();
 		this.responses = {};
 		this.responsePositions = {};
 
@@ -391,7 +396,11 @@ class CommandMessage {
 		}
 	}
 
-	_deleteRemainingResponses() {
+	/**
+	 * Deletes any prior responses that haven't been updated
+	 * @private
+	 */
+	deleteRemainingResponses() {
 		for(const id of Object.keys(this.responses)) {
 			const responses = this.responses[id];
 			for(let i = this.responsePositions[id] + 1; i < responses.length; i++) {
