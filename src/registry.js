@@ -105,13 +105,9 @@ class CommandRegistry {
 			if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
 			else if(command instanceof CommandBuilder) command = command.command;
 
-			// Verify that it's a command file
-			if(!command) {
-				this.client.emit('warn', 'Empty/invalid command file found in commands directory; skipping');
-				continue;
-			}
-			if(!(command instanceof Command)) {
-				this.client.emit('warn', 'Non-command file found in commands directory; skipping');
+			// Verify that it's an actual command
+			if(!command || !(command instanceof Command)) {
+				this.client.emit('warn', 'Attempting to register an invalid command object: ${command}; skipping');
 				continue;
 			}
 
