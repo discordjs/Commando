@@ -15,7 +15,7 @@ module.exports = class HelpCommand extends Command {
 				The command may be part of a command name or a whole command name.
 				If it isn't specified, all available commands will be listed.
 			`,
-			examples: ['help', 'help roll'],
+			examples: ['help', 'help prefix'],
 			guarded: true,
 
 			args: [
@@ -41,7 +41,7 @@ module.exports = class HelpCommand extends Command {
 						${commands[0].guildOnly ? ' (Usable only in servers)' : ''}
 					`}
 
-					**Format:** ${msg.usage(commands[0].format)}
+					**Format:** ${msg.anyUsage(`${commands[0].name}${commands[0].format ? ` ${commands[0].format}` : ''}`)}
 				`;
 				if(commands[0].aliases.length > 0) help += `\n**Aliases:** ${commands[0].aliases.join(', ')}`;
 				help += `\n${oneLine`
@@ -51,13 +51,15 @@ module.exports = class HelpCommand extends Command {
 				if(commands[0].details) help += `\n**Details:** ${commands[0].details}`;
 				if(commands[0].examples) help += `\n**Examples:**\n${commands[0].examples.join('\n')}`;
 				const promises = [msg.direct(help)];
-				if(msg.channel.type !== 'dm') promises.push(msg.reply('Sent a DM to you with information.'));
+				if(msg.channel.type !== 'dm') promises.push(msg.reply('Sent a you a DM with information.'));
 				return Promise.all(promises);
 			} else if(commands.length > 1) {
 				return msg.reply(disambiguation(commands, 'commands'));
 			} else {
 				return msg.reply(
-					`Unable to identify command. Use ${msg.anyUsage(`help`)} to view the list of all commands.`
+					`Unable to identify command. Use ${msg.usage(
+						null, msg.channel.type === 'dm' ? null : undefined, msg.channel.type === 'dm' ? null : undefined
+					)} to view the list of all commands.`
 				);
 			}
 		} else {
@@ -83,7 +85,7 @@ module.exports = class HelpCommand extends Command {
 					`).join('\n\n')
 				}
 			`, { split: true })];
-			if(msg.channel.type !== 'dm') promises.push(msg.reply('Sent a DM to you with information.'));
+			if(msg.channel.type !== 'dm') promises.push(msg.reply('Sent a you a DM with information.'));
 			return Promise.all(promises);
 		}
 	}

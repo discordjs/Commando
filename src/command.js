@@ -129,7 +129,7 @@ class Command {
 		 * Usage format string of the command
 		 * @type {string}
 		 */
-		this.format = info.format || info.name;
+		this.format = info.format || null;
 
 		/**
 		 * Long description of the command
