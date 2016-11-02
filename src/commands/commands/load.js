@@ -37,6 +37,7 @@ module.exports = class LoadCommandCommand extends Command {
 					parse: val => {
 						const split = val.split(':');
 						const cmdPath = path.join(this.client.registry.commandsPath, split[0], `${split[1]}.js`);
+						delete require.cache[cmdPath];
 						return require(cmdPath);
 					}
 				}
