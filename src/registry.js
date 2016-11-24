@@ -314,7 +314,7 @@ class CommandRegistry {
 
 	/**
 	 * Resolves a CommandGroupResolvable to a CommandGroup object
-	 * @param {CommandGroup|string} group - The group to resolve
+	 * @param {CommandGroupResolvable} group - The group to resolve
 	 * @return {CommandGroup} The resolved CommandGroup
 	 */
 	resolveGroup(group) {
@@ -363,7 +363,7 @@ class CommandRegistry {
 
 	/**
 	 * Resolves a CommandResolvable to a Command object
-	 * @param {Command|string} command - The command to resolve
+	 * @param {CommandResolvable} command - The command to resolve
 	 * @return {Command} The resolved Command
 	 */
 	resolveCommand(command) {
