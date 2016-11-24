@@ -1,4 +1,4 @@
 /node_modules
 npm-debug.log
 test/auth.json
-/docs
+docs/docs.json

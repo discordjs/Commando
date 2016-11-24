@@ -17,37 +17,37 @@ require('./extensions/guild').applyToClass(discord.Guild);
 
 /**
  * @external ClientOptions
- * @see {@link http://hydrabolt.github.io/discord.js/#!/docs/tag/master/typedef/ClientOptions}
+ * @see {@link https://discord.js.org/#/docs/main/master/typedef/ClientOptions}
  */
 /**
  * @external User
- * @see {@link http://hydrabolt.github.io/discord.js/#!/docs/tag/master/class/User}
+ * @see {@link https://discord.js.org/#/docs/main/master/class/User}
  */
 /**
  * @external Guild
- * @see {@link http://hydrabolt.github.io/discord.js/#!/docs/tag/master/class/Guild}
+ * @see {@link https://discord.js.org/#/docs/main/master/class/Guild}
  */
 /**
  * @external GuildResolvable
- * @see {@link http://hydrabolt.github.io/discord.js/#!/docs/tag/master/typedef/GuildResolvable}
+ * @see {@link https://discord.js.org/#/docs/main/master/typedef/GuildResolvable}
  */
 /**
  * @external GuildMember
- * @see {@link http://hydrabolt.github.io/discord.js/#!/docs/tag/master/class/GuildMember}
+ * @see {@link https://discord.js.org/#/docs/main/master/class/GuildMember}
  */
 /**
  * @external Role
- * @see {@link http://hydrabolt.github.io/discord.js/#!/docs/tag/master/class/Role}
+ * @see {@link https://discord.js.org/#/docs/main/master/class/Role}
  */
 /**
  * @external Channel
- * @see {@link http://hydrabolt.github.io/discord.js/#!/docs/tag/master/class/Channel}
+ * @see {@link https://discord.js.org/#/docs/main/master/class/Channel}
  */
 /**
  * @external Message
- * @see {@link http://hydrabolt.github.io/discord.js/#!/docs/tag/master/class/Message}
+ * @see {@link https://discord.js.org/#/docs/main/master/class/Message}
  */
 /**
  * @external StringResolvable
- * @see {@link http://hydrabolt.github.io/discord.js/#!/docs/tag/master/typedef/StringResolvable}
+ * @see {@link https://discord.js.org/#/docs/main/master/typedef/StringResolvable}
  */

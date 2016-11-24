@@ -1,13 +1,3 @@
 {
-	"plugins": ["node_modules/jsdoc-strip-async-await", "plugins/markdown"],
-	"source": {
-		"include": ["src", "README.md", "package.json"],
-		"excludePattern": "(^|\\/|\\\\)_"
-	},
-	"opts": {
-		"destination": "./docs/",
-		"recurse": true,
-		"template": "node_modules/minami",
-		"verbose": true
-	}
+	"plugins": ["node_modules/jsdoc-strip-async-await"]
 }

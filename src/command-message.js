@@ -447,7 +447,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.id`
-	 * @return {string}
+	 * @type {string}
 	 */
 	get id() {
 		return this.message.id;
@@ -455,7 +455,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.content`
-	 * @return {string}
+	 * @type {string}
 	 */
 	get content() {
 		return this.message.content;
@@ -463,7 +463,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.author`
-	 * @return {User}
+	 * @type {User}
 	 */
 	get author() {
 		return this.message.author;
@@ -471,7 +471,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.channel`
-	 * @return {Channel}
+	 * @type {Channel}
 	 */
 	get channel() {
 		return this.message.channel;
@@ -479,7 +479,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.guild`
-	 * @return {?Guild}
+	 * @type {?Guild}
 	 */
 	get guild() {
 		return this.message.guild;
@@ -487,7 +487,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.member`
-	 * @return {?GuildMember}
+	 * @type {?GuildMember}
 	 */
 	get member() {
 		return this.message.member;
@@ -495,7 +495,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.pinned`
-	 * @return {boolean}
+	 * @type {boolean}
 	 */
 	get pinned() {
 		return this.message.pinned;
@@ -503,7 +503,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.tts`
-	 * @return {boolean}
+	 * @type {boolean}
 	 */
 	get tts() {
 		return this.message.tts;
@@ -511,7 +511,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.nonce`
-	 * @return {string}
+	 * @type {string}
 	 */
 	get nonce() {
 		return this.message.nonce;
@@ -519,7 +519,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.system`
-	 * @return {boolean}
+	 * @type {boolean}
 	 */
 	get system() {
 		return this.message.system;
@@ -527,7 +527,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.embeds`
-	 * @return {Embed[]}
+	 * @type {Embed[]}
 	 */
 	get embeds() {
 		return this.message.embeds;
@@ -535,7 +535,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.attachments`
-	 * @return {Collection<string, MessageAttachment>}
+	 * @type {Collection<string, MessageAttachment>}
 	 */
 	get attachments() {
 		return this.message.attachments;
@@ -543,7 +543,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.createdTimestamp`
-	 * @return {number}
+	 * @type {number}
 	 */
 	get createdTimestamp() {
 		return this.message.createdTimestamp;
@@ -551,7 +551,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.createdAt`
-	 * @return {Date}
+	 * @type {Date}
 	 */
 	get createdAt() {
 		return this.message.createdAt;
@@ -559,7 +559,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.editedTimestamp`
-	 * @return {number}
+	 * @type {number}
 	 */
 	get editedTimestamp() {
 		return this.message.editedTimestamp;
@@ -567,7 +567,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.editedAt`
-	 * @return {Date}
+	 * @type {Date}
 	 */
 	get editedAt() {
 		return this.message.editedAt;
@@ -575,7 +575,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.mentions`
-	 * @return {MentionsObject}
+	 * @type {MentionsObject}
 	 */
 	get mentions() {
 		return this.message.mentions;
@@ -583,7 +583,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.cleanContent`
-	 * @return {string}
+	 * @type {string}
 	 */
 	get cleanContent() {
 		return this.message.cleanContent;
@@ -591,7 +591,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.edits`
-	 * @return {Message[]}
+	 * @type {Message[]}
 	 */
 	get edits() {
 		return this.message.edits;
@@ -599,7 +599,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.editable`
-	 * @return {boolean}
+	 * @type {boolean}
 	 */
 	get editable() {
 		return this.message.editable;
@@ -607,7 +607,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.deletable`
-	 * @return {boolean}
+	 * @type {boolean}
 	 */
 	get deletable() {
 		return this.message.deletable;
@@ -615,7 +615,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.pinnable`
-	 * @return {boolean}
+	 * @type {boolean}
 	 */
 	get pinnable() {
 		return this.message.pinnable;

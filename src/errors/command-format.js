@@ -11,7 +11,6 @@ class CommandFormatError extends FriendlyError {
 			msg.guild ? undefined : null,
 			msg.guild ? undefined : null
 		)} for information.`);
-		/** @ignore */
 		this.name = 'CommandFormatError';
 	}
 }
