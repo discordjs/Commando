@@ -1,6 +1,9 @@
 const FriendlyError = require('./friendly');
 
-/** Has a descriptive message for a command not having proper format */
+/**
+ * Has a descriptive message for a command not having proper format
+ * @extends {Error}
+ */
 class CommandFormatError extends FriendlyError {
 	/**
 	 * @param {CommandMessage} msg - The command message the error is for

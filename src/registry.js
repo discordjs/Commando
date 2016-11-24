@@ -181,7 +181,7 @@ class CommandRegistry {
 	}
 
 	/**
-	 * Registers the default commands to the bot's registry
+	 * Registers the default commands to the registry
 	 * @param {Object} [options] - Object specifying what commands to register
 	 * @param {boolean} [options.help=true] - Whether or not to register the built-in help command
 	 * @param {boolean} [options.prefix=true] - Whether or not to register the built-in prefix command
@@ -254,7 +254,7 @@ class CommandRegistry {
 	 * @param {string} key - The key for the object
 	 * @param {Object} obj - The object
 	 * @return {CommandRegistry}
-	 * @see {@link Bot#registerEvalObjects}
+	 * @see {@link CommandRegistry#registerEvalObjects}
 	 */
 	registerEvalObject(key, obj) {
 		const registerObj = {};

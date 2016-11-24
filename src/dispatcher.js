@@ -1,9 +1,8 @@
-const EventEmitter = require('events').EventEmitter;
 const escapeRegex = require('escape-string-regexp');
 const CommandMessage = require('./command-message');
 
 /** Handles parsing messages and running commands from them */
-class CommandDispatcher extends EventEmitter {
+class CommandDispatcher {
 	/**
 	 * @param {CommandoClient} client - Client the dispatcher is for
 	 * @param {CommandRegistry} registry - Registry the dispatcher will use

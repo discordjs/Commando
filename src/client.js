@@ -2,7 +2,10 @@ const discord = require('discord.js');
 const CommandRegistry = require('./registry');
 const CommandDispatcher = require('./dispatcher');
 
-/** Discord.js Client with a command framework */
+/**
+ * Discord.js Client with a command framework
+ * @extends {Client}
+ */
 class CommandoClient extends discord.Client {
 	/**
 	 * Options for a CommandoClient

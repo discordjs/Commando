@@ -527,7 +527,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.embeds`
-	 * @type {Embed[]}
+	 * @type {MessageEmbed[]}
 	 */
 	get embeds() {
 		return this.message.embeds;
