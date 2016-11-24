@@ -8,8 +8,6 @@ class CommandDispatcher {
 	 * @param {CommandRegistry} registry - Registry the dispatcher will use
 	 */
 	constructor(client, registry) {
-		super();
-
 		/**
 		 * Client this dispatcher handles messages for
 		 * @type {CommandoClient}
