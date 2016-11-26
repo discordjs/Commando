@@ -17,7 +17,8 @@
 		"commands"
 	],
 	"scripts": {
-		"lint": "eslint src/",
+		"test": "eslint src && docgen --source src --custom docs/index.yml --jsdoc jsdoc.json",
+		"lint": "eslint src",
 		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json --jsdoc jsdoc.json"
 	},
 	"main": "src/index",
@@ -29,7 +30,7 @@
 	},
 	"devDependencies": {
 		"discord.js-docgen": "github:hydrabolt/discord.js-docgen",
-		"eslint": "^3.10.0",
+		"eslint": "^3.11.0",
 		"jsdoc-strip-async-await": "^0.1.0"
 	},
 	"engines": {
