@@ -343,7 +343,7 @@ class CommandArgument {
 	 * @return {boolean}
 	 */
 	static validateBoolean(value) {
-		return ['true', 'false', 'yes', 'no', 'on', 'off'].includes(value.toLowerCase());
+		return ['true', 't', 'false', 'f', 'yes', 'y', 'no', 'n', 'on', 'off'].includes(value.toLowerCase());
 	}
 
 	/**
@@ -353,8 +353,8 @@ class CommandArgument {
 	 */
 	static parseBoolean(value) {
 		const lc = value.toLowerCase();
-		if(['true', 'yes', 'on'].includes(lc)) return true;
-		if(['false', 'no', 'off'].includes(lc)) return false;
+		if(['true', 't', 'yes', 'y', 'on'].includes(lc)) return true;
+		if(['false', 'f', 'no', 'n', 'off'].includes(lc)) return false;
 		throw new RangeError('Unknown boolean value.');
 	}
 
