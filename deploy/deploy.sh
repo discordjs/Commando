@@ -6,9 +6,6 @@ set -e
 function build {
   # Build docs
   npm run docs
-
-  # Build the webpack
-  VERSIONED=false npm run web-dist
 }
 
 # Ignore Travis checking PRs
