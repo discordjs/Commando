@@ -175,7 +175,7 @@ class CommandMessage {
 			 * @param {Command} command - Command that is being run
 			 * @param {Promise} promise - Promise for the command result
 			 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
-			 * @param {string|string[]} args - Arguments for the command (see {@link Command#run})
+			 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 			 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
 			 */
 			this.client.emit('commandRun', this.command, promise, this, args, fromPattern);
@@ -186,7 +186,7 @@ class CommandMessage {
 			 * @event CommandoClient#commandError
 			 * @param {Command} command - Command that produced an error
 			 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
-			 * @param {string|string[]} args - Arguments for the command (see {@link Command#run})
+			 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 			 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
 			 */
 			this.client.emit('commandError', this.command, err, this, args, fromPattern);

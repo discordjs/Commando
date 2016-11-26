@@ -232,7 +232,7 @@ class Command {
 	 * If args is specified on the command, thise will be the argument values object. If argsType is single, then only
 	 * one string will be passed. If multiple, an array of strings will be passed. When fromPattern is true, this is the
 	 * matches array from the pattern match
-	 * (see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec}).
+	 * (see [RegExp#exec](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec)).
 	 * @param {boolean} fromPattern - Whether or not the command is being run from a pattern match
 	 * @return {Promise<?Message|?Array<Message>>}
 	 */

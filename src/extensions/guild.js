@@ -1,9 +1,6 @@
 const Command = require('../command');
 
-/**
- * Additional methods added to Guild objects
- * @interface
- */
+/** Contains additional methods and properties that are added to the discord.js Guild class */
 class GuildExtension {
 	/**
 	 * The command prefix in the guild - modifying this will emit {@link CommandoClient#commandPrefixChange}.
