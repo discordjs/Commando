@@ -2,7 +2,7 @@
 const commando = require('../src');
 const path = require('path');
 const oneLine = require('common-tags').oneLine;
-const token = require('./auth.json').token;
+const token = require('./auth').token;
 
 const client = new commando.Client({
 	owner: '90997305578106880',
