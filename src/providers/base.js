@@ -8,10 +8,11 @@ const Guild = require('discord.js').Guild;
 class SettingProvider {
 	/**
 	 * Initialises the provider by connecting to databases and/or caching all data in memory.
+	 * @param {CommandoClient} client Client that will be using the provider
 	 * @return {Promise<void>}
 	 * @abstract
 	 */
-	init() { throw new Error(`${this.constructor.name} doesn't have an init method.`); }
+	init(client) { throw new Error(`${this.constructor.name} doesn't have an init method.`); }
 
 	/**
 	 * Sets a setting for a guild
