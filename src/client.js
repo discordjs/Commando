@@ -42,6 +42,12 @@ class CommandoClient extends discord.Client {
 		 */
 		this.dispatcher = new CommandDispatcher(this, this.registry);
 
+		/**
+		 * The client's setting provider
+		 * @type {?SettingProvider}
+		 */
+		this.settings = null;
+
 		this._commandPrefix = null;
 
 		// Set up command handling
@@ -71,6 +77,24 @@ class CommandoClient extends discord.Client {
 	set commandPrefix(prefix) {
 		this._commandPrefix = prefix || null;
 		this.emit('commandPrefixChange', null, this._commandPrefix);
+	}
+
+	/**
+	 * Sets the setting provider to use, and initialises it once the client is ready
+	 * @param {SettingProvider} provider Provider to use
+	 * @return {Promise<void>}
+	 */
+	setProvider(provider) {
+		this.settings = provider;
+		return new Promise(resolve => {
+			this.once('ready', () => {
+				resolve(provider.init(this));
+			});
+		});
+	}
+
+	destroy() {
+		super.destroy().then(() => this.settings ? this.settings.destroy() : undefined);
 	}
 }
 

@@ -15,6 +15,13 @@ class SettingProvider {
 	init(client) { throw new Error(`${this.constructor.name} doesn't have an init method.`); }
 
 	/**
+	 * Destroys the provider, closing any connection(s) that may exist, and removing any event listeners.
+	 * @return {Promise<void>}
+	 * @abstract
+	 */
+	destroy() { throw new Error(`${this.constructor.name} doesn't have a destroy method.`); }
+
+	/**
 	 * Sets a setting for a guild
 	 * @param {Guild|string} guild Guild to associate the setting with (or 'global')
 	 * @param {string} key Name of the setting
@@ -32,7 +39,7 @@ class SettingProvider {
 	 * @return {*}
 	 * @abstract
 	 */
-	get(guild, key, defVal = null) { throw new Error(`${this.constructor.name} doesn't have a get method.`); }
+	get(guild, key, defVal) { throw new Error(`${this.constructor.name} doesn't have a get method.`); }
 
 	/**
 	 * Removes a setting from a guild
