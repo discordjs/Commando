@@ -12,3 +12,5 @@ env:
   global:
     - ENCRYPTION_LABEL: "1fc90f464345"
     - COMMIT_AUTHOR_EMAIL: "Gawdl3y@gawdl3y.com"
+dist: trusty
+sudo: false
