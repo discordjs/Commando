@@ -183,7 +183,7 @@ class CommandMessage {
 			if(!(retVal instanceof discord.Message || retVal instanceof Array || retVal === null || retVal === undefined)) {
 				throw new TypeError(oneLine`
 					Command ${this.command.name}'s run() resolved with an unknown type
-					({retVal !== null ? retVal && retVal.constructor ? retVal.constructor.name : typeof retVal : null}).
+					(${retVal !== null ? retVal && retVal.constructor ? retVal.constructor.name : typeof retVal : null}).
 					Command run methods must return a Promise that resolve with a Message, Array of Messages, or null/undefined.
 				`);
 			}
