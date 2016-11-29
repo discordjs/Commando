@@ -187,7 +187,7 @@ class CommandMessage {
 					Command run methods must return a Promise that resolve with a Message, Array of Messages, or null/undefined.
 				`);
 			}
-			return await promise;
+			return retVal;
 		} catch(err) {
 			/**
 			 * Emitted when a command produces an error while running
