@@ -1,5 +1,5 @@
 const discord = require('discord.js');
-const stripIndents = require('common-tags').stripIndents;
+const { stripIndents, oneLine } = require('common-tags');
 const Command = require('./command');
 const FriendlyError = require('./errors/friendly');
 
@@ -179,6 +179,14 @@ class CommandMessage {
 			 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
 			 */
 			this.client.emit('commandRun', this.command, promise, this, args, fromPattern);
+			const retVal = await promise;
+			if(!(retVal instanceof discord.Message || retVal instanceof Array || retVal === null || retVal === undefined)) {
+				throw new TypeError(oneLine`
+					Command ${this.command.name}'s run() resolved with an unknown type
+					({retVal !== null ? retVal && retVal.constructor ? retVal.constructor.name : typeof retVal : null}).
+					Command run methods must return a Promise that resolve with a Message, Array of Messages, or null/undefined.
+				`);
+			}
 			return await promise;
 		} catch(err) {
 			/**
