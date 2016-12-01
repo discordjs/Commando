@@ -107,7 +107,7 @@ class CommandRegistry {
 
 			// Verify that it's an actual command
 			if(!command || !(command instanceof Command)) {
-				this.client.emit('warn', `Attempting to register an invalid command object: ${command.name}; skipping.`);
+				this.client.emit('warn', `Attempting to register an invalid command object: ${command}; skipping.`);
 				continue;
 			}
 
