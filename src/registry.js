@@ -1,8 +1,8 @@
 const discord = require('discord.js');
 const Command = require('./command');
-const CommandGroup = require('./command-group');
-const CommandBuilder = require('./command-builder');
-const CommandMessage = require('./command-message');
+const CommandGroup = require('./group');
+const CommandBuilder = require('./builder');
+const CommandMessage = require('./message');
 
 /** Handles registration and searching of commands and groups */
 class CommandRegistry {

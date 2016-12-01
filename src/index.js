@@ -4,9 +4,9 @@ module.exports = {
 	Client: require('./client'),
 	CommandoClient: require('./client'),
 	Command: require('./command'),
-	CommandArgument: require('./command-argument'),
-	CommandGroup: require('./command-group'),
-	CommandMessage: require('./command-message'),
+	CommandArgument: require('./argument'),
+	CommandGroup: require('./group'),
+	CommandMessage: require('./message'),
 	FriendlyError: require('./errors/friendly'),
 	CommandFormatError: require('./errors/command-format'),
 

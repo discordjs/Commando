@@ -1,5 +1,5 @@
 const escapeRegex = require('escape-string-regexp');
-const CommandMessage = require('./command-message');
+const CommandMessage = require('./message');
 
 /** Handles parsing messages and running commands from them */
 class CommandDispatcher {
