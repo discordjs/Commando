@@ -81,16 +81,28 @@ class CommandoClient extends discord.Client {
 
 	/**
 	 * Sets the setting provider to use, and initialises it once the client is ready
-	 * @param {SettingProvider} provider Provider to use
+	 * @param {SettingProvider|Promise<SettingProvider>} provider Provider to use
 	 * @return {Promise<void>}
 	 */
-	setProvider(provider) {
+	async setProvider(provider) {
+		provider = await provider;
 		this.settings = provider;
-		return new Promise(resolve => {
+
+		if(this.readyTimestamp) {
+			this.emit('debug', `Provider set to ${provider.constructor.name}. Initialising...`);
+			return provider.init(this);
+		}
+
+		this.emit('debug', `Provider set to ${provider.constructor.name}. Will initialise once ready.`);
+		await new Promise(resolve => {
 			this.once('ready', () => {
+				this.emit('debug', `Initialising provider...`);
 				resolve(provider.init(this));
 			});
 		});
+
+		this.emit('debug', 'Provider finished initialisation.');
+		return undefined;
 	}
 
 	destroy() {

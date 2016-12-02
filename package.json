@@ -23,7 +23,6 @@
 	},
 	"main": "src/index",
 	"dependencies": {
-		"discord.js": "^10.0.0",
 		"common-tags": "^1.4.0",
 		"escape-string-regexp": "^1.0.0",
 		"require-all": "^2.0.0"
@@ -32,6 +31,10 @@
 		"discord.js-docgen": "github:hydrabolt/discord.js-docgen",
 		"eslint": "^3.11.0",
 		"jsdoc-strip-async-await": "^0.1.0"
+	},
+	"peerDependencies": {
+		"discord.js": "^10.0.0",
+		"sqlite": "^2.2.0"
 	},
 	"engines": {
 		"node": ">=7.0.0"

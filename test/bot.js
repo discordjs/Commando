@@ -2,6 +2,7 @@
 const commando = require('../src');
 const path = require('path');
 const oneLine = require('common-tags').oneLine;
+const sqlite = require('sqlite');
 const token = require('./auth').token;
 
 const client = new commando.Client({
@@ -9,7 +10,8 @@ const client = new commando.Client({
 	commandPrefix: 'cdev'
 });
 
-client.on('error', console.error)
+client
+	.on('error', console.error)
 	.on('warn', console.warn)
 	.on('debug', console.log)
 	.on('ready', () => {
@@ -47,6 +49,9 @@ client.on('error', console.error)
 			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}.
 		`);
 	});
+
+client.setProvider(sqlite.open(path.join(__dirname, 'database.sqlite3')).then(db => new commando.SQLiteProvider(db)))
+	.catch(console.error);
 
 client.registry
 	.registerGroup('math', 'Math')

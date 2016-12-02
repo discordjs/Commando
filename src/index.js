@@ -11,7 +11,12 @@ module.exports = {
 	CommandFormatError: require('./errors/command-format'),
 
 	util: require('./util'),
-	version: require('../package').version
+	version: require('../package').version,
+
+	SettingProvider: require('./providers/base'),
+	get SQLiteProvider() {
+		return require('./providers/sqlite');
+	}
 };
 
 require('./extensions/guild').applyToClass(discord.Guild);
