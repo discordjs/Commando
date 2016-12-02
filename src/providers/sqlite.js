@@ -11,7 +11,7 @@ class SQLiteProvider extends SettingProvider {
 	 */
 
 	/**
-	 * @param {SQLiteDatabase} db Database for the provider
+	 * @param {SQLiteDatabase} db - Database for the provider
 	 */
 	constructor(db) {
 		super();
@@ -158,8 +158,8 @@ class SQLiteProvider extends SettingProvider {
 
 	/**
 	 * Loads all settings for a guild
-	 * @param {string} guild Guild ID to load the settings of (or 'global')
-	 * @param {Object} settings Settings to load
+	 * @param {string} guild - Guild ID to load the settings of (or 'global')
+	 * @param {Object} settings - Settings to load
 	 * @private
 	 */
 	setupGuild(guild, settings) {
@@ -179,9 +179,9 @@ class SQLiteProvider extends SettingProvider {
 
 	/**
 	 * Sets up a command's status in a guild from the guild's settings
-	 * @param {?Guild} guild Guild to set the status in
-	 * @param {Command} command Command to set the status of
-	 * @param {Object} settings Settings of the guild
+	 * @param {?Guild} guild - Guild to set the status in
+	 * @param {Command} command - Command to set the status of
+	 * @param {Object} settings - Settings of the guild
 	 * @private
 	 */
 	setupGuildCommand(guild, command, settings) {
