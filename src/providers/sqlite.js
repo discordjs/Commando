@@ -81,18 +81,22 @@ class SQLiteProvider extends SettingProvider {
 			.on('commandPrefixChange', (guild, prefix) => this.set(guild, 'prefix', prefix))
 			.on('commandStatusChange', (guild, command, enabled) => this.set(guild, `cmd-${command.name}`, enabled))
 			.on('groupStatusChange', (guild, group, enabled) => this.set(guild, `grp-${group.name}`, enabled))
-			.on('commandRegistered', command => {
-				for(const [guild, settings] of this.settings) {
-					if(!client.guilds.has(guild)) continue;
-					if(typeof settings[`cmd-${command.name}`] !== 'undefined') {
-						command.setEnabledIn(guild, settings[`cmd-${command.name}`]);
-					}
-				}
-			})
 			.on('guildCreate', guild => {
 				const settings = this.settings.get(guild.id);
 				if(!settings) return;
 				this.setupGuild(guild.id, settings);
+			})
+			.on('commandRegistered', command => {
+				for(const [guild, settings] of this.settings) {
+					if(guild !== 'global' && !client.guilds.has(guild)) continue;
+					this.setupGuildCommand(client.guilds.get(guild), command, settings);
+				}
+			})
+			.on('groupRegistered', group => {
+				for(const [guild, settings] of this.settings) {
+					if(guild !== 'global' && !client.guilds.has(guild)) continue;
+					this.setupGuildGroup(client.guilds.get(guild), group, settings);
+				}
 			});
 	}
 
@@ -148,22 +152,52 @@ class SQLiteProvider extends SettingProvider {
 
 		// Load the command prefix
 		if(settings.prefix) {
-			if(!guild) this.client.commandPrefix = settings.prefix;
-			else guild.commandPrefix = settings.prefix;
+			if(guild) guild._commandPrefix = settings.prefix;
+			else this.client._commandPrefix = settings.prefix;
 		}
 
 		// Load all command statuses
 		for(const command of this.client.registry.commands.values()) {
-			if(typeof settings[`cmd-${command.name}`] !== 'undefined') {
-				command.setEnabledIn(guild, settings[`cmd-${command.name}`]);
-			}
+			this.setupGuildCommand(guild, command, settings);
 		}
 
 		// Load all group statuses
 		for(const group of this.client.registry.groups.values()) {
-			if(typeof settings[`grp-${group.name}`] !== 'undefined') {
-				group.setEnabledIn(guild, settings[`grp-${group.name}`]);
-			}
+			this.setupGuildGroup(guild, group, settings);
+		}
+	}
+
+	/**
+	 * Sets up a command's status in a guild from the guild's settings
+	 * @param {?Guild} guild Guild to set the status in
+	 * @param {Command} command Command to set the status of
+	 * @param {Object} settings Settings of the guild
+	 * @private
+	 */
+	setupGuildCommand(guild, command, settings) {
+		if(typeof settings[`cmd-${command.name}`] === 'undefined') return;
+		if(guild) {
+			if(!guild._commandsEnabled) guild._commandsEnabled = {};
+			guild._commandsEnabled[command.name] = settings[`cmd-${command.name}`];
+		} else {
+			command._globalEnabled = settings[`cmd-${command.name}`];
+		}
+	}
+
+	/**
+	 * Sets up a group's status in a guild from the guild's settings
+	 * @param {?Guild} guild Guild to set the status in
+	 * @param {CommandGroup} group Group to set the status of
+	 * @param {Object} settings Settings of the guild
+	 * @private
+	 */
+	setupGuildGroup(guild, group, settings) {
+		if(typeof settings[`grp-${group.name}`] === 'undefined') return;
+		if(guild) {
+			if(!guild._groupsEnabled) guild._groupsEnabled = {};
+			guild._groupsEnabled[group.name] = settings[`grp-${group.name}`];
+		} else {
+			group._globalEnabled = settings[`grp-${group.name}`];
 		}
 	}
 }
