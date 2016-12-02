@@ -35,8 +35,24 @@ class SQLiteProvider extends SettingProvider {
 		 */
 		this.settings = new Map();
 
+		/**
+		 * Prepared statement to insert or replace a settings row
+		 * @type {SQLiteStatement}
+		 * @private
+		 */
 		this.insertOrReplaceStmt = null;
+
+		/**
+		 * Prepared statement to delete an entire settings row
+		 * @type {SQLiteStatement}
+		 * @private
+		 */
 		this.deleteStmt = null;
+
+		/**
+		 * @external SQLiteStatement
+		 * @see {@link https://www.npmjs.com/package/sqlite}
+		 */
 	}
 
 	async init(client) {
