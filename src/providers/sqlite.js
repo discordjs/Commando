@@ -86,13 +86,13 @@ class SQLiteProvider extends SettingProvider {
 				if(!settings) return;
 				this.setupGuild(guild.id, settings);
 			})
-			.on('commandRegistered', command => {
+			.on('commandRegister', command => {
 				for(const [guild, settings] of this.settings) {
 					if(guild !== 'global' && !client.guilds.has(guild)) continue;
 					this.setupGuildCommand(client.guilds.get(guild), command, settings);
 				}
 			})
-			.on('groupRegistered', group => {
+			.on('groupRegister', group => {
 				for(const [guild, settings] of this.settings) {
 					if(guild !== 'global' && !client.guilds.has(guild)) continue;
 					this.setupGuildGroup(client.guilds.get(guild), group, settings);
