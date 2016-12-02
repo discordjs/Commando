@@ -128,8 +128,6 @@ class CommandDispatcher {
 								message.guild ? undefined : null
 							)} to view the list of all commands.`
 						);
-					} else {
-						responses = null;
 					}
 				}
 			} else {
