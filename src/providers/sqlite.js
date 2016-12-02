@@ -36,6 +36,13 @@ class SQLiteProvider extends SettingProvider {
 		this.settings = new Map();
 
 		/**
+		 * Listeners on the Client, mapped by the event name
+		 * @type {Map}
+		 * @private
+		 */
+		this.listeners = new Map();
+
+		/**
 		 * Prepared statement to insert or replace a settings row
 		 * @type {SQLiteStatement}
 		 * @private
@@ -77,34 +84,40 @@ class SQLiteProvider extends SettingProvider {
 		this.deleteStmt = statements[1];
 
 		// Listen for changes
-		client
-			.on('commandPrefixChange', (guild, prefix) => this.set(guild, 'prefix', prefix))
-			.on('commandStatusChange', (guild, command, enabled) => this.set(guild, `cmd-${command.name}`, enabled))
-			.on('groupStatusChange', (guild, group, enabled) => this.set(guild, `grp-${group.name}`, enabled))
-			.on('guildCreate', guild => {
+		this.listeners
+			.set('commandPrefixChange', (guild, prefix) => this.set(guild, 'prefix', prefix))
+			.set('commandStatusChange', (guild, command, enabled) => this.set(guild, `cmd-${command.name}`, enabled))
+			.set('groupStatusChange', (guild, group, enabled) => this.set(guild, `grp-${group.name}`, enabled))
+			.set('guildCreate', guild => {
 				const settings = this.settings.get(guild.id);
 				if(!settings) return;
 				this.setupGuild(guild.id, settings);
 			})
-			.on('commandRegister', command => {
+			.set('commandRegister', command => {
 				for(const [guild, settings] of this.settings) {
 					if(guild !== 'global' && !client.guilds.has(guild)) continue;
 					this.setupGuildCommand(client.guilds.get(guild), command, settings);
 				}
 			})
-			.on('groupRegister', group => {
+			.set('groupRegister', group => {
 				for(const [guild, settings] of this.settings) {
 					if(guild !== 'global' && !client.guilds.has(guild)) continue;
 					this.setupGuildGroup(client.guilds.get(guild), group, settings);
 				}
 			});
+		for(const [event, listener] of this.listeners) client.on(event, listener);
 	}
 
 	async destroy() {
+		// Finalise prepared statements
 		await Promise.all([
 			this.insertOrReplaceStmt.finalize(),
 			this.deleteStmt.finalize()
 		]);
+
+		// Remove all listeners from the client
+		for(const [event, listener] of this.listeners) this.client.removeListener(event, listener);
+		this.listeners.clear();
 	}
 
 	get(guild, key, defVal) {
