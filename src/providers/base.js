@@ -12,7 +12,7 @@ class SettingProvider {
 
 	/**
 	 * Initialises the provider by connecting to databases and/or caching all data in memory.
-	 * {@link Client#setProvider} will automatically call this once the client is ready.
+	 * {@link CommandoClient#setProvider} will automatically call this once the client is ready.
 	 * @param {CommandoClient} client Client that will be using the provider
 	 * @return {Promise<void>}
 	 * @abstract

@@ -23,7 +23,7 @@ class SQLiteProvider extends SettingProvider {
 		this.db = db;
 
 		/**
-		 * Client that the provider is for (set once the client is ready, after using {@link Client#setProvider})
+		 * Client that the provider is for (set once the client is ready, after using {@link CommandoClient#setProvider})
 		 * @type {?CommandoClient}
 		 */
 		this.client = null;
