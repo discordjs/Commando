@@ -79,25 +79,20 @@ class CommandDispatcher {
 	 * @private
 	 */
 	async handleMessage(message, oldMessage) {
-		if(message.author.bot) return;
-		else if(this.client.options.selfbot && message.author.id !== this.client.user.id) return;
-		else if(!this.client.options.selfbot && message.author.id === this.client.user.id) return;
-
-		// Ignore messages from users that the bot is already waiting for input from
-		if(this._awaiting.has(message.author.id + message.channel.id)) return;
-
-		// Make sure the edit actually changed the message content
-		if(oldMessage && message.content === oldMessage.content) return;
+		if(!this.shouldHandleMessage(message, oldMessage)) return;
 
 		// Parse the message, and get the old result if it exists
-		const cmdMsg = this.parseMessage(message);
-		let oldCmdMsg;
+		let cmdMsg, oldCmdMsg;
 		if(oldMessage) {
 			oldCmdMsg = this._results.get(oldMessage.id);
+			if(!oldCmdMsg && !this.client.options.nonCommandEditable) return;
+			cmdMsg = this.parseMessage(message);
 			if(cmdMsg && oldCmdMsg) {
 				cmdMsg.responses = oldCmdMsg.responses;
 				cmdMsg.responsePositions = oldCmdMsg.responsePositions;
 			}
+		} else {
+			cmdMsg = this.parseMessage(message);
 		}
 
 		// Run the command, or reply with an error
@@ -111,7 +106,7 @@ class CommandDispatcher {
 						responses = await cmdMsg.reply(`The \`${cmdMsg.command.name}\` command is disabled.`);
 					} else if(!oldMessage || typeof oldCmdMsg !== 'undefined') {
 						responses = await cmdMsg.run();
-						if(typeof responses === 'undefined') responses = null;
+						if(typeof responses === 'undefined') responses = null; // eslint-disable-line max-depth
 					}
 				} else {
 					/**
@@ -137,10 +132,31 @@ class CommandDispatcher {
 			cmdMsg.finalize(responses);
 		} else if(oldCmdMsg) {
 			oldCmdMsg.finalize(null);
-			if(this.client.options.nonCommandEditable <= 0) this._results.delete(message.id);
+			if(!this.client.options.nonCommandEditable) this._results.delete(message.id);
 		}
 
 		this.cacheCommandMessage(message, oldMessage, cmdMsg, responses);
+	}
+
+	/**
+	 * Check whether a message should be handled
+	 * @param {Message} message - The message to handle
+	 * @param {Message} [oldMessage] - The old message before the update
+	 * @return {boolean}
+	 * @private
+	 */
+	shouldHandleMessage(message, oldMessage) {
+		if(message.author.bot) return false;
+		else if(this.client.options.selfbot && message.author.id !== this.client.user.id) return false;
+		else if(!this.client.options.selfbot && message.author.id === this.client.user.id) return false;
+
+		// Ignore messages from users that the bot is already waiting for input from
+		if(this._awaiting.has(message.author.id + message.channel.id)) return false;
+
+		// Make sure the edit actually changed the message content
+		if(oldMessage && message.content === oldMessage.content) return false;
+
+		return true;
 	}
 
 	/**
@@ -169,17 +185,15 @@ class CommandDispatcher {
 	 * @private
 	 */
 	cacheCommandMessage(message, oldMessage, cmdMsg, responses) {
-		if(this.client.options.commandEditableDuration > 0) {
-			if(cmdMsg || this.client.options.nonCommandEditable) {
-				if(responses !== null) {
-					this._results.set(message.id, cmdMsg);
-					if(!oldMessage) {
-						setTimeout(() => { this._results.delete(message.id); }, this.client.options.commandEditableDuration * 1000);
-					}
-				} else {
-					this._results.delete(message.id);
-				}
+		if(this.client.options.commandEditableDuration <= 0) return;
+		if(!cmdMsg && !this.client.options.nonCommandEditable) return;
+		if(responses !== null) {
+			this._results.set(message.id, cmdMsg);
+			if(!oldMessage) {
+				setTimeout(() => { this._results.delete(message.id); }, this.client.options.commandEditableDuration * 1000);
 			}
+		} else {
+			this._results.delete(message.id);
 		}
 	}
 
