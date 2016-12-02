@@ -156,15 +156,9 @@ class SQLiteProvider extends SettingProvider {
 			else this.client._commandPrefix = settings.prefix;
 		}
 
-		// Load all command statuses
-		for(const command of this.client.registry.commands.values()) {
-			this.setupGuildCommand(guild, command, settings);
-		}
-
-		// Load all group statuses
-		for(const group of this.client.registry.groups.values()) {
-			this.setupGuildGroup(guild, group, settings);
-		}
+		// Load all command/group statuses
+		for(const command of this.client.registry.commands.values()) this.setupGuildCommand(guild, command, settings);
+		for(const group of this.client.registry.groups.values()) this.setupGuildGroup(guild, group, settings);
 	}
 
 	/**
