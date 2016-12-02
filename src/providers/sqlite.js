@@ -101,7 +101,10 @@ class SQLiteProvider extends SettingProvider {
 	}
 
 	async destroy() {
-		// do nothing
+		await Promise.all([
+			this.insertOrReplaceStmt.finalize(),
+			this.deleteStmt.finalize()
+		]);
 	}
 
 	get(guild, key, defVal) {
