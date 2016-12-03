@@ -71,7 +71,7 @@ class SQLiteProvider extends SettingProvider {
 		for(const row of rows) {
 			const settings = JSON.parse(row.settings);
 			this.settings.set(row.guild || 'global', settings);
-			if(row.guild !== 'global' && !client.guilds.has(row.guild)) continue;
+			if(row.guild !== '0' && !client.guilds.has(row.guild)) continue;
 			this.setupGuild(row.guild || 'global', settings);
 		}
 
@@ -134,7 +134,7 @@ class SQLiteProvider extends SettingProvider {
 		}
 
 		settings[key] = val;
-		await this.insertOrReplaceStmt.run(guild !== 'global' ? guild : null, JSON.stringify(settings));
+		await this.insertOrReplaceStmt.run(guild !== 'global' ? guild : 0, JSON.stringify(settings));
 		return val;
 	}
 
@@ -145,7 +145,7 @@ class SQLiteProvider extends SettingProvider {
 
 		const val = settings[key];
 		settings[key] = undefined;
-		await this.insertOrReplaceStmt.run(guild !== 'global' ? guild : null, JSON.stringify(settings));
+		await this.insertOrReplaceStmt.run(guild !== 'global' ? guild : 0, JSON.stringify(settings));
 		return val;
 	}
 
@@ -153,7 +153,7 @@ class SQLiteProvider extends SettingProvider {
 		guild = this.constructor.getGuildID(guild);
 		const settings = this.settings.get(guild);
 		if(!settings) return;
-		await this.deleteStmt.run(guild !== 'global' ? guild : null);
+		await this.deleteStmt.run(guild !== 'global' ? guild : 0);
 	}
 
 	/**
