@@ -17,9 +17,11 @@ class CommandGroup {
 
 		/**
 		 * Client that this group is for
+		 * @name CommandGroup#client
 		 * @type {CommandoClient}
+		 * @readonly
 		 */
-		this.client = client;
+		Object.defineProperty(this, 'client', { value: client });
 
 		/**
 		 * ID of this group

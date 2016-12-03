@@ -24,9 +24,10 @@ class SQLiteProvider extends SettingProvider {
 
 		/**
 		 * Client that the provider is for (set once the client is ready, after using {@link CommandoClient#setProvider})
-		 * @type {?CommandoClient}
+		 * @type {CommandoClient}
+		 * @type SQLiteProvider#client
 		 */
-		this.client = null;
+		Object.defineProperty(this, 'client', { value: null, writable: true });
 
 		/**
 		 * Settings cached in memory, mapped by guild ID (or 'global')

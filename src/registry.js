@@ -10,9 +10,11 @@ class CommandRegistry {
 	constructor(client) {
 		/**
 		 * The client this registry is for
+		 * @name CommandRegistry#client
 		 * @type {CommandoClient}
+		 * @readonly
 		 */
-		this.client = client;
+		Object.defineProperty(this, 'client', { value: client });
 
 		/**
 		 * Registered commands

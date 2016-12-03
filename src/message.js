@@ -14,9 +14,11 @@ class CommandMessage {
 	constructor(message, command = null, argString = null, patternMatches = null) {
 		/**
 		 * Client that the message was sent from
+		 * @name CommandMessage#client
 		 * @type {CommandoClient}
+		 * @readonly
 		 */
-		this.client = message.client;
+		Object.defineProperty(this, 'client', { value: message.client });
 
 		/**
 		 * Message that triggers the command

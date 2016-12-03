@@ -25,6 +25,7 @@ class GuildExtension {
 	/**
 	 * Shortcut to use setting provider methods for this guild
 	 * @type {GuildSettingsHelper}
+	 * @readonly
 	 */
 	get settings() {
 		if(!this._settings) this._settings = new GuildSettingsHelper(this.client, this);

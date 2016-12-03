@@ -10,9 +10,11 @@ class CommandDispatcher {
 	constructor(client, registry) {
 		/**
 		 * Client this dispatcher handles messages for
+		 * @name CommandDispatcher#client
 		 * @type {CommandoClient}
+		 * @readonly
 		 */
-		this.client = client;
+		Object.defineProperty(this, 'client', { value: client });
 
 		/**
 		 * Registry this dispatcher uses

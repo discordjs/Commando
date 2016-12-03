@@ -8,9 +8,10 @@ class GuildSettingsHelper {
 	constructor(client, guild) {
 		/**
 		 * Client to use the provider of
+		 * @name GuildSettingsHelper#client
 		 * @type {CommandoClient}
 		 */
-		this.client = client;
+		Object.defineProperty(this, 'client', { value: client });
 
 		/**
 		 * Guild the settings are for
