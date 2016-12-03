@@ -6,7 +6,16 @@ class GuildSettingsHelper {
 	 * @private
 	 */
 	constructor(client, guild) {
+		/**
+		 * Client to use the provider of
+		 * @type {CommandoClient}
+		 */
 		this.client = client;
+
+		/**
+		 * Guild the settings are for
+		 * @type {?Guild}
+		 */
 		this.guild = guild;
 	}
 
