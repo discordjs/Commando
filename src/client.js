@@ -1,6 +1,7 @@
 const discord = require('discord.js');
 const CommandRegistry = require('./registry');
 const CommandDispatcher = require('./dispatcher');
+const GuildSettingsHelper = require('./providers/helper');
 
 /**
  * Discord.js Client with a command framework
@@ -46,7 +47,13 @@ class CommandoClient extends discord.Client {
 		 * The client's setting provider
 		 * @type {?SettingProvider}
 		 */
-		this.settings = null;
+		this.provider = null;
+
+		/**
+		 * Shortcut to use setting provider methods for the global settings
+		 * @type {GuildSettingsHelper}
+		 */
+		this.settings = new GuildSettingsHelper(this, null);
 
 		this._commandPrefix = null;
 
@@ -86,7 +93,7 @@ class CommandoClient extends discord.Client {
 	 */
 	async setProvider(provider) {
 		provider = await provider;
-		this.settings = provider;
+		this.provider = provider;
 
 		if(this.readyTimestamp) {
 			this.emit('debug', `Provider set to ${provider.constructor.name}. Initialising...`);
@@ -106,7 +113,7 @@ class CommandoClient extends discord.Client {
 	}
 
 	destroy() {
-		super.destroy().then(() => this.settings ? this.settings.destroy() : undefined);
+		super.destroy().then(() => this.provider ? this.provider.destroy() : undefined);
 	}
 }
 

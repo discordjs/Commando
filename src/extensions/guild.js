@@ -1,4 +1,5 @@
 const Command = require('../command');
+const GuildSettingsHelper = require('../providers/helper');
 
 /** Contains additional methods and properties that are added to the discord.js Guild class */
 class GuildExtension {
@@ -19,6 +20,15 @@ class GuildExtension {
 		 * @param {?string} prefix - New command prefix (null for default)
 		 */
 		this.client.emit('commandPrefixChange', this, this._commandPrefix);
+	}
+
+	/**
+	 * Shortcut to use setting provider methods for this guild
+	 * @type {GuildSettingsHelper}
+	 */
+	get settings() {
+		if(!this._settings) this._settings = new GuildSettingsHelper(this.client, this);
+		return this._settings;
 	}
 
 	/**
@@ -109,6 +119,7 @@ class GuildExtension {
 	static applyToClass(target) {
 		for(const prop of [
 			'commandPrefix',
+			'settings',
 			'setCommandEnabled',
 			'isCommandEnabled',
 			'setGroupEnabled',
