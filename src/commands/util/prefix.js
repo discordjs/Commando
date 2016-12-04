@@ -32,7 +32,7 @@ module.exports = class PrefixCommand extends Command {
 	async run(msg, args) {
 		if(args.prefix) {
 			if(msg.guild) {
-				if(!msg.member.hasPermission('ADMINISTRATOR')) {
+				if(!msg.member.hasPermission('ADMINISTRATOR') && msg.author.id !== this.client.options.owner) {
 					return msg.reply('Only administrators may change the command prefix.');
 				}
 			} else if(msg.author.id !== this.client.options.owner) {
