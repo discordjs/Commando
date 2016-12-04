@@ -39,7 +39,7 @@ class CommandDispatcher {
 	 * be blocked, they should return one of the following:
 	 * - A single string identifying the reason the command is blocked
 	 * - An array of the above string as element 0, and a response promise or `null` as element 1
-	 * @typedef {function} Inhibitor
+	 * @typedef {Function} Inhibitor
 	 */
 
 	/**

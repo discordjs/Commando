@@ -50,7 +50,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers a single group
-	 * @param {CommandGroup|function|string[]|string} group - A CommandGroup instance, a constructor,
+	 * @param {CommandGroup|Function|string[]|string} group - A CommandGroup instance, a constructor,
 	 * an array of [ID, Name], or the group ID
 	 * @param {string} [name] name - Name for the group (if the first argument is the group ID)
 	 * @return {CommandRegistry}
@@ -63,7 +63,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers multiple groups
-	 * @param {CommandGroup[]|function[]|Array<Array<string>>} groups - An array of CommandGroup instances, constructors,
+	 * @param {CommandGroup[]|Function[]|Array<Array<string>>} groups - An array of CommandGroup instances, constructors,
 	 * or arrays of [ID, Name]
 	 * @return {CommandRegistry}
 	 */
@@ -95,7 +95,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers a single command
-	 * @param {Command|CommandBuilder|function} command - Either a Command instance, or a constructor for one
+	 * @param {Command|CommandBuilder|Function} command - Either a Command instance, or a constructor for one
 	 * @return {CommandRegistry}
 	 * @see {@link CommandRegistry#registerCommands}
 	 */
@@ -105,7 +105,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers multiple commands
-	 * @param {Command[]|CommandBuilder[]|function[]} commands - An array of Command instances or constructors
+	 * @param {Command[]|CommandBuilder[]|Function[]} commands - An array of Command instances or constructors
 	 * @return {CommandRegistry}
 	 */
 	registerCommands(commands) {
@@ -170,7 +170,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers a single argument type
-	 * @param {ArgumentType|function} type - Either an ArgumentType instance, or a constructor for one
+	 * @param {ArgumentType|Function} type - Either an ArgumentType instance, or a constructor for one
 	 * @return {CommandRegistry}
 	 * @see {@link CommandRegistry#registerTypes}
 	 */
@@ -180,7 +180,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers multiple argument types
-	 * @param {ArgumentType[]|function[]} types - An array of ArgumentType instances or constructors
+	 * @param {ArgumentType[]|Function[]} types - An array of ArgumentType instances or constructors
 	 * @return {CommandRegistry}
 	 */
 	registerTypes(types) {
@@ -284,7 +284,7 @@ class CommandRegistry {
 
 	/**
 	 * Reregisters a command (does not support changing name, group, or memberName)
-	 * @param {Command|CommandBuilder|function} command - New command
+	 * @param {Command|CommandBuilder|Function} command - New command
 	 * @param {Command} oldCommand - Old command
 	 */
 	reregisterCommand(command, oldCommand) {

@@ -116,7 +116,7 @@ class GuildExtension {
 
 	/**
 	 * Applies the interface to a class prototype
-	 * @param {function} target - The constructor function to apply to the prototype of
+	 * @param {Function} target - The constructor function to apply to the prototype of
 	 * @private
 	 */
 	static applyToClass(target) {

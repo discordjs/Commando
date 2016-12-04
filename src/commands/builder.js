@@ -4,8 +4,8 @@ const Command = require('./base');
 class CommandBuilder {
 	/**
 	 * @typedef {Object} CommandBuilderFunctions
-	 * @property {function} [run] - The run function to set
-	 * @property {function} [hasPermission] - The hasPermission function to set
+	 * @property {Function} [run] - The run function to set
+	 * @property {Function} [hasPermission] - The hasPermission function to set
 	 */
 
 	/**
@@ -44,7 +44,7 @@ class CommandBuilder {
 
 	/**
 	 * Sets the command's run method
-	 * @param {function} fn - The function to use
+	 * @param {Function} fn - The function to use
 	 * @param {Array<*>} [extras=[]] - Extra values to pass to the function
 	 * @return {CommandBuilder} This builder
 	 */
@@ -57,7 +57,7 @@ class CommandBuilder {
 
 	/**
 	 * Sets the command's hasPermission method
-	 * @param {function} fn - The function to use
+	 * @param {Function} fn - The function to use
 	 * @param {Array<*>} [extras=[]] - Extra values to pass to the function
 	 * @return {CommandBuilder} This builder
 	 */

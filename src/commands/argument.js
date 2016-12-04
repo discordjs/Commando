@@ -16,28 +16,9 @@ class CommandArgument {
 	 * If type is 'string', this is the minimum length of the string.
 	 * @property {*} [default] - Default value for the argument (makes the argument optional - cannot be `null`)
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
-	 * @property {ArgumentValidator} [validate] - Validator function for the argument
-	 * @property {ArgumentParser} [parse] - Parser function for the argument
+	 * @property {Function} [validate] - Validator function for the argument (see {@link ArgumentType#validate})
+	 * @property {Function} [parse] - Parser function for the argument (see {@link ArgumentType#parse})
 	 * @property {number} [wait=30] - How long to wait for input (in seconds)
-	 */
-
-	/**
-	 * Function that validates an input value string
-	 * @typedef {function} ArgumentValidator
-	 * @param {string} value - Value to check for validity
-	 * @param {CommandMessage} msg - Message that the value came from
-	 * @param {CommandArgument} arg - Argument that the validator is for
-	 * @return {Promise<boolean|string>|boolean|string} If a string is returned, it is considered to be the error message
-	 * for the validation.
-	 */
-
-	/**
-	 * Function that parses an input value string into a proper value for the argument
-	 * @typedef {function} ArgumentParser
-	 * @param {string} value - Value to parse
-	 * @param {CommandMessage} msg - Message that the value came from
-	 * @param {CommandArgument} arg - Argument that the parser is for
-	 * @return {Promise<*>|*}
 	 */
 
 	/**

@@ -30,7 +30,7 @@ class ArgumentType {
 	 * @param {string} value - Value to validate
 	 * @param {CommandMessage} msg - Message the value was obtained from
 	 * @param {CommandArgument} arg - Argument the value obtained from
-	 * @return {boolean|Promise<boolean|string>} Whether the value is valid, or an error message
+	 * @return {boolean|string|Promise<boolean|string>} Whether the value is valid, or an error message
 	 * @abstract
 	 */
 	validate(value, msg, arg) { // eslint-disable-line no-unused-vars
