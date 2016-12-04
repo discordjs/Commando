@@ -7,6 +7,7 @@ module.exports = {
 	CommandArgument: require('./commands/argument'),
 	CommandGroup: require('./commands/group'),
 	CommandMessage: require('./commands/message'),
+	ArgumentType: require('./types/base'),
 	FriendlyError: require('./errors/friendly'),
 	CommandFormatError: require('./errors/command-format'),
 
