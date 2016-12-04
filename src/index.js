@@ -3,10 +3,10 @@ const discord = require('discord.js');
 module.exports = {
 	Client: require('./client'),
 	CommandoClient: require('./client'),
-	Command: require('./command'),
-	CommandArgument: require('./argument'),
-	CommandGroup: require('./group'),
-	CommandMessage: require('./message'),
+	Command: require('./commands/base'),
+	CommandArgument: require('./commands/argument'),
+	CommandGroup: require('./commands/group'),
+	CommandMessage: require('./commands/message'),
 	FriendlyError: require('./errors/friendly'),
 	CommandFormatError: require('./errors/command-format'),
 

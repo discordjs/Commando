@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const oneLine = require('common-tags').oneLine;
-const Command = require('../../command');
+const Command = require('../base');
 
 module.exports = class LoadCommandCommand extends Command {
 	constructor(client) {

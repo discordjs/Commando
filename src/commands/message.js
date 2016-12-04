@@ -1,7 +1,7 @@
 const discord = require('discord.js');
 const { stripIndents, oneLine } = require('common-tags');
-const Command = require('./command');
-const FriendlyError = require('./errors/friendly');
+const Command = require('./base');
+const FriendlyError = require('../errors/friendly');
 
 /** A container for a message that triggers a command, that command, and methods to respond */
 class CommandMessage {

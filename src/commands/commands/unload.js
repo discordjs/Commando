@@ -1,5 +1,5 @@
 const oneLine = require('common-tags').oneLine;
-const Command = require('../../command');
+const Command = require('../base');
 const disambiguation = require('../../util').disambiguation;
 
 module.exports = class UnloadCommandCommand extends Command {

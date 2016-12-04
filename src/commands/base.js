@@ -1,7 +1,10 @@
 const path = require('path');
 const CommandArgument = require('./argument');
 
-/** A command that can be run in a client */
+/**
+ * A command that can be run in a client
+ * @abstract
+ */
 class Command {
 	/**
 	 * @typedef {Object} ThrottlingOptions
@@ -237,6 +240,7 @@ class Command {
 	 * (see [RegExp#exec](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec)).
 	 * @param {boolean} fromPattern - Whether or not the command is being run from a pattern match
 	 * @return {Promise<?Message|?Array<Message>>}
+	 * @abstract
 	 */
 	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars
 		throw new Error(`${this.constructor.name} doesn't have a run() method.`);

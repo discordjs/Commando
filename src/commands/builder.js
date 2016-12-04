@@ -1,4 +1,4 @@
-const Command = require('./command');
+const Command = require('./base');
 
 /** Builds commands with a fluent API */
 class CommandBuilder {

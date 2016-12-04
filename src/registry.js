@@ -1,8 +1,9 @@
 const discord = require('discord.js');
-const Command = require('./command');
-const CommandGroup = require('./group');
-const CommandBuilder = require('./builder');
-const CommandMessage = require('./message');
+const Command = require('./commands/base');
+const CommandGroup = require('./commands/group');
+const CommandBuilder = require('./commands/builder');
+const CommandMessage = require('./commands/message');
+const ArgumentType = require('./types/base');
 
 /** Handles registration and searching of commands and groups */
 class CommandRegistry {
@@ -24,9 +25,15 @@ class CommandRegistry {
 
 		/**
 		 * Registered command groups
-		 * @type {Collection<string, Command>}
+		 * @type {Collection<string, CommandGroup>}
 		 */
 		this.groups = new discord.Collection();
+
+		/**
+		 * Registered argument types
+		 * @type {Collection<string, ArgumentType>}
+		 */
+		this.types = new discord.Collection();
 
 		/**
 		 * Registered objects for the eval command
@@ -61,13 +68,13 @@ class CommandRegistry {
 	 * @return {CommandRegistry}
 	 */
 	registerGroups(groups) {
-		if(!Array.isArray(groups)) throw new TypeError('Groups must be an array.');
+		if(!Array.isArray(groups)) throw new TypeError('Groups must be an Array.');
 		for(let group of groups) {
 			if(typeof group === 'function') group = new CommandGroup(this.client);
 			else if(Array.isArray(group)) group = new CommandGroup(this.client, ...group);
 			else if(!(group instanceof CommandGroup)) group = new CommandGroup(this, group.id, group.name, group.commands);
 
-			const existing = this.groups.find(grp => grp.id === group.id);
+			const existing = this.groups.get(group.id);
 			if(existing) {
 				existing.name = group.name;
 				this.client.emit('debug', `Group ${group.id} is already registered; renamed it to "${group.name}".`);
@@ -102,7 +109,7 @@ class CommandRegistry {
 	 * @return {CommandRegistry}
 	 */
 	registerCommands(commands) {
-		if(!Array.isArray(commands)) throw new TypeError('Commands must be an array.');
+		if(!Array.isArray(commands)) throw new TypeError('Commands must be an Array.');
 		for(let command of commands) {
 			if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
 			else if(command instanceof CommandBuilder) command = command.command;
@@ -118,7 +125,7 @@ class CommandRegistry {
 				throw new Error(`A command with the name/alias "${command.name}" is already registered.`);
 			}
 			for(const alias of command.aliases) {
-				if(this.commands.some(cmd => cmd.name === alias || cmd.aliases.some(ali => ali === alias))) {
+				if(this.commands.some(cmd => cmd.name === alias || cmd.aliases.includes(alias))) {
 					throw new Error(`A command with the name/alias "${alias}" is already registered.`);
 				}
 			}
@@ -135,7 +142,7 @@ class CommandRegistry {
 			/**
 			 * Emitted when a command is registered
 			 * @event CommandoClient#commandRegister
-			 * @param {CommandGroup} command - Command that was registered
+			 * @param {Command} command - Command that was registered
 			 * @param {CommandRegistry} registry - Registry that the command was registered to
 			 */
 			this.client.emit('commandRegister', command, this);
@@ -162,10 +169,55 @@ class CommandRegistry {
 	}
 
 	/**
-	 * Registers both the default groups and commands
+	 * Registers a single argument type
+	 * @param {ArgumentType|function} type - Either an ArgumentType instance, or a constructor for one
+	 * @return {CommandRegistry}
+	 * @see {@link CommandRegistry#registerTypes}
+	 */
+	registerType(type) {
+		return this.registerTypes([type]);
+	}
+
+	/**
+	 * Registers multiple argument types
+	 * @param {ArgumentType[]|function[]} types - An array of ArgumentType instances or constructors
+	 * @return {CommandRegistry}
+	 */
+	registerTypes(types) {
+		if(!Array.isArray(types)) throw new TypeError('Types must be an Array.');
+		for(let type of types) {
+			if(typeof type === 'function') type = new type(this.client); // eslint-disable-line new-cap
+
+			// Verify that it's an actual type
+			if(!(type instanceof ArgumentType)) {
+				this.client.emit('warn', `Attempting to register an invalid argument type object: ${type}; skipping.`);
+				continue;
+			}
+
+			// Make sure there aren't any conflicts
+			if(this.types.has(type.id)) throw new Error(`An argument type with the ID "${type.id}" is already registered.`);
+
+			// Add the type
+			this.types.set(type.id, type);
+			/**
+			 * Emitted when an argument type is registered
+			 * @event CommandoClient#typeRegister
+			 * @param {ArgumentType} type - Argument type that was registered
+			 * @param {CommandRegistry} registry - Registry that the type was registered to
+			 */
+			this.client.emit('typeRegister', type, this);
+			this.client.emit('debug', `Registered argument type ${type.id}.`);
+		}
+
+		return this;
+	}
+
+	/**
+	 * Registers the default argument types, groups, and commands
 	 * @return {CommandRegistry}
 	 */
 	registerDefaults() {
+		this.registerDefaultTypes();
 		this.registerDefaultGroups();
 		this.registerDefaultCommands();
 		return this;
@@ -208,6 +260,25 @@ class CommandRegistry {
 				require('./commands/commands/unload')
 			]);
 		}
+		return this;
+	}
+
+	/**
+	 * Registers the default argument types to the registry
+	 * @return {CommandRegistry}
+	 */
+	registerDefaultTypes() {
+		this.registerTypes([
+			require('./types/string'),
+			require('./types/integer'),
+			require('./types/float'),
+			require('./types/boolean'),
+			require('./types/user'),
+			require('./types/member'),
+			require('./types/role'),
+			require('./types/channel'),
+			require('./types/message')
+		]);
 		return this;
 	}
 

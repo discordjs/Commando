@@ -1,5 +1,5 @@
 const { stripIndents, oneLine } = require('common-tags');
-const Command = require('../../command');
+const Command = require('../base');
 
 module.exports = class PrefixCommand extends Command {
 	constructor(client) {
