@@ -1,5 +1,4 @@
 const fs = require('fs');
-const path = require('path');
 const oneLine = require('common-tags').oneLine;
 const Command = require('../base');
 
@@ -30,13 +29,13 @@ module.exports = class LoadCommandCommand extends Command {
 						if(this.client.registry.findCommands(val).length > 0) {
 							return resolve('That command is already registered.');
 						}
-						const cmdPath = path.join(this.client.registry.commandsPath, split[0], `${split[1]}.js`);
+						const cmdPath = this.client.registry.resolveCommandPath(split[0], `${split[1]}.js`);
 						fs.access(cmdPath, fs.constants.R_OK, err => err ? resolve(false) : resolve(true));
 						return null;
 					}),
 					parse: val => {
 						const split = val.split(':');
-						const cmdPath = path.join(this.client.registry.commandsPath, split[0], `${split[1]}.js`);
+						const cmdPath = this.client.registry.resolveCommandPath(split[0], `${split[1]}.js`);
 						delete require.cache[cmdPath];
 						return require(cmdPath);
 					}

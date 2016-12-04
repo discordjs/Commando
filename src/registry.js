@@ -1,3 +1,4 @@
+const path = require('path');
 const discord = require('discord.js');
 const Command = require('./commands/base');
 const CommandGroup = require('./commands/group');
@@ -445,6 +446,16 @@ class CommandRegistry {
 			if(commands.length === 1) return commands[0];
 		}
 		throw new Error('Unable to resolve command.');
+	}
+
+	/**
+	 * Resolves a command file path from a command's group ID and memberName
+	 * @param {string} group - ID of the command's group
+	 * @param {string} memberName - Member name of the command
+	 * @return {string} Fully-resolved path to the corresponding command file
+	 */
+	resolveCommandPath(group, memberName) {
+		return path.join(this.commandsPath, group, `${memberName}.js`);
 	}
 }
 

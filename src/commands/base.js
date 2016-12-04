@@ -319,14 +319,14 @@ class Command {
 	reload() {
 		let cmdPath, cached, newCmd;
 		try {
-			cmdPath = path.join(this.client.registry.commandsPath, this.groupID, `${this.memberName}.js`);
+			cmdPath = this.client.registry.resolveCommandPath(this.groupID, this.memberName);
 			cached = require.cache[cmdPath];
 			delete require.cache[cmdPath];
 			newCmd = require(cmdPath);
 		} catch(err) {
 			if(cached) require.cache[cmdPath] = cached;
 			try {
-				cmdPath = path.join(__dirname, 'commands', this.groupID, `${this.memberName}.js`);
+				cmdPath = path.join(__dirname, this.groupID, `${this.memberName}.js`);
 				cached = require.cache[cmdPath];
 				delete require.cache[cmdPath];
 				newCmd = require(cmdPath);
@@ -343,7 +343,9 @@ class Command {
 	 * Unloads the command
 	 */
 	unload() {
-		delete require.cache[path.join(this.client.registry.commandsPath, this.groupID, `${this.memberName}.js`)];
+		const cmdPath = this.client.registry.resolveCommandPath(this.groupID, this.memberName);
+		if(!require.cache[cmdPath]) throw new Error('Command cannot be unloaded.');
+		delete require.cache[cmdPath];
 		this.client.registry.unregisterCommand(this);
 	}
 
