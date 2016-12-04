@@ -1,7 +1,4 @@
-/**
- * A type for command arguments
- * @abstract
- */
+/** A type for command arguments */
 class ArgumentType {
 	/**
 	 * @param {CommandoClient} client - The client the argument type is for

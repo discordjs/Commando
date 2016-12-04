@@ -1,10 +1,7 @@
 const path = require('path');
 const CommandArgument = require('./argument');
 
-/**
- * A command that can be run in a client
- * @abstract
- */
+/** A command that can be run in a client */
 class Command {
 	/**
 	 * @typedef {Object} ThrottlingOptions
