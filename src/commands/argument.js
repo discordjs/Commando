@@ -107,13 +107,15 @@ class CommandArgument {
 
 		/**
 		 * Validator function for validating a value for the argument
-		 * @type {ArgumentValidator}
+		 * @type {?Function}
+		 * @see {@link ArgumentType#validate}
 		 */
 		this.validator = info.validate || null;
 
 		/**
 		 * Parser function for parsing a value for the argument
-		 * @type {ArgumentParser}
+		 * @type {?Function}
+		 * @see {@link ArgumentType#parse}
 		 */
 		this.parser = info.parse || null;
 
