@@ -126,16 +126,23 @@ class CommandArgument {
 
 	/**
 	 * Prompts the user and obtains the value for the argument
-	 * @param {Message} msg - Message that triggered the command
+	 * @param {CommandMessage} msg - Message that triggered the command
 	 * @param {string} [value] - Pre-provided value for the argument
-	 * @return {Promise<?*>}
+	 * @return {Promise<?*|symbol>}
 	 */
 	async obtain(msg, value) {
 		if(!value && this.default !== null) return this.default;
 		if(this.infinite) return this.obtainInfinite(msg, value);
+
 		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		let valid = value ? await this.validate(value, msg) : false;
+		let attempts = 0;
+
 		while(!valid || typeof valid === 'string') {
+			attempts++;
+			if(attempts > this.command.argsPromptLimit) return msg.constructor.SilentCancel;
+			msg.promptCount++;
+
 			await msg.reply(stripIndents`
 				${!value ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
 				${oneLine`
@@ -143,6 +150,7 @@ class CommandArgument {
 					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
 				`}
 			`);
+
 			const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
 				maxMatches: 1,
 				time: wait
@@ -151,24 +159,32 @@ class CommandArgument {
 			if(value.toLowerCase() === 'cancel') return null;
 			valid = await this.validate(value, msg);
 		}
+
 		return this.parse(value, msg);
 	}
 
 	/**
 	 * Prompts the user and obtains multiple values for the argument
-	 * @param {Message} msg - Message that triggered the command
+	 * @param {CommandMessage} msg - Message that triggered the command
 	 * @param {string[]} [values] - Pre-provided values for the argument
-	 * @return {Promise<?Array<*>>}
+	 * @return {Promise<?Array<*>|symbol>}
+	 * @private
 	 */
-	async obtainInfinite(msg, values) {
+	async obtainInfinite(msg, values) { // eslint-disable-line complexity
+		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		const results = [];
 		let currentVal = 0;
-		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
+
 		while(true) { // eslint-disable-line no-constant-condition
 			let value = values && values[currentVal] ? values[currentVal] : null;
 			let valid = value ? await this.validate(value) : false;
+			let attempts = 0;
 
 			while(!valid || typeof valid === 'string') {
+				attempts++;
+				if(attempts > this.command.argsPromptLimit) return attempts === 1 ? msg.constructor.SilentCancel : null;
+				msg.promptCount++;
+
 				if(value) {
 					const escaped = escapeMarkdown(value).replace(/@/g, '@\u200b');
 					await msg.reply(stripIndents`
@@ -215,10 +231,10 @@ class CommandArgument {
 	/**
 	 * Checks if a value is valid for the argument
 	 * @param {string} value - Value to check
-	 * @param {Message} msg - Message that triggered the command
-	 * @return {Promise<boolean|string>}
+	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @return {boolean|string|Promise<boolean|string>}
 	 */
-	async validate(value, msg) {
+	validate(value, msg) {
 		if(this.validator) return this.validator(value, msg, this);
 		return this.type.validate(value, msg, this);
 	}
@@ -226,10 +242,10 @@ class CommandArgument {
 	/**
 	 * Parses a value string into a proper value for the argument
 	 * @param {string} value - Value to parse
-	 * @param {Message} msg - Message that triggered the command
-	 * @return {Promise<*>}
+	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @return {*|Promise<*>}
 	 */
-	async parse(value, msg) {
+	parse(value, msg) {
 		if(this.parser) return this.parser(value, msg, this);
 		return this.type.parse(value, msg, this);
 	}

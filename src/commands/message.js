@@ -2,6 +2,7 @@ const discord = require('discord.js');
 const { stripIndents, oneLine } = require('common-tags');
 const Command = require('./base');
 const FriendlyError = require('../errors/friendly');
+const CommandFormatError = require('../errors/command-format');
 
 /** A container for a message that triggers a command, that command, and methods to respond */
 class CommandMessage {
@@ -55,6 +56,13 @@ class CommandMessage {
 		 * @type {?Object}
 		 */
 		this.responsePositions = null;
+
+		/**
+		 * Number of times the user has been prompted while the arguments are being obtained
+		 * @type {number}
+		 * @private
+		 */
+		this.promptCount = 0;
 	}
 
 	/**
@@ -107,7 +115,7 @@ class CommandMessage {
 
 	/**
 	 * Obtains the values for the command's arguments
-	 * @return {Array<*>}
+	 * @return {Array<*>|symbol}
 	 */
 	async obtainArgs() {
 		this.client.dispatcher._awaiting.add(this.message.author.id + this.message.channel.id);
@@ -116,10 +124,10 @@ class CommandMessage {
 		const provided = this.constructor.parseArgs(this.argString.trim(), count, this.argsSingleQuotes);
 		const values = {};
 		for(let i = 0; i < args.length; i++) {
-			const value = await args[i].obtain(this.message, args[i].infinite ? provided.slice(i) : provided[i]);
-			if(value === null) {
+			const value = await args[i].obtain(this, args[i].infinite ? provided.slice(i) : provided[i]);
+			if(value === null || typeof value === 'symbol') {
 				this.client.dispatcher._awaiting.delete(this.message.author.id + this.message.channel.id);
-				return null;
+				return this.promptCount > 0 ? value : this.constructor.FormatCancel;
 			}
 			values[args[i].key] = value;
 		}
@@ -131,7 +139,7 @@ class CommandMessage {
 	 * Runs the command
 	 * @return {Promise<?Message|?Array<Message>>}
 	 */
-	async run() {
+	async run() { // eslint-disable-line complexity
 		// Make sure the command is usable
 		if(this.command.guildOnly && !this.message.guild) {
 			/**
@@ -162,6 +170,11 @@ class CommandMessage {
 		if(!args && this.command.args) {
 			args = await this.obtainArgs();
 			if(!args) return await this.reply('Cancelled command.');
+			if(args === this.constructor.SilentCancel) return null;
+			if(args === this.constructor.FormatCancel) {
+				const err = new CommandFormatError(this);
+				return await this.reply(err.message);
+			}
 		}
 		if(!args) args = this.parseArgs();
 		const fromPattern = Boolean(this.patternMatches);
@@ -388,6 +401,7 @@ class CommandMessage {
 		if(this.responses) this.deleteRemainingResponses();
 		this.responses = {};
 		this.responsePositions = {};
+		this.promptCount = 0;
 
 		if(responses instanceof Array) {
 			for(const response of responses) {
@@ -684,6 +698,18 @@ class CommandMessage {
 		return this.message.delete(timeout);
 	}
 }
+
+/**
+ * Silently cancels a running command
+ * @type {Symbol}
+ */
+CommandMessage.SilentCancel = Symbol('silent command cancel');
+
+/**
+ * Cancels a running command with a format error
+ * @type {Symbol}
+ */
+CommandMessage.FormatCancel = Symbol('format command cancel');
 
 function channelIDOrDM(channel) {
 	if(channel.type !== 'dm') return channel.id;

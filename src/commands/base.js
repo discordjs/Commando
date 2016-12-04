@@ -25,6 +25,8 @@ class Command {
 	 * If false, then only patterns will trigger the command.
 	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
 	 * @property {CommandArgumentInfo[]} [args] - Arguments for the command.
+	 * @property {number} [argsPromptLimit=Infinity] - Maximum number of times to prompt a user for a single argument.
+	 * Only applicable if `args` is specified.
 	 * @property {string} [argsType=single] - One of 'single' or 'multiple'. Only applicable if `args` is not specified.
 	 * When 'single', the entire argument string will be passed to run as one argument.
 	 * When 'multiple', it will be passed as multiple arguments.
@@ -71,6 +73,12 @@ class Command {
 			if(info.throttling.duration < 1) throw new RangeError('Command throttling duration must be at least 1.');
 		}
 		if(info.args && !Array.isArray(info.args)) throw new TypeError('Command args must be an Array.');
+		if('argsPromptLimit' in info && typeof info.argsPromptLimit !== 'number') {
+			throw new TypeError('Command argsPromptLimit must be a number.');
+		}
+		if('argsPromptLimit' in info && info.argsPromptLimit < 0) {
+			throw new RangeError('Command argsPromptLimit must be at least 0.');
+		}
 		if(info.argsType && !['single', 'multiple'].includes(info.argsType)) {
 			throw new RangeError('Command argsType must be one of "single" or "multiple".');
 		}
@@ -186,6 +194,12 @@ class Command {
 				if(this.args[i].infinite) hasInfinite = true;
 			}
 		}
+
+		/**
+		 * Maximum number of times to prompt for a single argument
+		 * @type {number}
+		 */
+		this.argsPromptLimit = 'argsPromptLimit' in info ? info.argsPromptLimit : Infinity;
 
 		/**
 		 * How the arguments are split when passed to the command's run method
