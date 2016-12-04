@@ -24,8 +24,9 @@ class SQLiteProvider extends SettingProvider {
 
 		/**
 		 * Client that the provider is for (set once the client is ready, after using {@link CommandoClient#setProvider})
+		 * @name SQLiteProvider#client
 		 * @type {CommandoClient}
-		 * @type SQLiteProvider#client
+		 * @readonly
 		 */
 		Object.defineProperty(this, 'client', { value: null, writable: true });
 
