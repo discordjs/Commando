@@ -13,6 +13,7 @@ class GuildExtension {
 
 	set commandPrefix(prefix) {
 		this._commandPrefix = prefix || null;
+		this.dispatcher.buildCommandPattern(this, this.client.user);
 		/**
 		 * Emitted whenever a guild's command prefix is changed
 		 * @event CommandoClient#commandPrefixChange

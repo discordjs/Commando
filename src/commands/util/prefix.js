@@ -51,12 +51,10 @@ module.exports = class PrefixCommand extends Command {
 				response = prefix ? `Set the command prefix to \`${args.prefix}\`.` : 'Removed the command prefix entirely.';
 			}
 
-			// Build the pattern
-			this.client.dispatcher.buildCommandPattern(msg.guild, msg.client.user);
 			msg.reply(`${response} To run commands, use ${msg.anyUsage('command')}.`);
 			return null;
 		} else {
-			const prefix = msg.guild ? msg.guild.commandPrefix : this.client.options.commandPrefix;
+			const prefix = msg.guild ? msg.guild.commandPrefix : this.client.commandPrefix;
 			return msg.reply(stripIndents`
 				${prefix ? `The command prefix is \`${prefix}\`.` : 'There is no command prefix.'}
 				To run commands, use ${msg.anyUsage('command')}.

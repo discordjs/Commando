@@ -83,6 +83,7 @@ class CommandoClient extends discord.Client {
 
 	set commandPrefix(prefix) {
 		this._commandPrefix = prefix || null;
+		this.dispatcher.buildCommandPattern(null, this.user);
 		this.emit('commandPrefixChange', null, this._commandPrefix);
 	}
 

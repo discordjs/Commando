@@ -247,7 +247,7 @@ class CommandDispatcher {
 	 * @private
 	 */
 	buildCommandPattern(guild) {
-		let prefix = guild ? guild.commandPrefix : this.client.options.commandPrefix;
+		let prefix = guild ? guild._commandPrefix || this.client._commandPrefix : this.client._commandPrefix;
 		if(prefix === 'none') prefix = '';
 		const escapedPrefix = escapeRegex(prefix);
 		const prefixPatternPiece = prefix ? `${escapedPrefix}\\s*|` : '';
