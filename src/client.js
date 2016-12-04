@@ -73,8 +73,9 @@ class CommandoClient extends discord.Client {
 	}
 
 	/**
-	 * The global command prefix - modifying this will emit {@link CommandoClient#commandPrefixChange}.
+	 * Global command prefix
 	 * @type {string}
+	 * @emits {@link CommandoClient#commandPrefixChange}
 	 */
 	get commandPrefix() {
 		if(!this._commandPrefix) return this.options.commandPrefix;

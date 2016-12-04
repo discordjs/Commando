@@ -4,8 +4,9 @@ const GuildSettingsHelper = require('../providers/helper');
 /** Contains additional methods and properties that are added to the discord.js Guild class */
 class GuildExtension {
 	/**
-	 * The command prefix in the guild - modifying this will emit {@link CommandoClient#commandPrefixChange}.
+	 * Command prefix in the guild
 	 * @type {string}
+	 * @emits {@link CommandoClient#commandPrefixChange}
 	 */
 	get commandPrefix() {
 		return this._commandPrefix ? this._commandPrefix : this.client.commandPrefix;
