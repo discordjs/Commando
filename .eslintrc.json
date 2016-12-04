@@ -18,6 +18,7 @@
 				"String": "string",
 				"Number": "number",
 				"Boolean": "boolean",
+				"Symbol": "symbol",
 				"function": "Function",
 				"object": "Object",
 				"date": "Date",
