@@ -151,7 +151,7 @@ class CommandRegistry {
 	}
 
 	/**
-	 * Registers all commands in a given directory. The files must export a Command class constructor or instance.
+	 * Registers all commands in a directory. The files must export a Command class constructor or instance.
 	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
 	 * @return {CommandRegistry}
 	 */
@@ -207,6 +207,18 @@ class CommandRegistry {
 		}
 
 		return this;
+	}
+
+	/**
+	 * Registers all argument types in a directory. The files must export an ArgumentType class constructor or instance.
+	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
+	 * @return {CommandRegistry}
+	 */
+	registerTypesIn(options) {
+		const obj = require('require-all')(options);
+		const types = [];
+		for(const type of Object.values(obj)) types.push(type);
+		return this.registerTypes(types);
 	}
 
 	/**
