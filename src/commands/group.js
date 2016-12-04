@@ -11,9 +11,9 @@ class CommandGroup {
 	 */
 	constructor(client, id, name, guarded = false, commands = null) {
 		if(!client) throw new Error('A client must be specified.');
-		if(!id) throw new Error('An ID must be specified.');
-		if(commands && !Array.isArray(commands)) throw new TypeError('Commands must be an array.');
+		if(typeof id !== 'string') throw new TypeError('Group ID must be a string.');
 		if(id !== id.toLowerCase()) throw new Error('Group ID must be lowercase.');
+		if(commands && !Array.isArray(commands)) throw new TypeError('Group commands must be an Array of Commands.');
 
 		/**
 		 * Client that this group is for

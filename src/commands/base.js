@@ -44,18 +44,20 @@ class Command {
 	 */
 	constructor(client, info) { // eslint-disable-line complexity
 		if(!client) throw new Error('A client must be specified.');
-		if(!info) throw new Error('Command info must be specified.');
-		if(!info.name) throw new Error('Command must have a name specified.');
+		if(typeof info !== 'object') throw new TypeError('Command info must be an object.');
+		if(typeof info.name !== 'string') throw new TypeError('Command name must be a string.');
 		if(info.name !== info.name.toLowerCase()) throw new Error('Command name must be lowercase.');
-		if(info.aliases && !Array.isArray(info.aliases)) throw new TypeError('Command aliases must be an array.');
+		if(info.aliases && (!Array.isArray(info.aliases) || info.aliases.some(ali => typeof ali !== 'string'))) {
+			throw new TypeError('Command aliases must be an Array of strings.');
+		}
 		if(info.aliases && info.aliases.some(ali => ali !== ali.toLowerCase())) {
 			throw new Error('Command aliases must be lowercase.');
 		}
-		if(!info.group) throw new Error('Command must have a group specified.');
+		if(typeof info.group !== 'string') throw new TypeError('Command group must be a string.');
 		if(info.group !== info.group.toLowerCase()) throw new Error('Command group must be lowercase.');
-		if(!info.memberName) throw new Error('Command must have a memberName specified.');
+		if(typeof info.memberName !== 'string') throw new TypeError('Command memberName must be a string.');
 		if(info.memberName !== info.memberName.toLowerCase()) throw new Error('Command memberName must be lowercase.');
-		if(!info.description) throw new Error('Command must have a description specified.');
+		if(typeof info.description !== 'string') throw new TypeError('Command description must be a string.');
 		if(info.examples && !Array.isArray(info.examples)) throw new TypeError('Command examples must be an array.');
 		if(info.throttling) {
 			if(typeof info.throttling !== 'object') throw new TypeError('Command throttling must be an object.');
@@ -68,14 +70,16 @@ class Command {
 			}
 			if(info.throttling.duration < 1) throw new RangeError('Command throttling duration must be at least 1.');
 		}
-		if(info.args && !Array.isArray(info.args)) throw new TypeError('Command args must be an array.');
+		if(info.args && !Array.isArray(info.args)) throw new TypeError('Command args must be an Array.');
 		if(info.argsType && !['single', 'multiple'].includes(info.argsType)) {
 			throw new RangeError('Command argsType must be one of "single" or "multiple".');
 		}
 		if(info.argsType === 'multiple' && info.argsCount && info.argsCount < 2) {
 			throw new RangeError('Command argsCount must be at least 2.');
 		}
-		if(info.patterns && !Array.isArray(info.patterns)) throw new TypeError('Command patterns must be an array.');
+		if(info.patterns && (!Array.isArray(info.patterns) || info.patterns.some(pat => !(pat instanceof RegExp)))) {
+			throw new TypeError('Command patterns must be an Array of regular expressions.');
+		}
 
 		/**
 		 * Client that this command is for
