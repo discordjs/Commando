@@ -2,7 +2,7 @@ const FriendlyError = require('./friendly');
 
 /**
  * Has a descriptive message for a command not having proper format
- * @extends {Error}
+ * @extends {FriendlyError}
  */
 class CommandFormatError extends FriendlyError {
 	/**
