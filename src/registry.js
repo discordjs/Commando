@@ -1,7 +1,6 @@
 const discord = require('discord.js');
 const Command = require('./commands/base');
 const CommandGroup = require('./commands/group');
-const CommandBuilder = require('./commands/builder');
 const CommandMessage = require('./commands/message');
 const ArgumentType = require('./types/base');
 
@@ -95,7 +94,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers a single command
-	 * @param {Command|CommandBuilder|Function} command - Either a Command instance, or a constructor for one
+	 * @param {Command|Function} command - Either a Command instance, or a constructor for one
 	 * @return {CommandRegistry}
 	 * @see {@link CommandRegistry#registerCommands}
 	 */
@@ -105,14 +104,13 @@ class CommandRegistry {
 
 	/**
 	 * Registers multiple commands
-	 * @param {Command[]|CommandBuilder[]|Function[]} commands - An array of Command instances or constructors
+	 * @param {Command[]|Function[]} commands - An array of Command instances or constructors
 	 * @return {CommandRegistry}
 	 */
 	registerCommands(commands) {
 		if(!Array.isArray(commands)) throw new TypeError('Commands must be an Array.');
 		for(let command of commands) {
 			if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
-			else if(command instanceof CommandBuilder) command = command.command;
 
 			// Verify that it's an actual command
 			if(!(command instanceof Command)) {
@@ -153,8 +151,7 @@ class CommandRegistry {
 	}
 
 	/**
-	 * Registers all commands in a given directory. The files must export a Command class constructor or instance,
-	 * or a CommandBuilder instance.
+	 * Registers all commands in a given directory. The files must export a Command class constructor or instance.
 	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
 	 * @return {CommandRegistry}
 	 */
@@ -284,12 +281,11 @@ class CommandRegistry {
 
 	/**
 	 * Reregisters a command (does not support changing name, group, or memberName)
-	 * @param {Command|CommandBuilder|Function} command - New command
+	 * @param {Command|Function} command - New command
 	 * @param {Command} oldCommand - Old command
 	 */
 	reregisterCommand(command, oldCommand) {
 		if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
-		else if(command instanceof CommandBuilder) command = command.command;
 		if(command.name !== oldCommand.name) throw new Error('Command name cannot change.');
 		if(command.groupID !== oldCommand.groupID) throw new Error('Command group cannot change.');
 		if(command.memberName !== oldCommand.memberName) throw new Error('Command memberName cannot change.');
@@ -343,16 +339,6 @@ class CommandRegistry {
 	registerEvalObjects(obj) {
 		Object.assign(this.evalObjects, obj);
 		return this;
-	}
-
-	/**
-	 * Create a command builder
-	 * @param {CommandInfo} [info] - The command information
-	 * @param {CommandBuilderFunctions} [funcs] - The command functions to set
-	 * @return {CommandBuilder} The builder
-	 */
-	buildCommand(info = null, funcs = null) {
-		return new CommandBuilder(this, info, funcs);
 	}
 
 	/**
