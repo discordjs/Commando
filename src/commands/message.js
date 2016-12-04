@@ -127,7 +127,7 @@ class CommandMessage {
 			const value = await args[i].obtain(this, args[i].infinite ? provided.slice(i) : provided[i]);
 			if(value === null || typeof value === 'symbol') {
 				this.client.dispatcher._awaiting.delete(this.message.author.id + this.message.channel.id);
-				return this.promptCount > 0 ? value : this.constructor.FormatCancel;
+				return this.promptCount > 0 ? value : this.constructor.FORMAT_CANCEL;
 			}
 			values[args[i].key] = value;
 		}
@@ -170,8 +170,8 @@ class CommandMessage {
 		if(!args && this.command.args) {
 			args = await this.obtainArgs();
 			if(!args) return await this.reply('Cancelled command.');
-			if(args === this.constructor.SilentCancel) return null;
-			if(args === this.constructor.FormatCancel) {
+			if(args === this.constructor.SILENT_CANCEL) return null;
+			if(args === this.constructor.FORMAT_CANCEL) {
 				const err = new CommandFormatError(this);
 				return await this.reply(err.message);
 			}
@@ -701,15 +701,15 @@ class CommandMessage {
 
 /**
  * Silently cancels a running command
- * @type {Symbol}
+ * @type {symbol}
  */
-CommandMessage.SilentCancel = Symbol('silent command cancel');
+CommandMessage.SILENT_CANCEL = Symbol('silent command cancel');
 
 /**
  * Cancels a running command with a format error
- * @type {Symbol}
+ * @type {symbol}
  */
-CommandMessage.FormatCancel = Symbol('format command cancel');
+CommandMessage.FORMAT_CANCEL = Symbol('format command cancel');
 
 function channelIDOrDM(channel) {
 	if(channel.type !== 'dm') return channel.id;

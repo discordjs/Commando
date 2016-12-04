@@ -140,7 +140,7 @@ class CommandArgument {
 
 		while(!valid || typeof valid === 'string') {
 			attempts++;
-			if(attempts > this.command.argsPromptLimit) return msg.constructor.SilentCancel;
+			if(attempts > this.command.argsPromptLimit) return msg.constructor.SILENT_CANCEL;
 			msg.promptCount++;
 
 			await msg.reply(stripIndents`
@@ -182,7 +182,7 @@ class CommandArgument {
 
 			while(!valid || typeof valid === 'string') {
 				attempts++;
-				if(attempts > this.command.argsPromptLimit) return attempts === 1 ? msg.constructor.SilentCancel : null;
+				if(attempts > this.command.argsPromptLimit) return attempts === 1 ? msg.constructor.SILENT_CANCEL : null;
 				msg.promptCount++;
 
 				if(value) {
