@@ -28,7 +28,7 @@
 		"require-all": "^2.0.0"
 	},
 	"devDependencies": {
-		"discord.js-docgen": "github:hydrabolt/discord.js-docgen",
+		"discord.js-docgen": "hydrabolt/discord.js-docgen",
 		"eslint": "^3.11.0",
 		"jsdoc-strip-async-await": "^0.1.0"
 	},

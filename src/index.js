@@ -51,10 +51,6 @@ require('./extensions/guild').applyToClass(discord.Guild);
  * @see {@link https://discord.js.org/#/docs/main/master/typedef/GuildResolvable}
  */
 /**
- * @external MentionsObject
- * @see {@link https://discord.js.org/#/docs/main/master/class/Message?scrollTo=mentions}
- */
-/**
  * @external Message
  * @see {@link https://discord.js.org/#/docs/main/master/class/Message}
  */
@@ -65,6 +61,10 @@ require('./extensions/guild').applyToClass(discord.Guild);
 /**
  * @external MessageEmbed
  * @see {@link https://discord.js.org/#/docs/main/master/class/MessageEmbed}
+ */
+/**
+ * @external MessageReaction
+ * @see {@link https://discord.js.org/#/docs/main/master/class/MessageReaction}
  */
 /**
  * @external MessageOptions
@@ -81,4 +81,16 @@ require('./extensions/guild').applyToClass(discord.Guild);
 /**
  * @external User
  * @see {@link https://discord.js.org/#/docs/main/master/class/User}
+ */
+/**
+ * @external Emoji
+ * @see {@link https://discord.js.org/#/docs/main/master/class/Emoji}
+ */
+/**
+ * @external ReactionEmoji
+ * @see {@link https://discord.js.org/#/docs/main/master/class/ReactionEmoji}
+ */
+/**
+ * @external Webhook
+ * @see {@link https://discord.js.org/#/docs/main/master/class/Webhook}
  */

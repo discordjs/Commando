@@ -472,6 +472,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.id`
 	 * @type {string}
+	 * @see {@link Message#id}
 	 */
 	get id() {
 		return this.message.id;
@@ -480,6 +481,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.content`
 	 * @type {string}
+	 * @see {@link Message#content}
 	 */
 	get content() {
 		return this.message.content;
@@ -488,6 +490,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.author`
 	 * @type {User}
+	 * @see {@link Message#author}
 	 */
 	get author() {
 		return this.message.author;
@@ -496,6 +499,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.channel`
 	 * @type {Channel}
+	 * @see {@link Message#channel}
 	 */
 	get channel() {
 		return this.message.channel;
@@ -504,6 +508,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.guild`
 	 * @type {?Guild}
+	 * @see {@link Message#guild}
 	 */
 	get guild() {
 		return this.message.guild;
@@ -512,6 +517,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.member`
 	 * @type {?GuildMember}
+	 * @see {@link Message#member}
 	 */
 	get member() {
 		return this.message.member;
@@ -520,6 +526,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.pinned`
 	 * @type {boolean}
+	 * @see {@link Message#pinned}
 	 */
 	get pinned() {
 		return this.message.pinned;
@@ -528,6 +535,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.tts`
 	 * @type {boolean}
+	 * @see {@link Message#tts}
 	 */
 	get tts() {
 		return this.message.tts;
@@ -536,6 +544,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.nonce`
 	 * @type {string}
+	 * @see {@link Message#nonce}
 	 */
 	get nonce() {
 		return this.message.nonce;
@@ -544,6 +553,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.system`
 	 * @type {boolean}
+	 * @see {@link Message#system}
 	 */
 	get system() {
 		return this.message.system;
@@ -552,6 +562,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.embeds`
 	 * @type {MessageEmbed[]}
+	 * @see {@link Message#embeds}
 	 */
 	get embeds() {
 		return this.message.embeds;
@@ -560,14 +571,25 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.attachments`
 	 * @type {Collection<string, MessageAttachment>}
+	 * @see {@link Message#attachments}
 	 */
 	get attachments() {
 		return this.message.attachments;
 	}
 
 	/**
+	 * Shortcut to `this.message.reactions`
+	 * @type {Collection<string, MessageReaction>}
+	 * @see {@link Message#reactions}
+	 */
+	get reactions() {
+		return this.message.reactions;
+	}
+
+	/**
 	 * Shortcut to `this.message.createdTimestamp`
 	 * @type {number}
+	 * @see {@link Message#createdTimestamp}
 	 */
 	get createdTimestamp() {
 		return this.message.createdTimestamp;
@@ -576,6 +598,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.createdAt`
 	 * @type {Date}
+	 * @see {@link Message#createdAt}
 	 */
 	get createdAt() {
 		return this.message.createdAt;
@@ -584,6 +607,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.editedTimestamp`
 	 * @type {number}
+	 * @see {@link Message#editedTimestamp}
 	 */
 	get editedTimestamp() {
 		return this.message.editedTimestamp;
@@ -592,6 +616,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.editedAt`
 	 * @type {Date}
+	 * @see {@link Message#editedAt}
 	 */
 	get editedAt() {
 		return this.message.editedAt;
@@ -599,15 +624,26 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.mentions`
-	 * @type {MentionsObject}
+	 * @type {Object}
+	 * @see {@link Message#mentions}
 	 */
 	get mentions() {
 		return this.message.mentions;
 	}
 
 	/**
+	 * Shortcut to `this.message.webhookID`
+	 * @type {?string}
+	 * @see {@link Message#webhookID}
+	 */
+	get webhookID() {
+		return this.message.webhookID;
+	}
+
+	/**
 	 * Shortcut to `this.message.cleanContent`
 	 * @type {string}
+	 * @see {@link Message#cleanContent}
 	 */
 	get cleanContent() {
 		return this.message.cleanContent;
@@ -616,6 +652,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.edits`
 	 * @type {Message[]}
+	 * @see {@link Message#edits}
 	 */
 	get edits() {
 		return this.message.edits;
@@ -624,6 +661,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.editable`
 	 * @type {boolean}
+	 * @see {@link Message#editable}
 	 */
 	get editable() {
 		return this.message.editable;
@@ -632,6 +670,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.deletable`
 	 * @type {boolean}
+	 * @see {@link Message#deletable}
 	 */
 	get deletable() {
 		return this.message.deletable;
@@ -640,6 +679,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.pinnable`
 	 * @type {boolean}
+	 * @see {@link Message#pinnable}
 	 */
 	get pinnable() {
 		return this.message.pinnable;
@@ -649,15 +689,27 @@ class CommandMessage {
 	 * Shortcut to `this.message.isMentioned(data)`
 	 * @param {GuildChannel|User|Role|string} data - A guild channel, user, or a role, or the ID of any of these
 	 * @return {boolean}
+	 * @see {@link Message#isMentioned}
 	 */
 	isMentioned(data) {
 		return this.message.isMentioned(data);
 	}
 
 	/**
+	 * Shortcut to `this.message.isMemberMentioned(data)`
+	 * @param {GuildMember|User} member - Member/user to check for a mention of
+	 * @return {boolean}
+	 * @see {@link Message#isMemberMentioned}
+	 */
+	isMemberMentioned(member) {
+		return this.message.isMemberMentioned(member);
+	}
+
+	/**
 	 * Shortcut to `this.message.edit(content)`
 	 * @param {StringResolvable} content - New content for the message
 	 * @returns {Promise<Message>}
+	 * @see {@link Message#edit}
 	 */
 	edit(content) {
 		return this.message.edit(content);
@@ -668,14 +720,35 @@ class CommandMessage {
 	 * @param {string} lang - Language for the code block
 	 * @param {StringResolvable} content - New content for the message
 	 * @returns {Promise<Message>}
+	 * @see {@link Message#editCode}
 	 */
 	editCode(lang, content) {
 		return this.message.editCode(lang, content);
 	}
 
 	/**
+	 * Shortcut to `this.message.react()`
+	 * @param {string|Emoji|ReactionEmoji} emoji - Emoji to react with
+	 * @returns {Promise<MessageReaction>}
+	 * @see {@link Message#react}
+	 */
+	react(emoji) {
+		return this.message.react(emoji);
+	}
+
+	/**
+	 * Shortcut to `this.message.clearReactions()`
+	 * @returns {Promise<Message>}
+	 * @see {@link Message#clearReactions}
+	 */
+	clearReactions() {
+		return this.message.clearReactions();
+	}
+
+	/**
 	 * Shortcut to `this.message.pin()`
 	 * @returns {Promise<Message>}
+	 * @see {@link Message#pin}
 	 */
 	pin() {
 		return this.message.pin();
@@ -684,6 +757,7 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.unpin()`
 	 * @returns {Promise<Message>}
+	 * @see {@link Message#unpin}
 	 */
 	unpin() {
 		return this.message.unpin();
@@ -693,9 +767,19 @@ class CommandMessage {
 	 * Shortcut to `this.message.delete()`
 	 * @param {number} [timeout=0] - How long to wait to delete the message in milliseconds
 	 * @returns {Promise<Message>}
+	 * @see {@link Message#delete}
 	 */
 	delete(timeout) {
 		return this.message.delete(timeout);
+	}
+
+	/**
+	 * Shortcut to `this.message.fetchWebhook()`
+	 * @returns {Promise<?Webhook>}
+	 * @see {@link Message#fetchWebhook}
+	 */
+	fetchWebhook() {
+		return this.message.fetchWebhook();
 	}
 }
 
