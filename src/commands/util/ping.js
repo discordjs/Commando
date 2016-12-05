@@ -21,10 +21,14 @@ module.exports = class PingCommand extends Command {
 			return pingMsg.edit(oneLine`
 				${msg.channel.type !== 'dm' ? `${msg.author},` : ''}
 				Pong! The message round-trip took ${pingMsg.createdTimestamp - msg.createdTimestamp}ms.
+				${this.client.ping ? `The heartbeat ping is ${Math.round(this.client.ping)}ms.` : ''}
 			`);
 		} else {
 			await msg.edit('Pinging...');
-			return msg.edit(`Pong! The message round-trip took ${msg.editedTimestamp - msg.createdTimestamp}ms.`);
+			return msg.edit(oneLine`
+				Pong! The message round-trip took ${msg.editedTimestamp - msg.createdTimestamp}ms.
+				${this.client.ping ? `The heartbeat ping is ${Math.round(this.client.ping)}ms.` : ''}
+			`);
 		}
 	}
 };
