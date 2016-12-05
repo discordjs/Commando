@@ -47,7 +47,7 @@ class Command {
 	 */
 	constructor(client, info) { // eslint-disable-line complexity
 		if(!client) throw new Error('A client must be specified.');
-		if(typeof info !== 'object') throw new TypeError('Command info must be an object.');
+		if(typeof info !== 'object') throw new TypeError('Command info must be an Object.');
 		if(typeof info.name !== 'string') throw new TypeError('Command name must be a string.');
 		if(info.name !== info.name.toLowerCase()) throw new Error('Command name must be lowercase.');
 		if(info.aliases && (!Array.isArray(info.aliases) || info.aliases.some(ali => typeof ali !== 'string'))) {
@@ -61,9 +61,13 @@ class Command {
 		if(typeof info.memberName !== 'string') throw new TypeError('Command memberName must be a string.');
 		if(info.memberName !== info.memberName.toLowerCase()) throw new Error('Command memberName must be lowercase.');
 		if(typeof info.description !== 'string') throw new TypeError('Command description must be a string.');
-		if(info.examples && !Array.isArray(info.examples)) throw new TypeError('Command examples must be an array.');
+		if('format' in info && typeof info.format !== 'string') throw new TypeError('Command format must be a string.');
+		if('details' in info && typeof info.details !== 'string') throw new TypeError('Command details must be a string.');
+		if(info.examples && (!Array.isArray(info.examples) || info.examples.some(ex => typeof ex !== 'string'))) {
+			throw new TypeError('Command examples must be an Array of strings.');
+		}
 		if(info.throttling) {
-			if(typeof info.throttling !== 'object') throw new TypeError('Command throttling must be an object.');
+			if(typeof info.throttling !== 'object') throw new TypeError('Command throttling must be an Object.');
 			if(typeof info.throttling.usages !== 'number' || isNaN(info.throttling.usages)) {
 				throw new TypeError('Command throttling usages must be a number.');
 			}
