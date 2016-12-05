@@ -317,11 +317,11 @@ class CommandMessage {
 			const promises = [];
 			if(response instanceof Array) {
 				for(let i = 0; i < content.length; i++) {
-					if(response.length > i) promises.push(response[i].edit(`${prepend}${content[i]}`));
+					if(response.length > i) promises.push(response[i].edit(`${prepend}${content[i]}`, options));
 					else promises.push(response[0].channel.sendMessage(`${prepend}${content[i]}`));
 				}
 			} else {
-				promises.push(response.edit(`${prepend}${content[0]}`));
+				promises.push(response.edit(`${prepend}${content[0]}`, options));
 				for(let i = 1; i < content.length; i++) {
 					promises.push(response.channel.sendMessage(`${prepend}${content[i]}`));
 				}
@@ -330,9 +330,9 @@ class CommandMessage {
 		} else {
 			if(response instanceof Array) { // eslint-disable-line no-lonely-if
 				for(let i = response.length - 1; i > 0; i--) response[i].delete();
-				return response[0].edit(`${prepend}${content}`);
+				return response[0].edit(`${prepend}${content}`, options);
 			} else {
-				return response.edit(`${prepend}${content}`);
+				return response.edit(`${prepend}${content}`, options);
 			}
 		}
 	}
@@ -390,6 +390,32 @@ class CommandMessage {
 	 */
 	code(lang, content, options) {
 		return this.respond({ type: 'code', content, options, lang });
+	}
+
+	/**
+	 * Responds with an embed
+	 * @param {RichEmbed|Object} embed - Embed to send
+	 * @param {StringResolvable} [content] - Content for the message
+	 * @param {MessageOptions} options - Options for the message
+	 * @return {Promise<Message|Message[]>}
+	 */
+	embed(embed, content = '', options) {
+		if(typeof options !== 'object') options = {};
+		options.embed = embed;
+		return this.respond({ type: 'plain', content, options });
+	}
+
+	/**
+	 * Responds with a mention + embed
+	 * @param {RichEmbed|Object} embed - Embed to send
+	 * @param {StringResolvable} [content] - Content for the message
+	 * @param {MessageOptions} [options] - Options for the message
+	 * @return {Promise<Message|Message[]>}
+	 */
+	replyEmbed(embed, content = '', options) {
+		if(typeof options !== 'object') options = {};
+		options.embed = embed;
+		return this.respond({ type: 'reply', content, options });
 	}
 
 	/**

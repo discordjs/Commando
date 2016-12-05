@@ -94,3 +94,7 @@ require('./extensions/guild').applyToClass(discord.Guild);
  * @external Webhook
  * @see {@link https://discord.js.org/#/docs/main/master/class/Webhook}
  */
+/**
+ * @external RichEmbed
+ * @see {@link https://discord.js.org/#/docs/main/master/class/RichEmbed}
+ */
