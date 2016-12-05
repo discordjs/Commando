@@ -17,7 +17,8 @@ class Command {
 	 * @property {string} group - The ID of the group the command belongs to (must be lowercase)
 	 * @property {string} memberName - The member name of the command in the group (must be lowercase)
 	 * @property {string} description - A short description of the command
-	 * @property {string} [format] - The command usage format string
+	 * @property {string} [format] - The command usage format string - will be automatically generated if not specified,
+	 * and `args` is specified
 	 * @property {string} [details] - A detailed description of the command and its functionality
 	 * @property {string[]} [examples] - Usage examples of the command
 	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
