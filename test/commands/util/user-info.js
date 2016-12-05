@@ -9,13 +9,13 @@ module.exports = class UserInfoCommand extends commando.Command {
 			group: 'util',
 			memberName: 'user-info',
 			description: 'Gets information about a user.',
-			format: '<user>',
 			examples: ['user-info @Crawl#3208', 'user-info Crawl'],
 			guildOnly: true,
 
 			args: [
 				{
 					key: 'member',
+					label: 'user',
 					prompt: 'What user would you like to snoop on?',
 					type: 'member'
 				}

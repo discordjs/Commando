@@ -10,7 +10,6 @@ module.exports = class LoadCommandCommand extends Command {
 			group: 'commands',
 			memberName: 'load',
 			description: 'Loads a new command.',
-			format: '<command>',
 			details: oneLine`
 				The argument must be full name of the command in the format of \`group:memberName\`.
 				Only the bot owner may use this command.

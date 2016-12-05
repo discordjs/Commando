@@ -10,7 +10,6 @@ module.exports = class UnloadCommandCommand extends Command {
 			group: 'commands',
 			memberName: 'unload',
 			description: 'Unloads a command.',
-			format: '<command>',
 			details: oneLine`
 				The argument must be the name/ID (partial or whole) of a command.
 				Only the bot owner may use this command.

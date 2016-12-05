@@ -10,7 +10,6 @@ module.exports = class EnableCommandCommand extends Command {
 			group: 'commands',
 			memberName: 'enable',
 			description: 'Enables a command or command group.',
-			format: '<command|group>',
 			details: oneLine`
 				The argument must be the name/ID (partial or whole) of a command or command group.
 				Only administrators may use this command.

@@ -10,7 +10,6 @@ module.exports = class HelpCommand extends Command {
 			memberName: 'help',
 			aliases: ['commands'],
 			description: 'Displays a list of available commands, or detailed information for a specified command.',
-			format: '[command]',
 			details: oneLine`
 				The command may be part of a command name or a whole command name.
 				If it isn't specified, all available commands will be listed.
