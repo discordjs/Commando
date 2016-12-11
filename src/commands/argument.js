@@ -8,7 +8,8 @@ class CommandArgument {
 	 * @property {string} key - Key for the argument
 	 * @property {string} [label=key] - Label for the argument
 	 * @property {string} prompt - First prompt for the argument when it wasn't specified
-	 * @property {string} [type] - Type of the argument (must be the ID of one of the registered argument types)
+	 * @property {string} [type] - Type of the argument (must be the ID of one of the registered argument types -
+	 * see {@link CommandRegistry#registerDefaultTypes} for the built-in types)
 	 * @property {number} [max] - If type is 'integer' or 'float', this is the maximum value of the number.
 	 * If type is 'string', this is the maximum length of the string.
 	 * @property {number} [min] - If type is 'integer' or 'float', this is the minimum value of the number.

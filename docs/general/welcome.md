@@ -16,9 +16,10 @@ Additionally, it makes full use of ES2017's `async`/`await` functionality for cl
 - Robust parsing of arguments (with "quoted strings" support)
 - Sophisticated argument system (optional)
 	* Automatic prompting for arguments that aren't provided
-	* Built-in types, with rules, automatic validation, and parsing to usable values
+	* Type system with rules, automatic validation, and parsing to usable values
 		- Basic types (string, integer, float, boolean)
 		- Discord objects (user, member, role, channel, message)
+		- User-defined custom types
 	* Automatic re-prompting of invalid arguments
 	* Optional arguments with default values
 	* Infinite arguments (arguments that accept as many values as provided)
@@ -33,7 +34,7 @@ Additionally, it makes full use of ES2017's `async`/`await` functionality for cl
 
 When running a bot using Commando, make sure to run Node with the `--harmony` flag. Examples:
 - `node --harmony somebot.js`
-- `pm2 start somebot.js --node-args='--harmony'`
+- `pm2 start somebot.js --node-args '--harmony'`
 
 No version of Node older than 7.0.0 supports `async`/`await`, although you can compile it down to ES6 or ES5 with the
 [fast-async](https://www.npmjs.com/package/fast-async) Babel plugin. You must do this for your code and the framework's manually if you wish

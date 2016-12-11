@@ -274,7 +274,16 @@ class CommandRegistry {
 	}
 
 	/**
-	 * Registers the default argument types to the registry
+	 * Registers the default argument types to the registry. These are:
+	 * - string
+	 * - integer
+	 * - float
+	 * - boolean
+	 * - user
+	 * - member
+	 * - role
+	 * - channel
+	 * - message
 	 * @return {CommandRegistry}
 	 */
 	registerDefaultTypes() {
