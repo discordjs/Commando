@@ -37,7 +37,8 @@ class CommandPlugin {
 	 */
 	addCommand(info) {
 		info.group = this.groupId;
-		info.run = info.run.bind(this);
+        if(typeof info.run === "function")
+		    info.run = info.run.bind(this);
 		this.client.registry.registerCommand(new Command(this.client, info));
 	}
 }
