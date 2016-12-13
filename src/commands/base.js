@@ -121,6 +121,12 @@ class Command {
 		}
 
 		/**
+		 * The function to execute when the command is run. If not provided, the 'run' function must be overridden.
+		 * @type {function}
+		 */
+		this._run = info.run;
+
+		/**
 		 * ID of the group the command belongs to
 		 * @type {string}
 		 */
@@ -271,7 +277,11 @@ class Command {
 	 * @abstract
 	 */
 	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars
-		throw new Error(`${this.constructor.name} doesn't have a run() method.`);
+		if(typeof this._run === 'undefined') {
+			throw new Error(`${this.constructor.name} doesn't have a run() method.`);
+		}
+
+		this._run(message, args, fromPattern);
 	}
 
 	/**
