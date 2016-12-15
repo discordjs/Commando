@@ -28,13 +28,13 @@ module.exports = class LoadCommandCommand extends Command {
 						if(this.client.registry.findCommands(val).length > 0) {
 							return resolve('That command is already registered.');
 						}
-						const cmdPath = this.client.registry.resolveCommandPath(split[0], `${split[1]}.js`);
+						const cmdPath = this.client.registry.resolveCommandPath(split[0], split[1]);
 						fs.access(cmdPath, fs.constants.R_OK, err => err ? resolve(false) : resolve(true));
 						return null;
 					}),
 					parse: val => {
 						const split = val.split(':');
-						const cmdPath = this.client.registry.resolveCommandPath(split[0], `${split[1]}.js`);
+						const cmdPath = this.client.registry.resolveCommandPath(split[0], split[1]);
 						delete require.cache[cmdPath];
 						return require(cmdPath);
 					}
