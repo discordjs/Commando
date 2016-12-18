@@ -2,3 +2,7 @@
   files:
     - name: Welcome
       path: welcome.md
+- name: Commands
+  files:
+    - name: Built-in commands
+      path: builtins.md
