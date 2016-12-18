@@ -144,6 +144,7 @@ class SQLiteProvider extends SettingProvider {
 
 		settings[key] = val;
 		await this.insertOrReplaceStmt.run(guild !== 'global' ? guild : 0, JSON.stringify(settings));
+		if(guild === 'global') this.updateOtherShards(key, val);
 		return val;
 	}
 
@@ -155,13 +156,14 @@ class SQLiteProvider extends SettingProvider {
 		const val = settings[key];
 		settings[key] = undefined;
 		await this.insertOrReplaceStmt.run(guild !== 'global' ? guild : 0, JSON.stringify(settings));
+		if(guild === 'global') this.updateOtherShards(key, undefined);
 		return val;
 	}
 
 	async clear(guild) {
 		guild = this.constructor.getGuildID(guild);
-		const settings = this.settings.get(guild);
-		if(!settings) return;
+		if(!this.settings.has(guild)) return;
+		this.settings.delete(guild);
 		await this.deleteStmt.run(guild !== 'global' ? guild : 0);
 	}
 
@@ -205,9 +207,9 @@ class SQLiteProvider extends SettingProvider {
 
 	/**
 	 * Sets up a group's status in a guild from the guild's settings
-	 * @param {?Guild} guild Guild to set the status in
-	 * @param {CommandGroup} group Group to set the status of
-	 * @param {Object} settings Settings of the guild
+	 * @param {?Guild} guild - Guild to set the status in
+	 * @param {CommandGroup} group - Group to set the status of
+	 * @param {Object} settings - Settings of the guild
 	 * @private
 	 */
 	setupGuildGroup(guild, group, settings) {
@@ -218,6 +220,23 @@ class SQLiteProvider extends SettingProvider {
 		} else {
 			group._globalEnabled = settings[`grp-${group.name}`];
 		}
+	}
+
+	/**
+	 * Updates a global setting on all other shards if using the {@link ShardingManager}.
+	 * @param {string} key - Key of the setting to update
+	 * @param {*} val - Value of the setting
+	 * @private
+	 */
+	updateOtherShards(key, val) {
+		if(!this.client.shard) return;
+		key = JSON.stringify(key);
+		val = typeof val !== 'undefined' ? JSON.stringify(val) : 'undefined';
+		this.client.shard.broadcastEval(`
+			if(this.shard.id !== ${this.client.shard.id} && this.provider && this.provider.settings) {
+				this.provider.settings.global[${key}] = ${val};
+			}
+		`);
 	}
 }
 

@@ -98,3 +98,7 @@ require('./extensions/guild').applyToClass(discord.Guild);
  * @external RichEmbed
  * @see {@link https://discord.js.org/#/docs/main/master/class/RichEmbed}
  */
+/**
+ * @external ShardingManager
+ * @see {@link https://discord.js.org/#/docs/main/master/class/ShardingManager}
+ */
