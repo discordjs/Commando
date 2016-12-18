@@ -38,20 +38,20 @@ There are several shortcut variables and helpers that are also available:
 Enables a command/group in the current guild if the user is an admin or the bot owner.
 If used in a DM, enables the command/group globally by default if the user is the bot owner.
 
-## disable (commands:disable)
+### disable (commands:disable)
 Disables a command/group in the current guild if the user is an admin or the bot owner.
 If used in a DM, disables the command/group globally by default if the user is the bot owner.
 
-## reload (commands:reload)
+### reload (commands:reload)
 Reloads a command, or all commands in a group, if the user is the bot owner.
 
-## load (commands:load)
+### load (commands:load)
 Loads a command if the user is the bot owner. The command must be specified as the full name (`group:memberName`).
 Built-in commands cannot be loaded.
 
-## unload (commands:unload)
+### unload (commands:unload)
 Unloads a command if the user is the bot owner.
 Built-in commands cannot be unloaded.
 
-## groups (commands:groups)
+### groups (commands:groups)
 Lists all command groups if the user is an admin of the current guild, or the bot owner.
