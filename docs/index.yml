@@ -2,6 +2,8 @@
   files:
     - name: Welcome
       path: welcome.md
+    - name: First steps
+      path: first-steps.md
 - name: Commands
   files:
     - name: Built-in commands
