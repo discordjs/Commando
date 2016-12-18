@@ -31,7 +31,7 @@ client
 	})
 	.on('commandPrefixChange', (guild, prefix) => {
 		console.log(oneLine`
-			Prefix changed to ${prefix || 'the default'}
+			Prefix ${prefix === '' ? 'removed' : `changed to ${prefix || 'the default'}`}
 			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}.
 		`);
 	})

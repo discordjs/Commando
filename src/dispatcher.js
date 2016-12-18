@@ -216,9 +216,9 @@ class CommandDispatcher {
 		}
 
 		// Find the command to run with default command handling
-		const gp = message.guild ? message.guild.id : 'global';
-		if(!this._commandPatterns[gp]) this.buildCommandPattern(message.guild);
-		let cmdMsg = this.matchDefault(message, this._commandPatterns[gp], 2);
+		const prefix = message.guild ? message.guild.commandPrefix : this.client.commandPrefix;
+		if(!this._commandPatterns[prefix]) this.buildCommandPattern(prefix);
+		let cmdMsg = this.matchDefault(message, this._commandPatterns[prefix], 2);
 		if(!cmdMsg && !message.guild && !this.client.options.selfbot) cmdMsg = this.matchDefault(message, /^([^\s]+)/i);
 		return cmdMsg;
 	}
@@ -242,20 +242,22 @@ class CommandDispatcher {
 
 	/**
 	 * Creates a regular expression to match the command prefix and name in a message
-	 * @param {?Guild} guild - The Guild that the message is from
+	 * @param {?string} prefix - Prefix to build the pattern for
 	 * @return {RegExp}
 	 * @private
 	 */
-	buildCommandPattern(guild) {
-		let prefix = guild ? guild.commandPrefix : this.client.commandPrefix;
-		if(prefix === 'none') prefix = '';
-		const escapedPrefix = escapeRegex(prefix);
-		const prefixPatternPiece = prefix ? `${escapedPrefix}\\s*|` : '';
-		const pattern = new RegExp(
-			`^(${prefixPatternPiece}<@!?${this.client.user.id}>\\s+(?:${escapedPrefix})?)([^\\s]+)`, 'i'
-		);
-		this._commandPatterns[guild ? guild.id : 'global'] = pattern;
-		this.client.emit('commandPatternBuilt', guild, prefix, pattern);
+	buildCommandPattern(prefix) {
+		let pattern;
+		if(prefix) {
+			const escapedPrefix = escapeRegex(prefix);
+			pattern = new RegExp(
+				`^(${escapedPrefix}\\s*|<@!?${this.client.user.id}>\\s+(?:${escapedPrefix})?)([^\\s]+)`, 'i'
+			);
+		} else {
+			pattern = new RegExp(`(^<@!?${this.client.user.id}>\\s+)([^\\s]+)`, 'i');
+		}
+		this._commandPatterns[prefix] = pattern;
+		this.client.emit('debug', `Built command pattern for prefix "${prefix}": ${pattern}`);
 		return pattern;
 	}
 }

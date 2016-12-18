@@ -71,7 +71,14 @@ class SQLiteProvider extends SettingProvider {
 		// Load all settings
 		const rows = await this.db.all('SELECT CAST(guild as TEXT) as guild, settings FROM settings');
 		for(const row of rows) {
-			const settings = JSON.parse(row.settings);
+			let settings;
+			try {
+				settings = JSON.parse(row.settings);
+			} catch(err) {
+				client.emit('warn', `SQLiteProvider couldn't parse the settings stored for guild ${row.guild}.`);
+				continue;
+			}
+
 			this.settings.set(row.guild || 'global', settings);
 			if(row.guild !== '0' && !client.guilds.has(row.guild)) continue;
 			this.setupGuild(row.guild || 'global', settings);
@@ -169,7 +176,7 @@ class SQLiteProvider extends SettingProvider {
 		guild = this.client.guilds.get(guild) || null;
 
 		// Load the command prefix
-		if(settings.prefix) {
+		if(typeof settings.prefix !== 'undefined') {
 			if(guild) guild._commandPrefix = settings.prefix;
 			else this.client._commandPrefix = settings.prefix;
 		}

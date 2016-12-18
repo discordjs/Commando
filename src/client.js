@@ -26,6 +26,7 @@ class CommandoClient extends discord.Client {
 	constructor(options = {}) {
 		if(typeof options.selfbot === 'undefined') options.selfbot = false;
 		if(typeof options.commandPrefix === 'undefined') options.commandPrefix = '!';
+		if(options.commandPrefix === null) options.commandPrefix = '';
 		if(typeof options.commandEditableDuration === 'undefined') options.commandEditableDuration = 30;
 		if(typeof options.nonCommandEditable === 'undefined') options.nonCommandEditable = true;
 		if(typeof options.unknownCommandResponse === 'undefined') options.unknownCommandResponse = true;
@@ -73,18 +74,18 @@ class CommandoClient extends discord.Client {
 	}
 
 	/**
-	 * Global command prefix
+	 * Global command prefix. An empty string indicates that there is no default prefix, and only mentions will be used.
+	 * Setting to `null` means that the default prefix from {@link CommandoClient#options} will be used instead.
 	 * @type {string}
 	 * @emits {@link CommandoClient#commandPrefixChange}
 	 */
 	get commandPrefix() {
-		if(!this._commandPrefix) return this.options.commandPrefix;
+		if(typeof this._commandPrefix === 'undefined' || this._commandPrefix === null) return this.options.commandPrefix;
 		return this._commandPrefix;
 	}
 
 	set commandPrefix(prefix) {
-		this._commandPrefix = prefix || null;
-		this.dispatcher.buildCommandPattern(null, this.user);
+		this._commandPrefix = prefix;
 		this.emit('commandPrefixChange', null, this._commandPrefix);
 	}
 

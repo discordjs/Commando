@@ -30,35 +30,38 @@ module.exports = class PrefixCommand extends Command {
 	}
 
 	async run(msg, args) {
-		if(args.prefix) {
-			if(msg.guild) {
-				if(!msg.member.hasPermission('ADMINISTRATOR') && msg.author.id !== this.client.options.owner) {
-					return msg.reply('Only administrators may change the command prefix.');
-				}
-			} else if(msg.author.id !== this.client.options.owner) {
-				return msg.reply('Only the bot owner may change the global command prefix.');
-			}
-
-			// Save the prefix
-			const lowercase = args.prefix.toLowerCase();
-			const prefix = lowercase === 'none' ? '' : args.prefix;
-			let response;
-			if(lowercase === 'default') {
-				if(msg.guild) msg.guild.commandPrefix = null; else this.client.commandPrefix = null;
-				response = `Reset the command prefix to the default (currently \`${this.client.options.commandPrefix}\`).`;
-			} else {
-				if(msg.guild) msg.guild.commandPrefix = prefix; else this.client.commandPrefix = prefix;
-				response = prefix ? `Set the command prefix to \`${args.prefix}\`.` : 'Removed the command prefix entirely.';
-			}
-
-			msg.reply(`${response} To run commands, use ${msg.anyUsage('command')}.`);
-			return null;
-		} else {
+		// Just output the prefix
+		if(!args.prefix) {
 			const prefix = msg.guild ? msg.guild.commandPrefix : this.client.commandPrefix;
 			return msg.reply(stripIndents`
 				${prefix ? `The command prefix is \`${prefix}\`.` : 'There is no command prefix.'}
 				To run commands, use ${msg.anyUsage('command')}.
 			`);
 		}
+
+		// Check the user's permission before changing anything
+		if(msg.guild) {
+			if(!msg.member.hasPermission('ADMINISTRATOR') && msg.author.id !== this.client.options.owner) {
+				return msg.reply('Only administrators may change the command prefix.');
+			}
+		} else if(msg.author.id !== this.client.options.owner) {
+			return msg.reply('Only the bot owner may change the global command prefix.');
+		}
+
+		// Save the prefix
+		const lowercase = args.prefix.toLowerCase();
+		const prefix = lowercase === 'none' ? '' : args.prefix;
+		let response;
+		if(lowercase === 'default') {
+			if(msg.guild) msg.guild.commandPrefix = null; else this.client.commandPrefix = null;
+			const current = this.client.commandPrefix ? `\`${this.client.commandPrefix}\`` : 'no prefix';
+			response = `Reset the command prefix to the default (currently ${current}).`;
+		} else {
+			if(msg.guild) msg.guild.commandPrefix = prefix; else this.client.commandPrefix = prefix;
+			response = prefix ? `Set the command prefix to \`${args.prefix}\`.` : 'Removed the command prefix entirely.';
+		}
+
+		msg.reply(`${response} To run commands, use ${msg.anyUsage('command')}.`);
+		return null;
 	}
 };

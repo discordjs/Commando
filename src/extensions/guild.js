@@ -4,17 +4,18 @@ const GuildSettingsHelper = require('../providers/helper');
 /** Contains additional methods and properties that are added to the discord.js Guild class */
 class GuildExtension {
 	/**
-	 * Command prefix in the guild
+	 * Command prefix in the guild. An empty string indicates that there is no prefix, and only mentions will be used.
+	 * Setting to `null` means that the prefix from {@link CommandoClient#commandPrefix} will be used instead.
 	 * @type {string}
 	 * @emits {@link CommandoClient#commandPrefixChange}
 	 */
 	get commandPrefix() {
-		return this._commandPrefix ? this._commandPrefix : this.client.commandPrefix;
+		if(typeof this._commandPrefix === 'undefined' || this._commandPrefix === null) return this.client.commandPrefix;
+		return this._commandPrefix;
 	}
 
 	set commandPrefix(prefix) {
-		this._commandPrefix = prefix || null;
-		this.client.dispatcher.buildCommandPattern(this, this.client.user);
+		this._commandPrefix = prefix;
 		/**
 		 * Emitted whenever a guild's command prefix is changed
 		 * @event CommandoClient#commandPrefixChange
