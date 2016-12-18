@@ -26,7 +26,6 @@ module.exports = class EvalCommand extends Command {
 		});
 
 		this.lastResult = null;
-		this.objects = client.registry.evalObjects;
 	}
 
 	hasPermission(msg) {
@@ -38,7 +37,8 @@ module.exports = class EvalCommand extends Command {
 		/* eslint-disable no-unused-vars */
 		const message = msg;
 		const client = msg.client;
-		const objects = this.objects;
+		const objects = client.registry.evalObjects;
+		const lastResult = this.lastResult;
 		const doReply = val => {
 			if(val instanceof Error) {
 				msg.reply(`Callback error: \`${val}\``);
