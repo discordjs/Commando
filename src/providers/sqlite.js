@@ -79,9 +79,10 @@ class SQLiteProvider extends SettingProvider {
 				continue;
 			}
 
-			this.settings.set(row.guild !== '0' ? row.guild : 'global', settings);
-			if(row.guild !== '0' && !client.guilds.has(row.guild)) continue;
-			this.setupGuild(row.guild || 'global', settings);
+			const guild = row.guild !== '0' ? row.guild : 'global';
+			this.settings.set(guild, settings);
+			if(guild !== 'global' && !client.guilds.has(row.guild)) continue;
+			this.setupGuild(guild, settings);
 		}
 
 		// Prepare statements
