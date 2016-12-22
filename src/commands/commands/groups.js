@@ -1,7 +1,7 @@
 const stripIndents = require('common-tags').stripIndents;
 const Command = require('../base');
 
-module.exports = class ListModulesCommand extends Command {
+module.exports = class ListGroupsCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'groups',
