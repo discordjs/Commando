@@ -3,34 +3,31 @@
 
 set -e
 
+function tests {
+  npm run test-docs
+  exit 0
+}
+
 function build {
-  # Build docs
   npm run docs
 }
 
-# Ignore Travis checking PRs
+# Only run tests for PRs
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo "deploy.sh: Ignoring PR build"
-  build
-  exit 0
+  echo -e "\e[36m\e[1mBuild triggered for PR #$TRAVIS_PULL_REQUEST to branch $TRAVIS_BRANCH - only running tests."
+  tests
 fi
 
-# Ignore travis checking other branches irrelevant to users
-# Apparently Travis considers tag builds as separate branches so we need to
-# check for that separately
-if [ "$TRAVIS_BRANCH" != "master" -a "$TRAVIS_BRANCH" != "dev" -a "$TRAVIS_BRANCH" != "$TRAVIS_TAG" ]; then
-  echo "deploy.sh: Ignoring push to another branch than master/dev"
-  build
-  exit 0
-fi
-
-SOURCE=$TRAVIS_BRANCH
-
-# Make sure tag pushes are handled
+# Figure out the source of the build
 if [ -n "$TRAVIS_TAG" ]; then
-  echo "deploy.sh: This is a tag build, proceeding accordingly"
+  echo -e "\e[36m\e[1mBuild triggered for tag \"$TRAVIS_TAG\"."
   SOURCE=$TRAVIS_TAG
+else
+  echo -e "\e[36m\e[1mBuild triggered for branch \"$TRAVIS_BRANCH\"."
+  SOURCE=$TRAVIS_BRANCH
 fi
+
+build
 
 # Initialise some useful variables
 REPO=`git config remote.origin.url`
@@ -46,9 +43,6 @@ openssl aes-256-cbc -K $ENCRYPTED_KEY -iv $ENCRYPTED_IV -in deploy/deploy_key.en
 chmod 600 deploy_key
 eval `ssh-agent -s`
 ssh-add deploy_key
-
-# Build everything
-build
 
 # Checkout the repo in the target branch so we can build docs and push to it
 TARGET_BRANCH="docs"
