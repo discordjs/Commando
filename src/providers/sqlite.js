@@ -132,7 +132,7 @@ class SQLiteProvider extends SettingProvider {
 
 	get(guild, key, defVal) {
 		const settings = this.settings.get(this.constructor.getGuildID(guild));
-		return settings ? settings[key] || defVal : defVal;
+		return settings ? typeof settings[key] !== 'undefined' ? settings[key] : defVal : defVal;
 	}
 
 	async set(guild, key, val) {
