@@ -167,8 +167,8 @@ class CommandMessage {
 		if(throttle) {
 			const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
 			return await this.reply(
-				`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
-			);
+ 				`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
+ 			).then(message=>{message.delete(2000)});
 		}
 
 		// Figure out the command arguments
