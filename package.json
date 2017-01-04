@@ -1,43 +1,109 @@
 {
-	"name": "discord.js-commando",
-	"version": "0.8.2",
-	"description": "The official command framework for Discord.js",
-	"license": "Apache-2.0",
-	"author": "Schuyler Cebulskie <Gawdl3y@gawdl3y.com> (https://gawdl3y.com/)",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Gawdl3y/discord.js-commando.git"
-	},
-	"bugs": {
-		"url": "https://github.com/Gawdl3y/discord.js-commando/issues"
-	},
-	"keywords": [
-		"discord",
-		"bot",
-		"commands"
-	],
-	"scripts": {
-		"test": "eslint src && docgen --source src --custom docs/index.yml --jsdoc jsdoc.json",
-		"lint": "eslint src",
-		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json --jsdoc jsdoc.json",
-		"test-docs": "docgen --source src --custom docs/index.yml --jsdoc jsdoc.json"
-	},
-	"main": "src/index",
-	"dependencies": {
-		"common-tags": "^1.4.0",
-		"escape-string-regexp": "^1.0.0",
-		"require-all": "^2.0.0"
-	},
-	"devDependencies": {
-		"discord.js-docgen": "hydrabolt/discord.js-docgen",
-		"eslint": "^3.11.0",
-		"jsdoc-strip-async-await": "^0.1.0"
-	},
-	"peerDependencies": {
-		"discord.js": "^10.0.0 || ^11.0.0",
-		"sqlite": "^2.2.0"
-	},
-	"engines": {
-		"node": ">=7.0.0"
-	}
+  "_args": [
+    [
+      {
+        "raw": "discord.js-commando",
+        "scope": null,
+        "escapedName": "discord.js-commando",
+        "name": "discord.js-commando",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "C:\\Users\\PcUser\\OneDrive\\Cru\\programming\\discord\\commando"
+    ]
+  ],
+  "_from": "discord.js-commando@latest",
+  "_id": "discord.js-commando@0.8.2",
+  "_inCache": true,
+  "_location": "/discord.js-commando",
+  "_nodeVersion": "7.2.0",
+  "_npmOperationalInternal": {
+    "host": "packages-12-west.internal.npmjs.com",
+    "tmp": "tmp/discord.js-commando-0.8.2.tgz_1483167076757_0.3034249397460371"
+  },
+  "_npmUser": {
+    "name": "gawdl3y",
+    "email": "Gawdl3y@gawdl3y.com"
+  },
+  "_npmVersion": "3.10.9",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "discord.js-commando",
+    "scope": null,
+    "escapedName": "discord.js-commando",
+    "name": "discord.js-commando",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/discord.js-commando/-/discord.js-commando-0.8.2.tgz",
+  "_shasum": "5cfee3f37f8f85ba7fa5e70ec94be6b84808944a",
+  "_shrinkwrap": null,
+  "_spec": "discord.js-commando",
+  "_where": "C:\\Users\\PcUser\\OneDrive\\Cru\\programming\\discord\\commando",
+  "author": {
+    "name": "Schuyler Cebulskie",
+    "email": "Gawdl3y@gawdl3y.com",
+    "url": "https://gawdl3y.com/"
+  },
+  "bugs": {
+    "url": "https://github.com/Gawdl3y/discord.js-commando/issues"
+  },
+  "dependencies": {
+    "common-tags": "^1.4.0",
+    "escape-string-regexp": "^1.0.0",
+    "require-all": "^2.0.0"
+  },
+  "description": "The official command framework for Discord.js",
+  "devDependencies": {
+    "discord.js-docgen": "github:hydrabolt/discord.js-docgen",
+    "eslint": "^3.11.0",
+    "jsdoc-strip-async-await": "^0.1.0"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "5cfee3f37f8f85ba7fa5e70ec94be6b84808944a",
+    "tarball": "https://registry.npmjs.org/discord.js-commando/-/discord.js-commando-0.8.2.tgz"
+  },
+  "engines": {
+    "node": ">=7.0.0"
+  },
+  "gitHead": "1791fa7c461cbb7572c41a8f1f40b8a6a2b6043a",
+  "homepage": "https://github.com/Gawdl3y/discord.js-commando#readme",
+  "keywords": [
+    "discord",
+    "bot",
+    "commands"
+  ],
+  "license": "Apache-2.0",
+  "main": "src/index",
+  "maintainers": [
+    {
+      "name": "gawdl3y",
+      "email": "Gawdl3y@gawdl3y.com"
+    }
+  ],
+  "name": "discord.js-commando",
+  "optionalDependencies": {},
+  "peerDependencies": {
+    "discord.js": "^10.0.0 || ^11.0.0",
+    "sqlite": "^2.2.0"
+  },
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Gawdl3y/discord.js-commando.git"
+  },
+  "scripts": {
+    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json --jsdoc jsdoc.json",
+    "lint": "eslint src",
+    "test": "eslint src && docgen --source src --custom docs/index.yml --jsdoc jsdoc.json",
+    "test-docs": "docgen --source src --custom docs/index.yml --jsdoc jsdoc.json"
+  },
+  "version": "0.8.2"
 }
