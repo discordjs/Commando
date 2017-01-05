@@ -165,16 +165,20 @@ class CommandMessage {
 		// Throttle the command
 		const throttle = this.throttleCommand();
 		if(throttle) {
-			const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
-			return await this.reply(
-				`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
-			);
+			throttle.usages++;
+			if(throttle.usages > this.command.throttling.usages) {
+				const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
+				return await this.reply(
+					`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
+				);
+			}
 		}
 
 		// Figure out the command arguments
 		let args = this.patternMatches;
 		if(!args && this.command.args) {
 			args = await this.obtainArgs();
+			if(throttle && (!args || typeof args === 'symbol')) throttle.usages--;
 			if(!args) return await this.reply('Cancelled command.');
 			if(args === this.constructor.SILENT_CANCEL) return null;
 			if(args === this.constructor.FORMAT_CANCEL) {
@@ -236,7 +240,7 @@ class CommandMessage {
 	}
 
 	/**
-	 * Throttles the command if necessary (the owner is excluded)
+	 * Creates/obtains the throttle object for the command + user, if necessary (the owner is excluded)
 	 * @return {?Object}
 	 * @private
 	 */
@@ -255,9 +259,7 @@ class CommandMessage {
 			};
 			this.command._throttles.set(id, throttle);
 		}
-		throttle.usages++;
-		if(throttle.usages > this.command.throttling.usages) return throttle;
-		return null;
+		return throttle;
 	}
 
 	/**
