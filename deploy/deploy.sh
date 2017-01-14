@@ -4,11 +4,13 @@
 set -e
 
 function tests {
+  npm run lint
   npm run test-docs
   exit 0
 }
 
 function build {
+  npm run lint
   npm run docs
 }
 
@@ -39,10 +41,10 @@ ENCRYPTED_KEY_VAR="encrypted_${ENCRYPTION_LABEL}_key"
 ENCRYPTED_IV_VAR="encrypted_${ENCRYPTION_LABEL}_iv"
 ENCRYPTED_KEY=${!ENCRYPTED_KEY_VAR}
 ENCRYPTED_IV=${!ENCRYPTED_IV_VAR}
-openssl aes-256-cbc -K $ENCRYPTED_KEY -iv $ENCRYPTED_IV -in deploy/deploy_key.enc -out deploy_key -d
-chmod 600 deploy_key
+openssl aes-256-cbc -K $ENCRYPTED_KEY -iv $ENCRYPTED_IV -in deploy/deploy-key.enc -out deploy-key -d
+chmod 600 deploy-key
 eval `ssh-agent -s`
-ssh-add deploy_key
+ssh-add deploy-key
 
 # Checkout the repo in the target branch so we can build docs and push to it
 TARGET_BRANCH="docs"
