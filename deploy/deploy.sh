@@ -14,9 +14,15 @@ function build {
   npm run docs
 }
 
-# Only run tests for PRs
+# For revert branches, do nothing
+if [[ "$TRAVIS_BRANCH" == revert-* ]]
+  echo -e "\e[36m\e[1mBuild triggered for reversion branch \"$TRAVIS_BRANCH\" - doing nothing."
+  exit 0
+fi
+
+# For PRs, only run tests
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-  echo -e "\e[36m\e[1mBuild triggered for PR #$TRAVIS_PULL_REQUEST to branch $TRAVIS_BRANCH - only running tests."
+  echo -e "\e[36m\e[1mBuild triggered for PR #$TRAVIS_PULL_REQUEST to branch \"$TRAVIS_BRANCH\" - only running tests."
   tests
 fi
 
