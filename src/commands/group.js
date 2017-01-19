@@ -55,7 +55,7 @@ class CommandGroup {
 
 	/**
 	 * Enables or disables the group in a guild
-	 * @param {GuildResolvable} guild - Guild to enable/disable the group in
+	 * @param {?GuildResolvable} guild - Guild to enable/disable the group in
 	 * @param {boolean} enabled - Whether the group should be enabled or disabled
 	 */
 	setEnabledIn(guild, enabled) {
@@ -73,7 +73,7 @@ class CommandGroup {
 
 	/**
 	 * Checks if the group is enabled in a guild
-	 * @param {GuildResolvable} guild - Guild to check in
+	 * @param {?GuildResolvable} guild - Guild to check in
 	 * @return {boolean} Whether or not the group is enabled
 	 */
 	isEnabledIn(guild) {

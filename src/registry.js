@@ -52,7 +52,7 @@ class CommandRegistry {
 	 * Registers a single group
 	 * @param {CommandGroup|Function|string[]|string} group - A CommandGroup instance, a constructor,
 	 * an array of [ID, Name], or the group ID
-	 * @param {string} [name] name - Name for the group (if the first argument is the group ID)
+	 * @param {string} [name] - Name for the group (if the first argument is the group ID)
 	 * @return {CommandRegistry}
 	 * @see {@link CommandRegistry#registerGroups}
 	 */
@@ -63,7 +63,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers multiple groups
-	 * @param {CommandGroup[]|Function[]|Array<Array<string>>} groups - An array of CommandGroup instances, constructors,
+	 * @param {CommandGroup[]|Function[]|Array<string[]>} groups - An array of CommandGroup instances, constructors,
 	 * or arrays of [ID, Name]
 	 * @return {CommandRegistry}
 	 */
