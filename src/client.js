@@ -100,7 +100,9 @@ class CommandoClient extends discord.Client {
 
 		if(this.readyTimestamp) {
 			this.emit('debug', `Provider set to ${provider.constructor.name}. Initialising...`);
-			return provider.init(this);
+			await provider.init(this);
+			this.emit('debug', 'Provider finished initialisation.');
+			return undefined;
 		}
 
 		this.emit('debug', `Provider set to ${provider.constructor.name}. Will initialise once ready.`);
