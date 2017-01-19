@@ -97,7 +97,7 @@ class SQLiteProvider extends SettingProvider {
 		this.listeners
 			.set('commandPrefixChange', (guild, prefix) => this.set(guild, 'prefix', prefix))
 			.set('commandStatusChange', (guild, command, enabled) => this.set(guild, `cmd-${command.name}`, enabled))
-			.set('groupStatusChange', (guild, group, enabled) => this.set(guild, `grp-${group.name}`, enabled))
+			.set('groupStatusChange', (guild, group, enabled) => this.set(guild, `grp-${group.id}`, enabled))
 			.set('guildCreate', guild => {
 				const settings = this.settings.get(guild.id);
 				if(!settings) return;
@@ -214,12 +214,12 @@ class SQLiteProvider extends SettingProvider {
 	 * @private
 	 */
 	setupGuildGroup(guild, group, settings) {
-		if(typeof settings[`grp-${group.name}`] === 'undefined') return;
+		if(typeof settings[`grp-${group.id}`] === 'undefined') return;
 		if(guild) {
 			if(!guild._groupsEnabled) guild._groupsEnabled = {};
-			guild._groupsEnabled[group.name] = settings[`grp-${group.name}`];
+			guild._groupsEnabled[group.id] = settings[`grp-${group.id}`];
 		} else {
-			group._globalEnabled = settings[`grp-${group.name}`];
+			group._globalEnabled = settings[`grp-${group.id}`];
 		}
 	}
 
