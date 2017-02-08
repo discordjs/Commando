@@ -153,6 +153,7 @@ class CommandMessage {
 			 * @event CommandoClient#commandBlocked
 			 * @param {CommandMessage} message - Command message that the command is running from
 			 * @param {string} reason - Reason that the command was blocked
+			 * (built-in reasons are `guildOnly`, `permission`, and `throttling`)
 			 */
 			this.client.emit('commandBlocked', this, 'guildOnly');
 			return await this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
@@ -166,6 +167,7 @@ class CommandMessage {
 		const throttle = this.command.throttle(this.message.author.id);
 		if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
 			const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
+			this.client.emit('commandBlocked', this, 'throttling');
 			return await this.reply(
 				`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
 			);
