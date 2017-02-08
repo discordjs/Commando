@@ -19,8 +19,9 @@
 	"scripts": {
 		"test": "eslint src && docgen --source src --custom docs/index.yml --jsdoc jsdoc.json",
 		"lint": "eslint src",
+		"lint:fix": "eslint --fix src",
 		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json --jsdoc jsdoc.json",
-		"test-docs": "docgen --source src --custom docs/index.yml --jsdoc jsdoc.json"
+		"docs:test": "docgen --source src --custom docs/index.yml --jsdoc jsdoc.json"
 	},
 	"main": "src/index",
 	"dependencies": {
