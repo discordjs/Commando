@@ -163,22 +163,18 @@ class CommandMessage {
 		}
 
 		// Throttle the command
-		const throttle = this.throttleCommand();
-		if(throttle) {
-			throttle.usages++;
-			if(throttle.usages > this.command.throttling.usages) {
-				const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
-				return await this.reply(
-					`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
-				);
-			}
+		const throttle = this.command.throttle(this.message.author.id);
+		if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
+			const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
+			return await this.reply(
+				`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
+			);
 		}
 
 		// Figure out the command arguments
 		let args = this.patternMatches;
 		if(!args && this.command.args) {
 			args = await this.obtainArgs();
-			if(throttle && (!args || typeof args === 'symbol')) throttle.usages--;
 			if(!args) return await this.reply('Cancelled command.');
 			if(args === this.constructor.SILENT_CANCEL) return null;
 			if(args === this.constructor.FORMAT_CANCEL) {
@@ -190,6 +186,7 @@ class CommandMessage {
 		const fromPattern = Boolean(this.patternMatches);
 
 		// Run the command
+		if(throttle) throttle.usages++;
 		const typingCount = this.message.channel.typingCount;
 		try {
 			this.client.emit('debug', `Running command ${this.command.groupID}:${this.command.memberName}.`);
@@ -237,29 +234,6 @@ class CommandMessage {
 				`);
 			}
 		}
-	}
-
-	/**
-	 * Creates/obtains the throttle object for the command + user, if necessary (the owner is excluded)
-	 * @return {?Object}
-	 * @private
-	 */
-	throttleCommand() {
-		if(!this.command.throttling) return null;
-		const id = this.message.author.id;
-		if(id === this.client.options.owner) return null;
-		let throttle = this.command._throttles.get(id);
-		if(!throttle) {
-			throttle = {
-				start: Date.now(),
-				usages: 0,
-				timeout: this.client.setTimeout(() => {
-					this.command._throttles.delete(id);
-				}, this.command.throttling.duration * 1000)
-			};
-			this.command._throttles.set(id, throttle);
-		}
-		return throttle;
 	}
 
 	/**

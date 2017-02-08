@@ -286,6 +286,30 @@ class Command {
 	}
 
 	/**
+	 * Creates/obtains the throttle object for a user, if necessary (the owner is excluded)
+	 * @param {string} userID - ID of the user to throttle for
+	 * @return {?Object}
+	 * @private
+	 */
+	throttle(userID) {
+		if(!this.throttling || userID === this.client.options.owner) return null;
+
+		let throttle = this._throttles.get(userID);
+		if(!throttle) {
+			throttle = {
+				start: Date.now(),
+				usages: 0,
+				timeout: this.client.setTimeout(() => {
+					this._throttles.delete(userID);
+				}, this.throttling.duration * 1000)
+			};
+			this._throttles.set(userID, throttle);
+		}
+
+		return throttle;
+	}
+
+	/**
 	 * Enables or disables the command in a guild
 	 * @param {?GuildResolvable} guild - Guild to enable/disable the command in
 	 * @param {boolean} enabled - Whether the command should be enabled or disabled
