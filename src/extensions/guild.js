@@ -17,6 +17,7 @@ class GuildExtension {
 	set commandPrefix(prefix) {
 		/**
 		 * Internal command prefix for the guild, controlled by the {@link GuildExtension#commandPrefix} getter/setter
+		 * @name GuildExtension#_commandPrefix
 		 * @type {?string}
 		 * @private
 		 */
@@ -37,14 +38,13 @@ class GuildExtension {
 	 * @readonly
 	 */
 	get settings() {
-		if(!this._settings) {
-			/**
-			 * Internal settings helper that is created upon accessing the {@link GuildExtension#settings} getter
-			 * @type {GuildSettingsHelper}
-			 * @private
-			 */
-			this._settings = new GuildSettingsHelper(this.client, this);
-		}
+		/**
+		 * Internal settings helper that is created upon accessing the {@link GuildExtension#settings} getter
+		 * @name GuildExtension#_settings
+		 * @type {GuildSettingsHelper}
+		 * @private
+		 */
+		if(!this._settings) this._settings = new GuildSettingsHelper(this.client, this);
 		return this._settings;
 	}
 
