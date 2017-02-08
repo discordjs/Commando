@@ -15,7 +15,13 @@ class GuildExtension {
 	}
 
 	set commandPrefix(prefix) {
+		/**
+		 * Internal command prefix for the guild, controlled by the {@link GuildExtension#commandPrefix} getter/setter
+		 * @type {?string}
+		 * @private
+		 */
 		this._commandPrefix = prefix;
+
 		/**
 		 * Emitted whenever a guild's command prefix is changed
 		 * @event CommandoClient#commandPrefixChange
@@ -31,7 +37,14 @@ class GuildExtension {
 	 * @readonly
 	 */
 	get settings() {
-		if(!this._settings) this._settings = new GuildSettingsHelper(this.client, this);
+		if(!this._settings) {
+			/**
+			 * Internal settings helper that is created upon accessing the {@link GuildExtension#settings} getter
+			 * @type {GuildSettingsHelper}
+			 * @private
+			 */
+			this._settings = new GuildSettingsHelper(this.client, this);
+		}
 		return this._settings;
 	}
 
@@ -45,7 +58,14 @@ class GuildExtension {
 		if(command.guarded) throw new Error('The command is guarded.');
 		if(typeof enabled === 'undefined') throw new TypeError('Enabled must not be undefined.');
 		enabled = Boolean(enabled);
-		if(!this._commandsEnabled) this._commandsEnabled = {};
+		if(!this._commandsEnabled) {
+			/**
+			 * Map object of internal command statuses, mapped by command name
+			 * @type {Object}
+			 * @private
+			 */
+			this._commandsEnabled = {};
+		}
 		this._commandsEnabled[command.name] = enabled;
 		/**
 		 * Emitted whenever a command is enabled/disabled in a guild
@@ -81,7 +101,14 @@ class GuildExtension {
 		if(group.guarded) throw new Error('The group is guarded.');
 		if(typeof enabled === 'undefined') throw new TypeError('Enabled must not be undefined.');
 		enabled = Boolean(enabled);
-		if(!this._groupsEnabled) this._groupsEnabled = {};
+		if(!this._groupsEnabled) {
+			/**
+			 * Internal map object of group statuses, mapped by group ID
+			 * @type {Object}
+			 * @private
+			 */
+			this._groupsEnabled = {};
+		}
 		this._groupsEnabled[group.id] = enabled;
 		/**
 		 * Emitted whenever a command group is enabled/disabled in a guild

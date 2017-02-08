@@ -244,7 +244,18 @@ class Command {
 		 */
 		this.guarded = Boolean(info.guarded);
 
+		/**
+		 * Whether the command is enabled globally
+		 * @type {boolean}
+		 * @private
+		 */
 		this._globalEnabled = true;
+
+		/**
+		 * Current throttle objects for the command, mapped by user ID
+		 * @type {Map<string, Object>}
+		 * @private
+		 */
 		this._throttles = new Map();
 	}
 

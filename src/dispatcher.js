@@ -28,8 +28,25 @@ class CommandDispatcher {
 		 */
 		this.inhibitors = new Set();
 
+		/**
+		 * Map object of {@link RegExp}s that match command messages, mapped by string prefix
+		 * @type {Object}
+		 * @private
+		 */
 		this._commandPatterns = {};
+
+		/**
+		 * Old command message results, mapped by original message ID
+		 * @type {Map<string, CommandMessage>}
+		 * @private
+		 */
 		this._results = new Map();
+
+		/**
+		 * Tuples in string form of user ID and channel ID that are currently awaiting messages from a user in a channel
+		 * @type {Set<string>}
+		 * @private
+		 */
 		this._awaiting = new Set();
 	}
 

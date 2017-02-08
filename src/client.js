@@ -56,6 +56,11 @@ class CommandoClient extends discord.Client {
 		 */
 		this.settings = new GuildSettingsHelper(this, null);
 
+		/**
+		 * Internal global command prefix, controlled by the {@link CommandoClient#commandPrefix} getter/setter
+		 * @type {?string}
+		 * @private
+		 */
 		this._commandPrefix = null;
 
 		// Set up command handling
