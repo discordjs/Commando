@@ -83,6 +83,10 @@ require('./extensions/guild').applyToClass(discord.Guild);
  * @see {@link https://discord.js.org/#/docs/main/master/class/User}
  */
 /**
+ * @external UserResolvable
+ * @see {@link https://discord.js.org/#/docs/main/master/class/UserResolvable}
+ */
+/**
  * @external Emoji
  * @see {@link https://discord.js.org/#/docs/main/master/class/Emoji}
  */

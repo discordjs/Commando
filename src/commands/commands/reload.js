@@ -13,7 +13,7 @@ module.exports = class ReloadCommandCommand extends Command {
 			details: oneLine`
 				The argument must be the name/ID (partial or whole) of a command or command group.
 				Providing a command group will reload all of the commands in that group.
-				Only the bot owner may use this command.
+				Only the bot owner(s) may use this command.
 			`,
 			examples: ['reload some-command'],
 			guarded: true,
@@ -42,7 +42,7 @@ module.exports = class ReloadCommandCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return msg.author.id === this.client.options.owner;
+		return this.client.isOwner(msg.author);
 	}
 
 	async run(msg, args) {

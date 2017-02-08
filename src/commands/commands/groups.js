@@ -15,7 +15,7 @@ module.exports = class ListGroupsCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		if(!msg.guild) return msg.author.id === this.client.options.owner;
+		if(!msg.guild) return this.client.isOwner(msg.author);
 		return msg.member.hasPermission('ADMINISTRATOR');
 	}
 

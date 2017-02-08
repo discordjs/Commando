@@ -14,7 +14,7 @@ module.exports = class EvalCommand extends Command {
 			group: 'util',
 			memberName: 'eval',
 			description: 'Executes JavaScript code.',
-			details: 'Only the bot owner may use this command.',
+			details: 'Only the bot owner(s) may use this command.',
 
 			args: [
 				{
@@ -29,7 +29,7 @@ module.exports = class EvalCommand extends Command {
 	}
 
 	hasPermission(msg) {
-		return msg.author.id === this.client.options.owner;
+		return this.client.isOwner(msg.author);
 	}
 
 	async run(msg, args) {
