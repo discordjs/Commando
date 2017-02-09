@@ -17,7 +17,7 @@
 		"commands"
 	],
 	"scripts": {
-		"test": "eslint src && docgen --source src --custom docs/index.yml --jsdoc jsdoc.json",
+		"test": "npm run lint && npm run docs:test",
 		"lint": "eslint src",
 		"lint:fix": "eslint --fix src",
 		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json --jsdoc jsdoc.json",
