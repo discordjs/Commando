@@ -24,7 +24,7 @@
 		"docs:test": "docgen --source src --custom docs/index.yml --jsdoc jsdoc.json"
 	},
 	"main": "src/index",
-  "types": "./typings/index.d.ts",
+	"types": "./typings/index.d.ts",
 	"dependencies": {
 		"common-tags": "^1.4.0",
 		"escape-string-regexp": "^1.0.0",
