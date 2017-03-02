@@ -43,7 +43,7 @@ declare module 'discord.js-commando' {
 		public isEnabledIn(guild: GuildResolvable): boolean;
 		public isUsable(message: Message): boolean;
 		public reload(): void;
-		public run(message: CommandMessage, args: {} | string | string[], fromPattern: boolean): Promise<(Message | Message[])>
+		public run(message: CommandMessage, args: {} | string | string[], fromPattern: boolean): Promise<Message | Message[]>
 		public setEnabledIn(guild: GuildResolvable, enabled: boolean): void;
 		private throttle(userID: string): {};
 		public unload(): void;
@@ -286,7 +286,7 @@ declare module 'discord.js-commando' {
 		public constructor(message: string);
 	}
 
-	export class GuildExtension {
+	export class GuildExtension extends Guild {
 		private _commandPrefix: string;
 		private _commandsEnabled: {};
 		private _groupsEndabled: {};
@@ -396,7 +396,7 @@ declare module 'discord.js-commando' {
 
 	type CommandResolvable = Command | string;
 
-	type Inhibitor = (msg: Message) => string | [string, Promise<any> | null];
+	type Inhibitor = (msg: Message) => string | [string, Promise<any>];
 
 	type ThrottlingOptions = {
 		usages: number;
