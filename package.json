@@ -1,45 +1,47 @@
 {
-	"name": "discord.js-commando",
-	"version": "0.9.0",
-	"description": "The official command framework for Discord.js",
-	"license": "Apache-2.0",
-	"author": "Schuyler Cebulskie <Gawdl3y@gawdl3y.com> (https://gawdl3y.com/)",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/Gawdl3y/discord.js-commando.git"
-	},
-	"bugs": {
-		"url": "https://github.com/Gawdl3y/discord.js-commando/issues"
-	},
-	"keywords": [
-		"discord",
-		"bot",
-		"commands"
-	],
-	"scripts": {
-		"test": "npm run lint && npm run docs:test",
-		"lint": "eslint src",
-		"lint:fix": "eslint --fix src",
-		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json --jsdoc jsdoc.json",
-		"docs:test": "docgen --source src --custom docs/index.yml --jsdoc jsdoc.json"
-	},
-	"main": "src/index",
-	"types": "./typings/index.d.ts",
-	"dependencies": {
-		"common-tags": "^1.4.0",
-		"escape-string-regexp": "^1.0.0",
-		"require-all": "^2.0.0"
-	},
-	"devDependencies": {
-		"discord.js-docgen": "hydrabolt/discord.js-docgen",
-		"eslint": "^3.11.0",
-		"jsdoc-strip-async-await": "^0.1.0"
-	},
-	"peerDependencies": {
-		"discord.js": "^10.0.0 || ^11.0.0",
-		"sqlite": "^2.2.0"
-	},
-	"engines": {
-		"node": ">=7.0.0"
-	}
+  "name": "discord.js-commando",
+  "version": "0.9.0",
+  "description": "The official command framework for Discord.js",
+  "license": "Apache-2.0",
+  "author": "Schuyler Cebulskie <Gawdl3y@gawdl3y.com> (https://gawdl3y.com/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gawdl3y/discord.js-commando.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Gawdl3y/discord.js-commando/issues"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "commands"
+  ],
+  "scripts": {
+    "test": "npm run lint && npm run docs:test",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src",
+    "docs": "docgen --source src --custom docs/index.yml --output docs/docs.json --jsdoc jsdoc.json",
+    "docs:test": "docgen --source src --custom docs/index.yml --jsdoc jsdoc.json"
+  },
+  "main": "src/index",
+  "types": "./typings/index.d.ts",
+  "dependencies": {
+    "common-tags": "^1.4.0",
+    "escape-string-regexp": "^1.0.0",
+    "require-all": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^7.0.5",
+    "discord.js-docgen": "hydrabolt/discord.js-docgen",
+    "eslint": "^3.11.0",
+    "jsdoc-strip-async-await": "^0.1.0",
+    "typescript": "^2.2.1"
+  },
+  "peerDependencies": {
+    "discord.js": "^10.0.0 || ^11.0.0",
+    "sqlite": "^2.2.0"
+  },
+  "engines": {
+    "node": ">=7.0.0"
+  }
 }

@@ -1,0 +1,15 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es2017",
+		"lib": [
+			"es7"
+		],
+		"declaration": true,
+		"noImplicitAny": true,
+		"removeComments": true,
+		"sourceMap": true,
+		"allowJs": true
+	},
+	"exclude": ["node_modules"]
+}
