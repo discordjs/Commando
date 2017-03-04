@@ -1,5 +1,6 @@
 declare module 'discord.js-commando' {
 	import { Channel, Client, ClientOptions, Collection, Emoji, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageOptions, MessageReaction, ReactionEmoji, RichEmbed, Role, StringResolvable, User, UserResolvable, Webhook } from 'discord.js';
+	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
 
 	export class ArgumentType {
 		public constructor(client: CommandoClient, id: string);
@@ -261,7 +262,7 @@ declare module 'discord.js-commando' {
 		public findGroups(searchString?: string, exact?: boolean): CommandGroup[];
 		public registerCommand(command: Command | Function): CommandRegistry;
 		public registerCommands(commands: Command[] | Function[]): CommandRegistry;
-		public registerCommandsIn(options: string | RequireAllOptions): CommandRegistry;
+		public registerCommandsIn(options: string | {}): CommandRegistry;
 		public registerDefaultCommands(options?: { help?: boolean, prefix?: boolean, eval_?: boolean, ping?: boolean, commandState?: boolean }): CommandRegistry;
 		public registerDefaultGroups(): CommandRegistry;
 		public registerDefaults(): CommandRegistry;
@@ -272,7 +273,7 @@ declare module 'discord.js-commando' {
 		public registerGroups(groups: CommandGroup[] | Function[] | string[][]): CommandRegistry;
 		public registerType(type: ArgumentType | Function): CommandRegistry;
 		public registerTypes(type: ArgumentType[] | Function[]): CommandRegistry;
-		public registerTypesIn(options: string | RequireAllOptions): CommandRegistry;
+		public registerTypesIn(options: string | {}): CommandRegistry;
 		public reregisterCommand(command: Command | Function, oldCommand: Command): void;
 		public resolveCommand(command: CommandResolvable): Command;
 		public resolveCommandPath(groups: string, memberName: string): string;
