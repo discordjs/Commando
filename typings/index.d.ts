@@ -1,3 +1,5 @@
+/// <reference path="sqlite.d.ts" />
+
 declare module 'discord.js-commando' {
 	import { Channel, Client, ClientOptions, Collection, Emoji, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageOptions, MessageReaction, ReactionEmoji, RichEmbed, Role, StringResolvable, User, UserResolvable, Webhook } from 'discord.js';
 	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
