@@ -1,4 +1,5 @@
 /// <reference path='index.d.ts' />
+/// <reference path='sqlite.d.ts' />
 
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';

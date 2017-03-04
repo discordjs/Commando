@@ -5,11 +5,15 @@
 		"lib": [
 			"es7"
 		],
-		"declaration": true,
-		"noImplicitAny": true,
+		"noImplicitAny": false,
 		"removeComments": true,
 		"sourceMap": true,
 		"allowJs": true
 	},
-	"exclude": ["node_modules"]
+	"include": [
+		"typings/**/*"
+	],
+	"exclude": [
+		"node_modules"
+	]
 }
