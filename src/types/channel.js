@@ -28,7 +28,7 @@ class ChannelArgumentType extends ArgumentType {
 		if(channels.length === 0) return null;
 		if(channels.length === 1) return channels[0];
 		const exactChannels = channels.filter(nameFilterExact(search));
-		if(exactChannels.length === 1) return channels[0];
+		if(exactChannels.length === 1) return exactChannels[0];
 		return null;
 	}
 }
