@@ -244,7 +244,7 @@ class CommandMessage {
 
 	/**
 	 * Responds to the command message
-	 * @param {Object} options - Options for the response
+	 * @param {Object} [options] - Options for the response
 	 * @return {Message|Message[]}
 	 * @private
 	 */
@@ -290,7 +290,7 @@ class CommandMessage {
 	/**
 	 * Edits a response to the command message
 	 * @param {Message|Message[]} response - The response message(s) to edit
-	 * @param {Object} options - Options for the response
+	 * @param {Object} [options] - Options for the response
 	 * @return {Promise<Message|Message[]>}
 	 * @private
 	 */
@@ -328,7 +328,7 @@ class CommandMessage {
 	/**
 	 * Edits the current response
 	 * @param {string} id - The ID of the channel the response is in ("DM" for direct messages)
-	 * @param {Object} options - Options for the response
+	 * @param {Object} [options] - Options for the response
 	 * @return {Promise<Message|Message[]>}
 	 * @private
 	 */
@@ -342,7 +342,7 @@ class CommandMessage {
 	/**
 	 * Responds with a plain message
 	 * @param {StringResolvable} content - Content for the message
-	 * @param {MessageOptions} options - Options for the message
+	 * @param {MessageOptions} [options] - Options for the message
 	 * @return {Promise<Message|Message[]>}
 	 */
 	say(content, options) {
@@ -352,7 +352,7 @@ class CommandMessage {
 	/**
 	 * Responds with a reply message
 	 * @param {StringResolvable} content - Content for the message
-	 * @param {MessageOptions} options - Options for the message
+	 * @param {MessageOptions} [options] - Options for the message
 	 * @return {Promise<Message|Message[]>}
 	 */
 	reply(content, options) {
@@ -362,7 +362,7 @@ class CommandMessage {
 	/**
 	 * Responds with a direct message
 	 * @param {StringResolvable} content - Content for the message
-	 * @param {MessageOptions} options - Options for the message
+	 * @param {MessageOptions} [options] - Options for the message
 	 * @return {Promise<Message|Message[]>}
 	 */
 	direct(content, options) {
@@ -373,7 +373,7 @@ class CommandMessage {
 	 * Responds with a code message
 	 * @param {string} lang - Language for the code block
 	 * @param {StringResolvable} content - Content for the message
-	 * @param {MessageOptions} options - Options for the message
+	 * @param {MessageOptions} [options] - Options for the message
 	 * @return {Promise<Message|Message[]>}
 	 */
 	code(lang, content, options) {
