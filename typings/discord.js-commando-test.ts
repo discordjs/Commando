@@ -1,10 +1,11 @@
 /// <reference path='index.d.ts' />
 
-
-import { Command, CommandoClient, CommandMessage } from 'discord.js-commando';
 import { Message } from 'discord.js';
+import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
-const client = new CommandoClient({})
+const client = new CommandoClient({
+	uknownCommandResponse: true
+});
 
 client.on('message', (message: Message) => {
 	if (message.content === 'hello') {
@@ -22,7 +23,7 @@ class TestCommand extends Command {
 		});
 	}
 
-	hasPermission(message: CommandMessage): boolean {
+	public hasPermission(message: CommandMessage): boolean {
 		return true;
 	}
 
