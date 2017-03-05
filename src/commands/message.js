@@ -513,7 +513,7 @@ class CommandMessage {
 
 	/**
 	 * Shortcut to `this.message.channel`
-	 * @type {Channel}
+	 * @type {TextChannel|DMChannel|GroupDMChannel}
 	 * @see {@link Message#channel}
 	 */
 	get channel() {
