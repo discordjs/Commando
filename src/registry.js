@@ -165,12 +165,8 @@ class CommandRegistry {
 		const commands = [];
 		for(const group of Object.values(obj)) {
 			for(let command of Object.values(group)) {
-				if(typeof command.default === 'function') {
-					command = command.default;
-					commands.push(command);
-				} else {
-					commands.push(command);
-				}
+				if(typeof command.default === 'function') command = command.default;
+				commands.push(command);
 			}
 		}
 		if(typeof options === 'string' && !this.commandsPath) this.commandsPath = options;
