@@ -1,7 +1,7 @@
 /// <reference path="sqlite.d.ts" />
 
 declare module 'discord.js-commando' {
-	import { Channel, Client, ClientOptions, Collection, Emoji, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageOptions, MessageReaction, ReactionEmoji, RichEmbed, Role, StringResolvable, User, UserResolvable, Webhook } from 'discord.js';
+	import { Channel, Client, ClientOptions, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageOptions, MessageReaction, ReactionEmoji, RichEmbed, Role, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
 	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
 
 	export class ArgumentType {
@@ -119,7 +119,7 @@ declare module 'discord.js-commando' {
 		public argString: string;
 		public attachments: Collection<string, MessageAttachment>;
 		public author: User;
-		public channel: Channel;
+		public channel: TextChannel | DMChannel | GroupDMChannel;
 		public cleanContent: string;
 		public readonly client: CommandoClient;
 		public command: Command;
