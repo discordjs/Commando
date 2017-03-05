@@ -39,6 +39,14 @@ require('./extensions/guild').applyToClass(discord.Guild);
  * @see {@link https://discord.js.org/#/docs/main/master/class/Collection}
  */
 /**
+ * @external DMChannel
+ * @see {@link https://discord.js.org/#/docs/main/master/class/DMChannel}
+ */
+/**
+ * @external GroupDMChannel
+ * @see {@link https://discord.js.org/#/docs/main/master/class/GroupDMChannel}
+ */
+/**
  * @external Guild
  * @see {@link https://discord.js.org/#/docs/main/master/class/Guild}
  */
@@ -77,6 +85,10 @@ require('./extensions/guild').applyToClass(discord.Guild);
 /**
  * @external StringResolvable
  * @see {@link https://discord.js.org/#/docs/main/master/typedef/StringResolvable}
+ */
+/**
+ * @external TextChannel
+ * @see {@link https://discord.js.org/#/docs/main/master/class/TextChannel}
  */
 /**
  * @external User
