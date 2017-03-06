@@ -7,7 +7,6 @@ declare module 'discord.js-commando' {
 	export class Argument {
 		public constructor(client: CommandoClient, info: ArgumentInfo);
 
-		public client: CommandoClient;
 		public default: any;
 		public infinite: boolean;
 		public key: string;
@@ -24,14 +23,14 @@ declare module 'discord.js-commando' {
 		private obtainInfinite(msg: CommandMessage, values?: string[], promptLimit?: number): Promise<ArgumentResult>;
 		public parse(value: string, msg: CommandMessage): any | Promise<any>;
 		public validate(value: string, msg: CommandMessage): boolean | string | Promise<boolean | string>;
-		private validateInfo(client: CommandoClient, info: ArgumentInfo);
+		private static validateInfo(client: CommandoClient, info: ArgumentInfo);
 	}
 
 	export class ArgumentCollector {
 		public constructor(client: CommandoClient, args: ArgumentInfo[], promptLimit?: number);
 
 		public args: Argument[];
-		public client: CommandoClient;
+		public readonly client: CommandoClient;
 		public promptLimit: number;
 
 		public obtain(msg: CommandMessage, provided?: any[], promptLimit?: number): Promise<ArgumentCollectorResult>;
@@ -81,7 +80,7 @@ declare module 'discord.js-commando' {
 		public unload(): void;
 		public usage(argString?: string, prefix?: string, user?: User): string;
 		public static usage(command: string, prefix?: string, user?: User): string;
-		private validateInfo(client: CommandoClient, info: CommandInfo);
+		private static validateInfo(client: CommandoClient, info: CommandInfo);
 	}
 
 	export class CommandDispatcher {
@@ -127,36 +126,36 @@ declare module 'discord.js-commando' {
 		public constructor(message: Message, command?: Command, argString?: string, patternMatches?: string[]);
 
 		public argString: string;
-		public attachments: Collection<string, MessageAttachment>;
-		public author: User;
-		public channel: TextChannel | DMChannel | GroupDMChannel;
-		public cleanContent: string;
+		public readonly attachments: Collection<string, MessageAttachment>;
+		public readonly author: User;
+		public readonly channel: TextChannel | DMChannel | GroupDMChannel;
+		public readonly cleanContent: string;
 		public readonly client: CommandoClient;
 		public command: Command;
-		public content: string;
-		public createdAt: Date;
-		public createdTimestamp: number;
-		public deletable: boolean;
-		public editable: boolean;
-		public editedAt: Date;
-		public editedTimestamp: number;
-		public edits: Message[];
-		public embeds: MessageEmbed[];
-		public guild: Guild;
-		public id: string;
-		public member: GuildMember;
-		public mentions: {};
+		public readonly content: string;
+		public readonly createdAt: Date;
+		public readonly createdTimestamp: number;
+		public readonly deletable: boolean;
+		public readonly editable: boolean;
+		public readonly editedAt: Date;
+		public readonly editedTimestamp: number;
+		public readonly edits: Message[];
+		public readonly embeds: MessageEmbed[];
+		public readonly guild: Guild;
+		public readonly id: string;
+		public readonly member: GuildMember;
+		public readonly mentions: {};
 		public message: Message;
-		public nonce: string;
+		public readonly nonce: string;
 		public patternMatches: string[];
-		public pinnable: boolean;
-		public pinned: boolean;
-		public reactions: Collection<string, MessageReaction>;
+		public readonly pinnable: boolean;
+		public readonly pinned: boolean;
+		public readonly reactions: Collection<string, MessageReaction>;
 		public responsePositions: {};
 		public responses: {};
-		public system: boolean;
-		public tts: boolean;
-		public webhookID: string;
+		public readonly system: boolean;
+		public readonly tts: boolean;
+		public readonly webhookID: string;
 
 		public anyUsage(command?: string, prefix?: string, user?: User): string;
 		public clearReactions(): Promise<Message>;
@@ -312,7 +311,7 @@ declare module 'discord.js-commando' {
 	export class GuildSettingsHelper {
 		public constructor(client: CommandoClient, guild: Guild);
 
-		public client: CommandoClient;
+		public readonly client: CommandoClient;
 		public guild: Guild;
 
 		public clear(): Promise<void>;

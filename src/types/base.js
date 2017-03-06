@@ -2,7 +2,7 @@
 class ArgumentType {
 	/**
 	 * @param {CommandoClient} client - The client the argument type is for
-	 * @param {string} id - The argument type ID (this is what you specify in {@link CommandArgumentInfo#type})
+	 * @param {string} id - The argument type ID (this is what you specify in {@link ArgumentInfo#type})
 	 */
 	constructor(client, id) {
 		if(!client) throw new Error('A client must be specified.');
@@ -18,7 +18,7 @@ class ArgumentType {
 		Object.defineProperty(this, 'client', { value: client });
 
 		/**
-		 * ID of this argument type (this is what you specify in {@link CommandArgumentInfo#type})
+		 * ID of this argument type (this is what you specify in {@link ArgumentInfo#type})
 		 * @type {string}
 		 */
 		this.id = id;
@@ -29,7 +29,7 @@ class ArgumentType {
 	 * Validates a value against the type
 	 * @param {string} value - Value to validate
 	 * @param {CommandMessage} msg - Message the value was obtained from
-	 * @param {CommandArgument} arg - Argument the value obtained from
+	 * @param {Argument} arg - Argument the value obtained from
 	 * @return {boolean|string|Promise<boolean|string>} Whether the value is valid, or an error message
 	 * @abstract
 	 */
@@ -42,7 +42,7 @@ class ArgumentType {
 	 * Parses the raw value into a usable value
 	 * @param {string} value - Value to parse
 	 * @param {CommandMessage} msg - Message the value was obtained from
-	 * @param {CommandArgument} arg - Argument the value obtained from
+	 * @param {Argument} arg - Argument the value obtained from
 	 * @return {*|Promise<*>} Usable value
 	 * @abstract
 	 */
