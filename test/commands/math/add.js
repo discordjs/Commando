@@ -29,6 +29,6 @@ module.exports = class AddNumbersCommand extends commando.Command {
 
 	async run(msg, args) {
 		const total = args.numbers.reduce((prev, arg) => prev + parseFloat(arg), 0);
-		return msg.reply(`**Sum:** ${total}`);
+		return msg.reply(`${args.numbers.join(' + ')} = **${total}**`);
 	}
 };
