@@ -196,7 +196,7 @@ class CommandMessage {
 			 * Emitted when a command produces an error while running
 			 * @event CommandoClient#commandError
 			 * @param {Command} command - Command that produced an error
-			 * @param {Object} err - The error message
+			 * @param {Error} err - Error that was thrown
 			 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
 			 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 			 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
