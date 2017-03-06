@@ -354,7 +354,7 @@ declare module 'discord.js-commando' {
 	}
 
 	type ArgumentCollectorResult = {
-		values?: Object;
+		values?: {};
 		cancelled?: 'user' | 'time' | 'promptLimit';
 		prompts: Message[];
 		answers: Message[];
