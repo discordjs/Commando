@@ -28,7 +28,7 @@ class RoleArgumentType extends ArgumentType {
 		if(roles.length === 0) return null;
 		if(roles.length === 1) return roles[0];
 		const exactRoles = roles.filter(nameFilterExact(search));
-		if(exactRoles.length === 1) return roles[0];
+		if(exactRoles.length === 1) return exactRoles[0];
 		return null;
 	}
 }
