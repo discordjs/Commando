@@ -186,7 +186,7 @@ class Argument {
 		}
 
 		return {
-			value: this.parse(value, msg),
+			value: await this.parse(value, msg),
 			cancelled: null,
 			prompts,
 			answers
