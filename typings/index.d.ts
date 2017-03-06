@@ -4,14 +4,47 @@ declare module 'discord.js-commando' {
 	import { Channel, Client, ClientOptions, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageOptions, MessageReaction, ReactionEmoji, RichEmbed, Role, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
 	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
 
+	export class Argument {
+		public constructor(client: CommandoClient, info: ArgumentInfo);
+
+		public client: CommandoClient;
+		public default: any;
+		public infinite: boolean;
+		public key: string;
+		public label: string;
+		public max: number;
+		public min: number;
+		public parser: Function;
+		public prompt: string;
+		public type: ArgumentType;
+		public validator: Function;
+		public wait: number;
+
+		public obtain(msg: CommandMessage, value?: string, promptLimit?: number): Promise<ArgumentResult>;
+		private obtainInfinite(msg: CommandMessage, values?: string[], promptLimit?: number): Promise<ArgumentResult>;
+		public parse(value: string, msg: CommandMessage): any | Promise<any>;
+		public validate(value: string, msg: CommandMessage): boolean | string | Promise<boolean | string>;
+		private validateInfo(client: CommandoClient, info: ArgumentInfo);
+	}
+
+	export class ArgumentCollector {
+		public constructor(client: CommandoClient, args: ArgumentInfo[], promptLimit?: number);
+
+		public args: Argument[];
+		public client: CommandoClient;
+		public promptLimit: number;
+
+		public obtain(msg: CommandMessage, provided?: any[], promptLimit?: number): Promise<ArgumentCollectorResult>;
+	}
+
 	export class ArgumentType {
 		public constructor(client: CommandoClient, id: string);
 
 		public readonly client: CommandoClient;
 		public id: string;
 
-		public parse(value: string, msg: CommandMessage, arg: CommandArgument): any | Promise<any>;
-		public validate(value: string, msg: CommandMessage, arg: CommandArgument): boolean | string | Promise<boolean | string>;
+		public parse(value: string, msg: CommandMessage, arg: Argument): any | Promise<any>;
+		public validate(value: string, msg: CommandMessage, arg: Argument): boolean | string | Promise<boolean | string>;
 	}
 
 	export class Command {
@@ -20,9 +53,7 @@ declare module 'discord.js-commando' {
 		private _globalEnabled: boolean;
 		private _throttles: Map<string, {}>;
 		public aliases: string[];
-		public args: CommandArgument[];
 		public argsCount: number;
-		public argsPromptLimit: number;
 		public argsSingleQuotes: boolean;
 		public argsType: string;
 		public readonly client: CommandoClient;
@@ -39,7 +70,7 @@ declare module 'discord.js-commando' {
 		public name: string;
 		public patterns: RegExp[];
 		public throttling: ThrottlingOptions;
-		
+
 		public hasPermission(message: CommandMessage): boolean;
 		public isEnabledIn(guild: GuildResolvable): boolean;
 		public isUsable(message: Message): boolean;
@@ -50,28 +81,7 @@ declare module 'discord.js-commando' {
 		public unload(): void;
 		public usage(argString?: string, prefix?: string, user?: User): string;
 		public static usage(command: string, prefix?: string, user?: User): string;
-	}
-
-	export class CommandArgument {
-		public constructor(command: Command, info: CommandArgumentInfo);
-
-		public command: Command;
-		public default: any;
-		public infinite: boolean;
-		public key: string;
-		public label: string;
-		public max: number;
-		public min: number;
-		public parser: Function;
-		public prompt: string;
-		public type: ArgumentType;
-		public validator: Function;
-		public wait: number;
-
-		public obtain(msg: CommandMessage, value?: string): Promise<any | symbol>;
-		private obtainInfinite(msg: CommandMessage, values?: string[]): Promise<any[] | symbol>;
-		public parse(value: string, msg: CommandMessage): any | Promise<any>;
-		public validate(value: string, msg: CommandMessage): boolean | string | Promise<boolean | string>;
+		private validateInfo(client: CommandoClient, info: CommandInfo);
 	}
 
 	export class CommandDispatcher {
@@ -132,7 +142,6 @@ declare module 'discord.js-commando' {
 		public editedTimestamp: number;
 		public edits: Message[];
 		public embeds: MessageEmbed[];
-		public static FORMAT_CANCEL: symbol;
 		public guild: Guild;
 		public id: string;
 		public member: GuildMember;
@@ -142,11 +151,9 @@ declare module 'discord.js-commando' {
 		public patternMatches: string[];
 		public pinnable: boolean;
 		public pinned: boolean;
-		private promptCount: number;
 		public reactions: Collection<string, MessageReaction>;
 		public responsePositions: {};
 		public responses: {};
-		public static SILENT_CANCEL: symbol;
 		public system: boolean;
 		public tts: boolean;
 		public webhookID: string;
@@ -166,7 +173,6 @@ declare module 'discord.js-commando' {
 		private finalize(responses: Message | Message[]): void;
 		public isMemberMentioned(member: GuildMember | User): boolean;
 		public isMentioned(data: GuildChannel | User | Role | string): boolean;
-		public obtainArgs(): any[] | symbol;
 		public parseArgs(): string | string[];
 		public static parseArgs(argString: string, argCount?: number, allowSingleQuote?: boolean): string[];
 		public pin(): Promise<Message>
@@ -193,7 +199,7 @@ declare module 'discord.js-commando' {
 
 		public isOwner(user: UserResolvable): boolean;
 		public setProvider(provider: SettingProvider | Promise<SettingProvider>): Promise<void>;
-		
+
 		public on(event: string, listener: Function): this;
 		public on(event: 'commandBlocked', listener: (message: CommandMessage, reason: string) => void): this;
 		public on(event: 'commandError', listener: (command: Command, err: {}, message: CommandMessage, args: {} | string | string[], fromPattern: boolean) => void): this;
@@ -347,7 +353,14 @@ declare module 'discord.js-commando' {
 		private updateOtherShards(key: string, val: any): void;
 	}
 
-	type CommandArgumentInfo = {
+	type ArgumentCollectorResult = {
+		values?: Object;
+		cancelled?: 'user' | 'time' | 'promptLimit';
+		prompts: Message[];
+		answers: Message[];
+	};
+
+	type ArgumentInfo = {
 		key: string;
 		label?: string;
 		prompt: string;
@@ -359,6 +372,13 @@ declare module 'discord.js-commando' {
 		validate?: Function;
 		parse?: Function;
 		wait?: number;
+	};
+
+	type ArgumentResult = {
+		value: any | any[];
+		cancelled?: 'user' | 'time' | 'promptLimit';
+		prompts: Message[];
+		answers: Message[];
 	};
 
 	type CommandGroupResolvable = CommandGroup | string;
@@ -376,7 +396,7 @@ declare module 'discord.js-commando' {
 		guildOnly?: boolean;
 		defaultHandling?: boolean;
 		throttling?: ThrottlingOptions;
-		args?: CommandArgumentInfo[];
+		args?: ArgumentInfo[];
 		argsPromptLimit?: number;
 		argsType?: string;
 		argsCount?: number;

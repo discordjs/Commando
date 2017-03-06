@@ -1,5 +1,5 @@
 const path = require('path');
-const CommandArgument = require('./argument');
+const ArgumentCollector = require('./collector');
 
 /** A command that can be run in a client */
 class Command {
@@ -25,7 +25,7 @@ class Command {
 	 * @property {boolean} [defaultHandling=true] - Whether or not the default command handling should be used.
 	 * If false, then only patterns will trigger the command.
 	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
-	 * @property {CommandArgumentInfo[]} [args] - Arguments for the command.
+	 * @property {ArgumentInfo[]} [args] - Arguments for the command.
 	 * @property {number} [argsPromptLimit=Infinity] - Maximum number of times to prompt a user for a single argument.
 	 * Only applicable if `args` is specified.
 	 * @property {string} [argsType=single] - One of 'single' or 'multiple'. Only applicable if `args` is not specified.
@@ -45,54 +45,8 @@ class Command {
 	 * @param {CommandoClient} client - The client the command is for
 	 * @param {CommandInfo} info - The command information
 	 */
-	constructor(client, info) { // eslint-disable-line complexity
-		if(!client) throw new Error('A client must be specified.');
-		if(typeof info !== 'object') throw new TypeError('Command info must be an Object.');
-		if(typeof info.name !== 'string') throw new TypeError('Command name must be a string.');
-		if(info.name !== info.name.toLowerCase()) throw new Error('Command name must be lowercase.');
-		if(info.aliases && (!Array.isArray(info.aliases) || info.aliases.some(ali => typeof ali !== 'string'))) {
-			throw new TypeError('Command aliases must be an Array of strings.');
-		}
-		if(info.aliases && info.aliases.some(ali => ali !== ali.toLowerCase())) {
-			throw new Error('Command aliases must be lowercase.');
-		}
-		if(typeof info.group !== 'string') throw new TypeError('Command group must be a string.');
-		if(info.group !== info.group.toLowerCase()) throw new Error('Command group must be lowercase.');
-		if(typeof info.memberName !== 'string') throw new TypeError('Command memberName must be a string.');
-		if(info.memberName !== info.memberName.toLowerCase()) throw new Error('Command memberName must be lowercase.');
-		if(typeof info.description !== 'string') throw new TypeError('Command description must be a string.');
-		if('format' in info && typeof info.format !== 'string') throw new TypeError('Command format must be a string.');
-		if('details' in info && typeof info.details !== 'string') throw new TypeError('Command details must be a string.');
-		if(info.examples && (!Array.isArray(info.examples) || info.examples.some(ex => typeof ex !== 'string'))) {
-			throw new TypeError('Command examples must be an Array of strings.');
-		}
-		if(info.throttling) {
-			if(typeof info.throttling !== 'object') throw new TypeError('Command throttling must be an Object.');
-			if(typeof info.throttling.usages !== 'number' || isNaN(info.throttling.usages)) {
-				throw new TypeError('Command throttling usages must be a number.');
-			}
-			if(info.throttling.usages < 1) throw new RangeError('Command throttling usages must be at least 1.');
-			if(typeof info.throttling.duration !== 'number' || isNaN(info.throttling.duration)) {
-				throw new TypeError('Command throttling duration must be a number.');
-			}
-			if(info.throttling.duration < 1) throw new RangeError('Command throttling duration must be at least 1.');
-		}
-		if(info.args && !Array.isArray(info.args)) throw new TypeError('Command args must be an Array.');
-		if('argsPromptLimit' in info && typeof info.argsPromptLimit !== 'number') {
-			throw new TypeError('Command argsPromptLimit must be a number.');
-		}
-		if('argsPromptLimit' in info && info.argsPromptLimit < 0) {
-			throw new RangeError('Command argsPromptLimit must be at least 0.');
-		}
-		if(info.argsType && !['single', 'multiple'].includes(info.argsType)) {
-			throw new RangeError('Command argsType must be one of "single" or "multiple".');
-		}
-		if(info.argsType === 'multiple' && info.argsCount && info.argsCount < 2) {
-			throw new RangeError('Command argsCount must be at least 2.');
-		}
-		if(info.patterns && (!Array.isArray(info.patterns) || info.patterns.some(pat => !(pat instanceof RegExp)))) {
-			throw new TypeError('Command patterns must be an Array of regular expressions.');
-		}
+	constructor(client, info) {
+		this.constructor.validateInfo(client, info);
 
 		/**
 		 * Client that this command is for
@@ -181,38 +135,17 @@ class Command {
 		this.throttling = info.throttling || null;
 
 		/**
-		 * The arguments for the command
-		 * @type {?CommandArgument[]}
+		 * The argument collector for the command
+		 * @type {?ArgumentCollector}
 		 */
-		this.args = info.args || null;
-		if(this.args) {
-			let hasInfinite = false;
-			let hasOptional = false;
-			for(let i = 0; i < this.args.length; i++) {
-				if(hasInfinite) throw new Error('No other argument may come after an infinite argument.');
-				if(this.args[i].default !== null) {
-					hasOptional = true;
-				} else if(hasOptional) {
-					throw new Error('Required arguments may not come after optional arguments.');
-				}
-				this.args[i] = new CommandArgument(this, this.args[i]);
-				if(this.args[i].infinite) hasInfinite = true;
-			}
-
-			if(typeof info.format === 'undefined') {
-				this.format = this.args.reduce((prev, arg) => {
-					const wrapL = arg.default !== null ? '[' : '<';
-					const wrapR = arg.default !== null ? ']' : '>';
-					return `${prev}${prev ? ' ' : ''}${wrapL}${arg.label}${arg.infinite ? '...' : ''}${wrapR}`;
-				}, '');
-			}
+		this.argsCollector = info.args ? new ArgumentCollector(client, info.args, info.argsPromptLimit) : null;
+		if(this.argsCollector && typeof info.format === 'undefined') {
+			this.format = this.argsCollector.args.reduce((prev, arg) => {
+				const wrapL = arg.default !== null ? '[' : '<';
+				const wrapR = arg.default !== null ? ']' : '>';
+				return `${prev}${prev ? ' ' : ''}${wrapL}${arg.label}${arg.infinite ? '...' : ''}${wrapR}`;
+			}, '');
 		}
-
-		/**
-		 * Maximum number of times to prompt for a single argument
-		 * @type {number}
-		 */
-		this.argsPromptLimit = 'argsPromptLimit' in info ? info.argsPromptLimit : Infinity;
 
 		/**
 		 * How the arguments are split when passed to the command's run method
@@ -419,6 +352,62 @@ class Command {
 		if(user) mentionPart = `\`@${user.username.replace(/ /g, '\xa0')}#${user.discriminator}\xa0${nbcmd}\``;
 
 		return `${prefixPart || ''}${prefix && user ? ' or ' : ''}${mentionPart || ''}`;
+	}
+
+	/**
+	 * Validates the constructor parameters
+	 * @param {CommandoClient} client - Client to validate
+	 * @param {CommandInfo} info - Info to validate
+	 * @private
+	 */
+	static validateInfo(client, info) { // eslint-disable-line complexity
+		if(!client) throw new Error('A client must be specified.');
+		if(typeof info !== 'object') throw new TypeError('Command info must be an Object.');
+		if(typeof info.name !== 'string') throw new TypeError('Command name must be a string.');
+		if(info.name !== info.name.toLowerCase()) throw new Error('Command name must be lowercase.');
+		if(info.aliases && (!Array.isArray(info.aliases) || info.aliases.some(ali => typeof ali !== 'string'))) {
+			throw new TypeError('Command aliases must be an Array of strings.');
+		}
+		if(info.aliases && info.aliases.some(ali => ali !== ali.toLowerCase())) {
+			throw new Error('Command aliases must be lowercase.');
+		}
+		if(typeof info.group !== 'string') throw new TypeError('Command group must be a string.');
+		if(info.group !== info.group.toLowerCase()) throw new Error('Command group must be lowercase.');
+		if(typeof info.memberName !== 'string') throw new TypeError('Command memberName must be a string.');
+		if(info.memberName !== info.memberName.toLowerCase()) throw new Error('Command memberName must be lowercase.');
+		if(typeof info.description !== 'string') throw new TypeError('Command description must be a string.');
+		if('format' in info && typeof info.format !== 'string') throw new TypeError('Command format must be a string.');
+		if('details' in info && typeof info.details !== 'string') throw new TypeError('Command details must be a string.');
+		if(info.examples && (!Array.isArray(info.examples) || info.examples.some(ex => typeof ex !== 'string'))) {
+			throw new TypeError('Command examples must be an Array of strings.');
+		}
+		if(info.throttling) {
+			if(typeof info.throttling !== 'object') throw new TypeError('Command throttling must be an Object.');
+			if(typeof info.throttling.usages !== 'number' || isNaN(info.throttling.usages)) {
+				throw new TypeError('Command throttling usages must be a number.');
+			}
+			if(info.throttling.usages < 1) throw new RangeError('Command throttling usages must be at least 1.');
+			if(typeof info.throttling.duration !== 'number' || isNaN(info.throttling.duration)) {
+				throw new TypeError('Command throttling duration must be a number.');
+			}
+			if(info.throttling.duration < 1) throw new RangeError('Command throttling duration must be at least 1.');
+		}
+		if(info.args && !Array.isArray(info.args)) throw new TypeError('Command args must be an Array.');
+		if('argsPromptLimit' in info && typeof info.argsPromptLimit !== 'number') {
+			throw new TypeError('Command argsPromptLimit must be a number.');
+		}
+		if('argsPromptLimit' in info && info.argsPromptLimit < 0) {
+			throw new RangeError('Command argsPromptLimit must be at least 0.');
+		}
+		if(info.argsType && !['single', 'multiple'].includes(info.argsType)) {
+			throw new RangeError('Command argsType must be one of "single" or "multiple".');
+		}
+		if(info.argsType === 'multiple' && info.argsCount && info.argsCount < 2) {
+			throw new RangeError('Command argsCount must be at least 2.');
+		}
+		if(info.patterns && (!Array.isArray(info.patterns) || info.patterns.some(pat => !(pat instanceof RegExp)))) {
+			throw new TypeError('Command patterns must be an Array of regular expressions.');
+		}
 	}
 }
 

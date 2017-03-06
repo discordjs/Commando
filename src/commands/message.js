@@ -56,13 +56,6 @@ class CommandMessage {
 		 * @type {?Object}
 		 */
 		this.responsePositions = null;
-
-		/**
-		 * Number of times the user has been prompted while the arguments are being obtained
-		 * @type {number}
-		 * @private
-		 */
-		this.promptCount = 0;
 	}
 
 	/**
@@ -105,34 +98,14 @@ class CommandMessage {
 	parseArgs() {
 		switch(this.command.argsType) {
 			case 'single':
-				return this.argString.trim().replace(this.argsSingleQuotes ? /^("|')([^]*)\1$/g : /^(")([^]*)"$/g, '$2');
+				return this.argString.trim().replace(
+					this.command.argsSingleQuotes ? /^("|')([^]*)\1$/g : /^(")([^]*)"$/g, '$2'
+				);
 			case 'multiple':
-				return this.constructor.parseArgs(this.argString, this.argsCount, this.argsSingleQuotes);
+				return this.constructor.parseArgs(this.argString, this.argsCount, this.command.argsSingleQuotes);
 			default:
 				throw new RangeError(`Unknown argsType "${this.argsType}".`);
 		}
-	}
-
-	/**
-	 * Obtains the values for the command's arguments
-	 * @return {Array<*>|symbol}
-	 */
-	async obtainArgs() {
-		this.client.dispatcher._awaiting.add(this.message.author.id + this.message.channel.id);
-		const args = this.command.args;
-		const count = args[args.length - 1].infinite ? Infinity : args.length;
-		const provided = this.constructor.parseArgs(this.argString.trim(), count, this.argsSingleQuotes);
-		const values = {};
-		for(let i = 0; i < args.length; i++) {
-			const value = await args[i].obtain(this, args[i].infinite ? provided.slice(i) : provided[i]);
-			if(value === null || typeof value === 'symbol') {
-				this.client.dispatcher._awaiting.delete(this.message.author.id + this.message.channel.id);
-				return this.promptCount > 0 ? value : this.constructor.FORMAT_CANCEL;
-			}
-			values[args[i].key] = value;
-		}
-		this.client.dispatcher._awaiting.delete(this.message.author.id + this.message.channel.id);
-		return values;
 	}
 
 	/**
@@ -175,14 +148,20 @@ class CommandMessage {
 
 		// Figure out the command arguments
 		let args = this.patternMatches;
-		if(!args && this.command.args) {
-			args = await this.obtainArgs();
-			if(!args) return await this.reply('Cancelled command.');
-			if(args === this.constructor.SILENT_CANCEL) return null;
-			if(args === this.constructor.FORMAT_CANCEL) {
-				const err = new CommandFormatError(this);
-				return await this.reply(err.message);
+		if(!args && this.command.argsCollector) {
+			const collArgs = this.command.argsCollector.args;
+			const count = collArgs[collArgs.length - 1].infinite ? Infinity : collArgs.length;
+			const provided = this.constructor.parseArgs(this.argString.trim(), count, this.command.argsSingleQuotes);
+
+			const result = await this.command.argsCollector.obtain(this, provided);
+			if(result.cancelled) {
+				if(result.prompts.length === 0) {
+					const err = new CommandFormatError(this);
+					return await this.reply(err.message);
+				}
+				return await this.reply('Cancelled command.');
 			}
+			args = result.values;
 		}
 		if(!args) args = this.parseArgs();
 		const fromPattern = Boolean(this.patternMatches);
@@ -416,7 +395,6 @@ class CommandMessage {
 		if(this.responses) this.deleteRemainingResponses();
 		this.responses = {};
 		this.responsePositions = {};
-		this.promptCount = 0;
 
 		if(responses instanceof Array) {
 			for(const response of responses) {
@@ -797,18 +775,6 @@ class CommandMessage {
 		return this.message.fetchWebhook();
 	}
 }
-
-/**
- * Silently cancels a running command
- * @type {symbol}
- */
-CommandMessage.SILENT_CANCEL = Symbol('silent command cancel');
-
-/**
- * Cancels a running command with a format error
- * @type {symbol}
- */
-CommandMessage.FORMAT_CANCEL = Symbol('format command cancel');
 
 function channelIDOrDM(channel) {
 	if(channel.type !== 'dm') return channel.id;
