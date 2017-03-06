@@ -24,14 +24,14 @@ declare module 'discord.js-commando' {
 		private obtainInfinite(msg: CommandMessage, values?: string[], promptLimit?: number): Promise<ArgumentResult>;
 		public parse(value: string, msg: CommandMessage): any | Promise<any>;
 		public validate(value: string, msg: CommandMessage): boolean | string | Promise<boolean | string>;
-		private validateInfo(client: CommandoClient, info: ArgumentInfo);
+		private static validateInfo(client: CommandoClient, info: ArgumentInfo);
 	}
 
 	export class ArgumentCollector {
 		public constructor(client: CommandoClient, args: ArgumentInfo[], promptLimit?: number);
 
 		public args: Argument[];
-		public client: CommandoClient;
+		public readonly client: CommandoClient;
 		public promptLimit: number;
 
 		public obtain(msg: CommandMessage, provided?: any[], promptLimit?: number): Promise<ArgumentCollectorResult>;
