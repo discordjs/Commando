@@ -409,7 +409,7 @@ declare module 'discord.js-commando' {
 		commandPrefix?: string;
 		commandEditableDuration?: number;
 		nonCommandEditable?: boolean;
-		uknownCommandResponse?: boolean;
+		unknownCommandResponse?: boolean;
 		owner?: string | string[] | Set<string>;
 		invite?: string;
 	} & ClientOptions;
