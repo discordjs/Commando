@@ -108,6 +108,8 @@ class CommandMessage {
 		}
 	}
 
+
+
 	/**
 	 * Runs the command
 	 * @return {Promise<?Message|?Array<Message>>}
@@ -137,12 +139,25 @@ class CommandMessage {
 		}
 
 		// Throttle the command
+		function secondsToHms(sec) {
+    sec = Number(sec);
+    var hours = Math.floor(sec / 3600),
+        minutes = Math.floor(sec % 3600 / 60),
+        seconds = Math.floor(sec % 3600 % 60);
+
+    var hr = hours > 0 ? hours + (hours == 1 ? " hour, " : " hours, ") : "";
+    var min = minutes > 0 ? minutes + (minutes == 1 ? " minute, " : " minutes, ") : "";
+    var secs = seconds > 0 ? seconds + (seconds == 1 ? " second" : " seconds") : "";
+    return hr + min + secs; 
+}
+
 		const throttle = this.command.throttle(this.message.author.id);
 		if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
-			const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
+			const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000,
+			      remainingTime = secondsToHms(remaining.toFixed(1))
 			this.client.emit('commandBlocked', this, 'throttling');
 			return await this.reply(
-				`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
+				`You may not use the \`${this.command.name}\` command again for ${remainingTime}.`
 			);
 		}
 
