@@ -13,6 +13,8 @@
 		"no-extra-parens": ["warn", "all", {
 			"nestedBinaryExpressions": false
 		}],
+		"no-template-curly-in-string": "error",
+		"no-unsafe-negation": "error",
 		"valid-jsdoc": ["warn", {
 			"requireReturn": false,
 			"requireReturnDescription": false,
