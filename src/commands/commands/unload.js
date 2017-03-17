@@ -40,7 +40,7 @@ module.exports = class UnloadCommandCommand extends Command {
 
 	async run(msg, args) {
 		args.command.unload();
-		msg.reply(`Unloaded \`${args.command.name}\` command.`);
+		await msg.reply(`Unloaded \`${args.command.name}\` command.`);
 		return null;
 	}
 };

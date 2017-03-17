@@ -49,7 +49,7 @@ module.exports = class LoadCommandCommand extends Command {
 
 	async run(msg, args) {
 		this.client.registry.registerCommand(args.command);
-		msg.reply(`Loaded \`${this.client.registry.commands.last().name}\` command.`);
+		await msg.reply(`Loaded \`${this.client.registry.commands.last().name}\` command.`);
 		return null;
 	}
 };

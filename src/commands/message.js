@@ -129,11 +129,11 @@ class CommandMessage {
 			 * (built-in reasons are `guildOnly`, `permission`, and `throttling`)
 			 */
 			this.client.emit('commandBlocked', this, 'guildOnly');
-			return await this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
+			return this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
 		}
 		if(!this.command.hasPermission(this)) {
 			this.client.emit('commandBlocked', this, 'permission');
-			return await this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
+			return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
 		}
 
 		// Throttle the command
@@ -141,7 +141,7 @@ class CommandMessage {
 		if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
 			const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
 			this.client.emit('commandBlocked', this, 'throttling');
-			return await this.reply(
+			return this.reply(
 				`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
 			);
 		}
@@ -157,9 +157,9 @@ class CommandMessage {
 			if(result.cancelled) {
 				if(result.prompts.length === 0) {
 					const err = new CommandFormatError(this);
-					return await this.reply(err.message);
+					return this.reply(err.message);
 				}
-				return await this.reply('Cancelled command.');
+				return this.reply('Cancelled command.');
 			}
 			args = result.values;
 		}
@@ -204,7 +204,7 @@ class CommandMessage {
 			this.client.emit('commandError', this.command, err, this, args, fromPattern);
 			if(this.message.channel.typingCount > typingCount) this.message.channel.stopTyping();
 			if(err instanceof FriendlyError) {
-				return await this.reply(err.message);
+				return this.reply(err.message);
 			} else {
 				const owners = this.client.owners;
 				let ownerList = owners.map((usr, i) => {
@@ -213,7 +213,7 @@ class CommandMessage {
 				}).join(owners.length > 2 ? ', ' : ' ');
 
 				const invite = this.client.options.invite;
-				return await this.reply(stripIndents`
+				return this.reply(stripIndents`
 					An error occurred while running the command: \`${err.name}: ${err.message}\`
 					You shouldn't ever receive an error like this.
 					Please contact ${ownerList}${invite ? ` in this server: ${invite}` : '.'}
@@ -443,11 +443,11 @@ class CommandMessage {
 		const re = allowSingleQuote ? /\s*(?:("|')([^]*?)\1|(\S+))\s*/g : /\s*(?:(")([^]*?)"|(\S+))\s*/g;
 		const result = [];
 		let match = [];
-		// default: large enough to get all items
+		// Large enough to get all items
 		argCount = argCount || argString.length;
-		// get match and push the capture group that is not null to the result
+		// Get match and push the capture group that is not null to the result
 		while(--argCount && (match = re.exec(argString))) result.push(match[2] || match[3]);
-		// if text remains, push it to the array as it is, except for wrapping quotes, which are removed from it
+		// If text remains, push it to the array as-is (except for wrapping quotes, which are removed)
 		if(match && re.lastIndex < argString.length) {
 			const re2 = allowSingleQuote ? /^("|')([^]*)\1$/g : /^(")([^]*)"$/g;
 			result.push(argString.substr(re.lastIndex).replace(re2, '$2'));

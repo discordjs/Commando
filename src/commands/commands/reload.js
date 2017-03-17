@@ -48,9 +48,9 @@ module.exports = class ReloadCommandCommand extends Command {
 	async run(msg, args) {
 		args.cmdOrGrp.reload();
 		if(args.cmdOrGrp.group) {
-			msg.reply(`Reloaded \`${args.cmdOrGrp.name}\` command.`);
+			await msg.reply(`Reloaded \`${args.cmdOrGrp.name}\` command.`);
 		} else {
-			msg.reply(`Reloaded all of the commands in the \`${args.cmdOrGrp.name}\` group.`);
+			await msg.reply(`Reloaded all of the commands in the \`${args.cmdOrGrp.name}\` group.`);
 		}
 		return null;
 	}

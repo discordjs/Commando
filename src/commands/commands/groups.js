@@ -19,7 +19,7 @@ module.exports = class ListGroupsCommand extends Command {
 		return msg.member.hasPermission('ADMINISTRATOR');
 	}
 
-	async run(msg) {
+	run(msg) {
 		return msg.reply(stripIndents`
 			__**Groups**__
 			${this.client.registry.groups.map(grp =>

@@ -45,7 +45,7 @@ module.exports = class DisableCommandCommand extends Command {
 		return msg.member.hasPermission('ADMINISTRATOR');
 	}
 
-	async run(msg, args) {
+	run(msg, args) {
 		if(!args.cmdOrGrp.isEnabledIn(msg.guild)) {
 			return msg.reply(
 				`The \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'} is already disabled.`

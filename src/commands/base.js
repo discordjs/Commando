@@ -22,9 +22,11 @@ class Command {
 	 * @property {string} [details] - A detailed description of the command and its functionality
 	 * @property {string[]} [examples] - Usage examples of the command
 	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
+	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
+	 * @property {PermissionResolvable[]} [clientPermissions] - Permissions the bot needs for the command to function.
+	 * @property {PermissionResolvable[]} [userPermissions] - Permissions that a user must have to use the command.
 	 * @property {boolean} [defaultHandling=true] - Whether or not the default command handling should be used.
 	 * If false, then only patterns will trigger the command.
-	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
 	 * @property {ArgumentInfo[]} [args] - Arguments for the command.
 	 * @property {number} [argsPromptLimit=Infinity] - Maximum number of times to prompt a user for a single argument.
 	 * Only applicable if `args` is specified.
@@ -214,7 +216,7 @@ class Command {
 	 * @return {Promise<?Message|?Array<Message>>}
 	 * @abstract
 	 */
-	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars
+	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars, require-await
 		throw new Error(`${this.constructor.name} doesn't have a run() method.`);
 	}
 

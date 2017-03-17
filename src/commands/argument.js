@@ -135,6 +135,7 @@ class Argument {
 		let valid = value ? await this.validate(value, msg) : false;
 
 		while(!valid || typeof valid === 'string') {
+			/* eslint-disable no-await-in-loop */
 			if(prompts.length >= promptLimit) {
 				return {
 					value: null,
@@ -183,6 +184,7 @@ class Argument {
 			}
 
 			valid = await this.validate(value, msg);
+			/* eslint-enable no-await-in-loop */
 		}
 
 		return {
@@ -209,6 +211,7 @@ class Argument {
 		let currentVal = 0;
 
 		while(true) { // eslint-disable-line no-constant-condition
+			/* eslint-disable no-await-in-loop */
 			let value = values && values[currentVal] ? values[currentVal] : null;
 			let valid = value ? await this.validate(value) : false;
 			let attempts = 0;
@@ -302,6 +305,7 @@ class Argument {
 					};
 				}
 			}
+			/* eslint-enable no-await-in-loop */
 		}
 	}
 
