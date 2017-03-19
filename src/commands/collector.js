@@ -80,7 +80,7 @@ class ArgumentCollector {
 						values: null,
 						cancelled: result.cancelled,
 						prompts: [].concat(...results.map(res => res.prompts)),
-						responses: [].concat(...results.map(res => res.responses))
+						answers: [].concat(...results.map(res => res.answers))
 					};
 				}
 
@@ -97,7 +97,7 @@ class ArgumentCollector {
 			values,
 			cancelled: null,
 			prompts: [].concat(...results.map(res => res.prompts)),
-			responses: [].concat(...results.map(res => res.responses))
+			answers: [].concat(...results.map(res => res.answers))
 		};
 	}
 }
