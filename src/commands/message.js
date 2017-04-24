@@ -358,7 +358,7 @@ class CommandMessage {
 	 */
 	code(lang, content, options) {
 		if(typeof options !== 'object') options = {};
-		options.lang = lang;
+		options.code = lang;
 		return this.respond({ type: 'code', content, options });
 	}
 
