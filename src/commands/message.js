@@ -245,17 +245,20 @@ class CommandMessage {
 
 		switch(type) {
 			case 'plain':
-				if(!shouldEdit) return this.message.channel.sendMessage(content, options);
+				if(!shouldEdit) return this.message.channel.send(content, options);
 				return this.editCurrentResponse(channelIDOrDM(this.message.channel), { type, content, options });
 			case 'reply':
 				if(!shouldEdit) return this.message.reply(content, options);
 				if(options && options.split && !options.split.prepend) options.split.prepend = `${this.message.author}, `;
 				return this.editCurrentResponse(channelIDOrDM(this.message.channel), { type, content, options });
 			case 'direct':
-				if(!shouldEdit) return this.message.author.sendMessage(content, options);
+				if(!shouldEdit) return this.message.author.send(content, options);
 				return this.editCurrentResponse('dm', { type, content, options });
 			case 'code':
-				if(!shouldEdit) return this.message.channel.sendCode(lang, content, options);
+				if(!shouldEdit) {
+					options.lang = lang;
+					return this.message.channel.send(content, options);
+				}
 				if(options && options.split) {
 					if(!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
 					if(!options.split.append) options.split.append = '\n```';
@@ -286,12 +289,12 @@ class CommandMessage {
 			if(response instanceof Array) {
 				for(let i = 0; i < content.length; i++) {
 					if(response.length > i) promises.push(response[i].edit(`${prepend}${content[i]}`, options));
-					else promises.push(response[0].channel.sendMessage(`${prepend}${content[i]}`));
+					else promises.push(response[0].channel.send(`${prepend}${content[i]}`));
 				}
 			} else {
 				promises.push(response.edit(`${prepend}${content[0]}`, options));
 				for(let i = 1; i < content.length; i++) {
-					promises.push(response.channel.sendMessage(`${prepend}${content[i]}`));
+					promises.push(response.channel.send(`${prepend}${content[i]}`));
 				}
 			}
 			return Promise.all(promises);
