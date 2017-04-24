@@ -255,10 +255,7 @@ class CommandMessage {
 				if(!shouldEdit) return this.message.author.send(content, options);
 				return this.editCurrentResponse('dm', { type, content, options });
 			case 'code':
-				if(!shouldEdit) {
-					options.lang = lang;
-					return this.message.channel.send(content, options);
-				}
+				if(!shouldEdit) return this.message.channel.send(content, options);
 				if(options && options.split) {
 					if(!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
 					if(!options.split.append) options.split.append = '\n```';
@@ -360,7 +357,9 @@ class CommandMessage {
 	 * @return {Promise<Message|Message[]>}
 	 */
 	code(lang, content, options) {
-		return this.respond({ type: 'code', content, options, lang });
+		if(typeof options !== 'object') options = {};
+		options.lang = lang;
+		return this.respond({ type: 'code', content, options });
 	}
 
 	/**
