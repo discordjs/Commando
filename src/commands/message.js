@@ -236,7 +236,7 @@ class CommandMessage {
 
 		if(type === 'reply' && this.message.channel.type === 'dm') type = 'plain';
 		if(type !== 'direct') {
-			if(this.message.guild && !this.message.channel.permissionsFor(this.client.user).hasPermission('SEND_MESSAGES')) {
+			if(this.message.guild && !this.message.channel.permissionsFor(this.client.user).has('SEND_MESSAGES')) {
 				type = 'direct';
 			}
 		}
