@@ -346,6 +346,10 @@ class CommandMessage {
 	 * @return {Promise<Message|Message[]>}
 	 */
 	direct(content, options) {
+		if (!options && typeof content === 'object' && !(content instanceof Array)) {
+			options = content;
+			content = '';
+		}
 		return this.respond({ type: 'direct', content, options });
 	}
 
