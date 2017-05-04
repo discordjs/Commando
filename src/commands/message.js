@@ -131,9 +131,13 @@ class CommandMessage {
 			this.client.emit('commandBlocked', this, 'guildOnly');
 			return this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
 		}
-		if(!this.command.hasPermission(this)) {
+
+		// Check if the command doesn't have permission to be run
+		let hasPermission = this.command.hasPermission(this) || false;
+		if(!hasPermission || typeof hasPermission === 'string') {
 			this.client.emit('commandBlocked', this, 'permission');
-			return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
+			if(!hasPermission) hasPermission = `You do not have permission to use the \`${this.command.name}\` command.`;
+			return this.reply(hasPermission);
 		}
 
 		// Throttle the command
