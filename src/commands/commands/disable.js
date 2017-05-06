@@ -40,7 +40,7 @@ module.exports = class DisableCommandCommand extends Command {
 		});
 	}
 
-	hasPermission(msg) {
+	has(msg) {
 		if(!msg.guild) return this.client.isOwner(msg.author);
 		return msg.member.hasPermission('ADMINISTRATOR');
 	}
