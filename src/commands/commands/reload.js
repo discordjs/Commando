@@ -41,7 +41,7 @@ module.exports = class ReloadCommandCommand extends Command {
 		});
 	}
 
-	hasPermission(msg) {
+	has(msg) {
 		return this.client.isOwner(msg.author);
 	}
 
