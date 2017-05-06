@@ -68,7 +68,7 @@ declare module 'discord.js-commando' {
 		public patterns: RegExp[];
 		public throttling: ThrottlingOptions;
 
-		public hasPermission(message: CommandMessage): boolean;
+		public has(message: CommandMessage): boolean;
 		public isEnabledIn(guild: GuildResolvable): boolean;
 		public isUsable(message: Message): boolean;
 		public reload(): void;
