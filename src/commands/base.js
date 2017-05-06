@@ -199,7 +199,7 @@ class Command {
 	 * @param {CommandMessage} message - The triggering command message
 	 * @return {boolean}
 	 */
-	hasPermission(message) { // eslint-disable-line no-unused-vars
+	has(message) { // eslint-disable-line no-unused-vars
 		return true;
 	}
 
@@ -282,7 +282,7 @@ class Command {
 	isUsable(message = null) {
 		if(!message) return this._defaultEnabled;
 		if(this.guildOnly && message && !message.guild) return false;
-		return this.isEnabledIn(message.guild) && this.hasPermission(message);
+		return this.isEnabledIn(message.guild) && this.has(message);
 	}
 
 	/**
