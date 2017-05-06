@@ -28,7 +28,7 @@ module.exports = class EvalCommand extends Command {
 		this.lastResult = null;
 	}
 
-	hasPermission(msg) {
+	has(msg) {
 		return this.client.isOwner(msg.author);
 	}
 
