@@ -29,16 +29,8 @@ Additionally, it makes full use of ES2017's `async`/`await` functionality for cl
 - Command throttling/cooldowns
 
 ## Installation
-**Node 7.0.0 or newer is required.**  
+**Node 7.6.0 or newer is required.**  
 `npm install discord.js-commando --save`
-
-When running a bot using Commando, make sure to run Node with the `--harmony` flag. Examples:
-- `node --harmony somebot.js`
-- `pm2 start somebot.js --node-args '--harmony'`
-
-No version of Node older than 7.0.0 supports `async`/`await`, although you can compile it down to ES6 or ES5 with the
-[fast-async](https://www.npmjs.com/package/fast-async) Babel plugin. You must do this for your code and the framework's manually if you wish
-to use Commando on older Node versions.
 
 ## Documentation
 [View the docs here.](https://discord.js.org/#/docs/commando)  
