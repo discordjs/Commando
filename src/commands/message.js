@@ -326,6 +326,10 @@ class CommandMessage {
 	 * @return {Promise<Message|Message[]>}
 	 */
 	say(content, options) {
+		if(!options && typeof content === 'object' && !(content instanceof Array)) {
+			options = content;
+			content = '';
+		}
 		return this.respond({ type: 'plain', content, options });
 	}
 
@@ -336,6 +340,10 @@ class CommandMessage {
 	 * @return {Promise<Message|Message[]>}
 	 */
 	reply(content, options) {
+		if(!options && typeof content === 'object' && !(content instanceof Array)) {
+			options = content;
+			content = '';
+		}
 		return this.respond({ type: 'reply', content, options });
 	}
 
@@ -346,6 +354,10 @@ class CommandMessage {
 	 * @return {Promise<Message|Message[]>}
 	 */
 	direct(content, options) {
+		if(!options && typeof content === 'object' && !(content instanceof Array)) {
+			options = content;
+			content = '';
+		}
 		return this.respond({ type: 'direct', content, options });
 	}
 
@@ -357,6 +369,10 @@ class CommandMessage {
 	 * @return {Promise<Message|Message[]>}
 	 */
 	code(lang, content, options) {
+		if(!options && typeof content === 'object' && !(content instanceof Array)) {
+			options = content;
+			content = '';
+		}
 		if(typeof options !== 'object') options = {};
 		options.code = lang;
 		return this.respond({ type: 'code', content, options });
