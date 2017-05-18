@@ -729,12 +729,13 @@ class CommandMessage {
 	/**
 	 * Shortcut to `this.message.edit(content)`
 	 * @param {StringResolvable} content - New content for the message
+	 * @param {MessageEditOptions} options - The options to provide
 	 * @returns {Promise<Message>}
 	 * @see {@link Message#edit}
 	 * @readonly
 	 */
-	edit(content) {
-		return this.message.edit(content);
+	edit(content, options) {
+		return this.message.edit(content, options);
 	}
 
 	/**
