@@ -43,7 +43,7 @@ module.exports = class LoadCommandCommand extends Command {
 		});
 	}
 
-	hasPermission(msg) {
+	has(msg) {
 		return this.client.isOwner(msg.author);
 	}
 

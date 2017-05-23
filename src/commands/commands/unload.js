@@ -34,7 +34,7 @@ module.exports = class UnloadCommandCommand extends Command {
 		});
 	}
 
-	hasPermission(msg) {
+	has(msg) {
 		return this.client.isOwner(msg.author);
 	}
 

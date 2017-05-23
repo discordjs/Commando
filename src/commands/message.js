@@ -131,7 +131,7 @@ class CommandMessage {
 			this.client.emit('commandBlocked', this, 'guildOnly');
 			return this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
 		}
-		if(!this.command.hasPermission(this)) {
+		if(!this.command.has(this)) {
 			this.client.emit('commandBlocked', this, 'permission');
 			return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
 		}

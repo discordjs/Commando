@@ -23,7 +23,7 @@ class TestCommand extends Command {
 		});
 	}
 
-	public hasPermission(message: CommandMessage): boolean {
+	public has(message: CommandMessage): boolean {
 		return true;
 	}
 
