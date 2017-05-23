@@ -241,7 +241,7 @@ class CommandMessage {
 			}
 		}
 
-		content = this.client.resolver.resolveString(content);
+		content = discord.Util.resolveString(content);
 
 		switch(type) {
 			case 'plain':
