@@ -342,7 +342,9 @@ class Argument {
 		if(typeof info !== 'object') throw new TypeError('Argument info must be an Object.');
 		if(typeof info.key !== 'string') throw new TypeError('Argument key must be a string.');
 		if(info.label && typeof info.label !== 'string') throw new TypeError('Argument label must be a string.');
-		if(typeof info.prompt !== 'string') throw new TypeError('Argument prompt must be a string.');
+		if(typeof info.prompt !== 'string' && typeof info.default === 'undefined') {
+			throw new TypeError('Argument prompt must be a string.');
+		}
 		if(!info.type && !info.validate) {
 			throw new Error('Argument must have either "type" or "validate" specified.');
 		}
