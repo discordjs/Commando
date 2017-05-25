@@ -123,7 +123,7 @@ class Command {
 		 * @type {boolean}
 		 */
 		this.guildOnly = !!info.guildOnly;
-		
+
 		/**
 		 * Whether the command can only be run by an owner
 		 * @type {boolean}
