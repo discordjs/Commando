@@ -133,7 +133,7 @@ class CommandMessage {
 		}
 		if(this.command.ownerOnly && !this.client.isOwner(this.message.author)) {
 			this.client.emit('commandBlocked', this, 'ownerOnly');
-			return this.reply(`The \`${this.command.name}\` can only be used by the bot owner(s).`);
+			return this.reply(`The \`${this.command.name}\` command can only be used by the bot owner(s).`);
 		}
 		if(!this.command.hasPermission(this)) {
 			this.client.emit('commandBlocked', this, 'permission');
