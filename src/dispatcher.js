@@ -268,7 +268,7 @@ class CommandDispatcher {
 		if(prefix) {
 			const escapedPrefix = escapeRegex(prefix);
 			pattern = new RegExp(
-				`^(${escapedPrefix}\\s*|<@!?${this.client.user.id}>\\s+(?:${escapedPrefix})?)([^\\s]+)`, 'i'
+				`^(${escapedPrefix}\\s*|<@!?${this.client.user.id}>\\s+(?:${escapedPrefix})?)([^${escapedPrefix}\\s]+)`, 'i'
 			);
 		} else {
 			pattern = new RegExp(`(^<@!?${this.client.user.id}>\\s+)([^\\s]+)`, 'i');
