@@ -136,9 +136,8 @@ class CommandMessage {
 		const hasPermission = this.command.hasPermission(this);
 		if(!hasPermission || typeof hasPermission === 'string') {
 			this.client.emit('commandBlocked', this, 'permission');
-			return this.reply(
-				typeof hasPermission === 'string' ? hasPermission : `You do not have permission to use the \`${this.command.name}\` command.`
-			);
+			if(typeof hasPermission === 'string') return this.reply(hasPermission);
+			else return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
 		}
 
 		// Throttle the command
