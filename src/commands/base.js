@@ -282,9 +282,8 @@ class Command {
 	isUsable(message = null) {
 		if(!message) return this._defaultEnabled;
 		if(this.guildOnly && message && !message.guild) return false;
-		let hasPermission = this.hasPermission(message);
-		if(typeof hasPermission === 'string') hasPermission = false;
-		return this.isEnabledIn(message.guild) && hasPermission;
+		const hasPermission = this.hasPermission(message);
+		return this.isEnabledIn(message.guild) && hasPermission && typeof hasPermission !== 'string';
 	}
 
 	/**
