@@ -119,7 +119,7 @@ class CommandMessage {
 			this.message.member = await this.message.guild.fetchMember(this.message.author);
 		}
 
-		// Make sure the command is usable
+		// Make sure the command is usable in this context
 		if(this.command.guildOnly && !this.message.guild) {
 			/**
 			 * Emitted when a command is prevented from running
@@ -132,7 +132,7 @@ class CommandMessage {
 			return this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
 		}
 
-		// Check if the command doesn't have permission to be run
+		// Ensure the user has permission to use the command
 		const hasPermission = this.command.hasPermission(this);
 		if(!hasPermission || typeof hasPermission === 'string') {
 			this.client.emit('commandBlocked', this, 'permission');
