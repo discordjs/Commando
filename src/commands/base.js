@@ -23,8 +23,6 @@ class Command {
 	 * @property {string[]} [examples] - Usage examples of the command
 	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
 	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
-	 * @property {PermissionResolvable[]} [clientPermissions] - Permissions the bot needs for the command to function.
-	 * @property {PermissionResolvable[]} [userPermissions] - Permissions that a user must have to use the command.
 	 * @property {boolean} [defaultHandling=true] - Whether or not the default command handling should be used.
 	 * If false, then only patterns will trigger the command.
 	 * @property {ArgumentInfo[]} [args] - Arguments for the command.
