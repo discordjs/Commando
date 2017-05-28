@@ -4,6 +4,7 @@
 	"description": "The official command framework for Discord.js",
 	"license": "Apache-2.0",
 	"author": "Schuyler Cebulskie <Gawdl3y@gawdl3y.com> (https://gawdl3y.com/)",
+	"types": "./types.d.ts",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Gawdl3y/discord.js-commando.git"
@@ -26,6 +27,7 @@
 	"main": "src/index",
 	"types": "./typings/index.d.ts",
 	"dependencies": {
+		"@types/node": "^6.0.55",
 		"common-tags": "^1.4.0",
 		"escape-string-regexp": "^1.0.0",
 		"require-all": "^2.2.0"
