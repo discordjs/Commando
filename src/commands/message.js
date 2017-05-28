@@ -119,7 +119,7 @@ class CommandMessage {
 			this.message.member = await this.message.guild.fetchMember(this.message.author);
 		}
 
-		// Make sure the command is usable
+		// Make sure the command is usable in this context
 		if(this.command.guildOnly && !this.message.guild) {
 			/**
 			 * Emitted when a command is prevented from running
@@ -131,9 +131,13 @@ class CommandMessage {
 			this.client.emit('commandBlocked', this, 'guildOnly');
 			return this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
 		}
-		if(!this.command.hasPermission(this)) {
+
+		// Ensure the user has permission to use the command
+		const hasPermission = this.command.hasPermission(this);
+		if(!hasPermission || typeof hasPermission === 'string') {
 			this.client.emit('commandBlocked', this, 'permission');
-			return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
+			if(typeof hasPermission === 'string') return this.reply(hasPermission);
+			else return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
 		}
 
 		// Throttle the command

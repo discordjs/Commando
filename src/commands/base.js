@@ -197,7 +197,7 @@ class Command {
 	/**
 	 * Checks a user's permission in a guild
 	 * @param {CommandMessage} message - The triggering command message
-	 * @return {boolean}
+	 * @return {boolean|string} Whether the user has permission, or an error message to respond with if they don't
 	 */
 	hasPermission(message) { // eslint-disable-line no-unused-vars
 		return true;
@@ -282,7 +282,8 @@ class Command {
 	isUsable(message = null) {
 		if(!message) return this._defaultEnabled;
 		if(this.guildOnly && message && !message.guild) return false;
-		return this.isEnabledIn(message.guild) && this.hasPermission(message);
+		const hasPermission = this.hasPermission(message);
+		return this.isEnabledIn(message.guild) && hasPermission && typeof hasPermission !== 'string';
 	}
 
 	/**
