@@ -197,7 +197,7 @@ class Command {
 	/**
 	 * Checks a user's permission in a guild
 	 * @param {CommandMessage} message - The triggering command message
-	 * @return {boolean|string} Either boolean, or a custom string response
+	 * @return {boolean|string} Whether the user has permission, or an error message to respond with if they don't
 	 */
 	hasPermission(message) { // eslint-disable-line no-unused-vars
 		return true;
