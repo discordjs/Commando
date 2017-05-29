@@ -205,7 +205,6 @@ class CommandMessage {
 			 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 			 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
 			 */
-			usr = this.message.author;
 			this.client.emit('commandError', this.command, err, this, args, fromPattern);
 			if(this.message.channel.typingCount > typingCount) this.message.channel.stopTyping();
 			if(err instanceof FriendlyError) {
@@ -214,7 +213,7 @@ class CommandMessage {
 				const owners = this.client.owners;
 				let ownerList = owners.map((usr, i) => {
 					const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
-					return `${or}${discord.escapeMarkdown(usr.username)}#${usr.discriminator}`;
+					return `${or}${discord.escapeMarkdown(this.message.author.username)}#${this.message.author.discriminator}`;
 				}).join(owners.length > 2 ? ', ' : ' ');
 
 				const invite = this.client.options.invite;
