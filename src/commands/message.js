@@ -213,7 +213,7 @@ class CommandMessage {
 				const owners = this.client.owners;
 				let ownerList = owners.map((usr, i) => {
 					const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
-					return `${or}${discord.escapeMarkdown(usr.username)}#${usr.discriminator}`;
+					return `${or}${discord.escapeMarkdown(this.message.author.username)}#${this.message.author.discriminator}`;
 				}).join(owners.length > 2 ? ', ' : ' ');
 
 				const invite = this.client.options.invite;
