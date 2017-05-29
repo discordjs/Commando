@@ -205,6 +205,7 @@ class CommandMessage {
 			 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 			 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
 			 */
+			usr = this.message.author;
 			this.client.emit('commandError', this.command, err, this, args, fromPattern);
 			if(this.message.channel.typingCount > typingCount) this.message.channel.stopTyping();
 			if(err instanceof FriendlyError) {
