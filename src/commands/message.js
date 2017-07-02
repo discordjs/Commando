@@ -211,16 +211,16 @@ class CommandMessage {
 				return this.reply(err.message);
 			} else {
 				const owners = this.client.owners;
-				let ownerList = owners.map((usr, i) => {
+				let ownerList = owners ? owners.map((usr, i) => {
 					const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
 					return `${or}${discord.escapeMarkdown(usr.username)}#${usr.discriminator}`;
-				}).join(owners.length > 2 ? ', ' : ' ');
+				}).join(owners.length > 2 ? ', ' : ' ') : '';
 
 				const invite = this.client.options.invite;
 				return this.reply(stripIndents`
 					An error occurred while running the command: \`${err.name}: ${err.message}\`
 					You shouldn't ever receive an error like this.
-					Please contact ${ownerList}${invite ? ` in this server: ${invite}` : '.'}
+					Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
 				`);
 			}
 		}
