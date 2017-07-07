@@ -178,7 +178,7 @@ class CommandMessage {
 			const promise = this.command.run(this, args, fromPattern).catch(err => {
 				throw err;
 			});
-			
+
 			/**
 			 * Emitted when running a command
 			 * @event CommandoClient#commandRun
