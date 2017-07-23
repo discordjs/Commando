@@ -174,7 +174,7 @@ class CommandMessage {
 		if(throttle) throttle.usages++;
 		const typingCount = this.message.channel.typingCount;
 		try {
-			this.client.emit('debug', `Running command ${this.command.groupID}:${this.command.memberName}.`);
+			this.client.emit('debug', `Running command: ${this.command.groupID}:${this.command.memberName} in ${this.message.guild ? `${this.message.guild.name} (${this.message.guild.id}) guild` : "DM channel"} Command runner: ${this.message.author.tag} (${this.message.author.id}) `)
 			const promise = this.command.run(this, args, fromPattern);
 			/**
 			 * Emitted when running a command
