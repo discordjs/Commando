@@ -52,7 +52,7 @@ Alternatively, there is a MongoDBProvider which will store these settings in a M
 To use it, install the `mongoose` module with NPM (`npm install --save mongoose`). Then, set the provider on the client:
 
 ```javascript
-client.setProvider(new MongoDBProvider({
+client.setProvider(new Commando.MongoDBProvider({
   mongoURI: 'mongodb://username:password@host:port/database',
   mongoDebug: boolean
 })).catch(console.error)
