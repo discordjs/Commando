@@ -1,6 +1,5 @@
 (function () {
   const {SettingProvider} = require('discord.js-commando')
-  const mergeOptions = require('merge-options')
   const mongoose = require('mongoose')
 
   const Schema = mongoose.Schema
@@ -13,9 +12,6 @@
   class MongoDBProvider extends SettingProvider {
     constructor (options = {}) {
       super()
-      this.options = mergeOptions(options, {
-        return_buffers: true
-      })
 
       if (options.mongoURI === undefined) {
         throw new Error('mongoURI must be specified')
