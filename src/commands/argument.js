@@ -213,7 +213,7 @@ class Argument {
 		while(true) { // eslint-disable-line no-constant-condition
 			/* eslint-disable no-await-in-loop */
 			let value = values && values[currentVal] ? values[currentVal] : null;
-			let valid = value ? await this.validate(value) : false;
+			let valid = value ? await this.validate(value, msg) : false;
 			let attempts = 0;
 
 			while(!valid || typeof valid === 'string') {
