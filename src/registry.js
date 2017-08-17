@@ -75,7 +75,7 @@ class CommandRegistry {
 			} else if(Array.isArray(group)) {
 				group = new CommandGroup(this.client, ...group);
 			} else if(!(group instanceof CommandGroup)) {
-				group = new CommandGroup(this.client, group.id, group.name, group.commands);
+				group = new CommandGroup(this.client, group.id, group.name, null, group.commands);
 			}
 
 			const existing = this.groups.get(group.id);
