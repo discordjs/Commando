@@ -102,7 +102,7 @@ class CommandMessage {
 					this.command.argsSingleQuotes ? /^("|')([^]*)\1$/g : /^(")([^]*)"$/g, '$2'
 				);
 			case 'multiple':
-				return this.constructor.parseArgs(this.argString, this.argsCount, this.command.argsSingleQuotes);
+				return this.constructor.parseArgs(this.argString, this.command.argsCount, this.command.argsSingleQuotes);
 			default:
 				throw new RangeError(`Unknown argsType "${this.argsType}".`);
 		}

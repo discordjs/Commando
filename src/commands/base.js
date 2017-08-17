@@ -278,7 +278,7 @@ class Command {
 	 * @return {boolean}
 	 */
 	isUsable(message = null) {
-		if(!message) return this._defaultEnabled;
+		if(!message) return this._globalEnabled;
 		if(this.guildOnly && message && !message.guild) return false;
 		return this.isEnabledIn(message.guild) && this.hasPermission(message);
 	}
