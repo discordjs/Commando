@@ -175,7 +175,10 @@ class CommandMessage {
 		const typingCount = this.message.channel.typingCount;
 		try {
 			this.client.emit('debug', `Running command ${this.command.groupID}:${this.command.memberName}.`);
-			const promise = this.command.run(this, args, fromPattern);
+			const promise = this.command.run(this, args, fromPattern).catch(err => {
+				throw err;
+			});
+
 			/**
 			 * Emitted when running a command
 			 * @event CommandoClient#commandRun
