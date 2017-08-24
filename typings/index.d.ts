@@ -1,3 +1,8 @@
+declare module 'sqlite' {
+	export interface Database {}
+	export interface Statement {}
+}
+
 declare module 'discord.js-commando' {
 	import { Channel, Client, ClientOptions, ClientUserSettings, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageOptions, MessageReaction, ReactionEmoji, RichEmbed, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
 	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
