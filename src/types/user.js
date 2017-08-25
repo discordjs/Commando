@@ -11,7 +11,7 @@ class UserArgumentType extends ArgumentType {
 		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) {
 			try {
-				return await msg.client.fetchUser(matches[1]);
+				return await msg.client.users.fetch(matches[1]);
 			} catch(err) {
 				return false;
 			}
