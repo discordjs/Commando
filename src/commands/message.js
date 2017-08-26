@@ -116,7 +116,7 @@ class CommandMessage {
 		// Obtain the member if we don't have it (ugly-ass if statement ahead)
 		if(this.message.channel.type === 'text' && !this.message.guild.members.has(this.message.author.id) &&
 			!this.message.webhookID) {
-			this.message.member = await this.message.guild.fetchMember(this.message.author);
+			this.message.member = await this.message.guild.members.fetch(this.message.author);
 		}
 
 		// Make sure the command is usable in this context
