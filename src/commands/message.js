@@ -119,6 +119,11 @@ class CommandMessage {
 			this.message.member = await this.message.guild.members.fetch(this.message.author);
 		}
 
+		// Obtain the member for the ClientUser if it doesn't already exist
+		if(this.message.channel.type === 'text' && !this.message.guild.members.has(this.client.user.id)) {
+			await this.message.guild.members.fetch(this.client.user.id);
+		}
+
 		// Make sure the command is usable in this context
 		if(this.command.guildOnly && !this.message.guild) {
 			/**
