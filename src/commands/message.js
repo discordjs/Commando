@@ -3,6 +3,7 @@ const { stripIndents, oneLine } = require('common-tags');
 const Command = require('./base');
 const FriendlyError = require('../errors/friendly');
 const CommandFormatError = require('../errors/command-format');
+const { permissions } = require('../util');
 
 /** A container for a message that triggers a command, that command, and methods to respond */
 class CommandMessage {
@@ -134,6 +135,36 @@ class CommandMessage {
 		if(!this.command.hasPermission(this)) {
 			this.client.emit('commandBlocked', this, 'permission');
 			return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
+		}
+
+		// Ensure the ClientUser has the proper permissions
+		if(this.message.channel.type === 'text' && this.command.clientPermissions) {
+			const missing = [];
+			for(const perm of this.command.clientPermissions) {
+				if(!this.message.channel.permissionsFor(this.client.user).has(perm)) missing.push(perm);
+			}
+			if(missing.length > 0) {
+				const list = missing.map(perm => `\`${permissions[perm]}\``).join(', ');
+				this.client.emit('commandBlocked', this, 'clientPermissions');
+				return this.reply(
+					`The \`${this.command.name}\` command requires me to have the following missing permissions: ${list}`
+				);
+			}
+		}
+
+		// Ensure the user has the proper permissions
+		if(this.message.channel.type === 'text' && this.command.userPermissions) {
+			const missing = [];
+			for(const perm of this.command.userPermissions) {
+				if(!this.message.channel.permissionsFor(this.message.author).has(perm)) missing.push(perm);
+			}
+			if(missing.length > 0) {
+				const list = missing.map(perm => `\`${permissions[perm]}\``).join(', ');
+				this.client.emit('commandBlocked', this, 'userPermissions');
+				return this.reply(
+					`The \`${this.command.name}\` command requires you to have the following missing permissions: ${list}`
+				);
+			}
 		}
 
 		// Throttle the command
