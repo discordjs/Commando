@@ -23,6 +23,8 @@ class Command {
 	 * @property {string[]} [examples] - Usage examples of the command
 	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
 	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
+	 * @property {PermissionResolvable[]] [clientPermissions] - Permissions required by the client to use the command.
+	 * @property {PermissionResolvable[]} [userPermissions] - Permissions required by the user to use the command.
 	 * @property {boolean} [defaultHandling=true] - Whether or not the default command handling should be used.
 	 * If false, then only patterns will trigger the command.
 	 * @property {ArgumentInfo[]} [args] - Arguments for the command.
@@ -121,6 +123,18 @@ class Command {
 		 * @type {boolean}
 		 */
 		this.guildOnly = !!info.guildOnly;
+
+		/**
+		 * Permissions required by the client to use the command.
+		 * @type {?PermissionResolvable[]}
+		 */
+		this.clientPermissions = info.clientPermissions || null;
+
+		/**
+		 * Permissions required by the user to use the command.
+		 * @type {?PermissionResolvable[]}
+		 */
+		this.userPermissions = info.userPermissions || null;
 
 		/**
 		 * Whether the default command handling is enabled for the command
