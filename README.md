@@ -29,9 +29,9 @@ Additionally, it makes full use of ES2017's `async`/`await` functionality for cl
 - Command throttling/cooldowns
 
 ## Installation
-**Node 8.0.0 or newer is required.**  
+**Node 8.0.0 or newer is required.**
 `npm install discord.js-commando --save`
 
 ## Documentation
-[View the docs here.](https://discord.js.org/#/docs/commando)  
+[View the docs here.](https://discord.js.org/#/docs/commando)
 See the [discord.js documentation](https://discord.js.org/#/docs) as well.
