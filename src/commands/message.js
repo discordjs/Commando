@@ -730,28 +730,6 @@ class CommandMessage {
 	}
 
 	/**
-	 * Shortcut to `this.message.isMentioned(data)`
-	 * @param {GuildChannel|User|Role|string} data - A guild channel, user, or a role, or the ID of any of these
-	 * @return {boolean}
-	 * @see {@link Message#isMentioned}
-	 * @readonly
-	 */
-	isMentioned(data) {
-		return this.message.isMentioned(data);
-	}
-
-	/**
-	 * Shortcut to `this.message.isMemberMentioned(data)`
-	 * @param {GuildMember|User} member - Member/user to check for a mention of
-	 * @return {boolean}
-	 * @see {@link Message#isMemberMentioned}
-	 * @readonly
-	 */
-	isMemberMentioned(member) {
-		return this.message.isMemberMentioned(member);
-	}
-
-	/**
 	 * Shortcut to `this.message.edit(content)`
 	 * @param {StringResolvable} content - New content for the message
 	 * @param {MessageEditOptions} options - The options to provide
