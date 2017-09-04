@@ -6,7 +6,7 @@ const sqlite = require('sqlite');
 const token = require('./auth').token;
 
 const client = new commando.Client({
-	owner: '90997305578106880',
+	owner: '81440962496172032',
 	commandPrefix: 'cdev'
 });
 
@@ -33,6 +33,12 @@ client
 		console.log(oneLine`
 			Prefix ${prefix === '' ? 'removed' : `changed to ${prefix || 'the default'}`}
 			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}.
+		`);
+	})
+	.on('localeChange', (guild, locale) => {
+		console.log(oneLine`
+			Locale ${locale ? `changed to ${locale}` : `changed to the default.`}
+			${guild ? `in guild ${guild.name} (${guild.id})` : 'globally'}
 		`);
 	})
 	.on('commandStatusChange', (guild, command, enabled) => {

@@ -63,6 +63,13 @@ class CommandoClient extends discord.Client {
 		 */
 		this._commandPrefix = null;
 
+		/**
+		 * Internal global locale, controlled by the {@link CommandoClient#locale} getter/setter
+		 * @type {?string}
+		 * @private
+		 */
+		this._language = this.options.language ? this.options.language : 'en-us';
+
 		// Set up command handling
 		const msgErr = err => { this.emit('error', err); };
 		this.on('message', message => { this.dispatcher.handleMessage(message).catch(msgErr); });
@@ -104,6 +111,22 @@ class CommandoClient extends discord.Client {
 	set commandPrefix(prefix) {
 		this._commandPrefix = prefix;
 		this.emit('commandPrefixChange', null, this._commandPrefix);
+	}
+
+	/**
+	 * Global locale. An emptry string indicates that there is no default locale, and en-US will be used.
+	 * Setting this to `null` means that the default locale will be used instead.
+	 * @type {string}
+	 * @emits {@link CommandoClient#localeChange}
+	 */
+	get locale() {
+		if(typeof this._language === 'undefined' || this._language === null) return this.registry.locales.get('en-us');
+		return this.registry.locales.get(this._language);
+	}
+
+	set locale(locale) {
+		this._language = locale;
+		this.emit('localeChange', null, this._language);
 	}
 
 	/**

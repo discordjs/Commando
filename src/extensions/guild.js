@@ -48,6 +48,28 @@ class GuildExtension {
 		return this._settings;
 	}
 
+	set locale(locale) {
+		/**
+		 * Internal locale for the guild, controlled by the {@link GuildExtension#locale} getter/setter
+		 * @name GuildExtension#_locale
+		 * @type {?string}
+		 * @private
+		 */
+		this._locale = this.client.registry.locales.get(locale).id;
+		/**
+		 * Emitted whenever a guild's locale is changed
+		 * @event CommandoClient#localeChange
+		 * @param {?Guild} guild - Guild that the prefix was changed in (null for global)
+		 * @param {?string} locale - New locale (null for default)
+		 */
+		this.client.emit('localeChange', this, this._locale);
+	}
+
+	get locale() {
+		if(!this._locale) this._locale = this.client.registry.locales.get(this.client._language);
+		return this._locale;
+	}
+
 	/**
 	 * Sets whether a command is enabled in the guild
 	 * @param {CommandResolvable} command - Command to set status of
@@ -151,6 +173,7 @@ class GuildExtension {
 		for(const prop of [
 			'commandPrefix',
 			'settings',
+			'locale',
 			'setCommandEnabled',
 			'isCommandEnabled',
 			'setGroupEnabled',

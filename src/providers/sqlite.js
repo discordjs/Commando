@@ -96,6 +96,7 @@ class SQLiteProvider extends SettingProvider {
 		// Listen for changes
 		this.listeners
 			.set('commandPrefixChange', (guild, prefix) => this.set(guild, 'prefix', prefix))
+			.set('localeChange', (guild, locale) => this.set(guild, 'locale', locale))
 			.set('commandStatusChange', (guild, command, enabled) => this.set(guild, `cmd-${command.name}`, enabled))
 			.set('groupStatusChange', (guild, group, enabled) => this.set(guild, `grp-${group.id}`, enabled))
 			.set('guildCreate', guild => {

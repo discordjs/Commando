@@ -4,6 +4,7 @@ const Command = require('./commands/base');
 const CommandGroup = require('./commands/group');
 const CommandMessage = require('./commands/message');
 const ArgumentType = require('./types/base');
+const Locale = require('./locales/base');
 
 /** Handles registration and searching of commands and groups */
 class CommandRegistry {
@@ -34,6 +35,12 @@ class CommandRegistry {
 		 * @type {Collection<string, ArgumentType>}
 		 */
 		this.types = new discord.Collection();
+
+		/**
+		 * Registered locales
+		 * @type {Collection<string, Locale>}
+		 */
+		this.locales = new discord.Collection();
 
 		/**
 		 * Registered objects for the eval command
@@ -230,10 +237,66 @@ class CommandRegistry {
 	}
 
 	/**
+	 * Registers a single locale
+	 * @param {Locale|Function} locale - Either Locale instance, or a constructor for one
+	 * @return {CommandRegistry}
+	 * @see {@link CommandRegistry#registerLocales}
+	 */
+	registerLocale(locale) {
+		return this.registerLocales([locale]);
+	}
+
+	/**
+	 * Registers multiple locales
+	 * @param {Locale[]|Function[]} locales - An array of Locale instances or constructors
+	 * @return {CommandRegistry}
+	 */
+	registerLocales(locales) {
+		if(!Array.isArray(locales)) throw new TypeError('Locales must be an Array');
+		for(let locale of locales) {
+			if(typeof locale === 'function') locale = new locale(this.client); // eslint-disable-line new-cap
+
+			// Verify that it's an actual locale
+			if(!(locale instanceof Locale)) {
+				this.client.emit('warn', `Attempting to register an invalid locale object: ${locale}; skipping.`);
+				continue;
+			}
+
+			// Make sure there aren't any conflicts
+			if(this.locales.has(locale.id)) throw new Error(`A locale with the ID "${locale.id}" is already registered.`);
+
+			this.locales.set(locale.id, locale);
+			/**
+			 * Emitted when a locale is registered
+			 * @event CommandoClient#localeRegister
+			 * @param {Locale} locale - Locale that was registered
+			 * @param {CommandRegistry} registry - Registry that the locale was registered to
+			 */
+			this.client.emit('localeRegister', locale, this);
+			this.client.emit('debug', `Registered locale ${locale.id}`);
+		}
+
+		return this;
+	}
+
+	/**
+	 * Registers all locales in a directory. The files must export a Locale class constructor or instance.
+	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
+	 * @return {CommandRegistry}
+	 */
+	registerLocalesIn(options) {
+		const obj = require('require-all')(options);
+		const locales = [];
+		for(const locale of Object.values(obj)) locales.push(locale);
+		return this.registerLocales(locales);
+	}
+
+	/**
 	 * Registers the default argument types, groups, and commands
 	 * @return {CommandRegistry}
 	 */
 	registerDefaults() {
+		this.registerDefaultLocales();
 		this.registerDefaultTypes();
 		this.registerDefaultGroups();
 		this.registerDefaultCommands();
@@ -304,6 +367,20 @@ class CommandRegistry {
 			require('./types/role'),
 			require('./types/channel'),
 			require('./types/message')
+		]);
+		return this;
+	}
+
+	/**
+	 * Registers the default locales to the registry. These are:
+	 * en-US
+	 * de-DE
+	 * @return {CommandRegistry}
+	 */
+	registerDefaultLocales() {
+		this.registerLocales([
+			require('./locales/en-us'),
+			require('./locales/de-de')
 		]);
 		return this;
 	}
