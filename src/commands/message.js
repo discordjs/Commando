@@ -153,7 +153,7 @@ class CommandMessage {
 				this.client.emit('commandBlocked', this, 'clientPermissions');
 				if(missing.length === 1) {
 					return this.reply(
-						`I need the ${permissions[missing[0]]} permission for the \`${this.command.name}\` command to work.`
+						`I need the "${permissions[missing[0]]}" permission for the \`${this.command.name}\` command to work.`
 					);
 				}
 				return this.reply(oneLine`
