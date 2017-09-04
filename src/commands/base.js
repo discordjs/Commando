@@ -1,5 +1,7 @@
 const path = require('path');
+const { oneLine } = require('common-tags');
 const ArgumentCollector = require('./collector');
+const { permissions } = require('../util');
 
 /** A command that can be run in a client */
 class Command {
@@ -212,6 +214,20 @@ class Command {
 	 * @return {boolean|string} Whether the user has permission, or an error message to respond with if they don't
 	 */
 	hasPermission(message) { // eslint-disable-line no-unused-vars
+		if(message.channel.type === 'text' && this.userPermissions) {
+			const missing = message.channel.permissionsFor(this.message.author).missing(this.userPermissions);
+			if(missing.length > 0) {
+				this.client.emit('commandBlocked', this, 'userPermissions');
+				if(missing.length === 1) {
+					return `The \`${this.command.name}\` command requires you to have the ${permissions[missing[0]]} permission.`;
+				}
+				return oneLine`
+					The \`${this.command.name}\` requires you to have the following permissions:
+					${missing.map(perm => permissions[perm]).join(', ')}
+				`;
+			}
+		}
+
 		return true;
 	}
 
