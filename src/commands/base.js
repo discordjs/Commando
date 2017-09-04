@@ -215,14 +215,14 @@ class Command {
 	 */
 	hasPermission(message) { // eslint-disable-line no-unused-vars
 		if(message.channel.type === 'text' && this.userPermissions) {
-			const missing = message.channel.permissionsFor(this.message.author).missing(this.userPermissions);
+			const missing = message.channel.permissionsFor(message.author).missing(this.userPermissions);
 			if(missing.length > 0) {
 				this.client.emit('commandBlocked', this, 'userPermissions');
 				if(missing.length === 1) {
-					return `The \`${this.command.name}\` command requires you to have the ${permissions[missing[0]]} permission.`;
+					return `The \`${this.name}\` command requires you to have the ${permissions[missing[0]]} permission.`;
 				}
 				return oneLine`
-					The \`${this.command.name}\` requires you to have the following permissions:
+					The \`${this.name}\` requires you to have the following permissions:
 					${missing.map(perm => permissions[perm]).join(', ')}
 				`;
 			}
@@ -411,6 +411,22 @@ class Command {
 		if('details' in info && typeof info.details !== 'string') throw new TypeError('Command details must be a string.');
 		if(info.examples && (!Array.isArray(info.examples) || info.examples.some(ex => typeof ex !== 'string'))) {
 			throw new TypeError('Command examples must be an Array of strings.');
+		}
+		if(info.clientPermissions) {
+			if(!Array.isArray(info.clientPermissions)) {
+				throw new TypeError('Command clientPermissions must be an Array of permission key strings.');
+			}
+			for(const perm of info.clientPermissions) {
+				if(!permissions[perm]) throw new RangeError(`Invalid command clientPermission: ${perm}`);
+			}
+		}
+		if(info.userPermissions) {
+			if(!Array.isArray(info.userPermissions)) {
+				throw new TypeError('Command userPermissions must be an Array of permission key strings.');
+			}
+			for(const perm of info.userPermissions) {
+				if(!permissions[perm]) throw new RangeError(`Invalid command userPermission: ${perm}`);
+			}
 		}
 		if(info.throttling) {
 			if(typeof info.throttling !== 'object') throw new TypeError('Command throttling must be an Object.');
