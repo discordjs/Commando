@@ -48,6 +48,16 @@ client.setProvider(
 ).catch(console.error);
 ```
 
+Alternatively, there is a MongoDBProvider which will store these settings in a MongoDB database.
+To use it, install the `mongoose` module with NPM (`npm install --save mongoose`). Then, set the provider on the client:
+
+```javascript
+client.setProvider(new Commando.MongoDBProvider({
+  mongoURI: 'mongodb://username:password@host:port/database',
+  mongoDebug: boolean
+})).catch(console.error)
+```
+
 Finally, you must log in, just as if you were using a regular Client.
 
 ```javascript

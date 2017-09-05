@@ -18,6 +18,9 @@ module.exports = {
 	SettingProvider: require('./providers/base'),
 	get SQLiteProvider() {
 		return require('./providers/sqlite');
+	},
+	get MongoDBProvider() {
+		return require('./providers/mongodb');
 	}
 };
 
