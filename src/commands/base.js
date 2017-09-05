@@ -1,5 +1,7 @@
 const path = require('path');
+const { oneLine } = require('common-tags');
 const ArgumentCollector = require('./collector');
+const { permissions } = require('../util');
 
 /** A command that can be run in a client */
 class Command {
@@ -22,9 +24,9 @@ class Command {
 	 * @property {string} [details] - A detailed description of the command and its functionality
 	 * @property {string[]} [examples] - Usage examples of the command
 	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
-	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
 	 * @property {PermissionResolvable[]} [clientPermissions] - Permissions required by the client to use the command.
 	 * @property {PermissionResolvable[]} [userPermissions] - Permissions required by the user to use the command.
+	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
 	 * @property {boolean} [defaultHandling=true] - Whether or not the default command handling should be used.
 	 * If false, then only patterns will trigger the command.
 	 * @property {ArgumentInfo[]} [args] - Arguments for the command.
@@ -212,6 +214,19 @@ class Command {
 	 * @return {boolean}
 	 */
 	hasPermission(message) { // eslint-disable-line no-unused-vars
+		if(message.channel.type === 'text' && this.userPermissions) {
+			const missing = message.channel.permissionsFor(message.author).missing(this.userPermissions);
+			if(missing.length > 0) {
+				if(missing.length === 1) {
+					return `The \`${this.name}\` command requires you to have the "${permissions[missing[0]]}" permission.`;
+				}
+				return oneLine`
+					The \`${this.name}\` requires you to have the following permissions:
+					${missing.map(perm => permissions[perm]).join(', ')}
+				`;
+			}
+		}
+
 		return true;
 	}
 
@@ -294,7 +309,9 @@ class Command {
 	isUsable(message = null) {
 		if(!message) return this._globalEnabled;
 		if(this.guildOnly && message && !message.guild) return false;
-		return this.isEnabledIn(message.guild) && this.hasPermission(message);
+		let hasPermission = this.hasPermission(message);
+		if(typeof hasPermission === 'string') hasPermission = false;
+		return this.isEnabledIn(message.guild) && hasPermission;
 	}
 
 	/**
@@ -394,6 +411,22 @@ class Command {
 		if('details' in info && typeof info.details !== 'string') throw new TypeError('Command details must be a string.');
 		if(info.examples && (!Array.isArray(info.examples) || info.examples.some(ex => typeof ex !== 'string'))) {
 			throw new TypeError('Command examples must be an Array of strings.');
+		}
+		if(info.clientPermissions) {
+			if(!Array.isArray(info.clientPermissions)) {
+				throw new TypeError('Command clientPermissions must be an Array of permission key strings.');
+			}
+			for(const perm of info.clientPermissions) {
+				if(!permissions[perm]) throw new RangeError(`Invalid command clientPermission: ${perm}`);
+			}
+		}
+		if(info.userPermissions) {
+			if(!Array.isArray(info.userPermissions)) {
+				throw new TypeError('Command userPermissions must be an Array of permission key strings.');
+			}
+			for(const perm of info.userPermissions) {
+				if(!permissions[perm]) throw new RangeError(`Invalid command userPermission: ${perm}`);
+			}
 		}
 		if(info.throttling) {
 			if(typeof info.throttling !== 'object') throw new TypeError('Command throttling must be an Object.');
