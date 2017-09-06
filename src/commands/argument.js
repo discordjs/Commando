@@ -152,12 +152,12 @@ class Argument {
 				};
 			}
 
-			let content = stripIndents`
+			const content = stripIndents`
 					${!value ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
 					${oneLine`
 						Respond with \`cancel\` to cancel the command.
 						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-					`}`
+					`}`;
 
 			// Prompt the user for a new value
 			prompts.push(await this.reply ? msg.reply(content) : msg.say(content));
@@ -238,7 +238,7 @@ class Argument {
 				// Prompt the user for a new value
 				if(value) {
 					const escaped = escapeMarkdown(value).replace(/@/g, '@\u200b');
-					let content = stripIndents`
+					const content = stripIndents`
 							${valid ? valid : oneLine`
 								You provided an invalid ${this.label},
 								"${escaped.length < 1850 ? escaped : '[too long to show]'}".
@@ -247,16 +247,18 @@ class Argument {
 							${oneLine`
 								Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
 								${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-							`}`
+							`}`;
 
 					prompts.push(await this.reply ? msg.reply(content) : msg.say(content));
 				} else if(results.length === 0) {
-					let content = stripIndents`
+					/* eslint-disable max-len */
+					const content = stripIndents`
 							${this.prompt}
 							${oneLine`
 								Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
 								${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
-							`}`
+							`}`;
+					/* eslint-enable max-len */
 					prompts.push(await this.reply ? msg.reply(content) : msg.say(content));
 				}
 
