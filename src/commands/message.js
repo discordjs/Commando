@@ -114,16 +114,6 @@ class CommandMessage {
 	 * @return {Promise<?Message|?Array<Message>>}
 	 */
 	async run() { // eslint-disable-line complexity
-		// Obtain the member if we don't have it (ugly-ass if statement ahead)
-		if(this.message.channel.type === 'text' && !this.message.guild.members.has(this.message.author.id) &&
-			!this.message.webhookID) {
-			this.message.member = await this.message.guild.members.fetch(this.message.author);
-		}
-
-		// Obtain the member for the ClientUser if it doesn't already exist
-		if(this.message.channel.type === 'text' && !this.message.guild.members.has(this.client.user.id)) {
-			await this.message.guild.members.fetch(this.client.user.id);
-		}
 
 		// Make sure the command is usable in this context
 		if(this.command.guildOnly && !this.message.guild) {
