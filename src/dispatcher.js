@@ -120,8 +120,8 @@ class CommandDispatcher {
 		}
 
 		// Obtain the member for the ClientUser if it doesn't already exist
-		if(cmdMsg.channel.type === 'text' && !cmdMsg.guild.members.has(client.user.id)) {
-			await cmdMsg.guild.members.fetch(client.user.id);
+		if(cmdMsg.channel.type === 'text' && !cmdMsg.guild.members.has(this.client.user.id)) {
+			await cmdMsg.guild.members.fetch(this.client.user.id);
 		}
 
 		// Run the command, or reply with an error
