@@ -114,7 +114,6 @@ class CommandMessage {
 	 * @return {Promise<?Message|?Array<Message>>}
 	 */
 	async run() { // eslint-disable-line complexity
-
 		// Make sure the command is usable in this context
 		if(this.command.guildOnly && !this.message.guild) {
 			/**
