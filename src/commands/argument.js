@@ -19,6 +19,7 @@ class Argument {
 	 * @property {Function} [validate] - Validator function for the argument (see {@link ArgumentType#validate})
 	 * @property {Function} [parse] - Parser function for the argument (see {@link ArgumentType#parse})
 	 * @property {number} [wait=30] - How long to wait for input (in seconds)
+	 * @property {boolean} [reply=true] - Whether the argument mentions the user when prompting
 	 */
 
 	/**
@@ -97,6 +98,18 @@ class Argument {
 		 * @type {number}
 		 */
 		this.wait = typeof info.wait !== 'undefined' ? info.wait : 30;
+
+		/**
+		 * How long to wait for input (in seconds)
+		 * @type {number}
+		 */
+		this.wait = typeof info.wait !== 'undefined' ? info.wait : 30;
+
+		/**
+		 * Whether the argument mentions the user when prompting
+		 * @type {boolean}
+		 */
+		this.reply = info.reply === undefined ? true : info.reply;
 	}
 
 	/**
@@ -146,13 +159,22 @@ class Argument {
 			}
 
 			// Prompt the user for a new value
-			prompts.push(await msg.reply(stripIndents`
-				${!value ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
-				${oneLine`
-					Respond with \`cancel\` to cancel the command.
-					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-				`}
-			`));
+			prompts.push(await this.reply ? 
+				msg.reply(stripIndents`
+					${!value ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
+					${oneLine`
+						Respond with \`cancel\` to cancel the command.
+						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+					`}
+				`) :
+				msg.say(stripIndents`
+					${!value ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
+					${oneLine`
+						Respond with \`cancel\` to cancel the command.
+						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+					`}
+				`)
+			);
 
 			// Get the user's response
 			const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
@@ -230,25 +252,47 @@ class Argument {
 				// Prompt the user for a new value
 				if(value) {
 					const escaped = escapeMarkdown(value).replace(/@/g, '@\u200b');
-					prompts.push(await msg.reply(stripIndents`
-						${valid ? valid : oneLine`
-							You provided an invalid ${this.label},
-							"${escaped.length < 1850 ? escaped : '[too long to show]'}".
-							Please try again.
-						`}
-						${oneLine`
-							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
-							${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-						`}
-					`));
+					prompts.push(await this.reply ? 
+						msg.reply(stripIndents`
+							${valid ? valid : oneLine`
+								You provided an invalid ${this.label},
+								"${escaped.length < 1850 ? escaped : '[too long to show]'}".
+								Please try again.
+							`}
+							${oneLine`
+								Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
+								${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+							`}
+						`) : 
+						msg.say(stripIndents`
+							${valid ? valid : oneLine`
+								You provided an invalid ${this.label},
+								"${escaped.length < 1850 ? escaped : '[too long to show]'}".
+								Please try again.
+							`}
+							${oneLine`
+								Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
+								${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+							`}
+						`)						
+					);
 				} else if(results.length === 0) {
-					prompts.push(await msg.reply(stripIndents`
-						${this.prompt}
-						${oneLine`
-							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
-							${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
-						`}
-					`));
+					prompts.push(await this.reply ? 
+						msg.reply(stripIndents`
+							${this.prompt}
+							${oneLine`
+								Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
+								${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
+							`}
+						`) :
+						msg.say(stripIndents`
+							${this.prompt}
+							${oneLine`
+								Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
+								${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
+							`}
+						`)
+					);
 				}
 
 				// Get the user's response
@@ -343,6 +387,7 @@ class Argument {
 		if(typeof info.key !== 'string') throw new TypeError('Argument key must be a string.');
 		if(info.label && typeof info.label !== 'string') throw new TypeError('Argument label must be a string.');
 		if(typeof info.prompt !== 'string') throw new TypeError('Argument prompt must be a string.');
+		if(typeof info.reply !== 'boolean') throw new TypeError('Argument reply must be a boolean.');
 		if(!info.type && !info.validate) {
 			throw new Error('Argument must have either "type" or "validate" specified.');
 		}
