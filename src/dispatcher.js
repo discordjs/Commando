@@ -117,7 +117,6 @@ class CommandDispatcher {
 		// Run the command, or reply with an error
 		let responses;
 		if(cmdMsg) {
-
 			// Obtain the member if we don't have it
 			if(cmdMsg.channel.type === 'text' && !cmdMsg.guild.members.has(cmdMsg.author.id) && !cmdMsg.webhookID) {
 				cmdMsg.member = await cmdMsg.guild.members.fetch(cmdMsg.author);
