@@ -114,19 +114,20 @@ class CommandDispatcher {
 			cmdMsg = this.parseMessage(message);
 		}
 
-		// Obtain the member if we don't have it
-		if(cmdMsg.channel.type === 'text' && !cmdMsg.guild.members.has(cmdMsg.author.id) && !cmdMsg.webhookID) {
-			cmdMsg.member = await cmdMsg.guild.members.fetch(cmdMsg.author);
-		}
-
-		// Obtain the member for the ClientUser if it doesn't already exist
-		if(cmdMsg.channel.type === 'text' && !cmdMsg.guild.members.has(this.client.user.id)) {
-			await cmdMsg.guild.members.fetch(this.client.user.id);
-		}
-
 		// Run the command, or reply with an error
 		let responses;
 		if(cmdMsg) {
+
+			// Obtain the member if we don't have it
+			if(cmdMsg.channel.type === 'text' && !cmdMsg.guild.members.has(cmdMsg.author.id) && !cmdMsg.webhookID) {
+				cmdMsg.member = await cmdMsg.guild.members.fetch(cmdMsg.author);
+			}
+
+			// Obtain the member for the ClientUser if it doesn't already exist
+			if(cmdMsg.channel.type === 'text' && !cmdMsg.guild.members.has(this.client.user.id)) {
+				await cmdMsg.guild.members.fetch(this.client.user.id);
+			}
+
 			const inhibited = this.inhibit(cmdMsg);
 
 			if(!inhibited) {
