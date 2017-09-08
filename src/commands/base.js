@@ -285,7 +285,7 @@ class Command {
 			this.client.emit('commandStatusChange', null, this, enabled);
 			return;
 		}
-		guild = this.client.resolver.resolveGuild(guild);
+		guild = this.client.guilds.resolve(guild);
 		guild.setCommandEnabled(this, enabled);
 	}
 
@@ -297,7 +297,7 @@ class Command {
 	isEnabledIn(guild) {
 		if(this.guarded) return true;
 		if(!guild) return this.group._globalEnabled && this._globalEnabled;
-		guild = this.client.resolver.resolveGuild(guild);
+		guild = this.client.guilds.resolve(guild);
 		return guild.isGroupEnabled(this.group) && guild.isCommandEnabled(this);
 	}
 
