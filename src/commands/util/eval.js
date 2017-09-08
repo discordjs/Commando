@@ -32,7 +32,7 @@ module.exports = class EvalCommand extends Command {
 		return this.client.isOwner(msg.author);
 	}
 
-	run(msg, args) {
+	async run(msg, args) {
 		// Make a bunch of helpers
 		/* eslint-disable no-unused-vars */
 		const message = msg;
@@ -69,7 +69,7 @@ module.exports = class EvalCommand extends Command {
 
 		// Prepare for callback time and respond
 		this.hrStart = process.hrtime();
-		let response = this.makeResultMessages(this.lastResult, hrDiff, args.script, msg.editable);
+		let response = await this.makeResultMessages(this.lastResult, hrDiff, args.script, msg.editable);
 		if(msg.editable) {
 			if(response instanceof Array) {
 				if(response.length > 0) response = response.slice(1, response.length - 1);
@@ -83,7 +83,8 @@ module.exports = class EvalCommand extends Command {
 		}
 	}
 
-	makeResultMessages(result, hrDiff, input = null, editable = false) {
+	async makeResultMessages(result, hrDiff, input = null, editable = false) {
+		if(result instanceof Promise) result = await result;
 		const inspected = util.inspect(result, { depth: 0 })
 			.replace(nlPattern, '\n')
 			.replace(this.sensitivePattern, '--snip--');
@@ -102,7 +103,7 @@ module.exports = class EvalCommand extends Command {
 					\`\`\`javascript
 					${input}
 					\`\`\`` :
-				''}
+		''}
 				*Executed in ${hrDiff[0] > 0 ? `${hrDiff[0]}s ` : ''}${hrDiff[1] / 1000000}ms.*
 				\`\`\`javascript
 				${inspected}
@@ -123,6 +124,8 @@ module.exports = class EvalCommand extends Command {
 			const client = this.client;
 			let pattern = '';
 			if(client.token) pattern += escapeRegex(client.token);
+			if(client.email) pattern += (pattern.length > 0 ? '|' : '') + escapeRegex(client.email);
+			if(client.password) pattern += (pattern.length > 0 ? '|' : '') + escapeRegex(client.password);
 			Object.defineProperty(this, '_sensitivePattern', { value: new RegExp(pattern, 'gi') });
 		}
 		return this._sensitivePattern;
