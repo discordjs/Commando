@@ -151,7 +151,7 @@ class CommandoClient extends discord.Client {
 	 */
 	isOwner(user) {
 		if(!this.options.owner) return false;
-		user = this.resolver.resolveUser(user);
+		user = this.users.resolve(user);
 		if(!user) throw new RangeError('Unable to resolve user.');
 		if(typeof this.options.owner === 'string') return user.id === this.options.owner;
 		if(this.options.owner instanceof Array) return this.options.owner.includes(user.id);
