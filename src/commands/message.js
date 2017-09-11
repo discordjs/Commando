@@ -186,9 +186,7 @@ class CommandMessage {
 					const err = new CommandFormatError(this);
 					return this.reply(err.message);
 				}
-				return this.reply(
-					this.guild ? this.guild.locale.get('MESSAGE_CANCELLED') : this.client.locale.get('MESSAGE_CANCELLED')
-				);
+				return this.reply(this.locale.get('MESSAGE_CANCELLED'));
 			}
 			args = result.values;
 		}
@@ -500,6 +498,10 @@ class CommandMessage {
 			result.push(argString.substr(re.lastIndex).replace(re2, '$2'));
 		}
 		return result;
+	}
+
+	get locale() {
+		return this.message.guild ? this.message.guild.locale : this.client.locale;
 	}
 
 
