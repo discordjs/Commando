@@ -7,12 +7,12 @@ const ArgumentType = require('./types/base');
 const Locale = require('./locales/base');
 
 /** Handles registration and searching of commands and groups */
-class CommandRegistry {
+class CommandoRegistry {
 	/** @param {CommandoClient} [client] - Client to use  */
 	constructor(client) {
 		/**
 		 * The client this registry is for
-		 * @name CommandRegistry#client
+		 * @name CommandoRegistry#client
 		 * @type {CommandoClient}
 		 * @readonly
 		 */
@@ -60,8 +60,8 @@ class CommandRegistry {
 	 * @param {CommandGroup|Function|string[]|string} group - A CommandGroup instance, a constructor,
 	 * an array of [ID, Name], or the group ID
 	 * @param {string} [name] - Name for the group (if the first argument is the group ID)
-	 * @return {CommandRegistry}
-	 * @see {@link CommandRegistry#registerGroups}
+	 * @return {CommandoRegistry}
+	 * @see {@link CommandoRegistry#registerGroups}
 	 */
 	registerGroup(group, name) {
 		if(typeof group === 'string') return this.registerGroups([[group, name]]);
@@ -72,7 +72,7 @@ class CommandRegistry {
 	 * Registers multiple groups
 	 * @param {CommandGroup[]|Function[]|Array<string[]>} groups - An array of CommandGroup instances, constructors,
 	 * or arrays of [ID, Name]
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerGroups(groups) {
 		if(!Array.isArray(groups)) throw new TypeError('Groups must be an Array.');
@@ -95,7 +95,7 @@ class CommandRegistry {
 				 * Emitted when a group is registered
 				 * @event CommandoClient#groupRegister
 				 * @param {CommandGroup} group - Group that was registered
-				 * @param {CommandRegistry} registry - Registry that the group was registered to
+				 * @param {CommandoRegistry} registry - Registry that the group was registered to
 				 */
 				this.client.emit('groupRegister', group, this);
 				this.client.emit('debug', `Registered group ${group.id}.`);
@@ -107,8 +107,8 @@ class CommandRegistry {
 	/**
 	 * Registers a single command
 	 * @param {Command|Function} command - Either a Command instance, or a constructor for one
-	 * @return {CommandRegistry}
-	 * @see {@link CommandRegistry#registerCommands}
+	 * @return {CommandoRegistry}
+	 * @see {@link CommandoRegistry#registerCommands}
 	 */
 	registerCommand(command) {
 		return this.registerCommands([command]);
@@ -117,7 +117,7 @@ class CommandRegistry {
 	/**
 	 * Registers multiple commands
 	 * @param {Command[]|Function[]} commands - An array of Command instances or constructors
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerCommands(commands) {
 		if(!Array.isArray(commands)) throw new TypeError('Commands must be an Array.');
@@ -153,7 +153,7 @@ class CommandRegistry {
 			 * Emitted when a command is registered
 			 * @event CommandoClient#commandRegister
 			 * @param {Command} command - Command that was registered
-			 * @param {CommandRegistry} registry - Registry that the command was registered to
+			 * @param {CommandoRegistry} registry - Registry that the command was registered to
 			 */
 			this.client.emit('commandRegister', command, this);
 			this.client.emit('debug', `Registered command ${group.id}:${command.memberName}.`);
@@ -165,7 +165,7 @@ class CommandRegistry {
 	/**
 	 * Registers all commands in a directory. The files must export a Command class constructor or instance.
 	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerCommandsIn(options) {
 		const obj = require('require-all')(options);
@@ -183,8 +183,8 @@ class CommandRegistry {
 	/**
 	 * Registers a single argument type
 	 * @param {ArgumentType|Function} type - Either an ArgumentType instance, or a constructor for one
-	 * @return {CommandRegistry}
-	 * @see {@link CommandRegistry#registerTypes}
+	 * @return {CommandoRegistry}
+	 * @see {@link CommandoRegistry#registerTypes}
 	 */
 	registerType(type) {
 		return this.registerTypes([type]);
@@ -193,7 +193,7 @@ class CommandRegistry {
 	/**
 	 * Registers multiple argument types
 	 * @param {ArgumentType[]|Function[]} types - An array of ArgumentType instances or constructors
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerTypes(types) {
 		if(!Array.isArray(types)) throw new TypeError('Types must be an Array.');
@@ -215,7 +215,7 @@ class CommandRegistry {
 			 * Emitted when an argument type is registered
 			 * @event CommandoClient#typeRegister
 			 * @param {ArgumentType} type - Argument type that was registered
-			 * @param {CommandRegistry} registry - Registry that the type was registered to
+			 * @param {CommandoRegistry} registry - Registry that the type was registered to
 			 */
 			this.client.emit('typeRegister', type, this);
 			this.client.emit('debug', `Registered argument type ${type.id}.`);
@@ -227,7 +227,7 @@ class CommandRegistry {
 	/**
 	 * Registers all argument types in a directory. The files must export an ArgumentType class constructor or instance.
 	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerTypesIn(options) {
 		const obj = require('require-all')(options);
@@ -239,8 +239,8 @@ class CommandRegistry {
 	/**
 	 * Registers a single locale
 	 * @param {Locale|Function} locale - Either Locale instance, or a constructor for one
-	 * @return {CommandRegistry}
-	 * @see {@link CommandRegistry#registerLocales}
+	 * @return {CommandoRegistry}
+	 * @see {@link CommandoRegistry#registerLocales}
 	 */
 	registerLocale(locale) {
 		return this.registerLocales([locale]);
@@ -249,7 +249,7 @@ class CommandRegistry {
 	/**
 	 * Registers multiple locales
 	 * @param {Locale[]|Function[]} locales - An array of Locale instances or constructors
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerLocales(locales) {
 		if(!Array.isArray(locales)) throw new TypeError('Locales must be an Array');
@@ -270,7 +270,7 @@ class CommandRegistry {
 			 * Emitted when a locale is registered
 			 * @event CommandoClient#localeRegister
 			 * @param {Locale} locale - Locale that was registered
-			 * @param {CommandRegistry} registry - Registry that the locale was registered to
+			 * @param {CommandoRegistry} registry - Registry that the locale was registered to
 			 */
 			this.client.emit('localeRegister', locale, this);
 			this.client.emit('debug', `Registered locale ${locale.id}`);
@@ -282,7 +282,7 @@ class CommandRegistry {
 	/**
 	 * Registers all locales in a directory. The files must export a Locale class constructor or instance.
 	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerLocalesIn(options) {
 		const obj = require('require-all')(options);
@@ -293,7 +293,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers the default argument types, groups, and commands
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerDefaults() {
 		this.registerDefaultLocales();
@@ -305,7 +305,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers the default groups
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerDefaultGroups() {
 		return this.registerGroups([
@@ -323,7 +323,7 @@ class CommandRegistry {
 	 * @param {boolean} [options.ping=true] - Whether or not to register the built-in ping command
 	 * @param {boolean} [options.commandState=true] - Whether or not to register the built-in command state commands
 	 * (enable, disable, reload, list groups)
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerDefaultCommands({ help = true, prefix = true, ping = true, eval_ = true, commandState = true } = {}) {
 		if(help) this.registerCommand(require('./commands/util/help'));
@@ -354,7 +354,7 @@ class CommandRegistry {
 	 * - role
 	 * - channel
 	 * - message
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerDefaultTypes() {
 		this.registerTypes([
@@ -375,7 +375,7 @@ class CommandRegistry {
 	 * Registers the default locales to the registry. These are:
 	 * en-US
 	 * de-DE
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerDefaultLocales() {
 		this.registerLocales([
@@ -428,8 +428,8 @@ class CommandRegistry {
 	 * Registers a single object to be usable by the eval command
 	 * @param {string} key - The key for the object
 	 * @param {Object} obj - The object
-	 * @return {CommandRegistry}
-	 * @see {@link CommandRegistry#registerEvalObjects}
+	 * @return {CommandoRegistry}
+	 * @see {@link CommandoRegistry#registerEvalObjects}
 	 */
 	registerEvalObject(key, obj) {
 		const registerObj = {};
@@ -440,7 +440,7 @@ class CommandRegistry {
 	/**
 	 * Registers multiple objects to be usable by the eval command
 	 * @param {Object} obj - An object of keys: values
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerEvalObjects(obj) {
 		Object.assign(this.evalObjects, obj);
@@ -572,4 +572,4 @@ function commandFilterInexact(search) {
 		(cmd.aliases && cmd.aliases.some(ali => ali.includes(search)));
 }
 
-module.exports = CommandRegistry;
+module.exports = CommandoRegistry;

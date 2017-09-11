@@ -1,5 +1,5 @@
 const discord = require('discord.js');
-const CommandRegistry = require('./registry');
+const CommandoRegistry = require('./registry');
 const CommandDispatcher = require('./dispatcher');
 const GuildSettingsHelper = require('./providers/helper');
 
@@ -34,9 +34,9 @@ class CommandoClient extends discord.Client {
 
 		/**
 		 * The client's command registry
-		 * @type {CommandRegistry}
+		 * @type {CommandoRegistry}
 		 */
-		this.registry = new CommandRegistry(this);
+		this.registry = new CommandoRegistry(this);
 
 		/**
 		 * The client's command dispatcher
