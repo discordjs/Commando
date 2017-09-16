@@ -99,7 +99,14 @@ class CommandDispatcher {
 	 */
 	async handleMessage(message, oldMessage) {
 		if(!this.shouldHandleMessage(message, oldMessage)) return;
-
+		// Obtain the member if we don't have it
+		if(message.guild && !message.guild.members.has(message.author.id) && !message.webhookID) {
+			message.member = await message.guild.members.fetch(message.author);
+		}
+		// Obtain the member for the ClientUser if it doesn't already exist
+		if(message.guild && !message.guild.members.has(this.client.user.id)) {
+			await message.guild.members.fetch(this.client.user.id);
+		}	
 		// Parse the message, and get the old result if it exists
 		let cmdMsg, oldCmdMsg;
 		if(oldMessage) {
@@ -117,16 +124,6 @@ class CommandDispatcher {
 		// Run the command, or reply with an error
 		let responses;
 		if(cmdMsg) {
-			// Obtain the member if we don't have it
-			if(cmdMsg.channel.type === 'text' && !cmdMsg.guild.members.has(cmdMsg.author.id) && !cmdMsg.webhookID) {
-				cmdMsg.member = await cmdMsg.guild.members.fetch(cmdMsg.author);
-			}
-
-			// Obtain the member for the ClientUser if it doesn't already exist
-			if(cmdMsg.channel.type === 'text' && !cmdMsg.guild.members.has(this.client.user.id)) {
-				await cmdMsg.guild.members.fetch(this.client.user.id);
-			}
-
 			const inhibited = this.inhibit(cmdMsg);
 
 			if(!inhibited) {
