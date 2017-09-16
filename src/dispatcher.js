@@ -106,7 +106,7 @@ class CommandDispatcher {
 		// Obtain the member for the ClientUser if it doesn't already exist
 		if(message.guild && !message.guild.members.has(this.client.user.id)) {
 			await message.guild.members.fetch(this.client.user.id);
-		}	
+		}
 		// Parse the message, and get the old result if it exists
 		let cmdMsg, oldCmdMsg;
 		if(oldMessage) {
