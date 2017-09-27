@@ -27,6 +27,7 @@ class Command {
 	 * @property {boolean} [ownerOnly=false] - Whether or not the command is usable only by an owner
 	 * @property {PermissionResolvable[]} [clientPermissions] - Permissions required by the client to use the command.
 	 * @property {PermissionResolvable[]} [userPermissions] - Permissions required by the user to use the command.
+	 * @property {boolean} [nsfw=false] - Whether the command is usable only in NSFW channels.
 	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
 	 * @property {boolean} [defaultHandling=true] - Whether or not the default command handling should be used.
 	 * If false, then only patterns will trigger the command.
@@ -144,6 +145,12 @@ class Command {
 		 * @type {?PermissionResolvable[]}
 		 */
 		this.userPermissions = info.userPermissions || null;
+
+		/**
+		 * Whether the command can only be used in NSFW channels
+		 * @type {boolean}
+		 */
+		this.nsfw = !!info.nsfw;
 
 		/**
 		 * Whether the default command handling is enabled for the command

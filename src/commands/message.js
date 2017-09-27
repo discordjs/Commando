@@ -133,8 +133,13 @@ class CommandMessage {
 			return this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
 		}
 
-		// Check if the command doesn't have permission to be run
-		let hasPermission = this.command.hasPermission(this) || false;
+		if(this.command.nsfw && !this.message.channel.nsfw) {
+			this.client.emit('commandBlocked', this, 'nsfw');
+			return this.reply(`The \`${this.command.name}\` command can only be used in NSFW channels.`);
+		}
+
+		// Ensure the user has permission to use the command
+		const hasPermission = this.command.hasPermission(this);
 		if(!hasPermission || typeof hasPermission === 'string') {
 			this.client.emit('commandBlocked', this, 'permission');
 			if(!hasPermission) hasPermission = `You do not have permission to use the \`${this.command.name}\` command.`;
