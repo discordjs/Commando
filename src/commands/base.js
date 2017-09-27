@@ -24,6 +24,7 @@ class Command {
 	 * @property {string} [details] - A detailed description of the command and its functionality
 	 * @property {string[]} [examples] - Usage examples of the command
 	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
+	 * @property {boolean} [ownerOnly=false] - Whether or not the command is usable only be an owner
 	 * @property {PermissionResolvable[]} [clientPermissions] - Permissions required by the client to use the command.
 	 * @property {PermissionResolvable[]} [userPermissions] - Permissions required by the user to use the command.
 	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
@@ -127,6 +128,12 @@ class Command {
 		this.guildOnly = !!info.guildOnly;
 
 		/**
+		 * Whether the command can only be used by an owner
+		 * @type {boolean}
+		 */
+		this.ownerOnly = !!info.ownerOnly;
+
+		/**
 		 * Permissions required by the client to use the command.
 		 * @type {?PermissionResolvable[]}
 		 */
@@ -213,7 +220,11 @@ class Command {
 	 * @param {CommandMessage} message - The triggering command message
 	 * @return {boolean}
 	 */
-	hasPermission(message) { // eslint-disable-line no-unused-vars
+	hasPermission(message) {
+		if(this.ownerOnly && !this.client.isOwner(message.author)) {
+			return `The \`${this.name}\` command can only be used by the bot owner.`;
+		}
+
 		if(message.channel.type === 'text' && this.userPermissions) {
 			const missing = message.channel.permissionsFor(message.author).missing(this.userPermissions);
 			if(missing.length > 0) {
