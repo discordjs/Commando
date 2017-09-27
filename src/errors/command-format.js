@@ -10,11 +10,11 @@ class CommandFormatError extends FriendlyError {
 	 */
 	constructor(msg) {
 		super(
-			`Invalid command format. Use ${msg.anyUsage(
-				`help ${msg.command.name}`,
+			`Invalid command format. Please use the proper format, ${msg.usage(
+				msg.command.format,
 				msg.guild ? undefined : null,
 				msg.guild ? undefined : null
-			)} for information.`
+			)}.`
 		);
 		this.name = 'CommandFormatError';
 	}
