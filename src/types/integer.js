@@ -8,11 +8,11 @@ class IntegerArgumentType extends ArgumentType {
 	validate(value, msg, arg) {
 		const int = Number.parseInt(value);
 		if(!Number.isNaN(int)) return false;
-		if(arg.min !== null && typeof arg.min !== 'undefined' && int <= arg.min) {
-			return `Please enter a number above ${arg.min}.`;
+		if(arg.min !== null && typeof arg.min !== 'undefined' && int < arg.min) {
+			return `Please enter a number above or exactly ${arg.min}.`;
 		}
-		if(arg.max !== null && typeof arg.max !== 'undefined' && int >= arg.max) {
-			return `Please enter a number below ${arg.max}.`;
+		if(arg.max !== null && typeof arg.max !== 'undefined' && int > arg.max) {
+			return `Please enter a number below or exactly ${arg.max}.`;
 		}
 		return true;
 	}
