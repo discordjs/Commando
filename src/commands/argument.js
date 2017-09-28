@@ -103,7 +103,7 @@ class Argument {
 		 * Whether the argument mentions the user when prompting
 		 * @type {boolean}
 		 */
-		this.reply = info.reply === undefined ? true : info.reply;
+		this.reply = typeof info.reply === 'undefined' ? true : info.reply;
 	}
 
 	/**
