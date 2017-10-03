@@ -146,33 +146,20 @@ class CommandMessage {
 			else return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
 		}
 
-		// Ensure the ClientUser has the proper permissions
+		// Ensure the client user has the required permissions
 		if(this.message.channel.type === 'text' && this.command.clientPermissions) {
-			const missing = [];
-			for(const perm of this.command.clientPermissions) {
-				if(!this.message.channel.permissionsFor(this.client.user).has(perm)) missing.push(perm);
-			}
+			const missing = this.message.channel.permissionsFor(this.client.user).missing(this.command.clientPermissions);
 			if(missing.length > 0) {
-				const list = missing.map(perm => `\`${permissions[perm]}\``).join(', ');
 				this.client.emit('commandBlocked', this, 'clientPermissions');
-				return this.reply(
-					`The \`${this.command.name}\` command requires me to have the following missing permissions: ${list}`
-				);
-			}
-		}
-
-		// Ensure the user has the proper permissions
-		if(this.message.channel.type === 'text' && this.command.userPermissions) {
-			const missing = [];
-			for(const perm of this.command.userPermissions) {
-				if(!this.message.channel.permissionsFor(this.message.author).has(perm)) missing.push(perm);
-			}
-			if(missing.length > 0) {
-				const list = missing.map(perm => `\`${permissions[perm]}\``).join(', ');
-				this.client.emit('commandBlocked', this, 'userPermissions');
-				return this.reply(
-					`The \`${this.command.name}\` command requires you to have the following missing permissions: ${list}`
-				);
+				if(missing.length === 1) {
+					return this.reply(
+						`I need the "${permissions[missing[0]]}" permission for the \`${this.command.name}\` command to work.`
+					);
+				}
+				return this.reply(oneLine`
+					I need the following permissions for the \`${this.command.name}\` command to work:
+					${missing.map(perm => permissions[perm]).join(', ')}
+				`);
 			}
 		}
 
@@ -199,9 +186,7 @@ class CommandMessage {
 					const err = new CommandFormatError(this);
 					return this.reply(err.message);
 				}
-				return this.reply(
-					this.guild ? this.guild.locale.get('MESSAGE_CANCELLED') : this.client.locale.get('MESSAGE_CANCELLED')
-				);
+				return this.reply(this.locale.get('MESSAGE_CANCELLED'));
 			}
 			args = result.values;
 		}
@@ -513,6 +498,10 @@ class CommandMessage {
 			result.push(argString.substr(re.lastIndex).replace(re2, '$2'));
 		}
 		return result;
+	}
+
+	get locale() {
+		return this.message.guild ? this.message.guild.locale : this.client.locale;
 	}
 
 

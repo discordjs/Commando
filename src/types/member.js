@@ -38,7 +38,7 @@ class MemberArgumentType extends ArgumentType {
 		if(members.length === 0) return null;
 		if(members.length === 1) return members[0];
 		const exactMembers = members.filter(memberFilterExact(search));
-		if(exactMembers.length === 1) return members[0];
+		if(exactMembers.length === 1) return exactMembers[0];
 		return null;
 	}
 }

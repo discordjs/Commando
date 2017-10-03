@@ -1,5 +1,5 @@
 const discord = require('discord.js');
-const CommandRegistry = require('./registry');
+const CommandoRegistry = require('./registry');
 const CommandDispatcher = require('./dispatcher');
 const GuildSettingsHelper = require('./providers/helper');
 
@@ -34,9 +34,9 @@ class CommandoClient extends discord.Client {
 
 		/**
 		 * The client's command registry
-		 * @type {CommandRegistry}
+		 * @type {CommandoRegistry}
 		 */
-		this.registry = new CommandRegistry(this);
+		this.registry = new CommandoRegistry(this);
 
 		/**
 		 * The client's command dispatcher
@@ -151,7 +151,7 @@ class CommandoClient extends discord.Client {
 	 */
 	isOwner(user) {
 		if(!this.options.owner) return false;
-		user = this.resolver.resolveUser(user);
+		user = this.users.resolve(user);
 		if(!user) throw new RangeError('Unable to resolve user.');
 		if(typeof this.options.owner === 'string') return user.id === this.options.owner;
 		if(this.options.owner instanceof Array) return this.options.owner.includes(user.id);
