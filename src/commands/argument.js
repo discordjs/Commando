@@ -1,4 +1,4 @@
-const escapeMarkdown = require('discord.js').escapeMarkdown;
+const { escapeMarkdown } = require('discord.js');
 const { oneLine, stripIndents } = require('common-tags');
 
 /** A fancy argument */
