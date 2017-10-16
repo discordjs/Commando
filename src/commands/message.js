@@ -182,7 +182,6 @@ class CommandMessage {
 
 			const result = await this.command.argsCollector.obtain(this, provided);
 			if(result.cancelled) {
-				this.client.emit('commandCancelled', this);
 				if(result.prompts.length === 0) {
 					const err = new CommandFormatError(this);
 					return this.reply(err.message);
@@ -438,6 +437,8 @@ class CommandMessage {
 	 * @private
 	 */
 	finalize(responses) {
+		this.client.emit('commandFinalized', this);
+
 		if(this.responses) this.deleteRemainingResponses();
 		this.responses = {};
 		this.responsePositions = {};
