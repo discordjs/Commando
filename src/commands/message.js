@@ -437,7 +437,14 @@ class CommandMessage {
 	 * @private
 	 */
 	finalize(responses) {
-		this.client.emit('commandFinalized', this);
+		/**
+		 * Emitted when running a command
+		 * @event CommandoClient#commandFinalized
+		 * @param {Command} command - Command that is being run
+		 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
+		 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
+		 */
+		this.client.emit('commandFinalized', this.command, this, Boolean(this.patternMatches));
 
 		if(this.responses) this.deleteRemainingResponses();
 		this.responses = {};
