@@ -100,7 +100,7 @@ class CommandMessage {
 		switch(this.command.argsType) {
 			case 'single':
 				return this.argString.trim().replace(
-					this.command.argsSingleQuotes ? /^("|')([^]*)\1$/g : /^(")([^]*)"$/g, '$2'
+					this.command.argsSingleQuotes ? /^("|'|”|“)([^]*)\1$/g : /^("|”|“)([^]*)\1$/g, '$2'
 				);
 			case 'multiple':
 				return this.constructor.parseArgs(this.argString, this.command.argsCount, this.command.argsSingleQuotes);
