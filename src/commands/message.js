@@ -100,7 +100,7 @@ class CommandMessage {
 		switch(this.command.argsType) {
 			case 'single':
 				return this.argString.trim().replace(
-					this.command.argsSingleQuotes ? /^("|'|”|“)([^]*)\1$/g : /^("|”|“)([^]*)\1$/g, '$2'
+					this.command.argsSingleQuotes ? /^("|'|”|“|‘|’)([^]*)\1$/g : /^("|”|“)([^]*)\1$/g, '$2'
 				);
 			case 'multiple':
 				return this.constructor.parseArgs(this.argString, this.command.argsCount, this.command.argsSingleQuotes);
@@ -485,7 +485,7 @@ class CommandMessage {
 	 * @return {string[]} The array of arguments
 	 */
 	static parseArgs(argString, argCount, allowSingleQuote = true) {
-		const re = allowSingleQuote ? /\s*(?:("|')([^]*?)\1|(\S+))\s*/g : /\s*(?:(")([^]*?)"|(\S+))\s*/g;
+		const re = allowSingleQuote ? /\s*(?:("|'|”|“|‘|’)([^]*?)\1|(\S+))\s*/g : /\s*(?:("|”|“)([^]*?)\1|(\S+))\s*/g;
 		const result = [];
 		let match = [];
 		// Large enough to get all items
@@ -494,7 +494,7 @@ class CommandMessage {
 		while(--argCount && (match = re.exec(argString))) result.push(match[2] || match[3]);
 		// If text remains, push it to the array as-is (except for wrapping quotes, which are removed)
 		if(match && re.lastIndex < argString.length) {
-			const re2 = allowSingleQuote ? /^("|')([^]*)\1$/g : /^(")([^]*)"$/g;
+			const re2 = allowSingleQuote ? /^("|'|”|“|‘|’)([^]*)\1$/g : /^("|”|“)([^]*)\1$/g;
 			result.push(argString.substr(re.lastIndex).replace(re2, '$2'));
 		}
 		return result;
