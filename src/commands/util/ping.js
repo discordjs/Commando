@@ -1,4 +1,4 @@
-const oneLine = require('common-tags').oneLine;
+const { oneLine } = require('common-tags');
 const Command = require('../base');
 
 module.exports = class PingCommand extends Command {
