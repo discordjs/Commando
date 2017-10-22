@@ -1,6 +1,6 @@
 const ArgumentType = require('./base');
-const disambiguation = require('../util').disambiguation;
-const escapeMarkdown = require('discord.js').escapeMarkdown;
+const { disambiguation } = require('../util');
+const { escapeMarkdown } = require('discord.js');
 
 class UserArgumentType extends ArgumentType {
 	constructor(client) {
