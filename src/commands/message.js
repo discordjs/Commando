@@ -438,7 +438,7 @@ class CommandMessage {
 	 */
 	finalize(responses) {
 		/**
-		 * Emitted when running a command
+		 * Emitted when finalizing a command
 		 * @event CommandoClient#commandFinalize
 		 * @param {Command} command - Command that is being run
 		 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
