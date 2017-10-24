@@ -440,8 +440,8 @@ class CommandMessage {
 		/**
 		 * Emitted when finalizing a command
 		 * @event CommandoClient#commandFinalize
-		 * @param {Command} command - Command that is being run
-		 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
+		 * @param {Command} command - Command that is being finalized
+		 * @param {CommandMessage} message - Command message that the command is finalized from (see {@link Command#run})
 		 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
 		 */
 		this.client.emit('commandFinalize', this.command, this, Boolean(this.patternMatches));
