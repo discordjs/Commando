@@ -1,6 +1,6 @@
 const { oneLine, stripIndents } = require('common-tags');
 const Command = require('../base');
-const disambiguation = require('../../util').disambiguation;
+const { disambiguation } = require('../../util');
 
 module.exports = class ReloadCommandCommand extends Command {
 	constructor(client) {

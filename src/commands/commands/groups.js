@@ -1,4 +1,4 @@
-const stripIndents = require('common-tags').stripIndents;
+const { stripIndents } = require('common-tags');
 const Command = require('../base');
 
 module.exports = class ListGroupsCommand extends Command {

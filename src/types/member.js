@@ -1,6 +1,6 @@
 const ArgumentType = require('./base');
-const disambiguation = require('../util').disambiguation;
-const escapeMarkdown = require('discord.js').escapeMarkdown;
+const { disambiguation } = require('../util');
+const { escapeMarkdown } = require('discord.js');
 
 class MemberArgumentType extends ArgumentType {
 	constructor(client) {
@@ -25,9 +25,9 @@ class MemberArgumentType extends ArgumentType {
 		if(exactMembers.length > 0) members = exactMembers;
 		return members.length <= 15 ?
 			`${disambiguation(
-				members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), 'users', null
+				members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), 'members', null
 			)}\n` :
-			'Multiple users found. Please be more specific.';
+			'Multiple members found. Please be more specific.';
 	}
 
 	parse(value, msg) {
