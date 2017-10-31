@@ -132,7 +132,7 @@ class CommandMessage {
 			 * @event CommandoClient#commandBlocked
 			 * @param {CommandMessage} message - Command message that the command is running from
 			 * @param {string} reason - Reason that the command was blocked
-			 * (built-in reasons are `guildOnly`, `permission`, and `throttling`)
+			 * (built-in reasons are `guildOnly`, `disabled`, `permission`, and `throttling`)
 			 */
 			this.client.emit('commandBlocked', this, 'guildOnly');
 			return this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);

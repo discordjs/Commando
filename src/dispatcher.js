@@ -122,7 +122,7 @@ class CommandDispatcher {
 			if(!inhibited) {
 				if(cmdMsg.command) {
 					if(!cmdMsg.command.isEnabledIn(message.guild)) {
-						responses = await cmdMsg.reply(`The \`${cmdMsg.command.name}\` command is disabled.`);
+						this.client.emit('commandBlocked', cmdMsg, 'disabled');
 					} else if(!oldMessage || typeof oldCmdMsg !== 'undefined') {
 						responses = await cmdMsg.run();
 						if(typeof responses === 'undefined') responses = null; // eslint-disable-line max-depth
