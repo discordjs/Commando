@@ -164,8 +164,9 @@ class CommandoClient extends discord.Client {
 		return undefined;
 	}
 
-	destroy() {
-		super.destroy().then(() => this.provider ? this.provider.destroy() : undefined);
+	async destroy() {
+		await super.destroy();
+		if(this.provider) await this.provider.destroy();
 	}
 }
 
