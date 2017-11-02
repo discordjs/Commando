@@ -150,7 +150,7 @@ class Command {
 		 * Whether the command can only be used in NSFW channels
 		 * @type {boolean}
 		 */
-		this.nsfw = !!info.nsfw;
+		this.nsfw = Boolean(info.nsfw);
 
 		/**
 		 * Whether the default command handling is enabled for the command
