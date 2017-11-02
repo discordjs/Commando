@@ -125,7 +125,7 @@ class Command {
 		 * Whether the command can only be run in a guild channel
 		 * @type {boolean}
 		 */
-		this.guildOnly = !!info.guildOnly;
+		this.guildOnly = Boolean(info.guildOnly);
 
 		/**
 		 * Permissions required by the client to use the command.
