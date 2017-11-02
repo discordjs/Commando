@@ -132,7 +132,7 @@ class Command {
 		 * Whether the command can only be used by an owner
 		 * @type {boolean}
 		 */
-		this.ownerOnly = !!info.ownerOnly;
+		this.ownerOnly = Boolean(info.ownerOnly);
 
 		/**
 		 * Permissions required by the client to use the command.
