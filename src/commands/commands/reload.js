@@ -16,6 +16,7 @@ module.exports = class ReloadCommandCommand extends Command {
 				Only the bot owner(s) may use this command.
 			`,
 			examples: ['reload some-command'],
+			ownerOnly: true,
 			guarded: true,
 
 			args: [
@@ -39,10 +40,6 @@ module.exports = class ReloadCommandCommand extends Command {
 				}
 			]
 		});
-	}
-
-	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
 	}
 
 	async run(msg, args) {

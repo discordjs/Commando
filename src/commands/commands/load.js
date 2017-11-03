@@ -15,6 +15,7 @@ module.exports = class LoadCommandCommand extends Command {
 				Only the bot owner(s) may use this command.
 			`,
 			examples: ['load some-command'],
+			ownerOnly: true,
 			guarded: true,
 
 			args: [
@@ -41,10 +42,6 @@ module.exports = class LoadCommandCommand extends Command {
 				}
 			]
 		});
-	}
-
-	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
 	}
 
 	async run(msg, args) {

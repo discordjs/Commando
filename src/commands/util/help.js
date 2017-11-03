@@ -38,6 +38,7 @@ module.exports = class HelpCommand extends Command {
 					${oneLine`
 						__Command **${commands[0].name}**:__ ${commands[0].description}
 						${commands[0].guildOnly ? ' (Usable only in servers)' : ''}
+						${commands[0].nsfw ? ' (NSFW)' : ''}
 					`}
 
 					**Format:** ${msg.anyUsage(`${commands[0].name}${commands[0].format ? ` ${commands[0].format}` : ''}`)}
@@ -87,7 +88,7 @@ module.exports = class HelpCommand extends Command {
 						.map(grp => stripIndents`
 							__${grp.name}__
 							${(showAll ? grp.commands : grp.commands.filter(cmd => cmd.isUsable(msg)))
-								.map(cmd => `**${cmd.name}:** ${cmd.description}`).join('\n')
+								.map(cmd => `**${cmd.name}:** ${cmd.description}${cmd.nsfw ? ' (NSFW)' : ''}`).join('\n')
 							}
 						`).join('\n\n')
 					}

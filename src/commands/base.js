@@ -24,8 +24,10 @@ class Command {
 	 * @property {string} [details] - A detailed description of the command and its functionality
 	 * @property {string[]} [examples] - Usage examples of the command
 	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
+	 * @property {boolean} [ownerOnly=false] - Whether or not the command is usable only by an owner
 	 * @property {PermissionResolvable[]} [clientPermissions] - Permissions required by the client to use the command.
 	 * @property {PermissionResolvable[]} [userPermissions] - Permissions required by the user to use the command.
+	 * @property {boolean} [nsfw=false] - Whether the command is usable only in NSFW channels.
 	 * @property {ThrottlingOptions} [throttling] - Options for throttling usages of the command.
 	 * @property {boolean} [defaultHandling=true] - Whether or not the default command handling should be used.
 	 * If false, then only patterns will trigger the command.
@@ -124,7 +126,13 @@ class Command {
 		 * Whether the command can only be run in a guild channel
 		 * @type {boolean}
 		 */
-		this.guildOnly = !!info.guildOnly;
+		this.guildOnly = Boolean(info.guildOnly);
+
+		/**
+		 * Whether the command can only be used by an owner
+		 * @type {boolean}
+		 */
+		this.ownerOnly = Boolean(info.ownerOnly);
 
 		/**
 		 * Permissions required by the client to use the command.
@@ -137,6 +145,12 @@ class Command {
 		 * @type {?PermissionResolvable[]}
 		 */
 		this.userPermissions = info.userPermissions || null;
+
+		/**
+		 * Whether the command can only be used in NSFW channels
+		 * @type {boolean}
+		 */
+		this.nsfw = Boolean(info.nsfw);
 
 		/**
 		 * Whether the default command handling is enabled for the command
@@ -213,7 +227,11 @@ class Command {
 	 * @param {CommandMessage} message - The triggering command message
 	 * @return {boolean|string} Whether the user has permission, or an error message to respond with if they don't
 	 */
-	hasPermission(message) { // eslint-disable-line no-unused-vars
+	hasPermission(message) {
+		if(this.ownerOnly && !this.client.isOwner(message.author)) {
+			return `The \`${this.name}\` command can only be used by the bot owner.`;
+		}
+
 		if(message.channel.type === 'text' && this.userPermissions) {
 			const missing = message.channel.permissionsFor(message.author).missing(this.userPermissions);
 			if(missing.length > 0) {
