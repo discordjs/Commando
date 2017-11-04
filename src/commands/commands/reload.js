@@ -43,11 +43,33 @@ module.exports = class ReloadCommandCommand extends Command {
 	}
 
 	async run(msg, args) {
-		args.cmdOrGrp.reload();
-		if(args.cmdOrGrp.group) {
-			await msg.reply(`Reloaded \`${args.cmdOrGrp.name}\` command.`);
+		const { cmdOrGrp } = args;
+		const isCmd = Boolean(cmdOrGrp.groupID);
+		cmdOrGrp.reload();
+
+		if(this.client.shard) {
+			try {
+				await this.client.shard.broadcastEval(`
+					this.registry.${isCmd ? 'commands' : 'groups'}.get('${isCmd ? cmdOrGrp.name : cmdOrGrp.id}').reload();
+				`);
+			} catch(err) {
+				if(isCmd) {
+					await msg.reply(`Reloaded \`${cmdOrGrp.name}\` command, but failed to reload on other shards.`);
+				} else {
+					await msg.reply(
+						`Reloaded all of the commands in the \`${cmdOrGrp.name}\` group, but failed to reload on other shards.`
+					);
+				}
+				return null;
+			}
+		}
+
+		if(isCmd) {
+			await msg.reply(`Reloaded \`${cmdOrGrp.name}\` command${this.client.shard ? ' on all shards' : ''}.`);
 		} else {
-			await msg.reply(`Reloaded all of the commands in the \`${args.cmdOrGrp.name}\` group.`);
+			await msg.reply(
+				`Reloaded all of the commands in the \`${cmdOrGrp.name}\` group${this.client.shard ? ' on all shards' : ''}.`
+			);
 		}
 		return null;
 	}
