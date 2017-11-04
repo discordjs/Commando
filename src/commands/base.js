@@ -223,12 +223,16 @@ class Command {
 	}
 
 	/**
-	 * Checks a user's permission in a guild
+	 * Checks if the user has permission to use the command
 	 * @param {CommandMessage} message - The triggering command message
-	 * @return {boolean}
+	 * @param {boolean} [ownerOverride=true] - Whether the bot owner(s) will always have permission
+	 * @return {boolean|string} Whether the user has permission, or an error message to respond with if they don't
 	 */
-	hasPermission(message) {
-		if(this.ownerOnly && !this.client.isOwner(message.author)) {
+	hasPermission(message, ownerOverride = true) {
+		if(!this.ownerOnly && !this.userPermissions) return true;
+		if(ownerOverride && this.client.isOwner(message.author)) return true;
+
+		if(this.ownerOnly && (ownerOverride || !this.client.isOwner(message.author))) {
 			return `The \`${this.name}\` command can only be used by the bot owner.`;
 		}
 
