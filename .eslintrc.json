@@ -91,7 +91,8 @@
 		"func-names": "error",
 		"func-style": ["error", "declaration", { "allowArrowFunctions": true }],
 		"id-length": ["error", { "exceptions": ["i", "j", "a", "b"] }],
-		"indent": ["error", "tab", { "SwitchCase": 1 }],
+		"indent": "off",
+		"indent-legacy": ["error", "tab", { "SwitchCase": 1 }],
 		"key-spacing": "error",
 		"keyword-spacing": ["error", {
 			"overrides": {
