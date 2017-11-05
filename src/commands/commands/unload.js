@@ -37,7 +37,17 @@ module.exports = class UnloadCommandCommand extends Command {
 
 	async run(msg, args) {
 		args.command.unload();
-		await msg.reply(`Unloaded \`${args.command.name}\` command.`);
+
+		if(this.client.shard) {
+			try {
+				await this.client.shard.broadcastEval(`this.registry.commands.get('${args.command.name}').unload();`);
+			} catch(err) {
+				await msg.reply(`Unloaded \`${args.command.name}\` command, but failed to unload on other shards.`);
+				return null;
+			}
+		}
+
+		await msg.reply(`Unloaded \`${args.command.name}\` command${this.client.shard ? ' on all shards' : ''}.`);
 		return null;
 	}
 };

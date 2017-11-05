@@ -46,7 +46,25 @@ module.exports = class LoadCommandCommand extends Command {
 
 	async run(msg, args) {
 		this.client.registry.registerCommand(args.command);
-		await msg.reply(`Loaded \`${this.client.registry.commands.last().name}\` command.`);
+
+		if(this.client.shard) {
+			try {
+				await this.client.shard.broadcastEval(`
+					const cmdPath = this.registry.resolveCommandPath('${args.command.groupID}', '${args.command.name}');
+					delete require.cache[cmdPath];
+					this.registry.registerCommand(require(cmdPath));
+				`);
+			} catch(err) {
+				await msg.reply(
+					`Loaded \`${this.client.registry.commands.last().name}\` command, but failed to load on other shards.`
+				);
+				return null;
+			}
+		}
+
+		await msg.reply(
+			`Loaded \`${this.client.registry.commands.last().name}\` command${this.client.shard ? ' on all shards' : ''}.`
+		);
 		return null;
 	}
 };

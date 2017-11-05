@@ -30,7 +30,7 @@ Additionally, it makes full use of ES2017's `async`/`await` functionality for cl
 
 ## Installation
 **Node 8.0.0 or newer is required.**  
-`npm i discord.js-commando`
+`npm install discord.js-commando`
 
 ## Documentation
 [View the docs here.](https://discord.js.org/#/docs/commando)  
