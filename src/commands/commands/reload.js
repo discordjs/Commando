@@ -1,6 +1,6 @@
 const { oneLine, stripIndents } = require('common-tags');
 const Command = require('../base');
-const disambiguation = require('../../util').disambiguation;
+const { disambiguation } = require('../../util');
 
 module.exports = class ReloadCommandCommand extends Command {
 	constructor(client) {
@@ -16,6 +16,7 @@ module.exports = class ReloadCommandCommand extends Command {
 				Only the bot owner(s) may use this command.
 			`,
 			examples: ['reload some-command'],
+			ownerOnly: true,
 			guarded: true,
 
 			args: [
@@ -23,34 +24,44 @@ module.exports = class ReloadCommandCommand extends Command {
 					key: 'cmdOrGrp',
 					label: 'command/group',
 					prompt: 'Which command or group would you like to reload?',
-					validate: val => {
-						if(!val) return false;
-						const groups = this.client.registry.findGroups(val);
-						if(groups.length === 1) return true;
-						const commands = this.client.registry.findCommands(val);
-						if(commands.length === 1) return true;
-						if(commands.length === 0 && groups.length === 0) return false;
-						return stripIndents`
-							${commands.length > 1 ? disambiguation(commands, 'commands') : ''}
-							${groups.length > 1 ? disambiguation(groups, 'groups') : ''}
-						`;
-					},
-					parse: val => this.client.registry.findGroups(val)[0] || this.client.registry.findCommands(val)[0]
+					type: 'command-or-group'
 				}
 			]
 		});
 	}
 
-	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
-	}
-
 	async run(msg, args) {
-		args.cmdOrGrp.reload();
-		if(args.cmdOrGrp.group) {
-			await msg.reply(`Reloaded \`${args.cmdOrGrp.name}\` command.`);
+		const { cmdOrGrp } = args;
+		const isCmd = Boolean(cmdOrGrp.groupID);
+		cmdOrGrp.reload();
+
+		if(this.client.shard) {
+			try {
+				await this.client.shard.broadcastEval(`
+					if(this.shard.id !== ${this.client.shard.id}) {
+						this.registry.${isCmd ? 'commands' : 'groups'}.get('${isCmd ? cmdOrGrp.name : cmdOrGrp.id}').reload();
+					}
+				`);
+			} catch(err) {
+				this.client.emit('warn', `Error when broadcasting command reload to other shards`);
+				this.client.emit('error', err);
+				if(isCmd) {
+					await msg.reply(`Reloaded \`${cmdOrGrp.name}\` command, but failed to reload on other shards.`);
+				} else {
+					await msg.reply(
+						`Reloaded all of the commands in the \`${cmdOrGrp.name}\` group, but failed to reload on other shards.`
+					);
+				}
+				return null;
+			}
+		}
+
+		if(isCmd) {
+			await msg.reply(`Reloaded \`${cmdOrGrp.name}\` command${this.client.shard ? ' on all shards' : ''}.`);
 		} else {
-			await msg.reply(`Reloaded all of the commands in the \`${args.cmdOrGrp.name}\` group.`);
+			await msg.reply(
+				`Reloaded all of the commands in the \`${cmdOrGrp.name}\` group${this.client.shard ? ' on all shards' : ''}.`
+			);
 		}
 		return null;
 	}

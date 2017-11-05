@@ -1,5 +1,5 @@
 const fs = require('fs');
-const oneLine = require('common-tags').oneLine;
+const { oneLine } = require('common-tags');
 const Command = require('../base');
 
 module.exports = class LoadCommandCommand extends Command {
@@ -15,6 +15,7 @@ module.exports = class LoadCommandCommand extends Command {
 				Only the bot owner(s) may use this command.
 			`,
 			examples: ['load some-command'],
+			ownerOnly: true,
 			guarded: true,
 
 			args: [
@@ -43,13 +44,28 @@ module.exports = class LoadCommandCommand extends Command {
 		});
 	}
 
-	hasPermission(msg) {
-		return this.client.isOwner(msg.author);
-	}
-
 	async run(msg, args) {
 		this.client.registry.registerCommand(args.command);
-		await msg.reply(`Loaded \`${this.client.registry.commands.last().name}\` command.`);
+		const command = this.client.registry.commands.last();
+
+		if(this.client.shard) {
+			try {
+				await this.client.shard.broadcastEval(`
+					if(this.shard.id !== ${this.client.shard.id}) {
+						const cmdPath = this.registry.resolveCommandPath('${command.groupID}', '${command.name}');
+						delete require.cache[cmdPath];
+						this.registry.registerCommand(require(cmdPath));
+					}
+				`);
+			} catch(err) {
+				this.client.emit('warn', `Error when broadcasting command load to other shards`);
+				this.client.emit('error', err);
+				await msg.reply(`Loaded \`${command.name}\` command, but failed to load on other shards.`);
+				return null;
+			}
+		}
+
+		await msg.reply(`Loaded \`${command.name}\` command${this.client.shard ? ' on all shards' : ''}.`);
 		return null;
 	}
 };

@@ -292,6 +292,9 @@ class CommandRegistry {
 	 * - channel
 	 * - message
 	 * - emoji
+	 * - command
+	 * - group
+	 * - command-or-group
 	 * @return {CommandRegistry}
 	 */
 	registerDefaultTypes() {
@@ -305,7 +308,10 @@ class CommandRegistry {
 			require('./types/role'),
 			require('./types/channel'),
 			require('./types/message'),
-			require('./types/emoji')
+			require('./types/emoji'),
+			require('./types/command'),
+			require('./types/group'),
+			require('./types/command-or-group')
 		]);
 		return this;
 	}
