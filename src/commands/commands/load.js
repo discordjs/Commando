@@ -55,6 +55,8 @@ module.exports = class LoadCommandCommand extends Command {
 					this.registry.registerCommand(require(cmdPath));
 				`);
 			} catch(err) {
+				this.client.emit('warn', `Error when broadcasting command load to other shards`);
+				this.client.emit('error', err);
 				await msg.reply(
 					`Loaded \`${this.client.registry.commands.last().name}\` command, but failed to load on other shards.`
 				);
