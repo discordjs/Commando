@@ -22,14 +22,7 @@ module.exports = class UnloadCommandCommand extends Command {
 				{
 					key: 'command',
 					prompt: 'Which command would you like to unload?',
-					validate: val => {
-						if(!val) return false;
-						const commands = this.client.registry.findCommands(val);
-						if(commands.length === 1) return true;
-						if(commands.length === 0) return false;
-						return disambiguation(commands, 'commands');
-					},
-					parse: val => this.client.registry.findCommands(val)[0]
+					type: 'command'
 				}
 			]
 		});
