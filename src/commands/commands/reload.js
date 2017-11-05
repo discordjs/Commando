@@ -50,7 +50,9 @@ module.exports = class ReloadCommandCommand extends Command {
 		if(this.client.shard) {
 			try {
 				await this.client.shard.broadcastEval(`
-					this.registry.${isCmd ? 'commands' : 'groups'}.get('${isCmd ? cmdOrGrp.name : cmdOrGrp.id}').reload();
+					if(this.shard.id !== ${this.client.shard.id}) {
+						this.registry.${isCmd ? 'commands' : 'groups'}.get('${isCmd ? cmdOrGrp.name : cmdOrGrp.id}').reload();
+					}
 				`);
 			} catch(err) {
 				this.client.emit('warn', `Error when broadcasting command reload to other shards`);

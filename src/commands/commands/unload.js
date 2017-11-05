@@ -40,7 +40,9 @@ module.exports = class UnloadCommandCommand extends Command {
 
 		if(this.client.shard) {
 			try {
-				await this.client.shard.broadcastEval(`this.registry.commands.get('${args.command.name}').unload();`);
+				await this.client.shard.broadcastEval(`
+					if(this.shard.id !== ${this.client.shard.id}) this.registry.commands.get('${args.command.name}').unload();
+				`);
 			} catch(err) {
 				this.client.emit('warn', `Error when broadcasting command unload to other shards`);
 				this.client.emit('error', err);
