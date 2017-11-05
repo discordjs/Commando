@@ -51,9 +51,11 @@ module.exports = class LoadCommandCommand extends Command {
 		if(this.client.shard) {
 			try {
 				await this.client.shard.broadcastEval(`
-					const cmdPath = this.registry.resolveCommandPath('${command.groupID}', '${command.name}');
-					delete require.cache[cmdPath];
-					this.registry.registerCommand(require(cmdPath));
+					if(this.shard.id !== ${this.client.shard.id}) {
+						const cmdPath = this.registry.resolveCommandPath('${command.groupID}', '${command.name}');
+						delete require.cache[cmdPath];
+						this.registry.registerCommand(require(cmdPath));
+					}
 				`);
 			} catch(err) {
 				this.client.emit('warn', `Error when broadcasting command load to other shards`);
