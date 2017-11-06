@@ -1,6 +1,5 @@
-const { oneLine, stripIndents } = require('common-tags');
+const { oneLine } = require('common-tags');
 const Command = require('../base');
-const { disambiguation } = require('../../util');
 
 module.exports = class EnableCommandCommand extends Command {
 	constructor(client) {
