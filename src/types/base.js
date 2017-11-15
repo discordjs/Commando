@@ -4,10 +4,10 @@ class ArgumentType {
 	 * @param {CommandoClient} client - The client the argument type is for
 	 * @param {string} id - The argument type ID (this is what you specify in {@link ArgumentInfo#type})
 	 */
-	constructor(client, id) {
-		if(!client) throw new Error('A client must be specified.');
-		if(typeof id !== 'string') throw new Error('Argument type ID must be a string.');
-		if(id !== id.toLowerCase()) throw new Error('Argument type ID must be lowercase.');
+  constructor (client, id) {
+    if (!client) throw new Error('A client must be specified.')
+    if (typeof id !== 'string') throw new Error('Argument type ID must be a string.')
+    if (id !== id.toLowerCase()) throw new Error('Argument type ID must be lowercase.')
 
 		/**
 		 * Client that this argument type is for
@@ -15,14 +15,14 @@ class ArgumentType {
 		 * @type {CommandoClient}
 		 * @readonly
 		 */
-		Object.defineProperty(this, 'client', { value: client });
+    Object.defineProperty(this, 'client', { value: client })
 
 		/**
 		 * ID of this argument type (this is what you specify in {@link ArgumentInfo#type})
 		 * @type {string}
 		 */
-		this.id = id;
-	}
+    this.id = id
+  }
 
 	// eslint-disable-next-line valid-jsdoc
 	/**
@@ -33,9 +33,9 @@ class ArgumentType {
 	 * @return {boolean|string|Promise<boolean|string>} Whether the value is valid, or an error message
 	 * @abstract
 	 */
-	validate(value, msg, arg) { // eslint-disable-line no-unused-vars
-		throw new Error(`${this.constructor.name} doesn't have a validate() method.`);
-	}
+  validate (value, msg, arg) { // eslint-disable-line no-unused-vars
+    throw new Error(`${this.constructor.name} doesn't have a validate() method.`)
+  }
 
 	// eslint-disable-next-line valid-jsdoc
 	/**
@@ -46,9 +46,9 @@ class ArgumentType {
 	 * @return {*|Promise<*>} Usable value
 	 * @abstract
 	 */
-	parse(value, msg, arg) { // eslint-disable-line no-unused-vars
-		throw new Error(`${this.constructor.name} doesn't have a parse() method.`);
-	}
+  parse (value, msg, arg) { // eslint-disable-line no-unused-vars
+    throw new Error(`${this.constructor.name} doesn't have a parse() method.`)
+  }
 }
 
-module.exports = ArgumentType;
+module.exports = ArgumentType

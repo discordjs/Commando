@@ -17,7 +17,7 @@
 		"commands"
 	],
 	"scripts": {
-		"test": "npm run lint && npm run docs:test",
+		"test": "node node_modules/standard/bin/cmd.js --fix && npm run lint && npm run docs:test",
 		"lint": "eslint src",
 		"lint:fix": "eslint --fix src",
 		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json --jsdoc jsdoc.json",
@@ -43,5 +43,8 @@
 	},
 	"engines": {
 		"node": ">=8.0.0"
+	},
+	"optionalDependencies": {
+		"standard": "^10.0.3"
 	}
 }

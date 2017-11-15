@@ -1,4 +1,4 @@
-const discord = require('discord.js');
+const discord = require('discord.js')
 
 /** A group for commands. Whodathunkit? */
 class CommandGroup {
@@ -9,11 +9,11 @@ class CommandGroup {
 	 * @param {boolean} [guarded=false] - Whether the group should be protected from disabling
 	 * @param {Command[]} [commands] - The commands that the group contains
 	 */
-	constructor(client, id, name, guarded = false, commands = null) {
-		if(!client) throw new Error('A client must be specified.');
-		if(typeof id !== 'string') throw new TypeError('Group ID must be a string.');
-		if(id !== id.toLowerCase()) throw new Error('Group ID must be lowercase.');
-		if(commands && !Array.isArray(commands)) throw new TypeError('Group commands must be an Array of Commands.');
+  constructor (client, id, name, guarded = false, commands = null) {
+    if (!client) throw new Error('A client must be specified.')
+    if (typeof id !== 'string') throw new TypeError('Group ID must be a string.')
+    if (id !== id.toLowerCase()) throw new Error('Group ID must be lowercase.')
+    if (commands && !Array.isArray(commands)) throw new TypeError('Group commands must be an Array of Commands.')
 
 		/**
 		 * Client that this group is for
@@ -21,74 +21,74 @@ class CommandGroup {
 		 * @type {CommandoClient}
 		 * @readonly
 		 */
-		Object.defineProperty(this, 'client', { value: client });
+    Object.defineProperty(this, 'client', { value: client })
 
 		/**
 		 * ID of this group
 		 * @type {string}
 		 */
-		this.id = id;
+    this.id = id
 
 		/**
 		 * Name of this group
 		 * @type {string}
 		 */
-		this.name = name || id;
+    this.name = name || id
 
 		/**
 		 * The commands in this group (added upon their registration)
 		 * @type {Collection<string, Command>}
 		 */
-		this.commands = new discord.Collection();
-		if(commands) {
-			for(const command of commands) this.commands.set(command.name, command);
-		}
+    this.commands = new discord.Collection()
+    if (commands) {
+      for (const command of commands) this.commands.set(command.name, command)
+    }
 
 		/**
 		 * Whether or not this group is protected from being disabled
 		 * @type {boolean}
 		 */
-		this.guarded = guarded;
+    this.guarded = guarded
 
-		this._globalEnabled = true;
-	}
+    this._globalEnabled = true
+  }
 
 	/**
 	 * Enables or disables the group in a guild
 	 * @param {?GuildResolvable} guild - Guild to enable/disable the group in
 	 * @param {boolean} enabled - Whether the group should be enabled or disabled
 	 */
-	setEnabledIn(guild, enabled) {
-		if(typeof guild === 'undefined') throw new TypeError('Guild must not be undefined.');
-		if(typeof enabled === 'undefined') throw new TypeError('Enabled must not be undefined.');
-		if(this.guarded) throw new Error('The group is guarded.');
-		if(!guild) {
-			this._globalEnabled = enabled;
-			this.client.emit('groupStatusChange', null, this, enabled);
-			return;
-		}
-		guild = this.client.guilds.resolve(guild);
-		guild.setGroupEnabled(this, enabled);
-	}
+  setEnabledIn (guild, enabled) {
+    if (typeof guild === 'undefined') throw new TypeError('Guild must not be undefined.')
+    if (typeof enabled === 'undefined') throw new TypeError('Enabled must not be undefined.')
+    if (this.guarded) throw new Error('The group is guarded.')
+    if (!guild) {
+      this._globalEnabled = enabled
+      this.client.emit('groupStatusChange', null, this, enabled)
+      return
+    }
+    guild = this.client.guilds.resolve(guild)
+    guild.setGroupEnabled(this, enabled)
+  }
 
 	/**
 	 * Checks if the group is enabled in a guild
 	 * @param {?GuildResolvable} guild - Guild to check in
 	 * @return {boolean} Whether or not the group is enabled
 	 */
-	isEnabledIn(guild) {
-		if(this.guarded) return true;
-		if(!guild) return this._globalEnabled;
-		guild = this.client.guilds.resolve(guild);
-		return guild.isGroupEnabled(this);
-	}
+  isEnabledIn (guild) {
+    if (this.guarded) return true
+    if (!guild) return this._globalEnabled
+    guild = this.client.guilds.resolve(guild)
+    return guild.isGroupEnabled(this)
+  }
 
 	/**
 	 * Reloads all of the group's commands
 	 */
-	reload() {
-		for(const command of this.commands.values()) command.reload();
-	}
+  reload () {
+    for (const command of this.commands.values()) command.reload()
+  }
 }
 
-module.exports = CommandGroup;
+module.exports = CommandGroup

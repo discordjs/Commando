@@ -1,9 +1,9 @@
-const discord = require('discord.js');
-const { stripIndents, oneLine } = require('common-tags');
-const Command = require('./base');
-const FriendlyError = require('../errors/friendly');
-const CommandFormatError = require('../errors/command-format');
-const { permissions } = require('../util');
+const discord = require('discord.js')
+const { stripIndents, oneLine } = require('common-tags')
+const Command = require('./base')
+const FriendlyError = require('../errors/friendly')
+const CommandFormatError = require('../errors/command-format')
+const { permissions } = require('../util')
 
 /** A container for a message that triggers a command, that command, and methods to respond */
 class CommandMessage {
@@ -13,51 +13,51 @@ class CommandMessage {
 	 * @param {string} [argString] - Argument string for the command
 	 * @param {?Array<string>} [patternMatches] - Command pattern matches (if from a pattern trigger)
 	 */
-	constructor(message, command = null, argString = null, patternMatches = null) {
+  constructor (message, command = null, argString = null, patternMatches = null) {
 		/**
 		 * Client that the message was sent from
 		 * @name CommandMessage#client
 		 * @type {CommandoClient}
 		 * @readonly
 		 */
-		Object.defineProperty(this, 'client', { value: message.client });
+    Object.defineProperty(this, 'client', { value: message.client })
 
 		/**
 		 * Message that triggers the command
 		 * @type {Message}
 		 */
-		this.message = message;
+    this.message = message
 
 		/**
 		 * Command that the message triggers, if any
 		 * @type {?Command}
 		 */
-		this.command = command;
+    this.command = command
 
 		/**
 		 * Argument string for the command
 		 * @type {?string}
 		 */
-		this.argString = argString;
+    this.argString = argString
 
 		/**
 		 * Pattern matches (if from a pattern trigger)
 		 * @type {?string[]}
 		 */
-		this.patternMatches = patternMatches;
+    this.patternMatches = patternMatches
 
 		/**
 		 * Response messages sent, mapped by channel ID (set by the dispatcher after running the command)
 		 * @type {?Object}
 		 */
-		this.responses = null;
+    this.responses = null
 
 		/**
 		 * The index of the current response that will be edited, mapped by channel ID
 		 * @type {?Object}
 		 */
-		this.responsePositions = null;
-	}
+    this.responsePositions = null
+  }
 
 	/**
 	 * Creates a usage string for the message's command
@@ -67,13 +67,13 @@ class CommandMessage {
 	 * @param {User} [user=this.client.user] - User to use for the mention command format
 	 * @return {string}
 	 */
-	usage(argString, prefix, user = this.client.user) {
-		if(typeof prefix === 'undefined') {
-			if(this.message.guild) prefix = this.message.guild.commandPrefix;
-			else prefix = this.client.commandPrefix;
-		}
-		return this.command.usage(argString, prefix, user);
-	}
+  usage (argString, prefix, user = this.client.user) {
+    if (typeof prefix === 'undefined') {
+      if (this.message.guild) prefix = this.message.guild.commandPrefix
+      else prefix = this.client.commandPrefix
+    }
+    return this.command.usage(argString, prefix, user)
+  }
 
 	/**
 	 * Creates a usage string for any command
@@ -83,50 +83,50 @@ class CommandMessage {
 	 * @param {User} [user=this.client.user] - User to use for the mention command format
 	 * @return {string}
 	 */
-	anyUsage(command, prefix, user = this.client.user) {
-		if(typeof prefix === 'undefined') {
-			if(this.message.guild) prefix = this.message.guild.commandPrefix;
-			else prefix = this.client.commandPrefix;
-		}
-		return Command.usage(command, prefix, user);
-	}
+  anyUsage (command, prefix, user = this.client.user) {
+    if (typeof prefix === 'undefined') {
+      if (this.message.guild) prefix = this.message.guild.commandPrefix
+      else prefix = this.client.commandPrefix
+    }
+    return Command.usage(command, prefix, user)
+  }
 
 	/**
 	 * Parses the argString into usable arguments, based on the argsType and argsCount of the command
 	 * @return {string|string[]}
 	 * @see {@link Command#run}
 	 */
-	parseArgs() {
-		switch(this.command.argsType) {
-			case 'single':
-				return this.argString.trim().replace(
+  parseArgs () {
+    switch (this.command.argsType) {
+      case 'single':
+        return this.argString.trim().replace(
 					this.command.argsSingleQuotes ? /^("|')([^]*)\1$/g : /^(")([^]*)"$/g, '$2'
-				);
-			case 'multiple':
-				return this.constructor.parseArgs(this.argString, this.command.argsCount, this.command.argsSingleQuotes);
-			default:
-				throw new RangeError(`Unknown argsType "${this.argsType}".`);
-		}
-	}
+				)
+      case 'multiple':
+        return this.constructor.parseArgs(this.argString, this.command.argsCount, this.command.argsSingleQuotes)
+      default:
+        throw new RangeError(`Unknown argsType "${this.argsType}".`)
+    }
+  }
 
 	/**
 	 * Runs the command
 	 * @return {Promise<?Message|?Array<Message>>}
 	 */
-	async run() { // eslint-disable-line complexity
+  async run () { // eslint-disable-line complexity
 		// Obtain the member if we don't have it (ugly-ass if statement ahead)
-		if(this.message.channel.type === 'text' && !this.message.guild.members.has(this.message.author.id) &&
+    if (this.message.channel.type === 'text' && !this.message.guild.members.has(this.message.author.id) &&
 			!this.message.webhookID) {
-			this.message.member = await this.message.guild.members.fetch(this.message.author);
-		}
+      this.message.member = await this.message.guild.members.fetch(this.message.author)
+    }
 
 		// Obtain the member for the ClientUser if it doesn't already exist
-		if(this.message.channel.type === 'text' && !this.message.guild.members.has(this.client.user.id)) {
-			await this.message.guild.members.fetch(this.client.user.id);
-		}
+    if (this.message.channel.type === 'text' && !this.message.guild.members.has(this.client.user.id)) {
+      await this.message.guild.members.fetch(this.client.user.id)
+    }
 
 		// Make sure the command is usable in this context
-		if(this.command.guildOnly && !this.message.guild) {
+    if (this.command.guildOnly && !this.message.guild) {
 			/**
 			 * Emitted when a command is prevented from running
 			 * @event CommandoClient#commandBlocked
@@ -134,76 +134,76 @@ class CommandMessage {
 			 * @param {string} reason - Reason that the command was blocked
 			 * (built-in reasons are `guildOnly`, `permission`, and `throttling`)
 			 */
-			this.client.emit('commandBlocked', this, 'guildOnly');
-			return this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
-		}
+      this.client.emit('commandBlocked', this, 'guildOnly')
+      return this.reply(`The \`${this.command.name}\` command must be used in a server channel.`)
+    }
 
-		if(this.command.nsfw && !this.message.channel.nsfw) {
-			this.client.emit('commandBlocked', this, 'nsfw');
-			return this.reply(`The \`${this.command.name}\` command can only be used in NSFW channels.`);
-		}
+    if (this.command.nsfw && !this.message.channel.nsfw) {
+      this.client.emit('commandBlocked', this, 'nsfw')
+      return this.reply(`The \`${this.command.name}\` command can only be used in NSFW channels.`)
+    }
 
 		// Ensure the user has permission to use the command
-		const hasPermission = this.command.hasPermission(this);
-		if(!hasPermission || typeof hasPermission === 'string') {
-			this.client.emit('commandBlocked', this, 'permission');
-			if(typeof hasPermission === 'string') return this.reply(hasPermission);
-			else return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
-		}
+    const hasPermission = this.command.hasPermission(this)
+    if (!hasPermission || typeof hasPermission === 'string') {
+      this.client.emit('commandBlocked', this, 'permission')
+      if (typeof hasPermission === 'string') return this.reply(hasPermission)
+      else return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`)
+    }
 
 		// Ensure the client user has the required permissions
-		if(this.message.channel.type === 'text' && this.command.clientPermissions) {
-			const missing = this.message.channel.permissionsFor(this.client.user).missing(this.command.clientPermissions);
-			if(missing.length > 0) {
-				this.client.emit('commandBlocked', this, 'clientPermissions');
-				if(missing.length === 1) {
-					return this.reply(
+    if (this.message.channel.type === 'text' && this.command.clientPermissions) {
+      const missing = this.message.channel.permissionsFor(this.client.user).missing(this.command.clientPermissions)
+      if (missing.length > 0) {
+        this.client.emit('commandBlocked', this, 'clientPermissions')
+        if (missing.length === 1) {
+          return this.reply(
 						`I need the "${permissions[missing[0]]}" permission for the \`${this.command.name}\` command to work.`
-					);
-				}
-				return this.reply(oneLine`
+					)
+        }
+        return this.reply(oneLine`
 					I need the following permissions for the \`${this.command.name}\` command to work:
 					${missing.map(perm => permissions[perm]).join(', ')}
-				`);
-			}
-		}
+				`)
+      }
+    }
 
 		// Throttle the command
-		const throttle = this.command.throttle(this.message.author.id);
-		if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
-			const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
-			this.client.emit('commandBlocked', this, 'throttling');
-			return this.reply(
+    const throttle = this.command.throttle(this.message.author.id)
+    if (throttle && throttle.usages + 1 > this.command.throttling.usages) {
+      const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000
+      this.client.emit('commandBlocked', this, 'throttling')
+      return this.reply(
 				`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
-			);
-		}
+			)
+    }
 
 		// Figure out the command arguments
-		let args = this.patternMatches;
-		if(!args && this.command.argsCollector) {
-			const collArgs = this.command.argsCollector.args;
-			const count = collArgs[collArgs.length - 1].infinite ? Infinity : collArgs.length;
-			const provided = this.constructor.parseArgs(this.argString.trim(), count, this.command.argsSingleQuotes);
+    let args = this.patternMatches
+    if (!args && this.command.argsCollector) {
+      const collArgs = this.command.argsCollector.args
+      const count = collArgs[collArgs.length - 1].infinite ? Infinity : collArgs.length
+      const provided = this.constructor.parseArgs(this.argString.trim(), count, this.command.argsSingleQuotes)
 
-			const result = await this.command.argsCollector.obtain(this, provided);
-			if(result.cancelled) {
-				if(result.prompts.length === 0) {
-					const err = new CommandFormatError(this);
-					return this.reply(err.message);
-				}
-				return this.reply('Cancelled command.');
-			}
-			args = result.values;
-		}
-		if(!args) args = this.parseArgs();
-		const fromPattern = Boolean(this.patternMatches);
+      const result = await this.command.argsCollector.obtain(this, provided)
+      if (result.cancelled) {
+        if (result.prompts.length === 0) {
+          const err = new CommandFormatError(this)
+          return this.reply(err.message)
+        }
+        return this.reply('Cancelled command.')
+      }
+      args = result.values
+    }
+    if (!args) args = this.parseArgs()
+    const fromPattern = Boolean(this.patternMatches)
 
 		// Run the command
-		if(throttle) throttle.usages++;
-		const typingCount = this.message.channel.typingCount;
-		try {
-			this.client.emit('debug', `Running command ${this.command.groupID}:${this.command.memberName}.`);
-			const promise = this.command.run(this, args, fromPattern);
+    if (throttle) throttle.usages++
+    const typingCount = this.message.channel.typingCount
+    try {
+      this.client.emit('debug', `Running command ${this.command.groupID}:${this.command.memberName}.`)
+      const promise = this.command.run(this, args, fromPattern)
 			/**
 			 * Emitted when running a command
 			 * @event CommandoClient#commandRun
@@ -213,17 +213,17 @@ class CommandMessage {
 			 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 			 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
 			 */
-			this.client.emit('commandRun', this.command, promise, this, args, fromPattern);
-			const retVal = await promise;
-			if(!(retVal instanceof discord.Message || retVal instanceof Array || retVal === null || retVal === undefined)) {
-				throw new TypeError(oneLine`
+      this.client.emit('commandRun', this.command, promise, this, args, fromPattern)
+      const retVal = await promise
+      if (!(retVal instanceof discord.Message || retVal instanceof Array || retVal === null || retVal === undefined)) {
+        throw new TypeError(oneLine`
 					Command ${this.command.name}'s run() resolved with an unknown type
 					(${retVal !== null ? retVal && retVal.constructor ? retVal.constructor.name : typeof retVal : null}).
 					Command run methods must return a Promise that resolve with a Message, Array of Messages, or null/undefined.
-				`);
-			}
-			return retVal;
-		} catch(err) {
+				`)
+      }
+      return retVal
+    } catch (err) {
 			/**
 			 * Emitted when a command produces an error while running
 			 * @event CommandoClient#commandError
@@ -233,26 +233,26 @@ class CommandMessage {
 			 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 			 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
 			 */
-			this.client.emit('commandError', this.command, err, this, args, fromPattern);
-			if(this.message.channel.typingCount > typingCount) this.message.channel.stopTyping();
-			if(err instanceof FriendlyError) {
-				return this.reply(err.message);
-			} else {
-				const owners = this.client.owners;
-				let ownerList = owners ? owners.map((usr, i) => {
-					const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
-					return `${or}${discord.escapeMarkdown(usr.username)}#${usr.discriminator}`;
-				}).join(owners.length > 2 ? ', ' : ' ') : '';
+      this.client.emit('commandError', this.command, err, this, args, fromPattern)
+      if (this.message.channel.typingCount > typingCount) this.message.channel.stopTyping()
+      if (err instanceof FriendlyError) {
+        return this.reply(err.message)
+      } else {
+        const owners = this.client.owners
+        let ownerList = owners ? owners.map((usr, i) => {
+          const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : ''
+          return `${or}${discord.escapeMarkdown(usr.username)}#${usr.discriminator}`
+        }).join(owners.length > 2 ? ', ' : ' ') : ''
 
-				const invite = this.client.options.invite;
-				return this.reply(stripIndents`
+        const invite = this.client.options.invite
+        return this.reply(stripIndents`
 					An error occurred while running the command: \`${err.name}: ${err.message}\`
 					You shouldn't ever receive an error like this.
 					Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
-				`);
-			}
-		}
-	}
+				`)
+      }
+    }
+  }
 
 	/**
 	 * Responds to the command message
@@ -260,44 +260,44 @@ class CommandMessage {
 	 * @return {Message|Message[]}
 	 * @private
 	 */
-	respond({ type = 'reply', content, options, lang, fromEdit = false }) {
-		const shouldEdit = this.responses && !fromEdit;
-		if(shouldEdit) {
-			if(options && options.split && typeof options.split !== 'object') options.split = {};
-		}
+  respond ({ type = 'reply', content, options, lang, fromEdit = false }) {
+    const shouldEdit = this.responses && !fromEdit
+    if (shouldEdit) {
+      if (options && options.split && typeof options.split !== 'object') options.split = {}
+    }
 
-		if(type === 'reply' && this.message.channel.type === 'dm') type = 'plain';
-		if(type !== 'direct') {
-			if(this.message.guild && !this.message.channel.permissionsFor(this.client.user).has('SEND_MESSAGES')) {
-				type = 'direct';
-			}
-		}
+    if (type === 'reply' && this.message.channel.type === 'dm') type = 'plain'
+    if (type !== 'direct') {
+      if (this.message.guild && !this.message.channel.permissionsFor(this.client.user).has('SEND_MESSAGES')) {
+        type = 'direct'
+      }
+    }
 
-		content = discord.Util.resolveString(content);
+    content = discord.Util.resolveString(content)
 
-		switch(type) {
-			case 'plain':
-				if(!shouldEdit) return this.message.channel.send(content, options);
-				return this.editCurrentResponse(channelIDOrDM(this.message.channel), { type, content, options });
-			case 'reply':
-				if(!shouldEdit) return this.message.reply(content, options);
-				if(options && options.split && !options.split.prepend) options.split.prepend = `${this.message.author}, `;
-				return this.editCurrentResponse(channelIDOrDM(this.message.channel), { type, content, options });
-			case 'direct':
-				if(!shouldEdit) return this.message.author.send(content, options);
-				return this.editCurrentResponse('dm', { type, content, options });
-			case 'code':
-				if(!shouldEdit) return this.message.channel.send(content, options);
-				if(options && options.split) {
-					if(!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`;
-					if(!options.split.append) options.split.append = '\n```';
-				}
-				content = `\`\`\`${lang || ''}\n${discord.escapeMarkdown(content, true)}\n\`\`\``;
-				return this.editCurrentResponse(channelIDOrDM(this.message.channel), { type, content, options });
-			default:
-				throw new RangeError(`Unknown response type "${type}".`);
-		}
-	}
+    switch (type) {
+      case 'plain':
+        if (!shouldEdit) return this.message.channel.send(content, options)
+        return this.editCurrentResponse(channelIDOrDM(this.message.channel), { type, content, options })
+      case 'reply':
+        if (!shouldEdit) return this.message.reply(content, options)
+        if (options && options.split && !options.split.prepend) options.split.prepend = `${this.message.author}, `
+        return this.editCurrentResponse(channelIDOrDM(this.message.channel), { type, content, options })
+      case 'direct':
+        if (!shouldEdit) return this.message.author.send(content, options)
+        return this.editCurrentResponse('dm', { type, content, options })
+      case 'code':
+        if (!shouldEdit) return this.message.channel.send(content, options)
+        if (options && options.split) {
+          if (!options.split.prepend) options.split.prepend = `\`\`\`${lang || ''}\n`
+          if (!options.split.append) options.split.append = '\n```'
+        }
+        content = `\`\`\`${lang || ''}\n${discord.escapeMarkdown(content, true)}\n\`\`\``
+        return this.editCurrentResponse(channelIDOrDM(this.message.channel), { type, content, options })
+      default:
+        throw new RangeError(`Unknown response type "${type}".`)
+    }
+  }
 
 	/**
 	 * Edits a response to the command message
@@ -306,36 +306,36 @@ class CommandMessage {
 	 * @return {Promise<Message|Message[]>}
 	 * @private
 	 */
-	editResponse(response, { type, content, options }) {
-		if(!response) return this.respond({ type, content, options, fromEdit: true });
-		if(options && options.split) content = discord.splitMessage(content, options.split);
+  editResponse (response, { type, content, options }) {
+    if (!response) return this.respond({ type, content, options, fromEdit: true })
+    if (options && options.split) content = discord.splitMessage(content, options.split)
 
-		let prepend = '';
-		if(type === 'reply') prepend = `${this.message.author}, `;
+    let prepend = ''
+    if (type === 'reply') prepend = `${this.message.author}, `
 
-		if(content instanceof Array) {
-			const promises = [];
-			if(response instanceof Array) {
-				for(let i = 0; i < content.length; i++) {
-					if(response.length > i) promises.push(response[i].edit(`${prepend}${content[i]}`, options));
-					else promises.push(response[0].channel.send(`${prepend}${content[i]}`));
-				}
-			} else {
-				promises.push(response.edit(`${prepend}${content[0]}`, options));
-				for(let i = 1; i < content.length; i++) {
-					promises.push(response.channel.send(`${prepend}${content[i]}`));
-				}
-			}
-			return Promise.all(promises);
-		} else {
-			if(response instanceof Array) { // eslint-disable-line no-lonely-if
-				for(let i = response.length - 1; i > 0; i--) response[i].delete();
-				return response[0].edit(`${prepend}${content}`, options);
-			} else {
-				return response.edit(`${prepend}${content}`, options);
-			}
-		}
-	}
+    if (content instanceof Array) {
+      const promises = []
+      if (response instanceof Array) {
+        for (let i = 0; i < content.length; i++) {
+          if (response.length > i) promises.push(response[i].edit(`${prepend}${content[i]}`, options))
+          else promises.push(response[0].channel.send(`${prepend}${content[i]}`))
+        }
+      } else {
+        promises.push(response.edit(`${prepend}${content[0]}`, options))
+        for (let i = 1; i < content.length; i++) {
+          promises.push(response.channel.send(`${prepend}${content[i]}`))
+        }
+      }
+      return Promise.all(promises)
+    } else {
+      if (response instanceof Array) { // eslint-disable-line no-lonely-if
+        for (let i = response.length - 1; i > 0; i--) response[i].delete()
+        return response[0].edit(`${prepend}${content}`, options)
+      } else {
+        return response.edit(`${prepend}${content}`, options)
+      }
+    }
+  }
 
 	/**
 	 * Edits the current response
@@ -344,12 +344,12 @@ class CommandMessage {
 	 * @return {Promise<Message|Message[]>}
 	 * @private
 	 */
-	editCurrentResponse(id, options) {
-		if(typeof this.responses[id] === 'undefined') this.responses[id] = [];
-		if(typeof this.responsePositions[id] === 'undefined') this.responsePositions[id] = -1;
-		this.responsePositions[id]++;
-		return this.editResponse(this.responses[id][this.responsePositions[id]], options);
-	}
+  editCurrentResponse (id, options) {
+    if (typeof this.responses[id] === 'undefined') this.responses[id] = []
+    if (typeof this.responsePositions[id] === 'undefined') this.responsePositions[id] = -1
+    this.responsePositions[id]++
+    return this.editResponse(this.responses[id][this.responsePositions[id]], options)
+  }
 
 	/**
 	 * Responds with a plain message
@@ -357,13 +357,13 @@ class CommandMessage {
 	 * @param {MessageOptions} [options] - Options for the message
 	 * @return {Promise<Message|Message[]>}
 	 */
-	say(content, options) {
-		if(!options && typeof content === 'object' && !(content instanceof Array)) {
-			options = content;
-			content = '';
-		}
-		return this.respond({ type: 'plain', content, options });
-	}
+  say (content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content
+      content = ''
+    }
+    return this.respond({ type: 'plain', content, options })
+  }
 
 	/**
 	 * Responds with a reply message
@@ -371,13 +371,13 @@ class CommandMessage {
 	 * @param {MessageOptions} [options] - Options for the message
 	 * @return {Promise<Message|Message[]>}
 	 */
-	reply(content, options) {
-		if(!options && typeof content === 'object' && !(content instanceof Array)) {
-			options = content;
-			content = '';
-		}
-		return this.respond({ type: 'reply', content, options });
-	}
+  reply (content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content
+      content = ''
+    }
+    return this.respond({ type: 'reply', content, options })
+  }
 
 	/**
 	 * Responds with a direct message
@@ -385,13 +385,13 @@ class CommandMessage {
 	 * @param {MessageOptions} [options] - Options for the message
 	 * @return {Promise<Message|Message[]>}
 	 */
-	direct(content, options) {
-		if(!options && typeof content === 'object' && !(content instanceof Array)) {
-			options = content;
-			content = '';
-		}
-		return this.respond({ type: 'direct', content, options });
-	}
+  direct (content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content
+      content = ''
+    }
+    return this.respond({ type: 'direct', content, options })
+  }
 
 	/**
 	 * Responds with a code message
@@ -400,15 +400,15 @@ class CommandMessage {
 	 * @param {MessageOptions} [options] - Options for the message
 	 * @return {Promise<Message|Message[]>}
 	 */
-	code(lang, content, options) {
-		if(!options && typeof content === 'object' && !(content instanceof Array)) {
-			options = content;
-			content = '';
-		}
-		if(typeof options !== 'object') options = {};
-		options.code = lang;
-		return this.respond({ type: 'code', content, options });
-	}
+  code (lang, content, options) {
+    if (!options && typeof content === 'object' && !(content instanceof Array)) {
+      options = content
+      content = ''
+    }
+    if (typeof options !== 'object') options = {}
+    options.code = lang
+    return this.respond({ type: 'code', content, options })
+  }
 
 	/**
 	 * Responds with an embed
@@ -417,11 +417,11 @@ class CommandMessage {
 	 * @param {MessageOptions} [options] - Options for the message
 	 * @return {Promise<Message|Message[]>}
 	 */
-	embed(embed, content = '', options) {
-		if(typeof options !== 'object') options = {};
-		options.embed = embed;
-		return this.respond({ type: 'plain', content, options });
-	}
+  embed (embed, content = '', options) {
+    if (typeof options !== 'object') options = {}
+    options.embed = embed
+    return this.respond({ type: 'plain', content, options })
+  }
 
 	/**
 	 * Responds with a mention + embed
@@ -430,56 +430,56 @@ class CommandMessage {
 	 * @param {MessageOptions} [options] - Options for the message
 	 * @return {Promise<Message|Message[]>}
 	 */
-	replyEmbed(embed, content = '', options) {
-		if(typeof options !== 'object') options = {};
-		options.embed = embed;
-		return this.respond({ type: 'reply', content, options });
-	}
+  replyEmbed (embed, content = '', options) {
+    if (typeof options !== 'object') options = {}
+    options.embed = embed
+    return this.respond({ type: 'reply', content, options })
+  }
 
 	/**
 	 * Finalizes the command message by setting the responses and deleting any remaining prior ones
 	 * @param {?Array<Message|Message[]>} responses - Responses to the message
 	 * @private
 	 */
-	finalize(responses) {
-		if(this.responses) this.deleteRemainingResponses();
-		this.responses = {};
-		this.responsePositions = {};
+  finalize (responses) {
+    if (this.responses) this.deleteRemainingResponses()
+    this.responses = {}
+    this.responsePositions = {}
 
-		if(responses instanceof Array) {
-			for(const response of responses) {
-				const channel = (response instanceof Array ? response[0] : response).channel;
-				const id = channelIDOrDM(channel);
-				if(!this.responses[id]) {
-					this.responses[id] = [];
-					this.responsePositions[id] = -1;
-				}
-				this.responses[id].push(response);
-			}
-		} else if(responses) {
-			const id = channelIDOrDM(responses.channel);
-			this.responses[id] = [responses];
-			this.responsePositions[id] = -1;
-		}
-	}
+    if (responses instanceof Array) {
+      for (const response of responses) {
+        const channel = (response instanceof Array ? response[0] : response).channel
+        const id = channelIDOrDM(channel)
+        if (!this.responses[id]) {
+          this.responses[id] = []
+          this.responsePositions[id] = -1
+        }
+        this.responses[id].push(response)
+      }
+    } else if (responses) {
+      const id = channelIDOrDM(responses.channel)
+      this.responses[id] = [responses]
+      this.responsePositions[id] = -1
+    }
+  }
 
 	/**
 	 * Deletes any prior responses that haven't been updated
 	 * @private
 	 */
-	deleteRemainingResponses() {
-		for(const id of Object.keys(this.responses)) {
-			const responses = this.responses[id];
-			for(let i = this.responsePositions[id] + 1; i < responses.length; i++) {
-				const response = responses[i];
-				if(response instanceof Array) {
-					for(const resp of response) resp.delete();
-				} else {
-					response.delete();
-				}
-			}
-		}
-	}
+  deleteRemainingResponses () {
+    for (const id of Object.keys(this.responses)) {
+      const responses = this.responses[id]
+      for (let i = this.responsePositions[id] + 1; i < responses.length; i++) {
+        const response = responses[i]
+        if (response instanceof Array) {
+          for (const resp of response) resp.delete()
+        } else {
+          response.delete()
+        }
+      }
+    }
+  }
 
 	/**
 	 * Parses an argument string into an array of arguments
@@ -489,22 +489,21 @@ class CommandMessage {
 	 * in addition to double quotes
 	 * @return {string[]} The array of arguments
 	 */
-	static parseArgs(argString, argCount, allowSingleQuote = true) {
-		const re = allowSingleQuote ? /\s*(?:("|')([^]*?)\1|(\S+))\s*/g : /\s*(?:(")([^]*?)"|(\S+))\s*/g;
-		const result = [];
-		let match = [];
+  static parseArgs (argString, argCount, allowSingleQuote = true) {
+    const re = allowSingleQuote ? /\s*(?:("|')([^]*?)\1|(\S+))\s*/g : /\s*(?:(")([^]*?)"|(\S+))\s*/g
+    const result = []
+    let match = []
 		// Large enough to get all items
-		argCount = argCount || argString.length;
+    argCount = argCount || argString.length
 		// Get match and push the capture group that is not null to the result
-		while(--argCount && (match = re.exec(argString))) result.push(match[2] || match[3]);
+    while (--argCount && (match = re.exec(argString))) result.push(match[2] || match[3])
 		// If text remains, push it to the array as-is (except for wrapping quotes, which are removed)
-		if(match && re.lastIndex < argString.length) {
-			const re2 = allowSingleQuote ? /^("|')([^]*)\1$/g : /^(")([^]*)"$/g;
-			result.push(argString.substr(re.lastIndex).replace(re2, '$2'));
-		}
-		return result;
-	}
-
+    if (match && re.lastIndex < argString.length) {
+      const re2 = allowSingleQuote ? /^("|')([^]*)\1$/g : /^(")([^]*)"$/g
+      result.push(argString.substr(re.lastIndex).replace(re2, '$2'))
+    }
+    return result
+  }
 
 	/* -------------------------------------------------------------------------------------------- *\
 	|*                                          SHORTCUTS                                           *|
@@ -518,9 +517,9 @@ class CommandMessage {
 	 * @see {@link Message#id}
 	 * @readonly
 	 */
-	get id() {
-		return this.message.id;
-	}
+  get id () {
+    return this.message.id
+  }
 
 	/**
 	 * Shortcut to `this.message.content`
@@ -528,9 +527,9 @@ class CommandMessage {
 	 * @see {@link Message#content}
 	 * @readonly
 	 */
-	get content() {
-		return this.message.content;
-	}
+  get content () {
+    return this.message.content
+  }
 
 	/**
 	 * Shortcut to `this.message.author`
@@ -538,9 +537,9 @@ class CommandMessage {
 	 * @see {@link Message#author}
 	 * @readonly
 	 */
-	get author() {
-		return this.message.author;
-	}
+  get author () {
+    return this.message.author
+  }
 
 	/**
 	 * Shortcut to `this.message.channel`
@@ -548,9 +547,9 @@ class CommandMessage {
 	 * @see {@link Message#channel}
 	 * @readonly
 	 */
-	get channel() {
-		return this.message.channel;
-	}
+  get channel () {
+    return this.message.channel
+  }
 
 	/**
 	 * Shortcut to `this.message.guild`
@@ -558,9 +557,9 @@ class CommandMessage {
 	 * @see {@link Message#guild}
 	 * @readonly
 	 */
-	get guild() {
-		return this.message.guild;
-	}
+  get guild () {
+    return this.message.guild
+  }
 
 	/**
 	 * Shortcut to `this.message.member`
@@ -568,9 +567,9 @@ class CommandMessage {
 	 * @see {@link Message#member}
 	 * @readonly
 	 */
-	get member() {
-		return this.message.member;
-	}
+  get member () {
+    return this.message.member
+  }
 
 	/**
 	 * Shortcut to `this.message.pinned`
@@ -578,9 +577,9 @@ class CommandMessage {
 	 * @see {@link Message#pinned}
 	 * @readonly
 	 */
-	get pinned() {
-		return this.message.pinned;
-	}
+  get pinned () {
+    return this.message.pinned
+  }
 
 	/**
 	 * Shortcut to `this.message.tts`
@@ -588,9 +587,9 @@ class CommandMessage {
 	 * @see {@link Message#tts}
 	 * @readonly
 	 */
-	get tts() {
-		return this.message.tts;
-	}
+  get tts () {
+    return this.message.tts
+  }
 
 	/**
 	 * Shortcut to `this.message.nonce`
@@ -598,9 +597,9 @@ class CommandMessage {
 	 * @see {@link Message#nonce}
 	 * @readonly
 	 */
-	get nonce() {
-		return this.message.nonce;
-	}
+  get nonce () {
+    return this.message.nonce
+  }
 
 	/**
 	 * Shortcut to `this.message.system`
@@ -608,9 +607,9 @@ class CommandMessage {
 	 * @see {@link Message#system}
 	 * @readonly
 	 */
-	get system() {
-		return this.message.system;
-	}
+  get system () {
+    return this.message.system
+  }
 
 	/**
 	 * Shortcut to `this.message.embeds`
@@ -618,9 +617,9 @@ class CommandMessage {
 	 * @see {@link Message#embeds}
 	 * @readonly
 	 */
-	get embeds() {
-		return this.message.embeds;
-	}
+  get embeds () {
+    return this.message.embeds
+  }
 
 	/**
 	 * Shortcut to `this.message.attachments`
@@ -628,9 +627,9 @@ class CommandMessage {
 	 * @see {@link Message#attachments}
 	 * @readonly
 	 */
-	get attachments() {
-		return this.message.attachments;
-	}
+  get attachments () {
+    return this.message.attachments
+  }
 
 	/**
 	 * Shortcut to `this.message.reactions`
@@ -638,9 +637,9 @@ class CommandMessage {
 	 * @see {@link Message#reactions}
 	 * @readonly
 	 */
-	get reactions() {
-		return this.message.reactions;
-	}
+  get reactions () {
+    return this.message.reactions
+  }
 
 	/**
 	 * Shortcut to `this.message.createdTimestamp`
@@ -648,9 +647,9 @@ class CommandMessage {
 	 * @see {@link Message#createdTimestamp}
 	 * @readonly
 	 */
-	get createdTimestamp() {
-		return this.message.createdTimestamp;
-	}
+  get createdTimestamp () {
+    return this.message.createdTimestamp
+  }
 
 	/**
 	 * Shortcut to `this.message.createdAt`
@@ -658,9 +657,9 @@ class CommandMessage {
 	 * @see {@link Message#createdAt}
 	 * @readonly
 	 */
-	get createdAt() {
-		return this.message.createdAt;
-	}
+  get createdAt () {
+    return this.message.createdAt
+  }
 
 	/**
 	 * Shortcut to `this.message.editedTimestamp`
@@ -668,9 +667,9 @@ class CommandMessage {
 	 * @see {@link Message#editedTimestamp}
 	 * @readonly
 	 */
-	get editedTimestamp() {
-		return this.message.editedTimestamp;
-	}
+  get editedTimestamp () {
+    return this.message.editedTimestamp
+  }
 
 	/**
 	 * Shortcut to `this.message.editedAt`
@@ -678,9 +677,9 @@ class CommandMessage {
 	 * @see {@link Message#editedAt}
 	 * @readonly
 	 */
-	get editedAt() {
-		return this.message.editedAt;
-	}
+  get editedAt () {
+    return this.message.editedAt
+  }
 
 	/**
 	 * Shortcut to `this.message.mentions`
@@ -688,9 +687,9 @@ class CommandMessage {
 	 * @see {@link Message#mentions}
 	 * @readonly
 	 */
-	get mentions() {
-		return this.message.mentions;
-	}
+  get mentions () {
+    return this.message.mentions
+  }
 
 	/**
 	 * Shortcut to `this.message.webhookID`
@@ -698,9 +697,9 @@ class CommandMessage {
 	 * @see {@link Message#webhookID}
 	 * @readonly
 	 */
-	get webhookID() {
-		return this.message.webhookID;
-	}
+  get webhookID () {
+    return this.message.webhookID
+  }
 
 	/**
 	 * Shortcut to `this.message.cleanContent`
@@ -708,9 +707,9 @@ class CommandMessage {
 	 * @see {@link Message#cleanContent}
 	 * @readonly
 	 */
-	get cleanContent() {
-		return this.message.cleanContent;
-	}
+  get cleanContent () {
+    return this.message.cleanContent
+  }
 
 	/**
 	 * Shortcut to `this.message.edits`
@@ -718,9 +717,9 @@ class CommandMessage {
 	 * @see {@link Message#edits}
 	 * @readonly
 	 */
-	get edits() {
-		return this.message.edits;
-	}
+  get edits () {
+    return this.message.edits
+  }
 
 	/**
 	 * Shortcut to `this.message.editable`
@@ -728,9 +727,9 @@ class CommandMessage {
 	 * @see {@link Message#editable}
 	 * @readonly
 	 */
-	get editable() {
-		return this.message.editable;
-	}
+  get editable () {
+    return this.message.editable
+  }
 
 	/**
 	 * Shortcut to `this.message.deletable`
@@ -738,9 +737,9 @@ class CommandMessage {
 	 * @see {@link Message#deletable}
 	 * @readonly
 	 */
-	get deletable() {
-		return this.message.deletable;
-	}
+  get deletable () {
+    return this.message.deletable
+  }
 
 	/**
 	 * Shortcut to `this.message.pinnable`
@@ -748,9 +747,9 @@ class CommandMessage {
 	 * @see {@link Message#pinnable}
 	 * @readonly
 	 */
-	get pinnable() {
-		return this.message.pinnable;
-	}
+  get pinnable () {
+    return this.message.pinnable
+  }
 
 	/**
 	 * Shortcut to `this.message.edit(content)`
@@ -760,9 +759,9 @@ class CommandMessage {
 	 * @see {@link Message#edit}
 	 * @readonly
 	 */
-	edit(content, options) {
-		return this.message.edit(content, options);
-	}
+  edit (content, options) {
+    return this.message.edit(content, options)
+  }
 
 	/**
 	 * Shortcut to `this.message.editCode(content)`
@@ -772,9 +771,9 @@ class CommandMessage {
 	 * @see {@link Message#editCode}
 	 * @readonly
 	 */
-	editCode(lang, content) {
-		return this.message.editCode(lang, content);
-	}
+  editCode (lang, content) {
+    return this.message.editCode(lang, content)
+  }
 
 	/**
 	 * Shortcut to `this.message.react()`
@@ -783,9 +782,9 @@ class CommandMessage {
 	 * @see {@link Message#react}
 	 * @readonly
 	 */
-	react(emoji) {
-		return this.message.react(emoji);
-	}
+  react (emoji) {
+    return this.message.react(emoji)
+  }
 
 	/**
 	 * Shortcut to `this.message.clearReactions()`
@@ -793,9 +792,9 @@ class CommandMessage {
 	 * @see {@link Message#clearReactions}
 	 * @readonly
 	 */
-	clearReactions() {
-		return this.message.clearReactions();
-	}
+  clearReactions () {
+    return this.message.clearReactions()
+  }
 
 	/**
 	 * Shortcut to `this.message.pin()`
@@ -803,9 +802,9 @@ class CommandMessage {
 	 * @see {@link Message#pin}
 	 * @readonly
 	 */
-	pin() {
-		return this.message.pin();
-	}
+  pin () {
+    return this.message.pin()
+  }
 
 	/**
 	 * Shortcut to `this.message.unpin()`
@@ -813,9 +812,9 @@ class CommandMessage {
 	 * @see {@link Message#unpin}
 	 * @readonly
 	 */
-	unpin() {
-		return this.message.unpin();
-	}
+  unpin () {
+    return this.message.unpin()
+  }
 
 	/**
 	 * Shortcut to `this.message.delete()`
@@ -824,9 +823,9 @@ class CommandMessage {
 	 * @see {@link Message#delete}
 	 * @readonly
 	 */
-	delete(timeout) {
-		return this.message.delete(timeout);
-	}
+  delete (timeout) {
+    return this.message.delete(timeout)
+  }
 
 	/**
 	 * Shortcut to `this.message.fetchWebhook()`
@@ -834,14 +833,14 @@ class CommandMessage {
 	 * @see {@link Message#fetchWebhook}
 	 * @readonly
 	 */
-	fetchWebhook() {
-		return this.message.fetchWebhook();
-	}
+  fetchWebhook () {
+    return this.message.fetchWebhook()
+  }
 }
 
-function channelIDOrDM(channel) {
-	if(channel.type !== 'dm') return channel.id;
-	return 'dm';
+function channelIDOrDM (channel) {
+  if (channel.type !== 'dm') return channel.id
+  return 'dm'
 }
 
-module.exports = CommandMessage;
+module.exports = CommandMessage
