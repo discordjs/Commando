@@ -8,7 +8,6 @@ class UserArgumentType extends ArgumentType {
 	}
 
 	async validate(value, msg) {
-		if(!value) return false;
 		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) {
 			try {

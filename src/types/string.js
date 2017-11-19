@@ -6,7 +6,6 @@ class StringArgumentType extends ArgumentType {
 	}
 
 	validate(value, msg, arg) {
-		if(!value) return false;
 		if(arg.min !== null && typeof arg.min !== 'undefined' && value.length < arg.min) {
 			return `Please keep the ${arg.label} above or exactly ${arg.min} characters.`;
 		}
