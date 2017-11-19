@@ -132,7 +132,7 @@ class Argument {
 		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		const prompts = [];
 		const answers = [];
-		let valid = value ? await this.validate(value, msg) : false;
+		let valid = await this.validate(value, msg);
 
 		while(!valid || typeof valid === 'string') {
 			/* eslint-disable no-await-in-loop */

@@ -8,6 +8,7 @@ class BooleanArgumentType extends ArgumentType {
 	}
 
 	validate(value) {
+		if(!value) return false;
 		const lc = value.toLowerCase();
 		return this.truthy.has(lc) || this.falsy.has(lc);
 	}

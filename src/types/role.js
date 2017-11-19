@@ -8,6 +8,7 @@ class RoleArgumentType extends ArgumentType {
 	}
 
 	validate(value, msg) {
+		if(!value) return false;
 		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
 		if(matches) return msg.guild.roles.has(matches[1]);
 		const search = value.toLowerCase();
