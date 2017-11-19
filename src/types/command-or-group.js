@@ -8,7 +8,6 @@ class CommandOrGroupArgumentType extends ArgumentType {
 	}
 
 	validate(value) {
-		if(!value) return false;
 		const groups = this.client.registry.findGroups(value);
 		if(groups.length === 1) return true;
 		const commands = this.client.registry.findCommands(value);
