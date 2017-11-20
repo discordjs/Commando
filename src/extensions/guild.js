@@ -5,7 +5,7 @@ const GuildSettingsHelper = require('../providers/helper');
 module.exports = Structures.extend('Guild', Guild =>
 	/**
 	 * A fancier Guild for fancier people.
-	 * @class CommandoGuild
+	 * @class
 	 * @extends Guild
 	 */
 	class CommandoGuild extends Guild {
