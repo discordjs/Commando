@@ -291,6 +291,7 @@ class CommandRegistry {
 	 * - role
 	 * - channel
 	 * - message
+	 * - emoji
 	 * - command
 	 * - group
 	 * - command-or-group
@@ -307,6 +308,7 @@ class CommandRegistry {
 			require('./types/role'),
 			require('./types/channel'),
 			require('./types/message'),
+			require('./types/emoji'),
 			require('./types/command'),
 			require('./types/group'),
 			require('./types/command-or-group')
