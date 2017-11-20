@@ -18,6 +18,7 @@ class Argument {
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
 	 * @property {Function} [validate] - Validator function for the argument (see {@link ArgumentType#validate})
 	 * @property {Function} [parse] - Parser function for the argument (see {@link ArgumentType#parse})
+	 * @property {Function} [isEmpty] - Empty checker for the argument (see {@link ArgumentType#isEmpty})
 	 * @property {number} [wait=30] - How long to wait for input (in seconds)
 	 */
 
@@ -93,6 +94,13 @@ class Argument {
 		this.parser = info.parse || null;
 
 		/**
+		 * Function to check whether a raw value is considered empty
+		 * @type {?Function}
+		 * @see {@link ArgumentType#isEmpty}
+		 */
+		this.emptyChecker = info.isEmpty || null;
+
+		/**
 		 * How long to wait for input (in seconds)
 		 * @type {number}
 		 */
@@ -119,7 +127,8 @@ class Argument {
 	 * @return {Promise<ArgumentResult>}
 	 */
 	async obtain(msg, value, promptLimit = Infinity) {
-		if(!value && this.default !== null) {
+		const empty = this.isEmpty(value, msg);
+		if(empty && this.default !== null) {
 			return {
 				value: this.default,
 				cancelled: null,
@@ -132,7 +141,7 @@ class Argument {
 		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		const prompts = [];
 		const answers = [];
-		let valid = value ? await this.validate(value, msg) : false;
+		let valid = !empty ? await this.validate(value, msg) : false;
 
 		while(!valid || typeof valid === 'string') {
 			/* eslint-disable no-await-in-loop */
@@ -147,7 +156,7 @@ class Argument {
 
 			// Prompt the user for a new value
 			prompts.push(await msg.reply(stripIndents`
-				${!value ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
+				${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
 				${oneLine`
 					Respond with \`cancel\` to cancel the command.
 					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
@@ -329,6 +338,17 @@ class Argument {
 	parse(value, msg) {
 		if(this.parser) return this.parser(value, msg, this);
 		return this.type.parse(value, msg, this);
+	}
+
+	/**
+	 * Checks whether a value for the argument is considered to be empty
+	 * @param {string} value - Value to check for emptiness
+	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @return {boolean}
+	 */
+	isEmpty(value, msg) {
+		if(this.emptyChecker) return this.emptyChecker(value, msg, this);
+		return this.type.isEmpty(value, msg, this);
 	}
 
 	/**
