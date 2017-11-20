@@ -243,7 +243,7 @@ class Command {
 					return `The \`${this.name}\` command requires you to have the "${permissions[missing[0]]}" permission.`;
 				}
 				return oneLine`
-					The \`${this.name}\` requires you to have the following permissions:
+					The \`${this.name}\` command requires you to have the following permissions:
 					${missing.map(perm => permissions[perm]).join(', ')}
 				`;
 			}
