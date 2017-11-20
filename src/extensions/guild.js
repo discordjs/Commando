@@ -2,7 +2,7 @@ const { Structures } = require('discord.js');
 const Command = require('../commands/base');
 const GuildSettingsHelper = require('../providers/helper');
 
-module.exports = Structures.extend('Guild', Guild =>
+module.exports = Structures.extend('Guild', Guild => {
 	/**
 	 * A fancier Guild for fancier people.
 	 * @class
@@ -144,4 +144,6 @@ module.exports = Structures.extend('Guild', Guild =>
 			return Command.usage(command, this.commandPrefix, user);
 		}
 	}
-);
+
+	return CommandoGuild;
+});
