@@ -14,7 +14,7 @@ class CommandFormatError extends FriendlyError {
 				msg.command.format,
 				msg.guild ? undefined : null,
 				msg.guild ? undefined : null
-			)}. Use ${msg.usage(
+			)}. Use ${msg.anyUsage(
 				`help ${msg.command.name}`,
 				msg.guild ? undefined : null,
 				msg.guild ? undefined : null
