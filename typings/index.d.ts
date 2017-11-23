@@ -417,6 +417,7 @@ declare module 'discord.js-commando' {
 		argsSingleQuotes?: boolean;
 		patterns?: RegExp[];
 		guarded?: boolean;
+		ownerOnly?: boolean;
 	};
 
 	type CommandoClientOptions = ClientOptions & {
