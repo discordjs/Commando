@@ -15,6 +15,7 @@ class Argument {
 	 * @property {number} [min] - If type is `integer` or `float`, this is the minimum value of the number.
 	 * If type is `string`, this is the minimum length of the string.
 	 * @property {*} [default] - Default value for the argument (makes the argument optional - cannot be `null`)
+	 * If a function, the function will be executed with an argument for the CommandMessage
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
 	 * @property {Function} [validate] - Validator function for the argument (see {@link ArgumentType#validate})
 	 * @property {Function} [parse] - Parser function for the argument (see {@link ArgumentType#parse})
@@ -130,7 +131,7 @@ class Argument {
 		const empty = this.isEmpty(value, msg);
 		if(empty && this.default !== null) {
 			return {
-				value: this.default,
+				value: typeof this.default === 'function' ? this.default(msg) : this.default,
 				cancelled: null,
 				prompts: [],
 				answers: []
