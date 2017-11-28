@@ -131,7 +131,7 @@ class Argument {
 		const empty = this.isEmpty(value, msg);
 		if(empty && this.default !== null) {
 			return {
-				value: typeof this.default === 'function' ? this.default(msg) : this.default,
+				value: typeof this.default === 'function' ? this.default(msg, this) : this.default,
 				cancelled: null,
 				prompts: [],
 				answers: []
