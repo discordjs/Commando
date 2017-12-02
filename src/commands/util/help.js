@@ -59,6 +59,8 @@ module.exports = class HelpCommand extends Command {
 					messages.push(await msg.reply('Unable to send you the help DM. You probably have DMs disabled.'));
 				}
 				return messages;
+			} else if(commands.length > 15) {
+				return msg.reply('Multiple commands found. Please be more specific.');
 			} else if(commands.length > 1) {
 				return msg.reply(disambiguation(commands, 'commands'));
 			} else {
