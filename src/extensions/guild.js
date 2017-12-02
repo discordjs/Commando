@@ -8,8 +8,8 @@ module.exports = Structures.extend('Guild', Guild => {
 	 * @extends Guild
 	 */
 	class CommandoGuild extends Guild {
-		constructor(client, data) {
-			super(client, data);
+		constructor(...args) {
+			super(...args);
 
 			/**
 			 * Shortcut to use setting provider methods for this guild
