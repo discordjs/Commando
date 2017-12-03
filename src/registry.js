@@ -498,7 +498,7 @@ class CommandRegistry {
 	 */
 	resolveCommand(command) {
 		if(command instanceof Command) return command;
-		if(command instanceof CommandoMessage && command.isCommand) return command.command;
+		if(command instanceof CommandoMessage && command.command) return command.command;
 		if(typeof command === 'string') {
 			const commands = this.findCommands(command, true);
 			if(commands.length === 1) return commands[0];
