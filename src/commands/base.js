@@ -224,7 +224,7 @@ class Command {
 
 	/**
 	 * Checks if the user has permission to use the command
-	 * @param {CommandMessage} message - The triggering command message
+	 * @param {CommandoMessage} message - The triggering command message
 	 * @param {boolean} [ownerOverride=true] - Whether the bot owner(s) will always have permission
 	 * @return {boolean|string} Whether the user has permission, or an error message to respond with if they don't
 	 */
@@ -255,7 +255,7 @@ class Command {
 	// eslint-disable-next-line valid-jsdoc
 	/**
 	 * Runs the command
-	 * @param {CommandMessage} message - The message the command is being run for
+	 * @param {CommandoMessage} message - The message the command is being run for
 	 * @param {Object|string|string[]} args - The arguments for the command, or the matches from a pattern.
 	 * If args is specified on the command, thise will be the argument values object. If argsType is single, then only
 	 * one string will be passed. If multiple, an array of strings will be passed. When fromPattern is true, this is the

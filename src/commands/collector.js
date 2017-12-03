@@ -57,7 +57,7 @@ class ArgumentCollector {
 
 	/**
 	 * Obtains values for the arguments, prompting if necessary.
-	 * @param {CommandMessage} msg - Message that the collector is being triggered by
+	 * @param {CommandoMessage} msg - Message that the collector is being triggered by
 	 * @param {Array<*>} [provided=[]] - Values that are already available
 	 * @param {number} [promptLimit=this.promptLimit] - Maximum number of times to prompt for a single argument
 	 * @return {Promise<ArgumentCollectorResult>}

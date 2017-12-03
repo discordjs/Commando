@@ -1,5 +1,5 @@
 const escapeRegex = require('escape-string-regexp');
-const CommandMessage = require('./commands/message');
+const CommandoMessage = require('./extensions/message');
 
 /** Handles parsing messages and running commands from them */
 class CommandDispatcher {
@@ -37,7 +37,7 @@ class CommandDispatcher {
 
 		/**
 		 * Old command message results, mapped by original message ID
-		 * @type {Map<string, CommandMessage>}
+		 * @type {Map<string, CommandoMessage>}
 		 * @private
 		 */
 		this._results = new Map();
@@ -132,7 +132,7 @@ class CommandDispatcher {
 					/**
 					 * Emitted when an unknown command is triggered
 					 * @event CommandoClient#unknownCommand
-					 * @param {CommandMessage} message - Command message that triggered the command
+					 * @param {CommandoMessage} message - Command message that triggered the command
 					 */
 					this.client.emit('unknownCommand', cmdMsg);
 					if(this.client.options.unknownCommandResponse) {
@@ -155,7 +155,7 @@ class CommandDispatcher {
 			if(!this.client.options.nonCommandEditable) this._results.delete(message.id);
 		}
 
-		this.cacheCommandMessage(message, oldMessage, cmdMsg, responses);
+		this.cacheCommandoMessage(message, oldMessage, cmdMsg, responses);
 	}
 
 	/**
@@ -180,7 +180,7 @@ class CommandDispatcher {
 
 	/**
 	 * Inhibits a command message
-	 * @param {CommandMessage} cmdMsg - Command message to inhibit
+	 * @param {CommandoMessage} cmdMsg - Command message to inhibit
 	 * @return {?Array} [reason, ?response]
 	 * @private
 	 */
@@ -199,11 +199,11 @@ class CommandDispatcher {
 	 * Caches a command message to be editable
 	 * @param {Message} message - Triggering message
 	 * @param {Message} oldMessage - Triggering message's old version
-	 * @param {CommandMessage} cmdMsg - Command message to cache
+	 * @param {CommandoMessage} cmdMsg - Command message to cache
 	 * @param {Message|Message[]} responses - Responses to the message
 	 * @private
 	 */
-	cacheCommandMessage(message, oldMessage, cmdMsg, responses) {
+	cacheCommandoMessage(message, oldMessage, cmdMsg, responses) {
 		if(this.client.options.commandEditableDuration <= 0) return;
 		if(!cmdMsg && !this.client.options.nonCommandEditable) return;
 		if(responses !== null) {
@@ -219,7 +219,7 @@ class CommandDispatcher {
 	/**
 	 * Parses a message to find details about command usage in it
 	 * @param {Message} message - The message
-	 * @return {?CommandMessage}
+	 * @return {?CommandoMessage}
 	 * @private
 	 */
 	parseMessage(message) {
@@ -228,7 +228,7 @@ class CommandDispatcher {
 			if(!command.patterns) continue;
 			for(const pattern of command.patterns) {
 				const matches = pattern.exec(message.content);
-				if(matches) return new CommandMessage(message, command, null, matches);
+				if(matches) return message.initCommand(command, null, matches);
 			}
 		}
 
@@ -245,16 +245,16 @@ class CommandDispatcher {
 	 * @param {Message} message - The message
 	 * @param {RegExp} pattern - The pattern to match against
 	 * @param {number} commandNameIndex - The index of the command name in the pattern matches
-	 * @return {?CommandMessage}
+	 * @return {?CommandoMessage}
 	 * @private
 	 */
 	matchDefault(message, pattern, commandNameIndex = 1) {
 		const matches = pattern.exec(message.content);
 		if(!matches) return null;
 		const commands = this.registry.findCommands(matches[commandNameIndex], true);
-		if(commands.length !== 1 || !commands[0].defaultHandling) return new CommandMessage(message, null);
+		if(commands.length !== 1 || !commands[0].defaultHandling) return message.initCommand(null);
 		const argString = message.content.substring(matches[1].length + (matches[2] ? matches[2].length : 0));
-		return new CommandMessage(message, commands[0], argString);
+		return message.initCommand(commands[0], argString);
 	}
 
 	/**
