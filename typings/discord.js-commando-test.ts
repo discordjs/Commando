@@ -1,5 +1,3 @@
-/// <reference path='index.d.ts' />
-
 import { Message } from 'discord.js';
 import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
 
