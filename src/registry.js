@@ -231,7 +231,7 @@ class CommandRegistry {
 		const files = fs.readdirSync(filePath);
 		const types = [];
 		for(let type of files) {
-			if (filter && !filter.test(type)) continue;
+			if(filter && !filter.test(type)) continue;
 			type = require(path.join(filePath, type));
 			types.push(type);
 		}
