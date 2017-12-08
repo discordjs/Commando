@@ -54,8 +54,8 @@ declare module 'discord.js-commando' {
 	export class Command {
 		public constructor(client: CommandoClient, info: CommandInfo);
 
-		private _globalEnabled: boolean;
-		private _throttles: Map<string, object>;
+		public _globalEnabled: boolean;
+		public _throttles: Map<string, object>;
 
 		private throttle(userID: string): object;
 
@@ -101,7 +101,7 @@ declare module 'discord.js-commando' {
 
 		private buildCommandPattern(prefix: string): RegExp;
 		private cacheCommandMessage(message: Message, oldMessage: Message, cmdMsg: CommandMessage, responses: Message | Message[]): void;
-		private handleMessage(messge: Message, oldMessage?: Message): Promise<undefined>;
+		private handleMessage(messge: Message, oldMessage?: Message): Promise<void>;
 		private inhibit(cmdMsg: CommandMessage): [Inhibitor, undefined];
 		private matchDefault(message: Message, pattern: RegExp, commandNameIndex: number): CommandMessage;
 		private parseMessage(message: Message): CommandMessage;
@@ -122,11 +122,12 @@ declare module 'discord.js-commando' {
 	export class CommandGroup {
 		public constructor(client: CommandoClient, id: string, name?: string, guarded?: boolean, commands?: Command[]);
 
+    public _globalEnabled: boolean;
 		public readonly client: CommandoClient;
 		public commands: Collection<string, Command>;
 		public guarded: boolean;
 		public id: string;
-		public name: string;
+    public name: string;
 
 		public isEnabledIn(guild: GuildResolvable): boolean;
 		public reload(): void;
@@ -200,7 +201,7 @@ declare module 'discord.js-commando' {
 	export class CommandoClient extends Client {
 		public constructor(options?: CommandoClientOptions);
 
-		private _commandPrefix: string;
+		public _commandPrefix: string;
 
 		public commandPrefix: string;
 		public dispatcher: CommandDispatcher;
@@ -210,7 +211,7 @@ declare module 'discord.js-commando' {
 		public settings: GuildSettingsHelper;
 
 		public isOwner(user: UserResolvable): boolean;
-		public setProvider(provider: SettingProvider | Promise<SettingProvider>): Promise<undefined>;
+		public setProvider(provider: SettingProvider | Promise<SettingProvider>): Promise<void>;
 
 		public on(event: string, listener: Function): this;
 		public on(event: 'commandBlocked', listener: (message: CommandMessage, reason: string) => void): this;
@@ -291,10 +292,10 @@ declare module 'discord.js-commando' {
 	}
 
 	export class GuildExtension extends Guild {
-		private _commandPrefix: string;
-		private _commandsEnabled: object;
-		private _groupsEndabled: object;
-		private _settings: GuildSettingsHelper;
+		public _commandPrefix: string;
+		public _commandsEnabled: object;
+		public _groupsEnabled: object;
+		public _settings: GuildSettingsHelper;
 		private static applyToClass(target: Function): void;
 
 		public commandPrefix: string;
@@ -313,18 +314,18 @@ declare module 'discord.js-commando' {
 		public readonly client: CommandoClient;
 		public guild: Guild;
 
-		public clear(): Promise<undefined>;
+		public clear(): Promise<void>;
 		public get(key: string, defVal?: any): any;
 		public remove(key: string): Promise<any>;
 		public set(key: string, value: any): Promise<any>;
 	}
 
 	export class SettingProvider {
-		public clear(guild: Guild | string): Promise<undefined>;
-		public destroy(): Promise<undefined>;
+		public clear(guild: Guild | string): Promise<void>;
+		public destroy(): Promise<void>;
 		public get(guild: Guild | string, key: string, defVal?: any): any;
-		public getGuildID(guild: Guild | string): string;
-		public init(client: CommandoClient): Promise<undefined>;
+		public static getGuildID(guild: Guild | string): string;
+		public init(client: CommandoClient): Promise<void>;
 		public remove(guild: Guild | string, key: string): Promise<any>;
 		public set(guild: Guild | string, key: string, val: any): Promise<any>;
 	}
@@ -339,10 +340,10 @@ declare module 'discord.js-commando' {
 		private listeners: Map<any, any>;
 		private settings: Map<any, any>;
 
-		public clear(guild: Guild | string): Promise<undefined>;
-		public destroy(): Promise<undefined>;
+		public clear(guild: Guild | string): Promise<void>;
+		public destroy(): Promise<void>;
 		public get(guild: Guild | string, key: string, defVal?: any): any;
-		public init(client: CommandoClient): Promise<undefined>;
+		public init(client: CommandoClient): Promise<void>;
 		public remove(guild: Guild | string, key: string): Promise<any>;
 		public set(guild: Guild | string, key: string, val: any): Promise<any>;
 		private setupGuild(guild: string, settings: {}): void;
