@@ -1,5 +1,6 @@
 const path = require('path');
 const discord = require('discord.js');
+const fs = require('fs');
 const Command = require('./commands/base');
 const CommandGroup = require('./commands/group');
 const CommandMessage = require('./commands/message');
@@ -157,19 +158,20 @@ class CommandRegistry {
 
 	/**
 	 * Registers all commands in a directory. The files must export a Command class constructor or instance.
-	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
+	 * @param {string} filePath - The path to the directory
 	 * @return {CommandRegistry}
 	 */
-	registerCommandsIn(options) {
-		const obj = require('require-all')(options);
+	registerCommandsIn(filePath) {
+		const groups = fs.readdirSync(filePath);
 		const commands = [];
-		for(const group of Object.values(obj)) {
-			for(let command of Object.values(group)) {
-				if(typeof command.default === 'function') command = command.default;
+		for(const group of groups) {
+			const files = fs.readdirSync(path.join(filePath, group));
+			for(let command of files) {
+				command = require(path.join(filePath, group, command));
 				commands.push(command);
 			}
 		}
-		if(typeof options === 'string' && !this.commandsPath) this.commandsPath = options;
+		if(!this.commandsPath) this.commandsPath = filePath;
 		return this.registerCommands(commands);
 	}
 
@@ -219,13 +221,16 @@ class CommandRegistry {
 
 	/**
 	 * Registers all argument types in a directory. The files must export an ArgumentType class constructor or instance.
-	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
+	 * @param {string} filePath - The path to the directory
 	 * @return {CommandRegistry}
 	 */
-	registerTypesIn(options) {
-		const obj = require('require-all')(options);
+	registerTypesIn(filePath) {
+		const files = fs.readdirSync(filePath);
 		const types = [];
-		for(const type of Object.values(obj)) types.push(type);
+		for(let type of files) {
+			type = require(path.join(filePath, type));
+			types.push(type);
+		}
 		return this.registerTypes(types);
 	}
 
