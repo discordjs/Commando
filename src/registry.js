@@ -159,14 +159,16 @@ class CommandRegistry {
 	/**
 	 * Registers all commands in a directory. The files must export a Command class constructor or instance.
 	 * @param {string} filePath - The path to the directory
+	 * @param {RegExp} filter - A regular expression to filter files by
 	 * @return {CommandRegistry}
 	 */
-	registerCommandsIn(filePath) {
+	registerCommandsIn(filePath, filter) {
 		const groups = fs.readdirSync(filePath);
 		const commands = [];
 		for(const group of groups) {
 			const files = fs.readdirSync(path.join(filePath, group));
 			for(let command of files) {
+				if(filter && !filter.test(command)) continue;
 				command = require(path.join(filePath, group, command));
 				commands.push(command);
 			}
@@ -222,12 +224,14 @@ class CommandRegistry {
 	/**
 	 * Registers all argument types in a directory. The files must export an ArgumentType class constructor or instance.
 	 * @param {string} filePath - The path to the directory
+	 * @param {RegExp} filter - A regular expression to filter files by
 	 * @return {CommandRegistry}
 	 */
-	registerTypesIn(filePath) {
+	registerTypesIn(filePath, filter) {
 		const files = fs.readdirSync(filePath);
 		const types = [];
 		for(let type of files) {
+			if (filter && !filter.test(type)) continue;
 			type = require(path.join(filePath, type));
 			types.push(type);
 		}
