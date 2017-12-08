@@ -18,7 +18,7 @@
 	],
 	"scripts": {
 		"test": "npm run lint && npm run docs:test",
-		"lint": "eslint src",
+		"lint": "eslint src && dtslint typings",
 		"lint:fix": "eslint --fix src",
 		"docs": "docgen --source src --custom docs/index.yml --output docs/docs.json --jsdoc jsdoc.json",
 		"docs:test": "docgen --source src --custom docs/index.yml --jsdoc jsdoc.json"
@@ -33,6 +33,7 @@
 	"devDependencies": {
 		"@types/node": "^8.0.0",
 		"discord.js-docgen": "hydrabolt/discord.js-docgen",
+		"dtslint": "^0.2.0",
 		"eslint": "^4.0.0",
 		"jsdoc-strip-async-await": "^0.1.0",
 		"typescript": "^2.0.0"

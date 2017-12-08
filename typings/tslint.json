@@ -1,0 +1,7 @@
+{
+    "extends": "dtslint/dtslint.json",
+    "rules": {
+        "member-access": [true, "check-accessor"],
+        "ban-types": [false, "Function"] // TODO: Avoid using the function type. Prefer more specific function
+    }
+}
