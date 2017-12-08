@@ -11,7 +11,7 @@ declare module 'discord.js-commando' {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
 
 		private obtainInfinite(msg: CommandMessage, values?: string[], promptLimit?: number): Promise<ArgumentResult>;
-		
+
 		private static validateInfo(client: CommandoClient, info: ArgumentInfo);
 
 		public default: any;
@@ -58,7 +58,7 @@ declare module 'discord.js-commando' {
 		private _throttles: Map<string, object>;
 
 		private throttle(userID: string): object;
-		
+
 		private static validateInfo(client: CommandoClient, info: CommandInfo);
 
 		public aliases: string[];
@@ -84,7 +84,7 @@ declare module 'discord.js-commando' {
 		public isEnabledIn(guild: GuildResolvable): boolean;
 		public isUsable(message: Message): boolean;
 		public reload(): void;
-		public run(message: CommandMessage, args: object | string | string[], fromPattern: boolean): Promise<Message | Message[]>
+		public run(message: CommandMessage, args: object | string | string[], fromPattern: boolean): Promise<Message | Message[]>;
 		public setEnabledIn(guild: GuildResolvable, enabled: boolean): void;
 		public unload(): void;
 		public usage(argString?: string, prefix?: string, user?: User): string;
@@ -98,10 +98,10 @@ declare module 'discord.js-commando' {
 		private _awaiting: Set<string>;
 		private _commandPatterns: object;
 		private _results: Map<string, CommandMessage>;
-		
+
 		private buildCommandPattern(prefix: string): RegExp;
 		private cacheCommandMessage(message: Message, oldMessage: Message, cmdMsg: CommandMessage, responses: Message | Message[]): void;
-		private handleMessage(messge: Message, oldMessage?: Message): Promise<void>;
+		private handleMessage(messge: Message, oldMessage?: Message): Promise<undefined>;
 		private inhibit(cmdMsg: CommandMessage): [Inhibitor, undefined];
 		private matchDefault(message: Message, pattern: RegExp, commandNameIndex: number): CommandMessage;
 		private parseMessage(message: Message): CommandMessage;
@@ -123,7 +123,7 @@ declare module 'discord.js-commando' {
 		public constructor(client: CommandoClient, id: string, name?: string, guarded?: boolean, commands?: Command[]);
 
 		public readonly client: CommandoClient;
-		public commands: Collection<string, Command>
+		public commands: Collection<string, Command>;
 		public guarded: boolean;
 		public id: string;
 		public name: string;
@@ -176,10 +176,10 @@ declare module 'discord.js-commando' {
 
 		public anyUsage(command?: string, prefix?: string, user?: User): string;
 		public clearReactions(): Promise<Message>;
-		public code(lang: string, content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>
+		public code(lang: string, content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
 		public delete(timeout?: number): Promise<Message>;
 		public direct(content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
-		public edit(content: StringResolvable): Promise<Message>
+		public edit(content: StringResolvable): Promise<Message>;
 		public editCode(lang: string, content: StringResolvable): Promise<Message>;
 		public embed(embed: RichEmbed | {}, content?: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
 		public fetchWebhook(): Promise<Webhook>;
@@ -187,7 +187,7 @@ declare module 'discord.js-commando' {
 		public isMentioned(data: GuildChannel | User | Role | string): boolean;
 		public parseArgs(): string | string[];
 		public static parseArgs(argString: string, argCount?: number, allowSingleQuote?: boolean): string[];
-		public pin(): Promise<Message>
+		public pin(): Promise<Message>;
 		public react(emoji: string | Emoji | ReactionEmoji): Promise<MessageReaction>;
 		public reply(content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
 		public replyEmbed(embed: RichEmbed | {}, content?: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
@@ -210,74 +210,58 @@ declare module 'discord.js-commando' {
 		public settings: GuildSettingsHelper;
 
 		public isOwner(user: UserResolvable): boolean;
-		public setProvider(provider: SettingProvider | Promise<SettingProvider>): Promise<void>;
+		public setProvider(provider: SettingProvider | Promise<SettingProvider>): Promise<undefined>;
 
-		on(event: string, listener: Function): this;
-		on(event: 'commandBlocked', listener: (message: CommandMessage, reason: string) => void): this;
-		on(event: 'commandError', listener: (command: Command, err: Error, message: CommandMessage, args: {} | string | string[], fromPattern: boolean) => void): this;
-		on(event: 'commandPrefixChange', listener: (guild: Guild, prefix: string) => void): this;
-		on(event: 'commandRegister', listener: (command: Command, registry: CommandRegistry) => void): this;
-		on(event: 'commandReregister', listener: (newCommand: Command, oldCommand: Command) => void): this;
-		on(event: 'commandRun', listener: (command: Command, promise: Promise<any>, message: CommandMessage, args: object | string | string[], fromPattern: boolean) => void): this;
-		on(event: 'commandStatusChange', listener: (guild: Guild, command: Command, enabled: boolean) => void): this;
-		on(event: 'commandUnregister', listener: (command: Command) => void): this;
-		on(event: 'groupRegister', listener: (group: CommandGroup, registry: CommandRegistry) => void): this;
-		on(event: 'groupStatusChange', listener: (guild: Guild, group: CommandGroup, enabled: boolean) => void): this;
-		on(event: 'typeRegister', listener: (type: ArgumentType, registry: CommandRegistry) => void): this;
-		on(event: 'unknownCommand', listener: (message: CommandMessage) => void): this;
-		on(event: 'channelCreate', listener: (channel: Channel) => void): this;
-		on(event: 'channelDelete', listener: (channel: Channel) => void): this;
-		on(event: 'channelPinsUpdate', listener: (channel: Channel, time: Date) => void): this;
-		on(event: 'channelUpdate', listener: (oldChannel: Channel, newChannel: Channel) => void): this;
-		on(event: 'clientUserSettingsUpdate', listener: (clientUserSettings: ClientUserSettings) => void): this;
-		on(event: 'debug', listener: (info: string) => void): this;
-		on(event: 'disconnect', listener: (event: any) => void): this;
-		on(event: 'emojiCreate', listener: (emoji: Emoji) => void): this;
-		on(event: 'emojiDelete', listener: (emoji: Emoji) => void): this;
-		on(event: 'emojiUpdate', listener: (oldEmoji: Emoji, newEmoji: Emoji) => void): this;
-		on(event: 'error', listener: (error: Error) => void): this;
-		on(event: 'guildBanAdd', listener: (guild: Guild, user: User) => void): this;
-		on(event: 'guildBanRemove', listener: (guild: Guild, user: User) => void): this;
-		on(event: 'guildCreate', listener: (guild: Guild) => void): this;
-		on(event: 'guildDelete', listener: (guild: Guild) => void): this;
-		on(event: 'guildMemberAdd', listener: (member: GuildMember) => void): this;
-		on(event: 'guildMemberAvailable', listener: (member: GuildMember) => void): this;
-		on(event: 'guildMemberRemove', listener: (member: GuildMember) => void): this;
-		on(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, GuildMember>, guild: Guild) => void): this;
-		on(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: boolean) => void): this;
-		on(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
-		on(event: 'guildUnavailable', listener: (guild: Guild) => void): this;
-		on(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
-		on(event: 'message', listener: (message: Message) => void): this;
-		on(event: 'messageDelete', listener: (message: Message) => void): this;
-		on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
-		on(event: 'messageReactionAdd', listener: (messageReaction: MessageReaction, user: User) => void): this;
-		on(event: 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
-		on(event: 'messageReactionRemoveAll', listener: (message: Message) => void): this;
-		on(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
-		on(event: 'presenceUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
-		on(event: 'ready', listener: () => void): this;
-		on(event: 'reconnecting', listener: () => void): this;
-		on(event: 'roleCreate', listener: (role: Role) => void): this;
-		on(event: 'roleDelete', listener: (role: Role) => void): this;
-		on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
-		on(event: 'typingStart', listener: (channel: Channel, user: User) => void): this;
-		on(event: 'typingStop', listener: (channel: Channel, user: User) => void): this;
-		on(event: 'userNoteUpdate', listener: (user: UserResolvable, oldNote: string, newNote: string) => void): this;
-		on(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
-		on(event: 'voiceStateUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
-		on(event: 'warn', listener: (info: string) => void): this;
+		public on(event: string, listener: Function): this;
+		public on(event: 'commandBlocked', listener: (message: CommandMessage, reason: string) => void): this;
+		public on(event: 'commandError', listener: (command: Command, err: Error, message: CommandMessage, args: {} | string | string[], fromPattern: boolean) => void): this;
+		public on(event: 'commandPrefixChange', listener: (guild: Guild, prefix: string) => void): this;
+		public on(event: 'commandRegister', listener: (command: Command, registry: CommandRegistry) => void): this;
+		public on(event: 'commandReregister', listener: (newCommand: Command, oldCommand: Command) => void): this;
+		public on(event: 'commandRun', listener: (command: Command, promise: Promise<any>, message: CommandMessage, args: object | string | string[], fromPattern: boolean) => void): this;
+		public on(event: 'commandStatusChange', listener: (guild: Guild, command: Command, enabled: boolean) => void): this;
+		public on(event: 'commandUnregister', listener: (command: Command) => void): this;
+		public on(event: 'groupRegister', listener: (group: CommandGroup, registry: CommandRegistry) => void): this;
+		public on(event: 'groupStatusChange', listener: (guild: Guild, group: CommandGroup, enabled: boolean) => void): this;
+		public on(event: 'typeRegister', listener: (type: ArgumentType, registry: CommandRegistry) => void): this;
+		public on(event: 'unknownCommand', listener: (message: CommandMessage) => void): this;
+		public on(event: 'channelCreate' | 'channelDelete', listener: (channel: Channel) => void): this;
+		public on(event: 'channelPinsUpdate', listener: (channel: Channel, time: Date) => void): this;
+		public on(event: 'channelUpdate', listener: (oldChannel: Channel, newChannel: Channel) => void): this;
+		public on(event: 'clientUserSettingsUpdate', listener: (clientUserSettings: ClientUserSettings) => void): this;
+		public on(event: 'debug' | 'warn', listener: (info: string) => void): this;
+		public on(event: 'disconnect', listener: (event: any) => void): this;
+		public on(event: 'emojiCreate' | 'emojiDelete', listener: (emoji: Emoji) => void): this;
+		public on(event: 'emojiUpdate', listener: (oldEmoji: Emoji, newEmoji: Emoji) => void): this;
+		public on(event: 'error', listener: (error: Error) => void): this;
+		public on(event: 'guildBanAdd' | 'guildBanRemove', listener: (guild: Guild, user: User) => void): this;
+		public on(event: 'guildCreate' | 'guildDelete' | 'guildUnavailable' , listener: (guild: Guild) => void): this;
+		public on(event: 'guildMemberAdd' | 'guildMemberAvailable' | 'guildMemberRemove', listener: (member: GuildMember) => void): this;
+		public on(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, GuildMember>, guild: Guild) => void): this;
+		public on(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: boolean) => void): this;
+		public on(event: 'guildMemberUpdate' | 'presenceUpdate' | 'voiceStateUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
+		public on(event: 'guildUpdate', listener: (oldGuild: Guild, newGuild: Guild) => void): this;
+		public on(event: 'message' | 'messageReactionRemoveAll' | 'messageDelete', listener: (message: Message) => void): this;
+		public on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
+		public on(event: 'messageReactionAdd' | 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
+		public on(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
+		public on(event: 'ready' | 'reconnecting' , listener: () => void): this;
+		public on(event: 'roleCreate' | 'roleDelete', listener: (role: Role) => void): this;
+		public on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
+		public on(event: 'typingStart' | 'typingStop' , listener: (channel: Channel, user: User) => void): this;
+		public on(event: 'userNoteUpdate', listener: (user: UserResolvable, oldNote: string, newNote: string) => void): this;
+		public on(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
 	}
 
 	export class CommandRegistry {
 		public constructor(client?: CommandoClient);
 
 		public readonly client: CommandoClient;
-		public commands: Collection<string, Command>
+		public commands: Collection<string, Command>;
 		public commandsPath: string;
 		public evalObjects: object;
-		public groups: Collection<string, CommandGroup>
-		public types: Collection<string, ArgumentType>
+		public groups: Collection<string, CommandGroup>;
+		public types: Collection<string, ArgumentType>;
 
 		public findCommands(searchString?: string, exact?: boolean, message?: Message): Command[];
 		public findGroups(searchString?: string, exact?: boolean): CommandGroup[];
@@ -329,18 +313,18 @@ declare module 'discord.js-commando' {
 		public readonly client: CommandoClient;
 		public guild: Guild;
 
-		public clear(): Promise<void>;
+		public clear(): Promise<undefined>;
 		public get(key: string, defVal?: any): any;
 		public remove(key: string): Promise<any>;
 		public set(key: string, value: any): Promise<any>;
 	}
 
 	export class SettingProvider {
-		public clear(guild: Guild | string): Promise<void>;
-		public destroy(): Promise<void>;
+		public clear(guild: Guild | string): Promise<undefined>;
+		public destroy(): Promise<undefined>;
 		public get(guild: Guild | string, key: string, defVal?: any): any;
 		public getGuildID(guild: Guild | string): string;
-		public init(client: CommandoClient): Promise<void>;
+		public init(client: CommandoClient): Promise<undefined>;
 		public remove(guild: Guild | string, key: string): Promise<any>;
 		public set(guild: Guild | string, key: string, val: any): Promise<any>;
 	}
@@ -355,10 +339,10 @@ declare module 'discord.js-commando' {
 		private listeners: Map<any, any>;
 		private settings: Map<any, any>;
 
-		public clear(guild: Guild | string): Promise<void>;
-		public destroy(): Promise<void>;
+		public clear(guild: Guild | string): Promise<undefined>;
+		public destroy(): Promise<undefined>;
 		public get(guild: Guild | string, key: string, defVal?: any): any;
-		public init(client: CommandoClient): Promise<void>;
+		public init(client: CommandoClient): Promise<undefined>;
 		public remove(guild: Guild | string, key: string): Promise<any>;
 		public set(guild: Guild | string, key: string, val: any): Promise<any>;
 		private setupGuild(guild: string, settings: {}): void;
@@ -367,14 +351,14 @@ declare module 'discord.js-commando' {
 		private updateOtherShards(key: string, val: any): void;
 	}
 
-	type ArgumentCollectorResult = {
+	interface ArgumentCollectorResult {
 		values?: object;
 		cancelled?: 'user' | 'time' | 'promptLimit';
 		prompts: Message[];
 		answers: Message[];
-	};
+	}
 
-	type ArgumentInfo = {
+	interface ArgumentInfo {
 		key: string;
 		label?: string;
 		prompt: string;
@@ -386,18 +370,18 @@ declare module 'discord.js-commando' {
 		validate?: Function;
 		parse?: Function;
 		wait?: number;
-	};
+	}
 
-	type ArgumentResult = {
+	interface ArgumentResult {
 		value: any | any[];
 		cancelled?: 'user' | 'time' | 'promptLimit';
 		prompts: Message[];
 		answers: Message[];
-	};
+	}
 
 	type CommandGroupResolvable = CommandGroup | string;
 
-	type CommandInfo = {
+	interface CommandInfo {
 		name: string;
 		aliases?: string[];
 		autoAliases?: boolean;
@@ -418,7 +402,7 @@ declare module 'discord.js-commando' {
 		patterns?: RegExp[];
 		guarded?: boolean;
 		ownerOnly?: boolean;
-	};
+	}
 
 	type CommandoClientOptions = ClientOptions & {
 		selfbot?: boolean;
@@ -434,7 +418,7 @@ declare module 'discord.js-commando' {
 
 	type Inhibitor = (msg: Message) => string | [string, Promise<any>];
 
-	type ThrottlingOptions = {
+	interface ThrottlingOptions {
 		usages: number;
 		duration: number;
 	}
