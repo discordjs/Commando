@@ -1,8 +1,7 @@
-const discord = require('discord.js');
-
 module.exports = {
 	Client: require('./client'),
 	CommandoClient: require('./client'),
+	CommandoGuild: require('./extensions/guild'),
 	Command: require('./commands/base'),
 	CommandGroup: require('./commands/group'),
 	CommandMessage: require('./commands/message'),
@@ -20,8 +19,6 @@ module.exports = {
 		return require('./providers/sqlite');
 	}
 };
-
-require('./extensions/guild').applyToClass(discord.Guild);
 
 /**
  * @external Channel
@@ -112,8 +109,8 @@ require('./extensions/guild').applyToClass(discord.Guild);
  * @see {@link https://discord.js.org/#/docs/main/master/class/Webhook}
  */
 /**
- * @external RichEmbed
- * @see {@link https://discord.js.org/#/docs/main/master/class/RichEmbed}
+ * @external MessageEmbed
+ * @see {@link https://discord.js.org/#/docs/main/master/class/MessageEmbed}
  */
 /**
  * @external ShardingManager
