@@ -128,7 +128,7 @@ class Argument {
 	 * @return {Promise<ArgumentResult>}
 	 */
 	async obtain(msg, value, promptLimit = Infinity) {
-		const empty = this.isEmpty(value, msg);
+		let empty = this.isEmpty(value, msg);
 		if(empty && this.default !== null) {
 			return {
 				value: typeof this.default === 'function' ? this.default(msg, this) : this.default,
@@ -193,6 +193,7 @@ class Argument {
 				};
 			}
 
+			empty = this.isEmpty(value, msg);
 			valid = await this.validate(value, msg);
 			/* eslint-enable no-await-in-loop */
 		}
