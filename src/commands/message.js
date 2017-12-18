@@ -412,7 +412,7 @@ class CommandMessage {
 
 	/**
 	 * Responds with an embed
-	 * @param {RichEmbed|Object} embed - Embed to send
+	 * @param {MessageEmbed|Object} embed - Embed to send
 	 * @param {StringResolvable} [content] - Content for the message
 	 * @param {MessageOptions} [options] - Options for the message
 	 * @return {Promise<Message|Message[]>}
@@ -425,7 +425,7 @@ class CommandMessage {
 
 	/**
 	 * Responds with a mention + embed
-	 * @param {RichEmbed|Object} embed - Embed to send
+	 * @param {MessageEmbed|Object} embed - Embed to send
 	 * @param {StringResolvable} [content] - Content for the message
 	 * @param {MessageOptions} [options] - Options for the message
 	 * @return {Promise<Message|Message[]>}

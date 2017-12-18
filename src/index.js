@@ -109,8 +109,8 @@ module.exports = {
  * @see {@link https://discord.js.org/#/docs/main/master/class/Webhook}
  */
 /**
- * @external RichEmbed
- * @see {@link https://discord.js.org/#/docs/main/master/class/RichEmbed}
+ * @external MessageEmbed
+ * @see {@link https://discord.js.org/#/docs/main/master/class/MessageEmbed}
  */
 /**
  * @external ShardingManager
