@@ -22,6 +22,7 @@ module.exports = class LoadCommandCommand extends Command {
 				{
 					key: 'command',
 					prompt: 'Which command would you like to load?',
+					type: 'command',
 					validate: val => new Promise(resolve => {
 						if(!val) return resolve(false);
 						const split = val.split(':');
