@@ -348,7 +348,8 @@ class Argument {
 	 */
 	isEmpty(value, msg) {
 		if(this.emptyChecker) return this.emptyChecker(value, msg, this);
-		return this.type.isEmpty(value, msg, this);
+		if(this.type) return this.type.isEmpty(value, msg, this);
+		return value.length === 0;
 	}
 
 	/**
