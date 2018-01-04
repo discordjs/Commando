@@ -116,7 +116,3 @@ module.exports = {
  * @external ShardingManager
  * @see {@link https://discord.js.org/#/docs/main/master/class/ShardingManager}
  */
-/**
- * @external RequireAllOptions
- * @see {@link https://www.npmjs.com/package/require-all}
- */
