@@ -432,7 +432,7 @@ declare module 'discord.js-commando' {
 
 	type CommandResolvable = Command | string;
 
-	type Inhibitor = (msg: Message) => string | [string, Promise<any>];
+	type Inhibitor = (msg: CommandMessage) => string | [string, Promise<any>];
 
 	type ThrottlingOptions = {
 		usages: number;
