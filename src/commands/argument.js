@@ -70,7 +70,7 @@ class Argument {
 
 		/**
 		 * The default value for the argument
-		 * @type {?*}
+		 * @type {?*|Function}
 		 */
 		this.default = typeof info.default !== 'undefined' ? info.default : null;
 
