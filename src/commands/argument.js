@@ -14,7 +14,7 @@ class Argument {
 	 * If type is `string`, this is the maximum length of the string.
 	 * @property {number} [min] - If type is `integer` or `float`, this is the minimum value of the number.
 	 * If type is `string`, this is the minimum length of the string.
-	 * @property {*} [default] - Default value for the argument (makes the argument optional - cannot be `null`)
+	 * @property {*|Function} [default] - Default value for the argument (makes the argument optional - cannot be `null`)
 	 * If a function, the function will be executed with an argument for the CommandMessage
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
 	 * @property {Function} [validate] - Validator function for the argument (see {@link ArgumentType#validate})
