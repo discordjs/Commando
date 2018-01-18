@@ -14,13 +14,19 @@ class Argument {
 	 * If type is `string`, this is the maximum length of the string.
 	 * @property {number} [min] - If type is `integer` or `float`, this is the minimum value of the number.
 	 * If type is `string`, this is the minimum length of the string.
-	 * @property {*|Function} [default] - Default value for the argument (makes the argument optional - cannot be `null`)
+	 * @property {ArgumentDefault} [default] - Default value for the argument (makes the argument optional - cannot be `null`)
 	 * If a function, the function will be executed with an argument for the CommandMessage
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
 	 * @property {Function} [validate] - Validator function for the argument (see {@link ArgumentType#validate})
 	 * @property {Function} [parse] - Parser function for the argument (see {@link ArgumentType#parse})
 	 * @property {Function} [isEmpty] - Empty checker for the argument (see {@link ArgumentType#isEmpty})
 	 * @property {number} [wait=30] - How long to wait for input (in seconds)
+	 */
+
+	/**
+	 * @typedef {*|Function} ArgumentDefault
+	 * @param {CommandMessage} message - The message that initiated the command
+	 * @param {Argument} argument - The argument class this argument is a part of
 	 */
 
 	/**
@@ -70,7 +76,7 @@ class Argument {
 
 		/**
 		 * The default value for the argument
-		 * @type {?*|Function}
+		 * @type {?ArgumentDefault}
 		 */
 		this.default = typeof info.default !== 'undefined' ? info.default : null;
 
