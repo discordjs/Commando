@@ -14,7 +14,7 @@ class Argument {
 	 * If type is `string`, this is the maximum length of the string.
 	 * @property {number} [min] - If type is `integer` or `float`, this is the minimum value of the number.
 	 * If type is `string`, this is the minimum length of the string.
-	 * @property {ArgumentDefault} [default] - Default value for the argument (makes the argument optional - cannot be `null`)
+	 * @property {ArgumentDefault} [default] - Default value for the argument (makes the arg optional - cannot be `null`)
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
 	 * @property {Function} [validate] - Validator function for the argument (see {@link ArgumentType#validate})
 	 * @property {Function} [parse] - Parser function for the argument (see {@link ArgumentType#parse})
