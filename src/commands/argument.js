@@ -24,9 +24,8 @@ class Argument {
 	 */
 
 	/**
+	 * Either a value or a function that returns a value. The function is passed the CommandMessage and the Argument.
 	 * @typedef {*|Function} ArgumentDefault
-	 * @param {CommandMessage} message - The message that initiated the command
-	 * @param {Argument} argument - The argument class this argument is a part of
 	 */
 
 	/**
