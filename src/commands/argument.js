@@ -14,12 +14,17 @@ class Argument {
 	 * If type is `string`, this is the maximum length of the string.
 	 * @property {number} [min] - If type is `integer` or `float`, this is the minimum value of the number.
 	 * If type is `string`, this is the minimum length of the string.
-	 * @property {*} [default] - Default value for the argument (makes the argument optional - cannot be `null`)
+	 * @property {ArgumentDefault} [default] - Default value for the argument (makes the arg optional - cannot be `null`)
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
 	 * @property {Function} [validate] - Validator function for the argument (see {@link ArgumentType#validate})
 	 * @property {Function} [parse] - Parser function for the argument (see {@link ArgumentType#parse})
 	 * @property {Function} [isEmpty] - Empty checker for the argument (see {@link ArgumentType#isEmpty})
 	 * @property {number} [wait=30] - How long to wait for input (in seconds)
+	 */
+
+	/**
+	 * Either a value or a function that returns a value. The function is passed the CommandMessage and the Argument.
+	 * @typedef {*|Function} ArgumentDefault
 	 */
 
 	/**
@@ -69,7 +74,7 @@ class Argument {
 
 		/**
 		 * The default value for the argument
-		 * @type {?*}
+		 * @type {?ArgumentDefault}
 		 */
 		this.default = typeof info.default !== 'undefined' ? info.default : null;
 
@@ -130,7 +135,7 @@ class Argument {
 		let empty = this.isEmpty(value, msg);
 		if(empty && this.default !== null) {
 			return {
-				value: this.default,
+				value: typeof this.default === 'function' ? this.default(msg, this) : this.default,
 				cancelled: null,
 				prompts: [],
 				answers: []
