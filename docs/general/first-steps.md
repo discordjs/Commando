@@ -54,4 +54,4 @@ Finally, you must log in, just as if you were using a regular Client.
 client.login('token goes here');
 ```
 
-There is an extremely simple example bot used to test Commando, of which you can view the source [here](https://github.com/Gawdl3y/discord.js-commando/tree/master/test).
+There is an extremely simple example bot used to test Commando, of which you can view the source [here](https://github.com/discordjs/Commando/tree/master/test).
