@@ -11,7 +11,7 @@ declare module 'discord.js-commando' {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
 
 		private obtainInfinite(msg: CommandMessage, values?: string[], promptLimit?: number): Promise<ArgumentResult>;
-		
+
 		private static validateInfo(client: CommandoClient, info: ArgumentInfo);
 
 		public default: any;
@@ -58,7 +58,7 @@ declare module 'discord.js-commando' {
 		private _throttles: Map<string, object>;
 
 		private throttle(userID: string): object;
-		
+
 		private static validateInfo(client: CommandoClient, info: CommandInfo);
 
 		public aliases: string[];
@@ -77,6 +77,7 @@ declare module 'discord.js-commando' {
 		public guildOnly: boolean;
 		public memberName: string;
 		public name: string;
+		public level: number;
 		public patterns: RegExp[];
 		public throttling: ThrottlingOptions;
 
@@ -98,7 +99,7 @@ declare module 'discord.js-commando' {
 		private _awaiting: Set<string>;
 		private _commandPatterns: object;
 		private _results: Map<string, CommandMessage>;
-		
+
 		private buildCommandPattern(prefix: string): RegExp;
 		private cacheCommandMessage(message: Message, oldMessage: Message, cmdMsg: CommandMessage, responses: Message | Message[]): void;
 		private handleMessage(messge: Message, oldMessage?: Message): Promise<void>;

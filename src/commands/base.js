@@ -14,6 +14,7 @@ class Command {
 	/**
 	 * @typedef {Object} CommandInfo
 	 * @property {string} name - The name of the command (must be lowercase)
+	 * @property {number} level - The permission level of the command
 	 * @property {string[]} [aliases] - Alternative names for the command (all must be lowercase)
 	 * @property {boolean} [autoAliases=true] - Whether automatic aliases should be added
 	 * @property {string} group - The ID of the group the command belongs to (must be lowercase)
