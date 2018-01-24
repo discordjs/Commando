@@ -70,6 +70,12 @@ class Command {
 		this.name = info.name;
 
 		/**
+		 * Permission level of this command
+		 * @type {number}
+		 */
+		this.level = info.level;
+
+		/**
 		 * Aliases for this command
 		 * @type {string[]}
 		 */

@@ -9,7 +9,7 @@ const client = new CommandoClient({
 
 client.on('message', (message: Message) => {
 	if (message.content === 'hello') {
-		message.channel.sendMessage('o/');
+		message.channel.send('o/');
 	}
 });
 
@@ -17,6 +17,7 @@ class TestCommand extends Command {
 	constructor(client: CommandoClient) {
 		super(client, {
 			name: 'test',
+			level: 100,
 			group: 'test',
 			memberName: 'test',
 			description: 'test'

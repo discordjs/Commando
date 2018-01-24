@@ -400,6 +400,7 @@ declare module 'discord.js-commando' {
 
 	type CommandInfo = {
 		name: string;
+		level: number;
 		aliases?: string[];
 		autoAliases?: boolean;
 		group: string;
