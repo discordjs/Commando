@@ -6,10 +6,10 @@
 	"author": "Schuyler Cebulskie <Gawdl3y@gawdl3y.com> (https://gawdl3y.com/)",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Gawdl3y/discord.js-commando.git"
+		"url": "https://github.com/discordjs/Commando.git"
 	},
 	"bugs": {
-		"url": "https://github.com/Gawdl3y/discord.js-commando/issues"
+		"url": "https://github.com/discordjs/Commando/issues"
 	},
 	"keywords": [
 		"discord",
@@ -32,7 +32,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "^8.0.0",
-		"discord.js-docgen": "hydrabolt/discord.js-docgen",
+		"discord.js-docgen": "discordjs/docgen",
 		"eslint": "^4.0.0",
 		"jsdoc-strip-async-await": "^0.1.0",
 		"typescript": "^2.0.0"
