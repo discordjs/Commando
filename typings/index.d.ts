@@ -344,7 +344,7 @@ declare module 'discord.js-commando' {
 		public init(client: CommandoClient): Promise<void>;
 		public remove(guild: Guild | string, key: string): Promise<any>;
 		public set(guild: Guild | string, key: string, val: any): Promise<any>;
-		public getGuildID(guild: string | GuildExtension)
+		public getGuildID(guild: string | GuildExtension): string;
 	}
 
 	export class SQLiteProvider extends SettingProvider {
