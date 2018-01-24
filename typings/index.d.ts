@@ -81,7 +81,7 @@ declare module 'discord.js-commando' {
 		public patterns: RegExp[];
 		public throttling: ThrottlingOptions;
 
-		public hasPermission(message: CommandMessage): boolean;
+		public hasPermission(message: CommandMessage): boolean | string;
 		public isEnabledIn(guild: GuildResolvable): boolean;
 		public isUsable(message: Message): boolean;
 		public reload(): void;
@@ -344,6 +344,7 @@ declare module 'discord.js-commando' {
 		public init(client: CommandoClient): Promise<void>;
 		public remove(guild: Guild | string, key: string): Promise<any>;
 		public set(guild: Guild | string, key: string, val: any): Promise<any>;
+		public getGuildID(guild: string | GuildExtension)
 	}
 
 	export class SQLiteProvider extends SettingProvider {
