@@ -236,12 +236,15 @@ class Command {
 	 * @return {boolean|string} Whether the user has permission, or an error message to respond with if they don't
 	 */
 	hasPermission(message, ownerOverride = true) {
-		console.log('Checking commando hasPermission()...');
-		if(!this.ownerOnly && !this.userPermissions) return true;
+		if(!this.ownerOnly && !this.userPermissions && !this.level) return true;
 		if(ownerOverride && this.client.isOwner(message.author)) return true;
 
 		if(this.ownerOnly && (ownerOverride || !this.client.isOwner(message.author))) {
 			return `The \`${this.name}\` command can only be used by the bot owner.`;
+		}
+
+		if(message.channel.type === 'text' && this.level) {
+			console.log(this.level);
 		}
 
 		if(message.channel.type === 'text' && this.userPermissions) {
