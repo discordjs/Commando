@@ -97,6 +97,8 @@ class CommandDispatcher {
 	 * @return {Promise<void>}
 	 * @private
 	 */
+	/*	eslint complexity: ["error", 30]	*/
+	/*	eslint max-depth: ["error", 10]	*/
 	async handleMessage(message, oldMessage) {
 		if(!this.shouldHandleMessage(message, oldMessage)) return;
 
@@ -121,9 +123,17 @@ class CommandDispatcher {
 
 			if(!inhibited) {
 				if(cmdMsg.command) {
+					// Check if command is enabled
 					if(!cmdMsg.command.isEnabledIn(message.guild)) {
 						responses = await cmdMsg.reply(`The \`${cmdMsg.command.name}\` command is disabled.`);
 					} else if(!oldMessage || typeof oldCmdMsg !== 'undefined') {
+						/*// Permission level check.
+						if(!cmdMsg.command.isEnabledIn(message.guild)) {
+							responses = await cmdMsg.reply(`The \`${cmdMsg.command.name}\` command is disabled.`);
+						} else if(!oldMessage || typeof oldCmdMsg !== 'undefined') {
+							responses = await cmdMsg.run();
+							if(typeof responses === 'undefined') responses = null; // eslint-disable-line max-depth
+						}*/
 						responses = await cmdMsg.run();
 						if(typeof responses === 'undefined') responses = null; // eslint-disable-line max-depth
 					}

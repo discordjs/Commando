@@ -236,6 +236,7 @@ class Command {
 	 * @return {boolean|string} Whether the user has permission, or an error message to respond with if they don't
 	 */
 	hasPermission(message, ownerOverride = true) {
+		console.log('Checking commando hasPermission()...');
 		if(!this.ownerOnly && !this.userPermissions) return true;
 		if(ownerOverride && this.client.isOwner(message.author)) return true;
 
@@ -335,6 +336,7 @@ class Command {
 	 * @param {?Message} message - The message
 	 * @return {boolean}
 	 */
+
 	isUsable(message = null) {
 		if(!message) return this._globalEnabled;
 		if(this.guildOnly && message && !message.guild) return false;
