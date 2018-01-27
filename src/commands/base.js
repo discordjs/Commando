@@ -244,7 +244,10 @@ class Command {
 		}
 
 		if(message.channel.type === 'text' && this.level) {
-			console.log(this.level);
+			const highestLevel = message.client.provider.getHighestLevel(message);
+			if(this.level > highestLevel) {
+				return `You need a permission level of ${this.level} or higher to use this command.`;
+			}
 		}
 
 		if(message.channel.type === 'text' && this.userPermissions) {

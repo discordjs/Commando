@@ -127,13 +127,6 @@ class CommandDispatcher {
 					if(!cmdMsg.command.isEnabledIn(message.guild)) {
 						responses = await cmdMsg.reply(`The \`${cmdMsg.command.name}\` command is disabled.`);
 					} else if(!oldMessage || typeof oldCmdMsg !== 'undefined') {
-						/*// Permission level check.
-						if(!cmdMsg.command.isEnabledIn(message.guild)) {
-							responses = await cmdMsg.reply(`The \`${cmdMsg.command.name}\` command is disabled.`);
-						} else if(!oldMessage || typeof oldCmdMsg !== 'undefined') {
-							responses = await cmdMsg.run();
-							if(typeof responses === 'undefined') responses = null; // eslint-disable-line max-depth
-						}*/
 						responses = await cmdMsg.run();
 						if(typeof responses === 'undefined') responses = null; // eslint-disable-line max-depth
 					}
