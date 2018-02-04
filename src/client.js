@@ -160,6 +160,12 @@ class CommandoClient extends discord.Client {
 			});
 		});
 
+		/**
+		 * Emitted upon the client's {@link SettingsProvider} finishing initialisation
+		 * @event CommandoClient#providerReady
+		 * @param {SettingsProvider} provider - Provider that was initialised
+		 */
+		this.emit('providerReady', provider);
 		this.emit('debug', 'Provider finished initialisation.');
 		return undefined;
 	}
