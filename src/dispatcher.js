@@ -224,7 +224,7 @@ class CommandDispatcher {
 	 */
 	parseMessage(message) {
 		// Find the command to run by patterns
-		for(const command of this.registry.commands.values()) {
+		for(const [, command] of this.registry.commands.values()) {
 			if(!command.patterns) continue;
 			for(const pattern of command.patterns) {
 				const matches = pattern.exec(message.content);
