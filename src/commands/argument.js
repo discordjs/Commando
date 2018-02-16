@@ -133,9 +133,16 @@ class Argument {
 	 */
 	async obtain(msg, value, promptLimit = Infinity) {
 		let empty = this.isEmpty(value, msg);
-		if(empty && this.default !== null) {
+
+		const defaultValue = this.default !== null ?
+			typeof this.default === 'function' ?
+				this.default(msg, this) :
+				this.default :
+			null;
+
+		if(empty && defaultValue !== null) {
 			return {
-				value: typeof this.default === 'function' ? this.default(msg, this) : this.default,
+				value: defaultValue,
 				cancelled: null,
 				prompts: [],
 				answers: []
