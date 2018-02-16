@@ -1,6 +1,6 @@
 function disambiguation(items, label, property = 'name') {
 	const itemList = items.map(item => `"${(property ? item[property] : item).replace(/ /g, '\xa0')}"`).join(',   ');
-	return `Multiple ${label} found, please be more specific: ${itemList}`;
+	return `Multiple ${label} found, please type **ONLY ONE** of the following without quotation marks **DO NOT** type the command again: ${itemList}`;
 }
 
 function paginate(items, page = 1, pageLength = 10) {
