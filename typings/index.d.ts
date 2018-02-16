@@ -4,7 +4,7 @@ declare module 'sqlite' {
 }
 
 declare module 'discord.js-commando' {
-	import { Channel, Client, ClientOptions, ClientUserSettings, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageOptions, MessageReaction, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
+	import { Channel, Client, ClientOptions, ClientUserSettings, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageReaction, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
 	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
 
 	export class Argument {
@@ -161,7 +161,7 @@ declare module 'discord.js-commando' {
 		public readonly guild: Guild;
 		public readonly id: string;
 		public readonly member: GuildMember;
-		public readonly mentions: {};
+		public readonly mentions: MessageMentions;
 		public message: Message;
 		public readonly nonce: string;
 		public patternMatches: string[];
@@ -432,7 +432,7 @@ declare module 'discord.js-commando' {
 
 	type CommandResolvable = Command | string;
 
-	type Inhibitor = (msg: Message) => string | [string, Promise<any>];
+	type Inhibitor = (msg: CommandMessage) => string | [string, Promise<any>];
 
 	type ThrottlingOptions = {
 		usages: number;
