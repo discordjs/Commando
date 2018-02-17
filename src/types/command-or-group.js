@@ -16,10 +16,10 @@ class CommandOrGroupArgumentType extends ArgumentType {
 		if(commands.length === 0 && groups.length === 0) return false;
 		return stripIndents`
 			${commands.length <= 15 ?
-				disambiguation(commands.map(cmd => escapeMarkdown(cmd.name)), 'commands', null) :
+				`${disambiguation(commands.map(cmd => escapeMarkdown(cmd.name)), 'commands', null)}\n` :
 				'Multiple commands found. Please be more specific.'}
 			${groups.length <= 15 ?
-				disambiguation(groups.map(grp => escapeMarkdown(grp.name)), 'groups', null) :
+				`${disambiguation(groups.map(grp => escapeMarkdown(grp.name)), 'groups', null)}\n` :
 				'Multiple groups found. Please be more specific.'}
 		`;
 	}
