@@ -1,6 +1,7 @@
 const { stripIndents } = require('common-tags');
 const ArgumentType = require('./base');
 const { disambiguation } = require('../util');
+const { escapeMarkdown } = require('discord.js');
 
 class CommandOrGroupArgumentType extends ArgumentType {
 	constructor(client) {
@@ -14,8 +15,12 @@ class CommandOrGroupArgumentType extends ArgumentType {
 		if(commands.length === 1) return true;
 		if(commands.length === 0 && groups.length === 0) return false;
 		return stripIndents`
-			${commands.length > 1 ? disambiguation(commands, 'commands') : ''}
-			${groups.length > 1 ? disambiguation(groups, 'groups') : ''}
+			${commands.length <= 15 ?
+				disambiguation(commands.map(cmd => escapeMarkdown(cmd.name)), 'commands') :
+				'Multiple commands found. Please be more specific.'}
+			${groups.length <= 15 ?
+				disambiguation(groups.map(grp => escapeMarkdown(grp.name)), 'groups') :
+				'Multiple groups found. Please be more specific.'}
 		`;
 	}
 
