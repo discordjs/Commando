@@ -5,7 +5,7 @@ const GuildSettingsHelper = require('./providers/helper');
 
 /**
  * Discord.js Client with a command framework
- * @extends {Client}
+ * @extends {discord.Client}
  */
 class CommandoClient extends discord.Client {
 	/**
