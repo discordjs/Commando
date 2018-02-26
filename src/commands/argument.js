@@ -63,14 +63,14 @@ class Argument {
 		 * If type is `string`, this is the maximum length of the string.
 		 * @type {?number}
 		 */
-		this.max = info.max || null;
+		this.max = typeof info.max !== 'undefined' ? info.max : null;
 
 		/**
 		 * If type is `integer` or `float`, this is the minimum value of the number.
 		 * If type is `string`, this is the minimum length of the string.
 		 * @type {?number}
 		 */
-		this.min = info.min || null;
+		this.min = typeof info.min !== 'undefined' ? info.min : null;
 
 		/**
 		 * The default value for the argument
