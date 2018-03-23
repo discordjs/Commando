@@ -8,6 +8,7 @@ class Argument {
 	 * @property {string} key - Key for the argument
 	 * @property {string} [label=key] - Label for the argument
 	 * @property {string} prompt - First prompt for the argument when it wasn't specified
+	 * @property {string} [error] - Predefined error message to output for the argument when it isn't valid
 	 * @property {string} [type] - Type of the argument (must be the ID of one of the registered argument types -
 	 * see {@link CommandRegistry#registerDefaultTypes} for the built-in types)
 	 * @property {number} [max] - If type is `integer` or `float`, this is the maximum value of the number.
@@ -51,6 +52,12 @@ class Argument {
 		 * @type {string}
 		 */
 		this.prompt = info.prompt;
+
+		/**
+		 * Error message for when a value is invalid
+		 * @type {?string}
+		 */
+		this.error = info.error || null;
 
 		/**
 		 * Type of the argument
@@ -331,8 +338,9 @@ class Argument {
 	 * @return {boolean|string|Promise<boolean|string>}
 	 */
 	validate(value, msg) {
-		if(this.validator) return this.validator(value, msg, this);
-		return this.type.validate(value, msg, this);
+		const valid = this.validator ? this.validator(value, msg, this) : this.type.validate(value, msg, this);
+		if(!valid || typeof valid === 'string') return this.error || valid;
+		return valid;
 	}
 
 	/**
@@ -370,6 +378,7 @@ class Argument {
 		if(typeof info.key !== 'string') throw new TypeError('Argument key must be a string.');
 		if(info.label && typeof info.label !== 'string') throw new TypeError('Argument label must be a string.');
 		if(typeof info.prompt !== 'string') throw new TypeError('Argument prompt must be a string.');
+		if(info.error && typeof info.error !== 'string') throw new TypeError('Argument error must be a string.');
 		if(!info.type && !info.validate) {
 			throw new Error('Argument must have either "type" or "validate" specified.');
 		}
