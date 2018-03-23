@@ -9,11 +9,11 @@ class ArgumentUnionType extends ArgumentType {
 		 * Types to handle, in order of priority
 		 * @type {ArgumentType[]}
 		 */
-		this.types = types;
+		this.types = [];
 		const typeIDs = id.split('|');
-		for(const id of typeIDs) {
-			const type = client.registry.types.get(id)
-			if(!type) throw new Error(`Argument type "${id}" is not registered.`);
+		for(const typeID of typeIDs) {
+			const type = client.registry.types.get(typeID);
+			if(!type) throw new Error(`Argument type "${typeID}" is not registered.`);
 			this.types.push(type);
 		}
 	}
