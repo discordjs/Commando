@@ -89,7 +89,9 @@ class Argument {
 		this.default = typeof info.default !== 'undefined' ? info.default : null;
 
 		/**
-		 * Values the user can choose from, checked in lowercase
+		 * Values the user can choose from
+		 * If type is `string`, this will be case-insensitive
+		 * If type is `channel`, `member`, `role`, or `user`, this will be the IDs.
 		 * @type {?string[]}
 		 */
 		this.oneOf = typeof info.oneOf !== 'undefined' ? info.oneOf : null;
@@ -162,8 +164,7 @@ class Argument {
 		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		const prompts = [];
 		const answers = [];
-		let oneOf = this.oneOf ? this.oneOf.includes(value.toLowerCase()) : true;
-		let valid = !empty ? await this.validate(value, msg) && oneOf : false;
+		let valid = !empty ? await this.validate(value, msg) : false;
 
 		while(!valid || typeof valid === 'string') {
 			/* eslint-disable no-await-in-loop */
@@ -215,8 +216,7 @@ class Argument {
 			}
 
 			empty = this.isEmpty(value, msg);
-			oneOf = this.oneOf ? this.oneOf.includes(value.toLowerCase()) : true;
-			valid = await this.validate(value, msg) && oneOf;
+			valid = await this.validate(value, msg);
 			/* eslint-enable no-await-in-loop */
 		}
 

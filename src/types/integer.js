@@ -8,6 +8,7 @@ class IntegerArgumentType extends ArgumentType {
 	validate(value, msg, arg) {
 		const int = Number.parseInt(value);
 		if(Number.isNaN(int)) return false;
+		if(arg.oneOf && !arg.oneOf.includes(int)) return false;
 		if(arg.min !== null && typeof arg.min !== 'undefined' && int < arg.min) {
 			return `Please enter a number above or exactly ${arg.min}.`;
 		}
