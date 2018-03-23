@@ -8,6 +8,7 @@ class FloatArgumentType extends ArgumentType {
 	validate(value, msg, arg) {
 		const float = Number.parseFloat(value);
 		if(Number.isNaN(float)) return false;
+		if(arg.oneOf && !arg.oneOf.includes(float)) return false;
 		if(arg.min !== null && typeof arg.min !== 'undefined' && float < arg.min) {
 			return `Please enter a number above or exactly ${arg.min}.`;
 		}

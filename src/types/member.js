@@ -7,11 +7,14 @@ class MemberArgumentType extends ArgumentType {
 		super(client, 'member');
 	}
 
-	async validate(value, msg) {
+	async validate(value, msg, arg) {
 		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) {
 			try {
-				return await msg.guild.members.fetch(await msg.client.users.fetch(matches[1]));
+				const member = await msg.guild.members.fetch(await msg.client.users.fetch(matches[1]));
+				if(!member) return false;
+				if(arg.oneOf && !arg.oneOf.includes(member.id)) return false;
+				return true;
 			} catch(err) {
 				return false;
 			}
@@ -19,9 +22,15 @@ class MemberArgumentType extends ArgumentType {
 		const search = value.toLowerCase();
 		let members = msg.guild.members.filterArray(memberFilterInexact(search));
 		if(members.length === 0) return false;
-		if(members.length === 1) return members[0];
+		if(members.length === 1) {
+			if(arg.oneOf && !arg.oneOf.includes(members[0].id)) return false;
+			return true;
+		}
 		const exactMembers = members.filter(memberFilterExact(search));
-		if(exactMembers.length === 1) return exactMembers[0];
+		if(exactMembers.length === 1) {
+			if(arg.oneOf && !arg.oneOf.includes(exactMembers[0].id)) return false;
+			return true;
+		}
 		if(exactMembers.length > 0) members = exactMembers;
 		return members.length <= 15 ?
 			`${disambiguation(

@@ -7,15 +7,21 @@ class RoleArgumentType extends ArgumentType {
 		super(client, 'role');
 	}
 
-	validate(value, msg) {
+	validate(value, msg, arg) {
 		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
 		if(matches) return msg.guild.roles.has(matches[1]);
 		const search = value.toLowerCase();
 		let roles = msg.guild.roles.filterArray(nameFilterInexact(search));
 		if(roles.length === 0) return false;
-		if(roles.length === 1) return true;
+		if(roles.length === 1) {
+			if(arg.oneOf && !arg.oneOf.includes(roles[0].id)) return false;
+			return true;
+		}
 		const exactRoles = roles.filter(nameFilterExact(search));
-		if(exactRoles.length === 1) return true;
+		if(exactRoles.length === 1) {
+			if(arg.oneOf && !arg.oneOf.includes(exactRoles[0].id)) return false;
+			return true;
+		}
 		if(exactRoles.length > 0) roles = exactRoles;
 		return roles.length <= 15 ?
 			`${disambiguation(roles.map(role => `${escapeMarkdown(role.name)}`), 'roles', null)}\n` :
