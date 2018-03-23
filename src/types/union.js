@@ -19,14 +19,14 @@ class ArgumentUnionType extends ArgumentType {
 	}
 
 	async validate(value, msg, arg) {
-		let results = this.types.map(type => type.validate(value, msg, arg));
+		let results = this.types.map(type => !type.isEmpty(value, msg, arg) ? type.validate(value, msg, arg) : false);
 		results = await Promise.all(results);
 		if(results.some(valid => valid && typeof valid !== 'string')) return true;
 		return false;
 	}
 
 	async parse(value, msg, arg) {
-		let results = this.types.map(type => type.validate(value, msg, arg));
+		let results = this.types.map(type => !type.isEmpty(value, msg, arg) ? type.validate(value, msg, arg) : false);
 		results = await Promise.all(results);
 		for(let i = 0; i < results.length; i++) {
 			if(results[i] && typeof results[i] !== 'string') return this.types[i].parse(value, msg, arg);
