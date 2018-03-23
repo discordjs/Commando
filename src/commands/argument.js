@@ -18,6 +18,7 @@ class Argument {
 	 * @property {number} [min] - If type is `integer` or `float`, this is the minimum value of the number.
 	 * If type is `string`, this is the minimum length of the string.
 	 * @property {ArgumentDefault} [default] - Default value for the argument (makes the arg optional - cannot be `null`)
+	 * @property {*[]} [oneOf] - An array of values that are allowed to be used
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
 	 * @property {Function} [validate] - Validator function for the argument (see {@link ArgumentType#validate})
 	 * @property {Function} [parse] - Parser function for the argument (see {@link ArgumentType#parse})
@@ -88,6 +89,12 @@ class Argument {
 		this.default = typeof info.default !== 'undefined' ? info.default : null;
 
 		/**
+		 * Values the user can choose from
+		 * @type {?*[]}
+		 */
+		this.oneOf = typeof info.oneOf !== 'undefined' ? info.oneOf : null;
+
+		/**
 		 * Whether the argument accepts an infinite number of values
 		 * @type {boolean}
 		 */
@@ -155,7 +162,7 @@ class Argument {
 		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		const prompts = [];
 		const answers = [];
-		let valid = !empty ? await this.validate(value, msg) : false;
+		let valid = !empty ? await this.validate(value, msg) && (this.oneOf ? this.oneOf.includes(value) : true) : false;
 
 		while(!valid || typeof valid === 'string') {
 			/* eslint-disable no-await-in-loop */
@@ -207,7 +214,7 @@ class Argument {
 			}
 
 			empty = this.isEmpty(value, msg);
-			valid = await this.validate(value, msg);
+			valid = await this.validate(value, msg) && (this.oneOf ? this.oneOf.includes(value) : true);
 			/* eslint-enable no-await-in-loop */
 		}
 
