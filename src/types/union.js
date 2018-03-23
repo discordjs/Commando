@@ -33,7 +33,7 @@ class ArgumentUnionType extends ArgumentType {
 		}
 		throw new Error(`Couldn't parse value "${value}" with union type ${this.id}.`);
 	}
-	
+
 	isEmpty(value, msg, arg) {
 		return !this.types.some(type => !type.isEmpty(value, msg, arg));
 	}
