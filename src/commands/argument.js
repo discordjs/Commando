@@ -90,6 +90,7 @@ class Argument {
 
 		/**
 		 * Values the user can choose from
+		 * If type is `string`, this will be checked in lowercase
 		 * @type {?*[]}
 		 */
 		this.oneOf = typeof info.oneOf !== 'undefined' ? info.oneOf : null;
@@ -162,7 +163,8 @@ class Argument {
 		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		const prompts = [];
 		const answers = [];
-		let valid = !empty ? await this.validate(value, msg) && (this.oneOf ? this.oneOf.includes(value) : true) : false;
+		let oneOf = this.oneOf ? this.oneOf.includes(value.toLowerCase()) : true;
+		let valid = !empty ? await this.validate(value, msg) && oneOf : false;
 
 		while(!valid || typeof valid === 'string') {
 			/* eslint-disable no-await-in-loop */
@@ -214,7 +216,8 @@ class Argument {
 			}
 
 			empty = this.isEmpty(value, msg);
-			valid = await this.validate(value, msg) && (this.oneOf ? this.oneOf.includes(value) : true);
+			oneOf = this.oneOf ? this.oneOf.includes(value.toLowerCase()) : true;
+			valid = await this.validate(value, msg) && oneOf;
 			/* eslint-enable no-await-in-loop */
 		}
 
