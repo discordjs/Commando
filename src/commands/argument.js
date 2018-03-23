@@ -1,5 +1,6 @@
 const { escapeMarkdown } = require('discord.js');
 const { oneLine, stripIndents } = require('common-tags');
+const ArgumentUnionType = require('../types/union');
 
 /** A fancy argument */
 class Argument {
@@ -63,7 +64,7 @@ class Argument {
 		 * Type of the argument
 		 * @type {?ArgumentType}
 		 */
-		this.type = info.type ? client.registry.types.get(info.type) : null;
+		this.type = this.constructor.determineType(client, info.type);
 
 		/**
 		 * If type is `integer` or `float`, this is the maximum value of the number.
@@ -379,11 +380,12 @@ class Argument {
 		if(info.label && typeof info.label !== 'string') throw new TypeError('Argument label must be a string.');
 		if(typeof info.prompt !== 'string') throw new TypeError('Argument prompt must be a string.');
 		if(info.error && typeof info.error !== 'string') throw new TypeError('Argument error must be a string.');
+		if(info.type && typeof info.type !== 'string') throw new TypeError('Argument type must be a string.');
+		if(info.type && !info.type.includes('|') && !client.registry.types.has(info.type)) {
+			throw new RangeError(`Argument type "${info.type}" isn't registered.`);
+		}
 		if(!info.type && !info.validate) {
 			throw new Error('Argument must have either "type" or "validate" specified.');
-		}
-		if(info.type && !client.registry.types.has(info.type)) {
-			throw new RangeError(`Argument type "${info.type}" isn't registered.`);
 		}
 		if(info.validate && typeof info.validate !== 'function') {
 			throw new TypeError('Argument validate must be a function.');
@@ -397,6 +399,23 @@ class Argument {
 		if(typeof info.wait !== 'undefined' && (typeof info.wait !== 'number' || Number.isNaN(info.wait))) {
 			throw new TypeError('Argument wait must be a number.');
 		}
+	}
+
+	/**
+	 * Gets the argument type to use from an ID
+	 * @param {string} id - ID of the type to use
+	 * @returns {?ArgumentType}
+	 * @private
+	 */
+	static determineType(client, id) {
+		if(!id) return null;
+		if(!id.includes('|')) return client.registry.types.get(id);
+
+		let type = client.registry.types.get(id);
+		if(type) return type;
+		type = new ArgumentUnionType(client, id);
+		client.registry.registerType(type);
+		return type;
 	}
 }
 
