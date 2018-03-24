@@ -21,7 +21,7 @@ module.exports = class DisableCommandCommand extends Command {
 					key: 'cmdOrGrp',
 					label: 'command/group',
 					prompt: 'Which command or group would you like to disable?',
-					type: 'command-or-group'
+					type: 'group|command'
 				}
 			]
 		});

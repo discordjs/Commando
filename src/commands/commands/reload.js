@@ -23,7 +23,7 @@ module.exports = class ReloadCommandCommand extends Command {
 					key: 'cmdOrGrp',
 					label: 'command/group',
 					prompt: 'Which command or group would you like to reload?',
-					type: 'command-or-group'
+					type: 'group|command'
 				}
 			]
 		});
