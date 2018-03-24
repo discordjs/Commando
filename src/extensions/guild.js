@@ -43,7 +43,7 @@ module.exports = Structures.extend('Guild', Guild => {
 			/**
 			 * Emitted whenever a guild's command prefix is changed
 			 * @event CommandoClient#commandPrefixChange
-			 * @param {?Guild} guild - Guild that the prefix was changed in (null for global)
+			 * @param {?CommandoGuild} guild - Guild that the prefix was changed in (null for global)
 			 * @param {?string} prefix - New command prefix (null for default)
 			 */
 			this.client.emit('commandPrefixChange', this, this._commandPrefix);
@@ -71,7 +71,7 @@ module.exports = Structures.extend('Guild', Guild => {
 			/**
 			 * Emitted whenever a command is enabled/disabled in a guild
 			 * @event CommandoClient#commandStatusChange
-			 * @param {?Guild} guild - Guild that the command was enabled/disabled in (null for global)
+			 * @param {?CommandoGuild} guild - Guild that the command was enabled/disabled in (null for global)
 			 * @param {Command} command - Command that was enabled/disabled
 			 * @param {boolean} enabled - Whether the command is enabled
 			 */
@@ -114,7 +114,7 @@ module.exports = Structures.extend('Guild', Guild => {
 			/**
 			 * Emitted whenever a command group is enabled/disabled in a guild
 			 * @event CommandoClient#groupStatusChange
-			 * @param {?Guild} guild - Guild that the group was enabled/disabled in (null for global)
+			 * @param {?CommandoGuild} guild - Guild that the group was enabled/disabled in (null for global)
 			 * @param {CommandGroup} group - Group that was enabled/disabled
 			 * @param {boolean} enabled - Whether the group is enabled
 			 */

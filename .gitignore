@@ -1,7 +1,9 @@
 /node_modules
-npm-debug.log
-test/auth.json
-test/database.sqlite3
-docs/docs.json
-.vscode
+/.vscode
+/test/auth.json
+/test/database.sqlite3
+/docs/docs.json
 package-lock.json
+npm-debug.log
+yarn.lock
+yarn-error.log
