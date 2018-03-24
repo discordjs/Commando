@@ -207,7 +207,7 @@ class SQLiteProvider extends SettingProvider {
 	}
 
 	/**
-	 * Sets up a group's status in a guild from the guild's settings
+	 * Sets up a command group's status in a guild from the guild's settings
 	 * @param {?CommandoGuild} guild - Guild to set the status in
 	 * @param {CommandGroup} group - Group to set the status of
 	 * @param {Object} settings - Settings of the guild

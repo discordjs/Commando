@@ -145,12 +145,12 @@ class Argument {
 	/**
 	 * Prompts the user and obtains the value for the argument
 	 * @param {CommandMessage} msg - Message that triggered the command
-	 * @param {string} [value] - Pre-provided value for the argument
+	 * @param {string} [val] - Pre-provided value for the argument
 	 * @param {number} [promptLimit=Infinity] - Maximum number of times to prompt for the argument
 	 * @return {Promise<ArgumentResult>}
 	 */
-	async obtain(msg, value, promptLimit = Infinity) {
-		let empty = this.isEmpty(value, msg);
+	async obtain(msg, val, promptLimit = Infinity) {
+		let empty = this.isEmpty(val, msg);
 		if(empty && this.default !== null) {
 			return {
 				value: typeof this.default === 'function' ? await this.default(msg, this) : this.default,
@@ -159,12 +159,12 @@ class Argument {
 				answers: []
 			};
 		}
-		if(this.infinite) return this.obtainInfinite(msg, value, promptLimit);
+		if(this.infinite) return this.obtainInfinite(msg, val, promptLimit);
 
 		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		const prompts = [];
 		const answers = [];
-		let valid = !empty ? await this.validate(value, msg) : false;
+		let valid = !empty ? await this.validate(val, msg) : false;
 
 		while(!valid || typeof valid === 'string') {
 			/* eslint-disable no-await-in-loop */
@@ -195,7 +195,7 @@ class Argument {
 			// Make sure they actually answered
 			if(responses && responses.size === 1) {
 				answers.push(responses.first());
-				value = answers[answers.length - 1].content;
+				val = answers[answers.length - 1].content;
 			} else {
 				return {
 					value: null,
@@ -206,7 +206,7 @@ class Argument {
 			}
 
 			// See if they want to cancel
-			if(value.toLowerCase() === 'cancel') {
+			if(val.toLowerCase() === 'cancel') {
 				return {
 					value: null,
 					cancelled: 'user',
@@ -215,13 +215,13 @@ class Argument {
 				};
 			}
 
-			empty = this.isEmpty(value, msg);
-			valid = await this.validate(value, msg);
+			empty = this.isEmpty(val, msg);
+			valid = await this.validate(val, msg);
 			/* eslint-enable no-await-in-loop */
 		}
 
 		return {
-			value: await this.parse(value, msg),
+			value: await this.parse(val, msg),
 			cancelled: null,
 			prompts,
 			answers
@@ -231,12 +231,12 @@ class Argument {
 	/**
 	 * Prompts the user and obtains multiple values for the argument
 	 * @param {CommandMessage} msg - Message that triggered the command
-	 * @param {string[]} [values] - Pre-provided values for the argument
+	 * @param {string[]} [vals] - Pre-provided values for the argument
 	 * @param {number} [promptLimit=Infinity] - Maximum number of times to prompt for the argument
 	 * @return {Promise<ArgumentResult>}
 	 * @private
 	 */
-	async obtainInfinite(msg, values, promptLimit = Infinity) { // eslint-disable-line complexity
+	async obtainInfinite(msg, vals, promptLimit = Infinity) { // eslint-disable-line complexity
 		const wait = this.wait > 0 && this.wait !== Infinity ? this.wait * 1000 : undefined;
 		const results = [];
 		const prompts = [];
@@ -245,8 +245,8 @@ class Argument {
 
 		while(true) { // eslint-disable-line no-constant-condition
 			/* eslint-disable no-await-in-loop */
-			let value = values && values[currentVal] ? values[currentVal] : null;
-			let valid = value ? await this.validate(value, msg) : false;
+			let val = vals && vals[currentVal] ? vals[currentVal] : null;
+			let valid = val ? await this.validate(val, msg) : false;
 			let attempts = 0;
 
 			while(!valid || typeof valid === 'string') {
@@ -261,8 +261,8 @@ class Argument {
 				}
 
 				// Prompt the user for a new value
-				if(value) {
-					const escaped = escapeMarkdown(value).replace(/@/g, '@\u200b');
+				if(val) {
+					const escaped = escapeMarkdown(val).replace(/@/g, '@\u200b');
 					prompts.push(await msg.reply(stripIndents`
 						${valid ? valid : oneLine`
 							You provided an invalid ${this.label},
@@ -293,7 +293,7 @@ class Argument {
 				// Make sure they actually answered
 				if(responses && responses.size === 1) {
 					answers.push(responses.first());
-					value = answers[answers.length - 1].content;
+					val = answers[answers.length - 1].content;
 				} else {
 					return {
 						value: null,
@@ -304,7 +304,7 @@ class Argument {
 				}
 
 				// See if they want to finish or cancel
-				const lc = value.toLowerCase();
+				const lc = val.toLowerCase();
 				if(lc === 'finish') {
 					return {
 						value: results.length > 0 ? results : null,
@@ -322,14 +322,14 @@ class Argument {
 					};
 				}
 
-				valid = await this.validate(value, msg);
+				valid = await this.validate(val, msg);
 			}
 
-			results.push(await this.parse(value, msg));
+			results.push(await this.parse(val, msg));
 
-			if(values) {
+			if(vals) {
 				currentVal++;
-				if(currentVal === values.length) {
+				if(currentVal === vals.length) {
 					return {
 						value: results,
 						cancelled: null,
@@ -344,37 +344,37 @@ class Argument {
 
 	/**
 	 * Checks if a value is valid for the argument
-	 * @param {string} value - Value to check
+	 * @param {string} val - Value to check
 	 * @param {CommandMessage} msg - Message that triggered the command
 	 * @return {boolean|string|Promise<boolean|string>}
 	 */
-	validate(value, msg) {
-		const valid = this.validator ? this.validator(value, msg, this) : this.type.validate(value, msg, this);
+	validate(val, msg) {
+		const valid = this.validator ? this.validator(val, msg, this) : this.type.validate(val, msg, this);
 		if(!valid || typeof valid === 'string') return this.error || valid;
 		return valid;
 	}
 
 	/**
 	 * Parses a value string into a proper value for the argument
-	 * @param {string} value - Value to parse
+	 * @param {string} val - Value to parse
 	 * @param {CommandMessage} msg - Message that triggered the command
 	 * @return {*|Promise<*>}
 	 */
-	parse(value, msg) {
-		if(this.parser) return this.parser(value, msg, this);
-		return this.type.parse(value, msg, this);
+	parse(val, msg) {
+		if(this.parser) return this.parser(val, msg, this);
+		return this.type.parse(val, msg, this);
 	}
 
 	/**
 	 * Checks whether a value for the argument is considered to be empty
-	 * @param {string} value - Value to check for emptiness
+	 * @param {string} val - Value to check for emptiness
 	 * @param {CommandMessage} msg - Message that triggered the command
 	 * @return {boolean}
 	 */
-	isEmpty(value, msg) {
-		if(this.emptyChecker) return this.emptyChecker(value, msg, this);
-		if(this.type) return this.type.isEmpty(value, msg, this);
-		return !value;
+	isEmpty(val, msg) {
+		if(this.emptyChecker) return this.emptyChecker(val, msg, this);
+		if(this.type) return this.type.isEmpty(val, msg, this);
+		return !val;
 	}
 
 	/**
@@ -383,7 +383,7 @@ class Argument {
 	 * @param {ArgumentInfo} info - Info to validate
 	 * @private
 	 */
-	static validateInfo(client, info) {
+	static validateInfo(client, info) { // eslint-disable-line complexity
 		if(!client) throw new Error('The argument client must be specified.');
 		if(typeof info !== 'object') throw new TypeError('Argument info must be an Object.');
 		if(typeof info.key !== 'string') throw new TypeError('Argument key must be a string.');
@@ -413,6 +413,7 @@ class Argument {
 
 	/**
 	 * Gets the argument type to use from an ID
+	 * @param {CommandoClient} client - Client to use the registry of
 	 * @param {string} id - ID of the type to use
 	 * @returns {?ArgumentType}
 	 * @private

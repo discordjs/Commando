@@ -10,7 +10,7 @@ declare module 'discord.js-commando' {
 	export class Argument {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
 
-		private obtainInfinite(msg: CommandMessage, values?: string[], promptLimit?: number): Promise<ArgumentResult>;
+		private obtainInfinite(msg: CommandMessage, vals?: string[], promptLimit?: number): Promise<ArgumentResult>;
 
 		private static validateInfo(client: CommandoClient, info: ArgumentInfo);
 
@@ -28,9 +28,9 @@ declare module 'discord.js-commando' {
 		public validator: Function;
 		public wait: number;
 
-		public obtain(msg: CommandMessage, value?: string, promptLimit?: number): Promise<ArgumentResult>;
-		public parse(value: string, msg: CommandMessage): any | Promise<any>;
-		public validate(value: string, msg: CommandMessage): boolean | string | Promise<boolean | string>;
+		public obtain(msg: CommandMessage, val?: string, promptLimit?: number): Promise<ArgumentResult>;
+		public parse(val: string, msg: CommandMessage): any | Promise<any>;
+		public validate(val: string, msg: CommandMessage): boolean | string | Promise<boolean | string>;
 	}
 
 	export class ArgumentCollector {
@@ -49,9 +49,9 @@ declare module 'discord.js-commando' {
 		public readonly client: CommandoClient;
 		public id: string;
 
-		public parse(value: string, msg: CommandMessage, arg: Argument): any | Promise<any>;
-		public validate(value: string, msg: CommandMessage, arg: Argument): boolean | string | Promise<boolean | string>;
-		public isEmpty(value: string, msg: CommandMessage, arg: Argument): boolean;
+		public parse(val: string, msg: CommandMessage, arg: Argument): any | Promise<any>;
+		public validate(val: string, msg: CommandMessage, arg: Argument): boolean | string | Promise<boolean | string>;
+		public isEmpty(val: string, msg: CommandMessage, arg: Argument): boolean;
 	}
 
 	export class ArgumentUnionType extends ArgumentType {
@@ -284,7 +284,7 @@ declare module 'discord.js-commando' {
 	export class CommandoGuild extends Guild {
 		private _commandPrefix: string;
 		private _commandsEnabled: object;
-		private _groupsEndabled: object;
+		private _groupsEnabled: object;
 		private _settings: GuildSettingsHelper;
 
 		public commandPrefix: string;
@@ -294,7 +294,7 @@ declare module 'discord.js-commando' {
 		public isCommandEndabled(command: CommandResolvable): boolean;
 		public isGroupEnabled(group: CommandGroupResolvable): boolean;
 		public setCommandEnabled(command: CommandResolvable, enabled: boolean): void;
-		public setGroupdEnabled(group: CommandGroupResolvable, enabled: boolean): void;
+		public setGroupEnabled(group: CommandGroupResolvable, enabled: boolean): void;
 	}
 
 	export class CommandRegistry {
@@ -343,7 +343,7 @@ declare module 'discord.js-commando' {
 		public clear(): Promise<void>;
 		public get(key: string, defVal?: any): any;
 		public remove(key: string): Promise<any>;
-		public set(key: string, value: any): Promise<any>;
+		public set(key: string, val: any): Promise<any>;
 	}
 
 	export class SettingProvider {

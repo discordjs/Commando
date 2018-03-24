@@ -7,10 +7,10 @@ class RoleArgumentType extends ArgumentType {
 		super(client, 'role');
 	}
 
-	validate(value, msg, arg) {
-		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
+	validate(val, msg, arg) {
+		const matches = val.match(/^(?:<@&)?([0-9]+)>?$/);
 		if(matches) return msg.guild.roles.has(matches[1]);
-		const search = value.toLowerCase();
+		const search = val.toLowerCase();
 		let roles = msg.guild.roles.filterArray(nameFilterInexact(search));
 		if(roles.length === 0) return false;
 		if(roles.length === 1) {
@@ -28,10 +28,10 @@ class RoleArgumentType extends ArgumentType {
 			'Multiple roles found. Please be more specific.';
 	}
 
-	parse(value, msg) {
-		const matches = value.match(/^(?:<@&)?([0-9]+)>?$/);
+	parse(val, msg) {
+		const matches = val.match(/^(?:<@&)?([0-9]+)>?$/);
 		if(matches) return msg.guild.roles.get(matches[1]) || null;
-		const search = value.toLowerCase();
+		const search = val.toLowerCase();
 		const roles = msg.guild.roles.filterArray(nameFilterInexact(search));
 		if(roles.length === 0) return null;
 		if(roles.length === 1) return roles[0];

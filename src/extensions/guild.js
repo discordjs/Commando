@@ -94,7 +94,7 @@ module.exports = Structures.extend('Guild', Guild => {
 
 		/**
 		 * Sets whether a command group is enabled in the guild
-		 * @param {CommandGroupResolvable} group - Command to set status of
+		 * @param {CommandGroupResolvable} group - Group to set status of
 		 * @param {boolean} enabled - Whether the group should be enabled
 		 */
 		setGroupEnabled(group, enabled) {

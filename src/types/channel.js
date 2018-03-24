@@ -7,10 +7,10 @@ class ChannelArgumentType extends ArgumentType {
 		super(client, 'channel');
 	}
 
-	validate(value, msg, arg) {
-		const matches = value.match(/^(?:<#)?([0-9]+)>?$/);
+	validate(val, msg, arg) {
+		const matches = val.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) return msg.guild.channels.has(matches[1]);
-		const search = value.toLowerCase();
+		const search = val.toLowerCase();
 		let channels = msg.guild.channels.filterArray(nameFilterInexact(search));
 		if(channels.length === 0) return false;
 		if(channels.length === 1) {
@@ -28,10 +28,10 @@ class ChannelArgumentType extends ArgumentType {
 			'Multiple channels found. Please be more specific.';
 	}
 
-	parse(value, msg) {
-		const matches = value.match(/^(?:<#)?([0-9]+)>?$/);
+	parse(val, msg) {
+		const matches = val.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) return msg.guild.channels.get(matches[1]) || null;
-		const search = value.toLowerCase();
+		const search = val.toLowerCase();
 		const channels = msg.guild.channels.filterArray(nameFilterInexact(search));
 		if(channels.length === 0) return null;
 		if(channels.length === 1) return channels[0];

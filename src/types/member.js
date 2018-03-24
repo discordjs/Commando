@@ -7,8 +7,8 @@ class MemberArgumentType extends ArgumentType {
 		super(client, 'member');
 	}
 
-	async validate(value, msg, arg) {
-		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
+	async validate(val, msg, arg) {
+		const matches = val.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) {
 			try {
 				const member = await msg.guild.members.fetch(await msg.client.users.fetch(matches[1]));
@@ -19,7 +19,7 @@ class MemberArgumentType extends ArgumentType {
 				return false;
 			}
 		}
-		const search = value.toLowerCase();
+		const search = val.toLowerCase();
 		let members = msg.guild.members.filterArray(memberFilterInexact(search));
 		if(members.length === 0) return false;
 		if(members.length === 1) {
@@ -39,10 +39,10 @@ class MemberArgumentType extends ArgumentType {
 			'Multiple members found. Please be more specific.';
 	}
 
-	parse(value, msg) {
-		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
+	parse(val, msg) {
+		const matches = val.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) return msg.guild.member(matches[1]) || null;
-		const search = value.toLowerCase();
+		const search = val.toLowerCase();
 		const members = msg.guild.members.filterArray(memberFilterInexact(search));
 		if(members.length === 0) return null;
 		if(members.length === 1) return members[0];

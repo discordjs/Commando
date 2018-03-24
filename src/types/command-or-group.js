@@ -8,10 +8,10 @@ class CommandOrGroupArgumentType extends ArgumentType {
 		super(client, 'command-or-group');
 	}
 
-	validate(value) {
-		const groups = this.client.registry.findGroups(value);
+	validate(val) {
+		const groups = this.client.registry.findGroups(val);
 		if(groups.length === 1) return true;
-		const commands = this.client.registry.findCommands(value);
+		const commands = this.client.registry.findCommands(val);
 		if(commands.length === 1) return true;
 		if(commands.length === 0 && groups.length === 0) return false;
 		return stripIndents`
@@ -24,8 +24,8 @@ class CommandOrGroupArgumentType extends ArgumentType {
 		`;
 	}
 
-	parse(value) {
-		return this.client.registry.findGroups(value)[0] || this.client.registry.findCommands(value)[0];
+	parse(val) {
+		return this.client.registry.findGroups(val)[0] || this.client.registry.findCommands(val)[0];
 	}
 }
 
