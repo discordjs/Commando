@@ -22,6 +22,8 @@ class ArgumentUnionType extends ArgumentType {
 		let results = this.types.map(type => !type.isEmpty(value, msg, arg) ? type.validate(value, msg, arg) : false);
 		results = await Promise.all(results);
 		if(results.some(valid => valid && typeof valid !== 'string')) return true;
+		const errors = results.filter(valid => typeof valid === 'string');
+		if(errors.length > 0) return errors.join('\n');
 		return false;
 	}
 
