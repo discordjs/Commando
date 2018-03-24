@@ -81,7 +81,7 @@ declare module 'discord.js-commando' {
 		public throttling: ThrottlingOptions;
 
 		public hasPermission(message: CommandMessage): boolean;
-		public isEnabledIn(guild: GuildResolvable): boolean;
+		public isEnabledIn(guild: GuildResolvable, bypassGroup?: boolean): boolean;
 		public isUsable(message: Message): boolean;
 		public reload(): void;
 		public run(message: CommandMessage, args: object | string | string[], fromPattern: boolean): Promise<Message | Message[]>

@@ -314,13 +314,14 @@ class Command {
 	/**
 	 * Checks if the command is enabled in a guild
 	 * @param {?GuildResolvable} guild - Guild to check in
+	 * @param {boolean} [bypassGroup] - Whether to bypass checking the group's status
 	 * @return {boolean}
 	 */
-	isEnabledIn(guild) {
+	isEnabledIn(guild, bypassGroup) {
 		if(this.guarded) return true;
 		if(!guild) return this.group._globalEnabled && this._globalEnabled;
 		guild = this.client.resolver.resolveGuild(guild);
-		return guild.isGroupEnabled(this.group) && guild.isCommandEnabled(this);
+		return (bypassGroup || guild.isGroupEnabled(this.group)) && guild.isCommandEnabled(this);
 	}
 
 	/**
