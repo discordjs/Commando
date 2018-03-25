@@ -1,6 +1,9 @@
 const ArgumentType = require('./base');
 
-/** A type for command arguments that handles multiple other types */
+/**
+ * A type for command arguments that handles multiple other types
+ * @extends {ArgumentType}
+ */
 class ArgumentUnionType extends ArgumentType {
 	constructor(client, id) {
 		super(client, id);
