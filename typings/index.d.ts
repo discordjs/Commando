@@ -91,7 +91,7 @@ declare module 'discord.js-commando' {
 		public throttling: ThrottlingOptions;
 		public userPermissions: PermissionResolvable[];
 
-		public hasPermission(message: CommandMessage): boolean;
+		public hasPermission(message: CommandMessage): boolean | string;
 		public isEnabledIn(guild: GuildResolvable, bypassGroup?: boolean): boolean;
 		public isUsable(message: Message): boolean;
 		public reload(): void;
@@ -307,7 +307,7 @@ declare module 'discord.js-commando' {
 		public groups: Collection<string, CommandGroup>
 		public types: Collection<string, ArgumentType>
 
-		public findCommands(searchString?: string, exact?: boolean, message?: Message): Command[];
+		public findCommands(searchString?: string, exact?: boolean, message?: Message | CommandMessage): Command[];
 		public findGroups(searchString?: string, exact?: boolean): CommandGroup[];
 		public registerCommand(command: Command | Function): CommandRegistry;
 		public registerCommands(commands: Command[] | Function[]): CommandRegistry;
