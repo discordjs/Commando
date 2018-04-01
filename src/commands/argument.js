@@ -351,6 +351,7 @@ class Argument {
 	validate(value, msg) {
 		const valid = this.validator ? this.validator(value, msg, this) : this.type.validate(value, msg, this);
 		if(!valid || typeof valid === 'string') return this.error || valid;
+		if(valid instanceof Promise) return valid.then(vld => !vld || typeof vld === 'string' ? this.error || vld : vld);
 		return valid;
 	}
 
