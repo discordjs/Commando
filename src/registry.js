@@ -253,21 +253,25 @@ class CommandRegistry {
 
 	/**
 	 * Registers the default commands to the registry
-	 * @param {Object} [options] - Object specifying what commands to register
-	 * @param {boolean} [options.help=true] - Whether or not to register the built-in help command
-	 * @param {boolean} [options.prefix=true] - Whether or not to register the built-in prefix command
-	 * @param {boolean} [options.eval_=true] - Whether or not to register the built-in eval command
-	 * @param {boolean} [options.ping=true] - Whether or not to register the built-in ping command
-	 * @param {boolean} [options.commandState=true] - Whether or not to register the built-in command state commands
-	 * (enable, disable, reload, list groups)
+	 * @param {Object} [commands] - Object specifying what commands to register
+	 * @param {boolean} [commands.help=true] - Whether to register the built-in help command
+	 * (requires "util" group and "string" type)
+	 * @param {boolean} [commands.prefix=true] - Whether to register the built-in prefix command
+	 * (requires "util" group and "string" type)
+	 * @param {boolean} [commands.eval=true] - Whether to register the built-in eval command
+	 * (requires "util" group and "string" type)
+	 * @param {boolean} [commands.ping=true] - Whether to register the built-in ping command (requires "util" group)
+	 * @param {boolean} [commands.commandState=true] - Whether to register the built-in command state commands
+	 * (enable, disable, load, unload, reload, list groups - requires "commands" group, "command" type, and "group" type)
 	 * @return {CommandRegistry}
 	 */
-	registerDefaultCommands({ help = true, prefix = true, ping = true, eval_ = true, commandState = true } = {}) {
-		if(help) this.registerCommand(require('./commands/util/help'));
-		if(prefix) this.registerCommand(require('./commands/util/prefix'));
-		if(ping) this.registerCommand(require('./commands/util/ping'));
-		if(eval_) this.registerCommand(require('./commands/util/eval'));
-		if(commandState) {
+	registerDefaultCommands(commands = {}) {
+		commands = { help: true, prefix: true, ping: true, eval: true, commandState: true, ...commands };
+		if(commands.help) this.registerCommand(require('./commands/util/help'));
+		if(commands.prefix) this.registerCommand(require('./commands/util/prefix'));
+		if(commands.ping) this.registerCommand(require('./commands/util/ping'));
+		if(commands.eval) this.registerCommand(require('./commands/util/eval'));
+		if(commands.commandState) {
 			this.registerCommands([
 				require('./commands/commands/groups'),
 				require('./commands/commands/enable'),
