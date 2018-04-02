@@ -50,49 +50,66 @@ class CommandRegistry {
 
 	/**
 	 * Registers a single group
-	 * @param {CommandGroup|Function|string[]|string} group - A CommandGroup instance, a constructor,
-	 * an array of [ID, Name], or the group ID
+	 * @param {CommandGroup|Function|Object|string} group - A CommandGroup instance, a constructor, or the group ID
 	 * @param {string} [name] - Name for the group (if the first argument is the group ID)
+	 * @param {boolean} [guarded] - Whether the group should be guarded (if the first argument is the group ID)
 	 * @return {CommandRegistry}
 	 * @see {@link CommandRegistry#registerGroups}
 	 */
-	registerGroup(group, name) {
-		if(typeof group === 'string') return this.registerGroups([[group, name]]);
-		return this.registerGroups([group]);
+	registerGroup(group, name, guarded) {
+		if(typeof group === 'string') {
+			group = new CommandGroup(this.client, group, name, guarded);
+		} else if(typeof group === 'function') {
+			group = new group(this.client); // eslint-disable-line new-cap
+		} else if(typeof group === 'object' && !(group instanceof CommandGroup)) {
+			group = new CommandGroup(this.client, group.id, group.name, group.guarded);
+		}
+
+		const existing = this.groups.get(group.id);
+		if(existing) {
+			existing.name = group.name;
+			this.client.emit('debug', `Group ${group.id} is already registered; renamed it to "${group.name}".`);
+		} else {
+			this.groups.set(group.id, group);
+			/**
+			 * Emitted when a group is registered
+			 * @event CommandoClient#groupRegister
+			 * @param {CommandGroup} group - Group that was registered
+			 * @param {CommandRegistry} registry - Registry that the group was registered to
+			 */
+			this.client.emit('groupRegister', group, this);
+			this.client.emit('debug', `Registered group ${group.id}.`);
+		}
+
+		return this;
 	}
 
 	/**
 	 * Registers multiple groups
-	 * @param {CommandGroup[]|Function[]|Array<string[]>} groups - An array of CommandGroup instances, constructors,
-	 * or arrays of [ID, Name]
+	 * @param {CommandGroup[]|Function[]|Object[]|Array<string[]>} groups - An array of CommandGroup instances,
+	 * constructors, plain objects (with ID, name, and guarded properties),
+	 * or arrays of {@link CommandRegistry#registerGroup} parameters
 	 * @return {CommandRegistry}
+	 * @example
+	 * ```js
+	 * registry.registerGroups([
+	 * 	['fun', 'Fun'],
+	 * 	['mod', 'Moderation']
+	 * ]);
+	 * ```
+	 * @example
+	 * ```js
+	 * registry.registerGroups([
+	 * 	{ id: 'fun', name: 'Fun' },
+	 * 	{ id: 'mod', name: 'Moderation' }
+	 * ]);
+	 * ```
 	 */
 	registerGroups(groups) {
 		if(!Array.isArray(groups)) throw new TypeError('Groups must be an Array.');
-		for(let group of groups) {
-			if(typeof group === 'function') {
-				group = new group(this.client); // eslint-disable-line new-cap
-			} else if(Array.isArray(group)) {
-				group = new CommandGroup(this.client, ...group);
-			} else if(!(group instanceof CommandGroup)) {
-				group = new CommandGroup(this.client, group.id, group.name, null, group.commands);
-			}
-
-			const existing = this.groups.get(group.id);
-			if(existing) {
-				existing.name = group.name;
-				this.client.emit('debug', `Group ${group.id} is already registered; renamed it to "${group.name}".`);
-			} else {
-				this.groups.set(group.id, group);
-				/**
-				 * Emitted when a group is registered
-				 * @event CommandoClient#groupRegister
-				 * @param {CommandGroup} group - Group that was registered
-				 * @param {CommandRegistry} registry - Registry that the group was registered to
-				 */
-				this.client.emit('groupRegister', group, this);
-				this.client.emit('debug', `Registered group ${group.id}.`);
-			}
+		for(const group of groups) {
+			if(Array.isArray(group)) this.registerGroup(...group);
+			else this.registerGroup(group);
 		}
 		return this;
 	}
@@ -104,54 +121,56 @@ class CommandRegistry {
 	 * @see {@link CommandRegistry#registerCommands}
 	 */
 	registerCommand(command) {
-		return this.registerCommands([command]);
+		if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
+		if(!(command instanceof Command)) throw new Error(`Invalid command object to register: ${command}`);
+
+		// Make sure there aren't any conflicts
+		if(this.commands.some(cmd => cmd.name === command.name || cmd.aliases.includes(command.name))) {
+			throw new Error(`A command with the name/alias "${command.name}" is already registered.`);
+		}
+		for(const alias of command.aliases) {
+			if(this.commands.some(cmd => cmd.name === alias || cmd.aliases.includes(alias))) {
+				throw new Error(`A command with the name/alias "${alias}" is already registered.`);
+			}
+		}
+		const group = this.groups.find(grp => grp.id === command.groupID);
+		if(!group) throw new Error(`Group "${command.groupID}" is not registered.`);
+		if(group.commands.some(cmd => cmd.memberName === command.memberName)) {
+			throw new Error(`A command with the member name "${command.memberName}" is already registered in ${group.id}`);
+		}
+
+		// Add the command
+		command.group = group;
+		group.commands.set(command.name, command);
+		this.commands.set(command.name, command);
+
+		/**
+		 * Emitted when a command is registered
+		 * @event CommandoClient#commandRegister
+		 * @param {Command} command - Command that was registered
+		 * @param {CommandRegistry} registry - Registry that the command was registered to
+		 */
+		this.client.emit('commandRegister', command, this);
+		this.client.emit('debug', `Registered command ${group.id}:${command.memberName}.`);
+
+		return this;
 	}
 
 	/**
 	 * Registers multiple commands
 	 * @param {Command[]|Function[]} commands - An array of Command instances or constructors
+	 * @param {boolean} [ignoreInvalid=false] - Whether to skip over invalid objects without throwing an error
 	 * @return {CommandRegistry}
 	 */
-	registerCommands(commands) {
+	registerCommands(commands, ignoreInvalid = false) {
 		if(!Array.isArray(commands)) throw new TypeError('Commands must be an Array.');
-		for(let command of commands) {
-			if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
-
-			// Verify that it's an actual command
-			if(!(command instanceof Command)) {
+		for(const command of commands) {
+			if(ignoreInvalid && typeof command !== 'function' && !(command instanceof Command)) {
 				this.client.emit('warn', `Attempting to register an invalid command object: ${command}; skipping.`);
 				continue;
 			}
-
-			// Make sure there aren't any conflicts
-			if(this.commands.some(cmd => cmd.name === command.name || cmd.aliases.includes(command.name))) {
-				throw new Error(`A command with the name/alias "${command.name}" is already registered.`);
-			}
-			for(const alias of command.aliases) {
-				if(this.commands.some(cmd => cmd.name === alias || cmd.aliases.includes(alias))) {
-					throw new Error(`A command with the name/alias "${alias}" is already registered.`);
-				}
-			}
-			const group = this.groups.find(grp => grp.id === command.groupID);
-			if(!group) throw new Error(`Group "${command.groupID}" is not registered.`);
-			if(group.commands.some(cmd => cmd.memberName === command.memberName)) {
-				throw new Error(`A command with the member name "${command.memberName}" is already registered in ${group.id}`);
-			}
-
-			// Add the command
-			command.group = group;
-			group.commands.set(command.name, command);
-			this.commands.set(command.name, command);
-			/**
-			 * Emitted when a command is registered
-			 * @event CommandoClient#commandRegister
-			 * @param {Command} command - Command that was registered
-			 * @param {CommandRegistry} registry - Registry that the command was registered to
-			 */
-			this.client.emit('commandRegister', command, this);
-			this.client.emit('debug', `Registered command ${group.id}:${command.memberName}.`);
+			this.registerCommand(command);
 		}
-
 		return this;
 	}
 
@@ -159,6 +178,11 @@ class CommandRegistry {
 	 * Registers all commands in a directory. The files must export a Command class constructor or instance.
 	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
 	 * @return {CommandRegistry}
+	 * @example
+	 * ```js
+	 * const path = require('path');
+	 * registry.registerCommandsIn(path.join(__dirname, 'commands'));
+	 * ```
 	 */
 	registerCommandsIn(options) {
 		const obj = require('require-all')(options);
@@ -170,7 +194,7 @@ class CommandRegistry {
 			}
 		}
 		if(typeof options === 'string' && !this.commandsPath) this.commandsPath = options;
-		return this.registerCommands(commands);
+		return this.registerCommands(commands, true);
 	}
 
 	/**
@@ -180,40 +204,42 @@ class CommandRegistry {
 	 * @see {@link CommandRegistry#registerTypes}
 	 */
 	registerType(type) {
-		return this.registerTypes([type]);
+		if(typeof type === 'function') type = new type(this.client); // eslint-disable-line new-cap
+		if(!(type instanceof ArgumentType)) throw new Error(`Invalid type object to register: ${type}`);
+
+		// Make sure there aren't any conflicts
+		if(this.types.has(type.id)) throw new Error(`An argument type with the ID "${type.id}" is already registered.`);
+
+		// Add the type
+		this.types.set(type.id, type);
+
+		/**
+		 * Emitted when an argument type is registered
+		 * @event CommandoClient#typeRegister
+		 * @param {ArgumentType} type - Argument type that was registered
+		 * @param {CommandRegistry} registry - Registry that the type was registered to
+		 */
+		this.client.emit('typeRegister', type, this);
+		this.client.emit('debug', `Registered argument type ${type.id}.`);
+
+		return this;
 	}
 
 	/**
 	 * Registers multiple argument types
 	 * @param {ArgumentType[]|Function[]} types - An array of ArgumentType instances or constructors
+	 * @param {boolean} [ignoreInvalid=false] - Whether to skip over invalid objects without throwing an error
 	 * @return {CommandRegistry}
 	 */
-	registerTypes(types) {
+	registerTypes(types, ignoreInvalid = false) {
 		if(!Array.isArray(types)) throw new TypeError('Types must be an Array.');
-		for(let type of types) {
-			if(typeof type === 'function') type = new type(this.client); // eslint-disable-line new-cap
-
-			// Verify that it's an actual type
-			if(!(type instanceof ArgumentType)) {
+		for(const type of types) {
+			if(ignoreInvalid && typeof type !== 'function' && !(type instanceof ArgumentType)) {
 				this.client.emit('warn', `Attempting to register an invalid argument type object: ${type}; skipping.`);
 				continue;
 			}
-
-			// Make sure there aren't any conflicts
-			if(this.types.has(type.id)) throw new Error(`An argument type with the ID "${type.id}" is already registered.`);
-
-			// Add the type
-			this.types.set(type.id, type);
-			/**
-			 * Emitted when an argument type is registered
-			 * @event CommandoClient#typeRegister
-			 * @param {ArgumentType} type - Argument type that was registered
-			 * @param {CommandRegistry} registry - Registry that the type was registered to
-			 */
-			this.client.emit('typeRegister', type, this);
-			this.client.emit('debug', `Registered argument type ${type.id}.`);
+			this.registerType(type);
 		}
-
 		return this;
 	}
 
@@ -226,7 +252,7 @@ class CommandRegistry {
 		const obj = require('require-all')(options);
 		const types = [];
 		for(const type of Object.values(obj)) types.push(type);
-		return this.registerTypes(types);
+		return this.registerTypes(types, true);
 	}
 
 	/**
