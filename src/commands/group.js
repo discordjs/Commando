@@ -7,13 +7,11 @@ class CommandGroup {
 	 * @param {string} id - The ID for the group
 	 * @param {string} [name=id] - The name of the group
 	 * @param {boolean} [guarded=false] - Whether the group should be protected from disabling
-	 * @param {Command[]} [commands] - The commands that the group contains
 	 */
-	constructor(client, id, name, guarded = false, commands = null) {
+	constructor(client, id, name, guarded = false) {
 		if(!client) throw new Error('A client must be specified.');
 		if(typeof id !== 'string') throw new TypeError('Group ID must be a string.');
 		if(id !== id.toLowerCase()) throw new Error('Group ID must be lowercase.');
-		if(commands && !Array.isArray(commands)) throw new TypeError('Group commands must be an Array of Commands.');
 
 		/**
 		 * Client that this group is for
@@ -40,9 +38,6 @@ class CommandGroup {
 		 * @type {Collection<string, Command>}
 		 */
 		this.commands = new discord.Collection();
-		if(commands) {
-			for(const command of commands) this.commands.set(command.name, command);
-		}
 
 		/**
 		 * Whether or not this group is protected from being disabled
