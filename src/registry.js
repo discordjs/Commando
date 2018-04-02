@@ -258,7 +258,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers the default commands to the registry
-	 * @param {Object} [commands] - Object specifying what commands to register
+	 * @param {Object} [commands] - Object specifying which commands to register
 	 * @param {boolean} [commands.help=true] - Whether to register the built-in help command
 	 * (requires "util" group and "string" type)
 	 * @param {boolean} [commands.prefix=true] - Whether to register the built-in prefix command
@@ -290,34 +290,39 @@ class CommandRegistry {
 	}
 
 	/**
-	 * Registers the default argument types to the registry. These are:
-	 * - string
-	 * - integer
-	 * - float
-	 * - boolean
-	 * - user
-	 * - member
-	 * - role
-	 * - channel
-	 * - message
-	 * - command
-	 * - group
+	 * Registers the default argument types to the registry
+	 * @param {Object} [types] - Object specifying which types to register
+	 * @param {boolean} [types.string=true] - Whether to register the built-in string type
+	 * @param {boolean} [types.integer=true] - Whether to register the built-in integer type
+	 * @param {boolean} [types.float=true] - Whether to register the built-in float type
+	 * @param {boolean} [types.boolean=true] - Whether to register the built-in boolean type
+	 * @param {boolean} [types.user=true] - Whether to register the built-in user type
+	 * @param {boolean} [types.member=true] - Whether to register the built-in member type
+	 * @param {boolean} [types.role=true] - Whether to register the built-in role type
+	 * @param {boolean} [types.channel=true] - Whether to register the built-in channel type
+	 * @param {boolean} [types.message=true] - Whether to register the built-in message type
+	 * @param {boolean} [types.command=true] - Whether to register the built-in command type
+	 * @param {boolean} [types.group=true] - Whether to register the built-in group type
 	 * @return {CommandRegistry}
 	 */
-	registerDefaultTypes() {
-		this.registerTypes([
-			require('./types/string'),
-			require('./types/integer'),
-			require('./types/float'),
-			require('./types/boolean'),
-			require('./types/user'),
-			require('./types/member'),
-			require('./types/role'),
-			require('./types/channel'),
-			require('./types/message'),
-			require('./types/command'),
-			require('./types/group')
-		]);
+	registerDefaultTypes(types = {}) {
+		types = {
+			string: true, integer: true, float: true, boolean: true,
+			user: true, member: true, role: true, channel: true, message: true,
+			command: true, group: true,
+			...types
+		};
+		if(types.string) this.registerType(require('./types/string'));
+		if(types.integer) this.registerType(require('./types/integer'));
+		if(types.float) this.registerType(require('./types/float'));
+		if(types.boolean) this.registerType(require('./types/boolean'));
+		if(types.user) this.registerType(require('./types/user'));
+		if(types.member) this.registerType(require('./types/member'));
+		if(types.role) this.registerType(require('./types/role'));
+		if(types.channel) this.registerType(require('./types/channel'));
+		if(types.message) this.registerType(require('./types/message'));
+		if(types.command) this.registerType(require('./types/command'));
+		if(types.group) this.registerType(require('./types/group'));
 		return this;
 	}
 
