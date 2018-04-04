@@ -91,19 +91,15 @@ class CommandRegistry {
 	 * or arrays of {@link CommandRegistry#registerGroup} parameters
 	 * @return {CommandRegistry}
 	 * @example
-	 * ```js
 	 * registry.registerGroups([
 	 * 	['fun', 'Fun'],
 	 * 	['mod', 'Moderation']
 	 * ]);
-	 * ```
 	 * @example
-	 * ```js
 	 * registry.registerGroups([
 	 * 	{ id: 'fun', name: 'Fun' },
 	 * 	{ id: 'mod', name: 'Moderation' }
 	 * ]);
-	 * ```
 	 */
 	registerGroups(groups) {
 		if(!Array.isArray(groups)) throw new TypeError('Groups must be an Array.');
@@ -179,10 +175,8 @@ class CommandRegistry {
 	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
 	 * @return {CommandRegistry}
 	 * @example
-	 * ```js
 	 * const path = require('path');
 	 * registry.registerCommandsIn(path.join(__dirname, 'commands'));
-	 * ```
 	 */
 	registerCommandsIn(options) {
 		const obj = require('require-all')(options);
@@ -257,11 +251,9 @@ class CommandRegistry {
 
 	/**
 	 * Registers the default argument types, groups, and commands. This is equivalent to:
-	 * ```js
 	 * registry.registerDefaultTypes()
 	 * 	.registerDefaultGroups()
 	 * 	.registerDefaultCommands();
-	 * ```
 	 * @return {CommandRegistry}
 	 */
 	registerDefaults() {
