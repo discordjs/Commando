@@ -100,7 +100,14 @@ class CommandDispatcher {
 	 */
 	async handleMessage(message, oldMessage) {
 		if(!this.shouldHandleMessage(message, oldMessage)) return;
-
+		// Obtain the member if we don't have it
+		if(message.guild && !message.guild.members.has(message.author.id) && !message.webhookID) {
+			message.member = await message.guild.members.fetch(message.author);
+		}
+		// Obtain the member for the ClientUser if it doesn't already exist
+		if(message.guild && !message.guild.members.has(this.client.user.id)) {
+			await message.guild.members.fetch(this.client.user.id);
+		}
 		// Parse the message, and get the old result if it exists
 		let cmdMsg, oldCmdMsg;
 		if(oldMessage) {
