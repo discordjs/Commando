@@ -142,8 +142,8 @@ class CommandMessage {
 		const hasPermission = this.command.hasPermission(this);
 		if(!hasPermission || typeof hasPermission === 'string') {
 			this.client.emit('commandBlocked', this, 'permission');
-			if(!hasPermission) hasPermission = `You do not have permission to use the \`${this.command.name}\` command.`;
-			return this.reply(hasPermission);
+			if(typeof hasPermission === 'string') return this.reply(hasPermission);
+			else return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
 		}
 
 		// Ensure the client user has the required permissions
