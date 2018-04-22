@@ -194,11 +194,11 @@ class CommandoClient extends discord.Client {
 
 		/**
 		 * Emitted upon the client's provider finishing initialisation
-		 * @event CommandoClient#providerReady
+		 * @event CommandoClient#BetterSqliteProviderReady
 		 * @param {SettingProvider} provider - Provider that was initialised
 		 */
-		this.emit('providerReady', provider);
-		this.emit('debug', 'Provider finished initialisation.');
+		this.emit('BetterSqliteProviderReady', provider);
+		this.emit('debug', 'Better SQLite Provider finished initialisation.');
 		return undefined;
 	}
 
