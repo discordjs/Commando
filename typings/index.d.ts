@@ -274,7 +274,6 @@ declare module 'discord.js-commando' {
 		on(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
 		on(event: 'presenceUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
 		on(event: 'providerReady', listener: (provider: SettingProvider) => void): this;
-		on(event: 'BetterSqliteProviderReady', listener: (provider: SettingProvider) => void): this;
 		on(event: 'ready', listener: () => void): this;
 		on(event: 'reconnecting', listener: () => void): this;
 		on(event: 'roleCreate', listener: (role: Role) => void): this;
