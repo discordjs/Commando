@@ -175,7 +175,7 @@ class CommandoClient extends discord.Client {
 	 * @param {SettingProvider} provider Provider to use
 	 * @return {void}
 	 */
-	setBetterProvider(provider) {
+	setBetterSQLite3Provider(provider) {
 		this.provider = provider;
 
 		if(this.readyTimestamp) {
