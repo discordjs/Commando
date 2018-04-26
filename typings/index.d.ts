@@ -4,14 +4,14 @@ declare module 'sqlite' {
 }
 
 declare module 'discord.js-commando' {
-	import { Channel, Client, ClientOptions, ClientUserSettings, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageReaction, ReactionEmoji, RichEmbed, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
+	import { Channel, Client, ClientOptions, ClientUserSettings, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageReaction, PermissionString, ReactionEmoji, RichEmbed, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
 	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
 
 	export class Argument {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
 
 		private obtainInfinite(msg: CommandMessage, values?: string[], promptLimit?: number): Promise<ArgumentResult>;
-		
+
 		private static validateInfo(client: CommandoClient, info: ArgumentInfo);
 
 		public default: any;
@@ -58,7 +58,7 @@ declare module 'discord.js-commando' {
 		private _throttles: Map<string, object>;
 
 		private throttle(userID: string): object;
-		
+
 		private static validateInfo(client: CommandoClient, info: CommandInfo);
 
 		public aliases: string[];
@@ -98,7 +98,7 @@ declare module 'discord.js-commando' {
 		private _awaiting: Set<string>;
 		private _commandPatterns: object;
 		private _results: Map<string, CommandMessage>;
-		
+
 		private buildCommandPattern(prefix: string): RegExp;
 		private cacheCommandMessage(message: Message, oldMessage: Message, cmdMsg: CommandMessage, responses: Message | Message[]): void;
 		private handleMessage(messge: Message, oldMessage?: Message): Promise<void>;
@@ -366,6 +366,19 @@ declare module 'discord.js-commando' {
 		private setupGuildGroup(guild: Guild, group: CommandGroup, settings: {}): void;
 		private updateOtherShards(key: string, val: any): void;
 	}
+
+	export class util {
+		public static disambiguation(items: any[], label: string, property?: string): string;
+		public static paginate<T>(items: T[], page?: number, pageLength?: number): {
+			items: T[],
+			page: number,
+			maxPage: number,
+			pageLength: number
+		};
+		public static readonly permissions: { [K in PermissionString]: string };
+	}
+
+	export const version: string;
 
 	type ArgumentCollectorResult = {
 		values?: object;
