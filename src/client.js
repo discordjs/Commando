@@ -170,38 +170,6 @@ class CommandoClient extends discord.Client {
 		return undefined;
 	}
 
-	/**
-	 * Sets the setting provider to use, and initialises it once the client is ready
-	 * @param {SettingProvider} provider Provider to use
-	 * @return {void}
-	 */
-	setBetterSQLite3Provider(provider) {
-		this.provider = provider;
-
-		if(this.readyTimestamp) {
-			this.emit('debug', `Provider set to ${provider.constructor.name} - initialising...`);
-			provider.init(this);
-			this.emit('debug', 'Provider finished initialisation.');
-			return undefined;
-		}
-
-		this.emit('debug', `Provider set to ${provider.constructor.name} - will initialise once ready.`);
-
-		this.once('ready', () => {
-			this.emit('debug', `Initialising provider...`);
-			provider.init(this);
-		});
-
-		/**
-		 * Emitted upon the client's provider finishing initialisation
-		 * @fires CommandoClient#providerReady
-		 * @param {SettingProvider} provider - Provider that was initialised
-		 */
-		this.emit('providerReady', provider);
-		this.emit('debug', 'Better SQLite Provider finished initialisation.');
-		return undefined;
-	}
-
 	async destroy() {
 		await super.destroy();
 		if(this.provider) await this.provider.destroy();
