@@ -350,7 +350,7 @@ declare module 'discord.js-commando' {
 		public clear(guild: Guild | string): Promise<void>;
 		public destroy(): Promise<void>;
 		public get(guild: Guild | string, key: string, defVal?: any): any;
-		public getGuildID(guild: Guild | string): string;
+		public static getGuildID(guild: Guild | string): string;
 		public init(client: CommandoClient): Promise<void>;
 		public remove(guild: Guild | string, key: string): Promise<any>;
 		public set(guild: Guild | string, key: string, val: any): Promise<any>;
