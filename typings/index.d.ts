@@ -3,7 +3,7 @@ declare module 'sqlite' {
 	export interface Statement {}
 }
 
-declare module 'bettersqlite' {
+declare module 'syncsqlite' {
 	export interface Database {}
 	export interface Statement {}
 }
@@ -11,7 +11,7 @@ declare module 'bettersqlite' {
 declare module 'discord.js-commando' {
 	import { Channel, Client, ClientOptions, ClientUserSettings, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
 	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
-	import { Database as BetterSQLiteDatabase, Statement as BetterSQLiteStatement} from 'better-sqlite3';
+	import { Database as SyncSQLiteDatabase, Statement as SyncSQLiteStatement} from 'better-sqlite3';
 
 	export class Argument {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
@@ -386,13 +386,13 @@ declare module 'discord.js-commando' {
 		private updateOtherShards(key: string, val: any): void;
 	}
 
-	export class BetterSQLiteProvider extends SettingProvider {
-		public constructor(db: BetterSQLiteDatabase);
+	export class SyncSQLiteProvider extends SettingProvider {
+		public constructor(db: SyncSQLiteDatabase);
 
 		public readonly client: CommandoClient;
-		public db: BetterSQLiteDatabase;
-		private deleteStmt: BetterSQLiteStatement;
-		private insertOrReplaceStmt: BetterSQLiteStatement
+		public db: SyncSQLiteDatabase;
+		private deleteStmt: SyncSQLiteStatement;
+		private insertOrReplaceStmt: SyncSQLiteStatement
 		private listeners: Map<any, any>;
 		private settings: Map<any, any>;
 

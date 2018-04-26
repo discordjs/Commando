@@ -4,27 +4,27 @@ const SettingProvider = require('./base');
  * Uses an SQLite database to store settings with guilds
  * @extends {SettingProvider}
  */
-class BetterSQLiteProvider extends SettingProvider {
+class SyncSQLiteProvider extends SettingProvider {
 	/**
-	 * @external BetterSQLiteDatabase
+	 * @external SyncSQLiteDatabase
 	 * @see {@link https://www.npmjs.com/package/better-sqlite3}
 	 */
 
 	/**
-	 * @param {BetterSQLiteDatabase} conn - Database Connection for the provider
+	 * @param {SyncSQLiteDatabase} conn - Database Connection for the provider
 	 */
 	constructor(conn) {
 		super();
 
 		/**
 		 * Database that will be used for storing/retrieving settings
-		 * @type {BetterSQLiteDatabase}
+		 * @type {SyncSQLiteDatabase}
 		 */
 		this.conn = conn;
 
 		/**
 		 * Client that the provider is for (set once the client is ready, after using {@link CommandoClient#setProvider})
-		 * @name BetterSQLiteProvider#client
+		 * @name SyncSQLiteProvider#client
 		 * @type {CommandoClient}
 		 * @readonly
 		 */
@@ -46,20 +46,20 @@ class BetterSQLiteProvider extends SettingProvider {
 
 		/**
 		 * Prepared statement to insert or replace a settings row
-		 * @type {BetterSQLiteStatement}
+		 * @type {SyncSQLiteStatement}
 		 * @private
 		 */
 		this.insertOrReplaceStmt = null;
 
 		/**
 		 * Prepared statement to delete an entire settings row
-		 * @type {BetterSQLiteStatement}
+		 * @type {SyncSQLiteStatement}
 		 * @private
 		 */
 		this.deleteStmt = null;
 
 		/**
-		 * @external BetterSQLiteStatement
+		 * @external SyncSQLiteStatement
 		 * @see {@link https://www.npmjs.com/package/better-sqlite3}
 		 */
 	}
@@ -75,7 +75,7 @@ class BetterSQLiteProvider extends SettingProvider {
 			try {
 				settings = JSON.parse(row.settings);
 			} catch(err) {
-				client.emit('warn', `BetterSQLiteProvider couldn't parse the settings stored for guild ${row.guild}.`);
+				client.emit('warn', `SyncSQLiteProvider couldn't parse the settings stored for guild ${row.guild}.`);
 				continue;
 			}
 
@@ -236,4 +236,4 @@ class BetterSQLiteProvider extends SettingProvider {
 	}
 }
 
-module.exports = BetterSQLiteProvider;
+module.exports = SyncSQLiteProvider;

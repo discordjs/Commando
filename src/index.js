@@ -18,8 +18,8 @@ module.exports = {
 	get SQLiteProvider() {
 		return require('./providers/sqlite');
 	},
-	get BetterSQLiteProvider() {
-		return require('./providers/bettersqlite');
+	get SyncSQLiteProvider() {
+		return require('./providers/sqlite-sync');
 	}
 };
 
