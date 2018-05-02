@@ -1,8 +1,8 @@
 /.vscode
 /node_modules
-test/auth.json
-test/database.sqlite3
-docs/docs.json
+/deploy
+/docs
+/test
 package-lock.json
 npm-debug.log
 yarn.lock
