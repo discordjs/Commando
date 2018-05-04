@@ -75,7 +75,7 @@ module.exports = class HelpCommand extends Command {
 			try {
 				messages.push(await msg.direct(stripIndents`
 					${oneLine`
-						To run a command in ${msg.guild || 'any server'},
+						To run a command in ${msg.guild ? msg.guild.name : 'any server'},
 						use ${Command.usage('command', msg.guild ? msg.guild.commandPrefix : null, this.client.user)}.
 						For example, ${Command.usage('prefix', msg.guild ? msg.guild.commandPrefix : null, this.client.user)}.
 					`}

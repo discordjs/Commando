@@ -7,8 +7,8 @@ class GroupArgumentType extends ArgumentType {
 		super(client, 'group');
 	}
 
-	validate(value) {
-		const groups = this.client.registry.findGroups(value);
+	validate(val) {
+		const groups = this.client.registry.findGroups(val);
 		if(groups.length === 1) return true;
 		if(groups.length === 0) return false;
 		return groups.length <= 15 ?
@@ -16,8 +16,8 @@ class GroupArgumentType extends ArgumentType {
 			'Multiple groups found. Please be more specific.';
 	}
 
-	parse(value) {
-		return this.client.registry.findGroups(value)[0];
+	parse(val) {
+		return this.client.registry.findGroups(val)[0];
 	}
 }
 

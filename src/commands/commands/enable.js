@@ -21,7 +21,7 @@ module.exports = class EnableCommandCommand extends Command {
 					key: 'cmdOrGrp',
 					label: 'command/group',
 					prompt: 'Which command or group would you like to enable?',
-					type: 'command-or-group'
+					type: 'group|command'
 				}
 			]
 		});
@@ -33,12 +33,19 @@ module.exports = class EnableCommandCommand extends Command {
 	}
 
 	run(msg, args) {
-		if(args.cmdOrGrp.isEnabledIn(msg.guild)) {
+		const group = args.cmdOrGrp.group;
+		if(args.cmdOrGrp.isEnabledIn(msg.guild, true)) {
 			return msg.reply(
-				`The \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'} is already enabled.`
+				`The \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'} is already enabled${
+					group && !group.enabled ? `, but the \`${group.name}\` group is disabled, so it still can't be used` : ''
+				}.`
 			);
 		}
 		args.cmdOrGrp.setEnabledIn(msg.guild, true);
-		return msg.reply(`Enabled the \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'}.`);
+		return msg.reply(
+			`Enabled the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}${
+				group && !group.enabled ? `, but the \`${group.name}\` group is disabled, so it still can't be used` : ''
+			}.`
+		);
 	}
 };

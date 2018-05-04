@@ -20,6 +20,7 @@ Additionally, it makes full use of ES2017's `async`/`await` functionality for cl
 		- Basic types (string, integer, float, boolean)
 		- Discord objects (user, member, role, channel, message)
 		- User-defined custom types
+		- Union types
 	* Automatic re-prompting of invalid arguments
 	* Optional arguments with default values
 	* Infinite arguments (arguments that accept as many values as provided)
@@ -29,5 +30,5 @@ Additionally, it makes full use of ES2017's `async`/`await` functionality for cl
 - Command throttling/cooldowns
 
 ## Installation
-**Node 8.0.0 or newer is required.**  
+**Node 8.6.0 or newer is required.**  
 `npm install discord.js-commando`

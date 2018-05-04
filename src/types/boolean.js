@@ -7,13 +7,13 @@ class BooleanArgumentType extends ArgumentType {
 		this.falsy = new Set(['false', 'f', 'no', 'n', 'off', 'disable', 'disabled', '0', '-']);
 	}
 
-	validate(value) {
-		const lc = value.toLowerCase();
+	validate(val) {
+		const lc = val.toLowerCase();
 		return this.truthy.has(lc) || this.falsy.has(lc);
 	}
 
-	parse(value) {
-		const lc = value.toLowerCase();
+	parse(val) {
+		const lc = val.toLowerCase();
 		if(this.truthy.has(lc)) return true;
 		if(this.falsy.has(lc)) return false;
 		throw new RangeError('Unknown boolean value.');

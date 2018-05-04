@@ -24,7 +24,7 @@ class CommandDispatcher {
 
 		/**
 		 * Functions that can block commands from running
-		 * @type {Set<function>}
+		 * @type {Set<Function>}
 		 */
 		this.inhibitors = new Set();
 
@@ -51,12 +51,13 @@ class CommandDispatcher {
 	}
 
 	/**
-	 * A function that can block the usage of a command - these functions are passed the command message that is
-	 * triggering the command. They should return `false` if the command should *not* be blocked. If the command *should*
-	 * be blocked, they should return one of the following:
+	 * A function that decides whether the usage of a command should be blocked
+	 * @callback Inhibitor
+	 * @param {CommandMessage} msg - Message triggering the command
+	 * @return {boolean|string|Array<string|?Promise<Message>>} `false` if the command should *not* be blocked.
+	 * If the command *should* be blocked, then one of the following:
 	 * - A single string identifying the reason the command is blocked
 	 * - An array of the above string as element 0, and a response promise or `null` as element 1
-	 * @typedef {Function} Inhibitor
 	 */
 
 	/**

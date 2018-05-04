@@ -2,7 +2,7 @@
 class GuildSettingsHelper {
 	/**
 	 * @param {CommandoClient} client - Client to use the provider of
-	 * @param {?Guild} guild - Guild the settings are for
+	 * @param {?CommandoGuild} guild - Guild the settings are for
 	 * @private
 	 */
 	constructor(client, guild) {
@@ -16,7 +16,7 @@ class GuildSettingsHelper {
 
 		/**
 		 * Guild the settings are for
-		 * @type {?Guild}
+		 * @type {?CommandoGuild}
 		 */
 		this.guild = guild;
 	}

@@ -7,22 +7,31 @@ class UserArgumentType extends ArgumentType {
 		super(client, 'user');
 	}
 
-	async validate(value, msg) {
-		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
+	async validate(val, msg, arg) {
+		const matches = val.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) {
 			try {
-				return await msg.client.users.fetch(matches[1]);
+				const user = await msg.client.users.fetch(matches[1]);
+				if(!user) return false;
+				if(arg.oneOf && !arg.oneOf.includes(user.id)) return false;
+				return true;
 			} catch(err) {
 				return false;
 			}
 		}
 		if(!msg.guild) return false;
-		const search = value.toLowerCase();
+		const search = val.toLowerCase();
 		let members = msg.guild.members.filterArray(memberFilterInexact(search));
 		if(members.length === 0) return false;
-		if(members.length === 1) return true;
+		if(members.length === 1) {
+			if(arg.oneOf && !arg.oneOf.includes(members[0].id)) return false;
+			return true;
+		}
 		const exactMembers = members.filter(memberFilterExact(search));
-		if(exactMembers.length === 1) return true;
+		if(exactMembers.length === 1) {
+			if(arg.oneOf && !arg.oneOf.includes(exactMembers[0].id)) return false;
+			return true;
+		}
 		if(exactMembers.length > 0) members = exactMembers;
 		return members.length <= 15 ?
 			`${disambiguation(
@@ -31,11 +40,11 @@ class UserArgumentType extends ArgumentType {
 			'Multiple users found. Please be more specific.';
 	}
 
-	parse(value, msg) {
-		const matches = value.match(/^(?:<@!?)?([0-9]+)>?$/);
+	parse(val, msg) {
+		const matches = val.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) return msg.client.users.get(matches[1]) || null;
 		if(!msg.guild) return null;
-		const search = value.toLowerCase();
+		const search = val.toLowerCase();
 		const members = msg.guild.members.filterArray(memberFilterInexact(search));
 		if(members.length === 0) return null;
 		if(members.length === 1) return members[0].user;

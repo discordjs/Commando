@@ -1,6 +1,6 @@
 {
 	"name": "discord.js-commando",
-	"version": "0.10.0-dev",
+	"version": "0.11.0-dev",
 	"description": "The official command framework for Discord.js",
 	"license": "Apache-2.0",
 	"author": "Schuyler Cebulskie <Gawdl3y@gawdl3y.com> (https://gawdl3y.com/)",
@@ -41,6 +41,6 @@
 		"sqlite": "^2.0.0"
 	},
 	"engines": {
-		"node": ">=8.0.0"
+		"node": ">=8.6.0"
 	}
 }

@@ -5,9 +5,10 @@ class FloatArgumentType extends ArgumentType {
 		super(client, 'float');
 	}
 
-	validate(value, msg, arg) {
-		const float = Number.parseFloat(value);
+	validate(val, msg, arg) {
+		const float = Number.parseFloat(val);
 		if(Number.isNaN(float)) return false;
+		if(arg.oneOf && !arg.oneOf.includes(float)) return false;
 		if(arg.min !== null && typeof arg.min !== 'undefined' && float < arg.min) {
 			return `Please enter a number above or exactly ${arg.min}.`;
 		}
@@ -17,8 +18,8 @@ class FloatArgumentType extends ArgumentType {
 		return true;
 	}
 
-	parse(value) {
-		return Number.parseFloat(value);
+	parse(val) {
+		return Number.parseFloat(val);
 	}
 }
 
