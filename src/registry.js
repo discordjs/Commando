@@ -458,9 +458,11 @@ class CommandRegistry {
 	 * @return {Command[]} All commands that are found
 	 */
 	findCommands(searchString = null, exact = false, message = null) {
-		if(!searchString) return message ?
-			Array.from(this.commands.filter(cmd => cmd.isUsable(message)).values()) :
-			this.commands;
+		if(!searchString) {
+			return message ?
+				Array.from(this.commands.filter(cmd => cmd.isUsable(message)).values()) :
+				this.commands;
+		}
 
 		// Find all matches
 		const lcSearch = searchString.toLowerCase();
