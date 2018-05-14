@@ -20,19 +20,19 @@ class MemberArgumentType extends ArgumentType {
 			}
 		}
 		const search = val.toLowerCase();
-		let members = msg.guild.members.filterArray(memberFilterInexact(search));
-		if(members.length === 0) return false;
-		if(members.length === 1) {
-			if(arg.oneOf && !arg.oneOf.includes(members[0].id)) return false;
+		let members = msg.guild.members.filter(memberFilterInexact(search));
+		if(members.size === 0) return false;
+		if(members.size === 1) {
+			if(arg.oneOf && !arg.oneOf.includes(members.first().id)) return false;
 			return true;
 		}
 		const exactMembers = members.filter(memberFilterExact(search));
-		if(exactMembers.length === 1) {
-			if(arg.oneOf && !arg.oneOf.includes(exactMembers[0].id)) return false;
+		if(exactMembers.size === 1) {
+			if(arg.oneOf && !arg.oneOf.includes(exactMembers.first().id)) return false;
 			return true;
 		}
-		if(exactMembers.length > 0) members = exactMembers;
-		return members.length <= 15 ?
+		if(exactMembers.size > 0) members = exactMembers;
+		return members.size <= 15 ?
 			`${disambiguation(
 				members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), 'members', null
 			)}\n` :
@@ -43,11 +43,11 @@ class MemberArgumentType extends ArgumentType {
 		const matches = val.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) return msg.guild.member(matches[1]) || null;
 		const search = val.toLowerCase();
-		const members = msg.guild.members.filterArray(memberFilterInexact(search));
-		if(members.length === 0) return null;
-		if(members.length === 1) return members[0];
+		const members = msg.guild.members.filter(memberFilterInexact(search));
+		if(members.size === 0) return null;
+		if(members.size === 1) return members.first();
 		const exactMembers = members.filter(memberFilterExact(search));
-		if(exactMembers.length === 1) return exactMembers[0];
+		if(exactMembers.size === 1) return exactMembers.first();
 		return null;
 	}
 }
