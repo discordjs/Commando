@@ -4,7 +4,7 @@ declare module 'sqlite' {
 }
 
 declare module 'discord.js-commando' {
-	import { Channel, Client, ClientOptions, ClientUserSettings, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageReaction, PermissionResolvable, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
+	import { Channel, Client, ClientOptions, ClientUserSettings, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
 	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
 
 	export class Argument {
@@ -281,6 +281,8 @@ declare module 'discord.js-commando' {
 		on(event: 'warn', listener: (info: string) => void): this;
 	}
 
+	export { CommandoClient as Client };
+
 	export class CommandoGuild extends Guild {
 		private _commandPrefix: string;
 		private _commandsEnabled: object;
@@ -350,7 +352,7 @@ declare module 'discord.js-commando' {
 		public clear(guild: Guild | string): Promise<void>;
 		public destroy(): Promise<void>;
 		public get(guild: Guild | string, key: string, defVal?: any): any;
-		public getGuildID(guild: Guild | string): string;
+		public static getGuildID(guild: Guild | string): string;
 		public init(client: CommandoClient): Promise<void>;
 		public remove(guild: Guild | string, key: string): Promise<any>;
 		public set(guild: Guild | string, key: string, val: any): Promise<any>;
@@ -378,6 +380,19 @@ declare module 'discord.js-commando' {
 		private updateOtherShards(key: string, val: any): void;
 	}
 
+	export class util {
+		public static disambiguation(items: any[], label: string, property?: string): string;
+		public static paginate<T>(items: T[], page?: number, pageLength?: number): {
+			items: T[],
+			page: number,
+			maxPage: number,
+			pageLength: number
+		};
+		public static readonly permissions: { [K in PermissionString]: string };
+	}
+
+	export const version: string;
+
 	type ArgumentCollectorResult = {
 		values?: object;
 		cancelled?: 'user' | 'time' | 'promptLimit';
@@ -398,6 +413,7 @@ declare module 'discord.js-commando' {
 		infinite?: boolean;
 		validate?: Function;
 		parse?: Function;
+		isEmpty?: Function;
 		wait?: number;
 	};
 
