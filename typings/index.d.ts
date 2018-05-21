@@ -454,7 +454,6 @@ declare module 'discord.js-commando' {
 	};
 
 	type CommandoClientOptions = ClientOptions & {
-		selfbot?: boolean;
 		commandPrefix?: string;
 		commandEditableDuration?: number;
 		nonCommandEditable?: boolean;

@@ -167,8 +167,7 @@ class CommandDispatcher {
 	 */
 	shouldHandleMessage(message, oldMessage) {
 		if(message.author.bot) return false;
-		else if(this.client.options.selfbot && message.author.id !== this.client.user.id) return false;
-		else if(!this.client.options.selfbot && message.author.id === this.client.user.id) return false;
+		else if(message.author.id === this.client.user.id) return false;
 
 		// Ignore messages from users that the bot is already waiting for input from
 		if(this._awaiting.has(message.author.id + message.channel.id)) return false;
@@ -237,7 +236,7 @@ class CommandDispatcher {
 		const prefix = message.guild ? message.guild.commandPrefix : this.client.commandPrefix;
 		if(!this._commandPatterns[prefix]) this.buildCommandPattern(prefix);
 		let cmdMsg = this.matchDefault(message, this._commandPatterns[prefix], 2);
-		if(!cmdMsg && !message.guild && !this.client.options.selfbot) cmdMsg = this.matchDefault(message, /^([^\s]+)/i);
+		if(!cmdMsg && !message.guild) cmdMsg = this.matchDefault(message, /^([^\s]+)/i);
 		return cmdMsg;
 	}
 
