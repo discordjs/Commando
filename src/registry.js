@@ -251,9 +251,11 @@ class CommandRegistry {
 
 	/**
 	 * Registers the default argument types, groups, and commands. This is equivalent to:
+	 * ```js
 	 * registry.registerDefaultTypes()
 	 * 	.registerDefaultGroups()
 	 * 	.registerDefaultCommands();
+	 * ```
 	 * @return {CommandRegistry}
 	 */
 	registerDefaults() {

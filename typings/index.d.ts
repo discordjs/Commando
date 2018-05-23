@@ -221,6 +221,7 @@ declare module 'discord.js-commando' {
 
 		public commandPrefix: string;
 		public dispatcher: CommandDispatcher;
+		public options: CommandoClientOptions;
 		public readonly owners: User[];
 		public provider: SettingProvider;
 		public registry: CommandRegistry;
@@ -481,7 +482,6 @@ declare module 'discord.js-commando' {
 	};
 
 	type CommandoClientOptions = ClientOptions & {
-		selfbot?: boolean;
 		commandPrefix?: string;
 		commandEditableDuration?: number;
 		nonCommandEditable?: boolean;
