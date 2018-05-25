@@ -308,7 +308,7 @@ class Argument {
 				if(lc === 'finish') {
 					return {
 						value: results.length > 0 ? results : null,
-						cancelled: results.length > 0 ? null : 'user',
+						cancelled: this.default ? null : results.length > 0 ? null : 'user',
 						prompts,
 						answers
 					};
