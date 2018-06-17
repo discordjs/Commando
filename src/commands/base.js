@@ -233,17 +233,17 @@ class Command {
 		if(ownerOverride && this.client.isOwner(message.author)) return true;
 
 		if(this.ownerOnly && (ownerOverride || !this.client.isOwner(message.author))) {
-			return `The \`${this.name}\` command can only be used by the bot owner.`;
+			return `The \`\`${this.name}\`\` command can only be used by the bot owner.`;
 		}
 
 		if(message.channel.type === 'text' && this.userPermissions) {
 			const missing = message.channel.permissionsFor(message.author).missing(this.userPermissions);
 			if(missing.length > 0) {
 				if(missing.length === 1) {
-					return `The \`${this.name}\` command requires you to have the "${permissions[missing[0]]}" permission.`;
+					return `The \`\`${this.name}\`\` command requires you to have the "${permissions[missing[0]]}" permission.`;
 				}
 				return oneLine`
-					The \`${this.name}\` command requires you to have the following permissions:
+					The \`\`${this.name}\`\` command requires you to have the following permissions:
 					${missing.map(perm => permissions[perm]).join(', ')}
 				`;
 			}
@@ -392,17 +392,17 @@ class Command {
 	 */
 	static usage(command, prefix = null, user = null) {
 		const nbcmd = command.replace(/ /g, '\xa0');
-		if(!prefix && !user) return `\`${nbcmd}\``;
+		if(!prefix && !user) return `\`\`${nbcmd}\`\``;
 
 		let prefixPart;
 		if(prefix) {
 			if(prefix.length > 1 && !prefix.endsWith(' ')) prefix += ' ';
 			prefix = prefix.replace(/ /g, '\xa0');
-			prefixPart = `\`${prefix}${nbcmd}\``;
+			prefixPart = `\`\`${prefix}${nbcmd}\`\``;
 		}
 
 		let mentionPart;
-		if(user) mentionPart = `\`@${user.username.replace(/ /g, '\xa0')}#${user.discriminator}\xa0${nbcmd}\``;
+		if(user) mentionPart = `\`\`@${user.username.replace(/ /g, '\xa0')}#${user.discriminator}\xa0${nbcmd}\`\``;
 
 		return `${prefixPart || ''}${prefix && user ? ' or ' : ''}${mentionPart || ''}`;
 	}

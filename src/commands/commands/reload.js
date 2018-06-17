@@ -45,10 +45,10 @@ module.exports = class ReloadCommandCommand extends Command {
 				this.client.emit('warn', `Error when broadcasting command reload to other shards`);
 				this.client.emit('error', err);
 				if(isCmd) {
-					await msg.reply(`Reloaded \`${cmdOrGrp.name}\` command, but failed to reload on other shards.`);
+					await msg.reply(`Reloaded \`\`${cmdOrGrp.name}\`\` command, but failed to reload on other shards.`);
 				} else {
 					await msg.reply(
-						`Reloaded all of the commands in the \`${cmdOrGrp.name}\` group, but failed to reload on other shards.`
+						`Reloaded all of the commands in the \`\`${cmdOrGrp.name}\`\` group, but failed to reload on other shards.`
 					);
 				}
 				return null;
@@ -56,10 +56,10 @@ module.exports = class ReloadCommandCommand extends Command {
 		}
 
 		if(isCmd) {
-			await msg.reply(`Reloaded \`${cmdOrGrp.name}\` command${this.client.shard ? ' on all shards' : ''}.`);
+			await msg.reply(`Reloaded \`\`${cmdOrGrp.name}\`\` command${this.client.shard ? ' on all shards' : ''}.`);
 		} else {
 			await msg.reply(
-				`Reloaded all of the commands in the \`${cmdOrGrp.name}\` group${this.client.shard ? ' on all shards' : ''}.`
+				`Reloaded all of the commands in the \`\`${cmdOrGrp.name}\`\` group${this.client.shard ? ' on all shards' : ''}.`
 			);
 		}
 		return null;

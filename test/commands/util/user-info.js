@@ -31,7 +31,7 @@ module.exports = class UserInfoCommand extends commando.Command {
 
 			**❯ Member Details**
 			${member.nickname !== null ? ` • Nickname: ${member.nickname}` : ' • No nickname'}
-			 • Roles: ${member.roles.map(roles => `\`${roles.name}\``).join(', ')}
+			 • Roles: ${member.roles.map(roles => `\`\`${roles.name}\`\``).join(', ')}
 			 • Joined at: ${member.joinedAt}
 
 			**❯ User Details**

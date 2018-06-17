@@ -181,7 +181,7 @@ class Argument {
 			prompts.push(await msg.reply(stripIndents`
 				${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
 				${oneLine`
-					Respond with \`cancel\` to cancel the command.
+					Respond with \`\`cancel\`\` to cancel the command.
 					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
 				`}
 			`));
@@ -270,7 +270,7 @@ class Argument {
 							Please try again.
 						`}
 						${oneLine`
-							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
+							Respond with \`\`cancel\`\` to cancel the command, or \`\`finish\`\` to finish entry up to this point.
 							${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
 						`}
 					`));
@@ -278,7 +278,7 @@ class Argument {
 					prompts.push(await msg.reply(stripIndents`
 						${this.prompt}
 						${oneLine`
-							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
+							Respond with \`\`cancel\`\` to cancel the command, or \`\`finish\`\` to finish entry.
 							${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
 						`}
 					`));
