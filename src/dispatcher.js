@@ -118,7 +118,7 @@ class CommandDispatcher {
 		// Run the command, or reply with an error
 		let responses;
 		if(cmdMsg) {
-			const inhibited = this.inhibit(cmdMsg);
+			const inhibited = await this.inhibit(cmdMsg);
 
 			if(!inhibited) {
 				if(cmdMsg.command) {
@@ -184,9 +184,9 @@ class CommandDispatcher {
 	 * @return {?Array} [reason, ?response]
 	 * @private
 	 */
-	inhibit(cmdMsg) {
+	async inhibit(cmdMsg) {
 		for(const inhibitor of this.inhibitors) {
-			const inhibited = inhibitor(cmdMsg);
+			const inhibited = await inhibitor(cmdMsg); // eslint-disable-line no-await-in-loop
 			if(inhibited) {
 				this.client.emit('commandBlocked', cmdMsg, inhibited instanceof Array ? inhibited[0] : inhibited);
 				return inhibited instanceof Array ? inhibited : [inhibited, undefined];
