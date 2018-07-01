@@ -135,12 +135,12 @@ class CommandMessage {
 			 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, and `throttling`)
 			 */
 			this.client.emit('commandBlocked', this, 'guildOnly');
-			return this.reply(`The \`\`${this.command.name}\`\` command must be used in a server channel.`);
+			return this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
 		}
 
 		if(this.command.nsfw && !this.message.channel.nsfw) {
 			this.client.emit('commandBlocked', this, 'nsfw');
-			return this.reply(`The \`\`${this.command.name}\`\` command can only be used in NSFW channels.`);
+			return this.reply(`The \`${this.command.name}\` command can only be used in NSFW channels.`);
 		}
 
 		// Ensure the user has permission to use the command
@@ -148,7 +148,7 @@ class CommandMessage {
 		if(!hasPermission || typeof hasPermission === 'string') {
 			this.client.emit('commandBlocked', this, 'permission');
 			if(typeof hasPermission === 'string') return this.reply(hasPermission);
-			else return this.reply(`You do not have permission to use the \`\`${this.command.name}\`\` command.`);
+			else return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
 		}
 
 		// Ensure the client user has the required permissions
@@ -158,11 +158,11 @@ class CommandMessage {
 				this.client.emit('commandBlocked', this, 'clientPermissions');
 				if(missing.length === 1) {
 					return this.reply(
-						`I need the "${permissions[missing[0]]}" permission for the \`\`${this.command.name}\`\` command to work.`
+						`I need the "${permissions[missing[0]]}" permission for the \`${this.command.name}\` command to work.`
 					);
 				}
 				return this.reply(oneLine`
-					I need the following permissions for the \`\`${this.command.name}\`\` command to work:
+					I need the following permissions for the \`${this.command.name}\` command to work:
 					${missing.map(perm => permissions[perm]).join(', ')}
 				`);
 			}
@@ -174,7 +174,7 @@ class CommandMessage {
 			const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
 			this.client.emit('commandBlocked', this, 'throttling');
 			return this.reply(
-				`You may not use the \`\`${this.command.name}\`\` command again for another ${remaining.toFixed(1)} seconds.`
+				`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
 			);
 		}
 
@@ -246,7 +246,7 @@ class CommandMessage {
 
 				const invite = this.client.options.invite;
 				return this.reply(stripIndents`
-					An error occurred while running the command: \`\`${err.name}: ${err.message}\`\`
+					An error occurred while running the command: \`${err.name}: ${err.message}\`
 					You shouldn't ever receive an error like this.
 					Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
 				`);

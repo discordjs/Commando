@@ -46,7 +46,7 @@ module.exports = class HelpCommand extends Command {
 				if(commands[0].aliases.length > 0) help += `\n**Aliases:** ${commands[0].aliases.join(', ')}`;
 				help += `\n${oneLine`
 					**Group:** ${commands[0].group.name}
-					(\`\`${commands[0].groupID}:${commands[0].memberName}\`\`)
+					(\`${commands[0].groupID}:${commands[0].memberName}\`)
 				`}`;
 				if(commands[0].details) help += `\n**Details:** ${commands[0].details}`;
 				if(commands[0].examples) help += `\n**Examples:**\n${commands[0].examples.join('\n')}`;

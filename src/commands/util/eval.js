@@ -38,7 +38,7 @@ module.exports = class EvalCommand extends Command {
 		const lastResult = this.lastResult;
 		const doReply = val => {
 			if(val instanceof Error) {
-				msg.reply(`Callback error: \`\`${val}\`\``);
+				msg.reply(`Callback error: \`${val}\``);
 			} else {
 				const result = this.makeResultMessages(val, process.hrtime(this.hrStart));
 				if(Array.isArray(result)) {
@@ -57,7 +57,7 @@ module.exports = class EvalCommand extends Command {
 			this.lastResult = eval(args.script);
 			hrDiff = process.hrtime(hrStart);
 		} catch(err) {
-			return msg.reply(`Error while evaluating: \`\`${err}\`\``);
+			return msg.reply(`Error while evaluating: \`${err}\``);
 		}
 
 		// Prepare for callback time and respond

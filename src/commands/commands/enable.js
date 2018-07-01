@@ -36,15 +36,15 @@ module.exports = class EnableCommandCommand extends Command {
 		const group = args.cmdOrGrp.group;
 		if(args.cmdOrGrp.isEnabledIn(msg.guild, true)) {
 			return msg.reply(
-				`The \`\`${args.cmdOrGrp.name}\`\` ${args.cmdOrGrp.group ? 'command' : 'group'} is already enabled${
-					group && !group.enabled ? `, but the \`\`${group.name}\`\` group is disabled, so it still can't be used` : ''
+				`The \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'} is already enabled${
+					group && !group.enabled ? `, but the \`${group.name}\` group is disabled, so it still can't be used` : ''
 				}.`
 			);
 		}
 		args.cmdOrGrp.setEnabledIn(msg.guild, true);
 		return msg.reply(
-			`Enabled the \`\`${args.cmdOrGrp.name}\`\` ${group ? 'command' : 'group'}${
-				group && !group.enabled ? `, but the \`\`${group.name}\`\` group is disabled, so it still can't be used` : ''
+			`Enabled the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}${
+				group && !group.enabled ? `, but the \`${group.name}\` group is disabled, so it still can't be used` : ''
 			}.`
 		);
 	}
