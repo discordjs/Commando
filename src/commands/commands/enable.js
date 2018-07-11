@@ -37,14 +37,18 @@ module.exports = class EnableCommandCommand extends Command {
 		if(args.cmdOrGrp.isEnabledIn(msg.guild, true)) {
 			return msg.reply(
 				`The \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'} is already enabled${
-					group && !group.enabled ? `, but the \`${group.name}\` group is disabled, so it still can't be used` : ''
+					group && !group.isEnabledIn(msg.guild) ?
+					`, but the \`${group.name}\` group is disabled, so it still can't be used` :
+					''
 				}.`
 			);
 		}
 		args.cmdOrGrp.setEnabledIn(msg.guild, true);
 		return msg.reply(
 			`Enabled the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}${
-				group && !group.enabled ? `, but the \`${group.name}\` group is disabled, so it still can't be used` : ''
+				group && !group.isEnabledIn(msg.guild) ?
+				`, but the \`${group.name}\` group is disabled, so it still can't be used` :
+				''
 			}.`
 		);
 	}
