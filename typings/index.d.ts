@@ -3,9 +3,15 @@ declare module 'sqlite' {
 	export interface Statement {}
 }
 
+declare module 'syncsqlite' {
+	export interface Database {}
+	export interface Statement {}
+}
+
 declare module 'discord.js-commando' {
 	import { Channel, Client, ClientOptions, ClientUserSettings, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
 	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
+	import { Database as SyncSQLiteDatabase, Statement as SyncSQLiteStatement} from 'better-sqlite3';
 
 	export class Argument {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
@@ -366,6 +372,28 @@ declare module 'discord.js-commando' {
 		public db: SQLiteDatabase;
 		private deleteStmt: SQLiteStatement;
 		private insertOrReplaceStmt: SQLiteStatement;
+		private listeners: Map<any, any>;
+		private settings: Map<any, any>;
+
+		public clear(guild: Guild | string): Promise<void>;
+		public destroy(): Promise<void>;
+		public get(guild: Guild | string, key: string, defVal?: any): any;
+		public init(client: CommandoClient): Promise<void>;
+		public remove(guild: Guild | string, key: string): Promise<any>;
+		public set(guild: Guild | string, key: string, val: any): Promise<any>;
+		private setupGuild(guild: string, settings: {}): void;
+		private setupGuildCommand(guild: CommandoGuild, command: Command, settings: {}): void;
+		private setupGuildGroup(guild: CommandoGuild, group: CommandGroup, settings: {}): void;
+		private updateOtherShards(key: string, val: any): void;
+	}
+
+	export class SyncSQLiteProvider extends SettingProvider {
+		public constructor(db: SyncSQLiteDatabase);
+
+		public readonly client: CommandoClient;
+		public db: SyncSQLiteDatabase;
+		private deleteStmt: SyncSQLiteStatement;
+		private insertOrReplaceStmt: SyncSQLiteStatement
 		private listeners: Map<any, any>;
 		private settings: Map<any, any>;
 
