@@ -28,7 +28,7 @@
 	"dependencies": {
 		"common-tags": "^1.0.0",
 		"escape-string-regexp": "^1.0.0",
-		"require-all": "^2.0.0"
+		"require-all": "^3.0.0"
 	},
 	"devDependencies": {
 		"@types/node": "^9.0.0",
