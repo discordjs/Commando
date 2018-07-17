@@ -3,7 +3,7 @@ declare module 'sqlite' {
 	export interface Statement {}
 }
 
-declare module 'syncsqlite' {
+declare module 'better-sqlite3' {
 	export interface Database {}
 	export interface Statement {}
 }
