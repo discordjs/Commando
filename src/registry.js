@@ -463,7 +463,7 @@ class CommandRegistry {
 		if(!searchString) {
 			return message ?
 				Array.from(this.commands.filter(cmd => cmd.isUsable(message)).values()) :
-				this.commands;
+				Array.from(this.commands);
 		}
 
 		// Find all matches
