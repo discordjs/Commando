@@ -191,6 +191,8 @@ class CommandMessage {
 					const err = new CommandFormatError(this);
 					return this.reply(err.message);
 				}
+				
+				this.command.onCancelled(this);
 				return this.reply('Cancelled command.');
 			}
 			args = result.values;
