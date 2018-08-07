@@ -4,6 +4,7 @@ const Command = require('./commands/base');
 const CommandGroup = require('./commands/group');
 const CommandMessage = require('./commands/message');
 const ArgumentType = require('./types/base');
+const { isConstructor } = require('./util');
 
 /** Handles registration and searching of commands and groups */
 class CommandRegistry {
@@ -117,7 +118,7 @@ class CommandRegistry {
 	 * @see {@link CommandRegistry#registerCommands}
 	 */
 	registerCommand(command) {
-		if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
+		if(isConstructor(command, Command)) command = new command(this.client); // eslint-disable-line new-cap
 		if(!(command instanceof Command)) throw new Error(`Invalid command object to register: ${command}`);
 
 		// Make sure there aren't any conflicts
@@ -161,7 +162,7 @@ class CommandRegistry {
 	registerCommands(commands, ignoreInvalid = false) {
 		if(!Array.isArray(commands)) throw new TypeError('Commands must be an Array.');
 		for(const command of commands) {
-			if(ignoreInvalid && typeof command !== 'function' && !(command instanceof Command)) {
+			if(ignoreInvalid && !isConstructor(command, Command) && !(command instanceof Command)) {
 				this.client.emit('warn', `Attempting to register an invalid command object: ${command}; skipping.`);
 				continue;
 			}
