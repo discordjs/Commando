@@ -60,7 +60,7 @@ class CommandRegistry {
 	registerGroup(group, name, guarded) {
 		if(typeof group === 'string') {
 			group = new CommandGroup(this.client, group, name, guarded);
-		} else if(typeof group === 'function') {
+		} else if(isConstructor(group, CommandGroup)) {
 			group = new group(this.client); // eslint-disable-line new-cap
 		} else if(typeof group === 'object' && !(group instanceof CommandGroup)) {
 			group = new CommandGroup(this.client, group.id, group.name, group.guarded);
@@ -199,7 +199,7 @@ class CommandRegistry {
 	 * @see {@link CommandRegistry#registerTypes}
 	 */
 	registerType(type) {
-		if(typeof type === 'function') type = new type(this.client); // eslint-disable-line new-cap
+		if(isConstructor(type, ArgumentType)) type = new type(this.client); // eslint-disable-line new-cap
 		if(!(type instanceof ArgumentType)) throw new Error(`Invalid type object to register: ${type}`);
 
 		// Make sure there aren't any conflicts
@@ -229,7 +229,7 @@ class CommandRegistry {
 	registerTypes(types, ignoreInvalid = false) {
 		if(!Array.isArray(types)) throw new TypeError('Types must be an Array.');
 		for(const type of types) {
-			if(ignoreInvalid && typeof type !== 'function' && !(type instanceof ArgumentType)) {
+			if(ignoreInvalid && !isConstructor(type, ArgumentType) && !(type instanceof ArgumentType)) {
 				this.client.emit('warn', `Attempting to register an invalid argument type object: ${type}; skipping.`);
 				continue;
 			}
@@ -353,7 +353,7 @@ class CommandRegistry {
 	 * @param {Command} oldCommand - Old command
 	 */
 	reregisterCommand(command, oldCommand) {
-		if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
+		if(isConstructor(command, Command)) command = new command(this.client); // eslint-disable-line new-cap
 		if(command.name !== oldCommand.name) throw new Error('Command name cannot change.');
 		if(command.groupID !== oldCommand.groupID) throw new Error('Command group cannot change.');
 		if(command.memberName !== oldCommand.memberName) throw new Error('Command memberName cannot change.');
