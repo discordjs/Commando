@@ -127,6 +127,7 @@ class CommandDispatcher {
 					} else if(!oldMessage || typeof oldCmdMsg !== 'undefined') {
 						responses = await cmdMsg.run();
 						if(typeof responses === 'undefined') responses = null; // eslint-disable-line max-depth
+						if(Array.isArray(responses)) responses = await Promise.all(responses); // eslint-disable-line max-depth
 					}
 				} else {
 					/**

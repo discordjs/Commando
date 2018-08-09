@@ -62,7 +62,12 @@ module.exports = class EvalCommand extends Command {
 
 		// Prepare for callback time and respond
 		this.hrStart = process.hrtime();
-		return msg.reply(this.makeResultMessages(this.lastResult, hrDiff, args.script));
+		const result = this.makeResultMessages(this.lastResult, hrDiff);
+		if(Array.isArray(result)) {
+			return result.map(item => msg.reply(item));
+		} else {
+			return msg.reply(result);
+		}
 	}
 
 	makeResultMessages(result, hrDiff, input = null) {
