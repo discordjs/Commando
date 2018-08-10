@@ -15,6 +15,7 @@ class CommandoClient extends discord.Client {
 	 * @property {number} [commandEditableDuration=30] - Time in seconds that command messages should be editable
 	 * @property {boolean} [nonCommandEditable=true] - Whether messages without commands can be edited to a command
 	 * @property {boolean} [unknownCommandResponse=true] - Whether the bot should respond to an unknown command
+	 * @property {boolean} [unhandledErrorResponse=true] - Whether the bot should respond to an unhandled error
 	 * @property {string|string[]|Set<string>} [owner] - ID of the bot owner's Discord user, or multiple IDs
 	 * @property {string} [invite] - Invite URL to the bot's support server
 	 */
@@ -28,6 +29,7 @@ class CommandoClient extends discord.Client {
 		if(typeof options.commandEditableDuration === 'undefined') options.commandEditableDuration = 30;
 		if(typeof options.nonCommandEditable === 'undefined') options.nonCommandEditable = true;
 		if(typeof options.unknownCommandResponse === 'undefined') options.unknownCommandResponse = true;
+		if(typeof options.unhandledErrorResponse === 'undefined') options.unhandledErrorResponse = true;
 		super(options);
 
 		/**

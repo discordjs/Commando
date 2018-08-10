@@ -237,7 +237,7 @@ class CommandMessage {
 			if(this.message.channel.typingCount > typingCount) this.message.channel.stopTyping();
 			if(err instanceof FriendlyError) {
 				return this.reply(err.message);
-			} else {
+			} else if(this.client.unhandledErrorResponse) {
 				const owners = this.client.owners;
 				let ownerList = owners ? owners.map((usr, i) => {
 					const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
@@ -250,6 +250,8 @@ class CommandMessage {
 					You shouldn't ever receive an error like this.
 					Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
 				`);
+			} else {
+				return Promise.resolve(null);
 			}
 		}
 	}

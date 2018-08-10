@@ -486,6 +486,7 @@ declare module 'discord.js-commando' {
 		commandEditableDuration?: number;
 		nonCommandEditable?: boolean;
 		unknownCommandResponse?: boolean;
+		unhandledErrorResponse?: boolean;
 		owner?: string | string[] | Set<string>;
 		invite?: string;
 	};
