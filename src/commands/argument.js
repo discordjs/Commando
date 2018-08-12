@@ -375,6 +375,7 @@ class Argument {
 	isEmpty(val, msg) {
 		if(this.emptyChecker) return this.emptyChecker(val, msg, this);
 		if(this.type) return this.type.isEmpty(val, msg, this);
+		if(Array.isArray(val)) return val.length === 0;
 		return !val;
 	}
 
