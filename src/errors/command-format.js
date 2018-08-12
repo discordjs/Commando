@@ -6,7 +6,7 @@ const FriendlyError = require('./friendly');
  */
 class CommandFormatError extends FriendlyError {
 	/**
-	 * @param {CommandMessage} msg - The command message the error is for
+	 * @param {CommandoMessage} msg - The command message the error is for
 	 */
 	constructor(msg) {
 		super(
