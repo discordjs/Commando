@@ -57,6 +57,12 @@ class Argument {
 		this.prompt = info.prompt;
 
 		/**
+		 * Show cancellation message for argument
+		 * @type {boolean}
+		 */
+		this.showCancel = typeof info.showCancel !== 'undefined' ? info.showCancel : true;
+
+		/**
 		 * Error message for when a value is invalid
 		 * @type {?string}
 		 */
@@ -180,10 +186,10 @@ class Argument {
 			// Prompt the user for a new value
 			prompts.push(await msg.reply(stripIndents`
 				${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
-				${oneLine`
+				${this.showCancel ? oneLine`
 					Respond with \`cancel\` to cancel the command.
 					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-				`}
+				`: ''}
 			`));
 
 			// Get the user's response
@@ -269,18 +275,18 @@ class Argument {
 							"${escaped.length < 1850 ? escaped : '[too long to show]'}".
 							Please try again.
 						`}
-						${oneLine`
+						${this.showCancel ? oneLine`
 							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
 							${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-						`}
+						`: ''}
 					`));
 				} else if(results.length === 0) {
 					prompts.push(await msg.reply(stripIndents`
 						${this.prompt}
-						${oneLine`
+						${this.showCancel ? oneLine`
 							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
 							${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
-						`}
+						`: ''}
 					`));
 				}
 
