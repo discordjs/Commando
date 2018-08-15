@@ -57,10 +57,10 @@ class Argument {
 		this.prompt = info.prompt;
 
 		/**
-		 * Show cancellation message for argument
+		 * Whether the cancellation message is displayed for the command
 		 * @type {boolean}
 		 */
-		this.showCancel = typeof info.showCancel !== 'undefined' ? info.showCancel : true;
+		this.showCancel = 'showCancel' in info ? info.showCancel : true;
 
 		/**
 		 * Error message for when a value is invalid
