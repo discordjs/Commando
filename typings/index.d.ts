@@ -1,17 +1,17 @@
 declare module 'sqlite' {
-	export interface Database {}
-	export interface Statement {}
+	export interface Database { }
+	export interface Statement { }
 }
 
 declare module 'better-sqlite3' {
-	export interface Database {}
-	export interface Statement {}
+	export interface Database { }
+	export interface Statement { }
 }
 
 declare module 'discord.js-commando' {
-	import { Channel, Client, ClientOptions, ClientUserSettings, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
+	import { Channel, Client, ClientOptions, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
 	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
-	import { Database as SyncSQLiteDatabase, Statement as SyncSQLiteStatement} from 'better-sqlite3';
+	import { Database as SyncSQLiteDatabase, Statement as SyncSQLiteStatement } from 'better-sqlite3';
 
 	export class Argument {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
@@ -247,7 +247,6 @@ declare module 'discord.js-commando' {
 		on(event: 'channelDelete', listener: (channel: Channel) => void): this;
 		on(event: 'channelPinsUpdate', listener: (channel: Channel, time: Date) => void): this;
 		on(event: 'channelUpdate', listener: (oldChannel: Channel, newChannel: Channel) => void): this;
-		on(event: 'clientUserSettingsUpdate', listener: (clientUserSettings: ClientUserSettings) => void): this;
 		on(event: 'debug', listener: (info: string) => void): this;
 		on(event: 'disconnect', listener: (event: any) => void): this;
 		on(event: 'emojiCreate', listener: (emoji: Emoji) => void): this;
