@@ -189,7 +189,7 @@ class Argument {
 				${this.showCancel ? oneLine`
 					Respond with \`cancel\` to cancel the command.
 					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-				`: ''}
+				` :  ''}
 			`));
 
 			// Get the user's response
@@ -278,7 +278,7 @@ class Argument {
 						${this.showCancel ? oneLine`
 							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
 							${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-						`: ''}
+						` :  ''}
 					`));
 				} else if(results.length === 0) {
 					prompts.push(await msg.reply(stripIndents`
@@ -286,7 +286,7 @@ class Argument {
 						${this.showCancel ? oneLine`
 							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
 							${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
-						`: ''}
+						` :  ''}
 					`));
 				}
 
