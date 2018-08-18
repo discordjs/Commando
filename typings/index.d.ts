@@ -1,11 +1,11 @@
 declare module 'sqlite' {
-	export interface Database { }
-	export interface Statement { }
+	export interface Database {}
+	export interface Statement {}
 }
 
 declare module 'better-sqlite3' {
-	export interface Database { }
-	export interface Statement { }
+	export interface Database {}
+	export interface Statement {}
 }
 
 declare module 'discord.js-commando' {
