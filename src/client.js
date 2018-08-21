@@ -15,6 +15,12 @@ class CommandoClient extends discord.Client {
 	 * @property {number} [commandEditableDuration=30] - Time in seconds that command messages should be editable
 	 * @property {boolean} [nonCommandEditable=true] - Whether messages without commands can be edited to a command
 	 * @property {boolean} [unknownCommandResponse=true] - Whether the bot should respond to an unknown command
+	 * @property {Object} [commandBlockedResponse] - Whether the bot should respond when a command is blocked
+	 * @property {boolean} [commandBlockedResponse.guildOnly=true]
+	 * @property {boolean} [commandBlockedResponse.nsfw=true]
+	 * @property {boolean} [commandBlockedResponse.permission=true]
+	 * @property {boolean} [commandBlockedResponse.clientPermissions=true]
+	 * @property {boolean} [commandBlockedResponse.throttling=true]
 	 * @property {string|string[]|Set<string>} [owner] - ID of the bot owner's Discord user, or multiple IDs
 	 * @property {string} [invite] - Invite URL to the bot's support server
 	 */
@@ -28,6 +34,23 @@ class CommandoClient extends discord.Client {
 		if(typeof options.commandEditableDuration === 'undefined') options.commandEditableDuration = 30;
 		if(typeof options.nonCommandEditable === 'undefined') options.nonCommandEditable = true;
 		if(typeof options.unknownCommandResponse === 'undefined') options.unknownCommandResponse = true;
+		options.commandBlockedResponse = {
+			guildOnly: options.commandBlockedResponse === 'undefined' ? true :
+				options.commandBlockedResponse.guildOnly === 'undefined' ? true :
+					!!options.commandBlockedResponse.guildOnly,
+			nsfw: options.commandBlockedResponse === 'undefined' ? true :
+				options.commandBlockedResponse.nsfw === 'undefined' ? true :
+					!!options.commandBlockedResponse.nsfw,
+			permission: options.commandBlockedResponse === 'undefined' ? true :
+				options.commandBlockedResponse.permission === 'undefined' ? true :
+					!!options.commandBlockedResponse.permission,
+			clientPermissions: options.commandBlockedResponse === 'undefined' ? true :
+				options.commandBlockedResponse.clientPermissions === 'undefined' ? true :
+					!!options.commandBlockedResponse.clientPermissions,
+			throttling: options.commandBlockedResponse === 'undefined' ? true :
+				options.commandBlockedResponse.throttling === 'undefined' ? true :
+					!!options.commandBlockedResponse.throttling
+		};
 		super(options);
 
 		/**
