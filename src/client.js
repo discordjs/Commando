@@ -34,6 +34,7 @@ class CommandoClient extends discord.Client {
 		if(typeof options.commandEditableDuration === 'undefined') options.commandEditableDuration = 30;
 		if(typeof options.nonCommandEditable === 'undefined') options.nonCommandEditable = true;
 		if(typeof options.unknownCommandResponse === 'undefined') options.unknownCommandResponse = true;
+		options.commandBlockedResponse = {};
 		options.commandBlockedResponse = {
 			guildOnly: options.commandBlockedResponse === 'undefined' ? true :
 				options.commandBlockedResponse.guildOnly === 'undefined' ? true :
