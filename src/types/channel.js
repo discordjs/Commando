@@ -11,13 +11,13 @@ class ChannelArgumentType extends ArgumentType {
 		const matches = val.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) return msg.guild.channels.has(matches[1]);
 		const search = val.toLowerCase();
-		let channels = msg.guild.channels.filter(nameFilterInexact(search));
+		let channels = msg.guild.channels.filter(filterInexact(search, arg.channelType));
 		if(channels.size === 0) return false;
 		if(channels.size === 1) {
 			if(arg.oneOf && !arg.oneOf.includes(channels.first().id)) return false;
 			return true;
 		}
-		const exactChannels = channels.filter(nameFilterExact(search));
+		const exactChannels = channels.filter(filterExact(search, arg.channelType));
 		if(exactChannels.size === 1) {
 			if(arg.oneOf && !arg.oneOf.includes(exactChannels.first().id)) return false;
 			return true;
@@ -28,25 +28,25 @@ class ChannelArgumentType extends ArgumentType {
 			'Multiple channels found. Please be more specific.';
 	}
 
-	parse(val, msg) {
+	parse(val, msg, arg) {
 		const matches = val.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) return msg.guild.channels.get(matches[1]) || null;
 		const search = val.toLowerCase();
-		const channels = msg.guild.channels.filter(nameFilterInexact(search));
+		const channels = msg.guild.channels.filter(filterInexact(search, arg.channelType));
 		if(channels.size === 0) return null;
 		if(channels.size === 1) return channels.first();
-		const exactChannels = channels.filter(nameFilterExact(search));
+		const exactChannels = channels.filter(filterExact(search, arg.channelType));
 		if(exactChannels.size === 1) return exactChannels.first();
 		return null;
 	}
 }
 
-function nameFilterExact(search) {
-	return thing => thing.name.toLowerCase() === search;
+function filterExact(search, type) {
+	return thing => thing.name.toLowerCase() === search && (type ? thing.type === type : true);
 }
 
-function nameFilterInexact(search) {
-	return thing => thing.name.toLowerCase().includes(search);
+function filterInexact(search, type) {
+	return thing => thing.name.toLowerCase().includes(search) && (type ? thing.type === type : true);
 }
 
 module.exports = ChannelArgumentType;

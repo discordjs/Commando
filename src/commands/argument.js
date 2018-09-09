@@ -17,6 +17,7 @@ class Argument {
 	 * If type is `string`, this is the maximum length of the string.
 	 * @property {number} [min] - If type is `integer` or `float`, this is the minimum value of the number.
 	 * If type is `string`, this is the minimum length of the string.
+	 * @property {string} [channelType] - If type is `channel`, this is the type of channel to allow.
 	 * @property {ArgumentDefault} [default] - Default value for the argument (makes the arg optional - cannot be `null`)
 	 * @property {string[]} [oneOf] - An array of values that are allowed to be used
 	 * @property {boolean} [infinite=false] - Whether the argument accepts infinite values
@@ -81,6 +82,12 @@ class Argument {
 		 * @type {?number}
 		 */
 		this.min = typeof info.min !== 'undefined' ? info.min : null;
+
+		/**
+		 * If type is `channel`, this is the type of channel to allow.
+		 * @type {?string}
+		 */
+		this.channelType = typeof info.channelType !== 'undefined' ? info.channelType : null;
 
 		/**
 		 * The default value for the argument
