@@ -59,6 +59,7 @@ class ArgumentType {
 	 * @return {boolean} Whether the value is empty
 	 */
 	isEmpty(val, msg, arg) { // eslint-disable-line no-unused-vars
+		if(Array.isArray(val)) return val.length === 0;
 		return !val;
 	}
 }
