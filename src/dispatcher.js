@@ -1,3 +1,4 @@
+const moment = require('moment');
 const escapeRegex = require('escape-string-regexp');
 
 /** Handles parsing messages and running commands from them */
@@ -274,7 +275,8 @@ class CommandDispatcher {
 			pattern = new RegExp(`(^<@!?${this.client.user.id}>\\s+)([^\\s]+)`, 'i');
 		}
 		this._commandPatterns[prefix] = pattern;
-		this.client.emit('debug', `Built command pattern for prefix "${prefix}": ${pattern}`);
+		// eslint-disable-next-line max-len
+		this.client.emit('debug', `[${moment().format('YYYY-MM-DD HH:mm:ssZ')}] Built command pattern for prefix "${prefix}": ${pattern}`);
 		return pattern;
 	}
 }

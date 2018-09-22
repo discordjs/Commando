@@ -28,6 +28,7 @@
 	"dependencies": {
 		"common-tags": "^1.0.0",
 		"escape-string-regexp": "^1.0.0",
+		"moment": "^2.22.2",
 		"require-all": "^3.0.0"
 	},
 	"devDependencies": {

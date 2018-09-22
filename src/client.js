@@ -1,3 +1,4 @@
+const moment = require('moment');
 const discord = require('discord.js');
 const CommandRegistry = require('./registry');
 const CommandDispatcher = require('./dispatcher');
@@ -144,16 +145,18 @@ class CommandoClient extends discord.Client {
 		this.provider = provider;
 
 		if(this.readyTimestamp) {
-			this.emit('debug', `Provider set to ${provider.constructor.name} - initialising...`);
+			// eslint-disable-next-line max-len
+			this.emit('debug', `[${moment().format('YYYY-MM-DD HH:mm:ssZ')}] Provider set to ${provider.constructor.name} - initialising...`);
 			await provider.init(this);
-			this.emit('debug', 'Provider finished initialisation.');
+			this.emit('debug', `[${moment().format('YYYY-MM-DD HH:mm:ssZ')}] Provider finished initialisation.`);
 			return undefined;
 		}
 
-		this.emit('debug', `Provider set to ${provider.constructor.name} - will initialise once ready.`);
+		// eslint-disable-next-line max-len
+		this.emit('debug', `[${moment().format('YYYY-MM-DD HH:mm:ssZ')}] Provider set to ${provider.constructor.name} - will initialise once ready.`);
 		await new Promise(resolve => {
 			this.once('ready', () => {
-				this.emit('debug', `Initialising provider...`);
+				this.emit('debug', `[${moment().format('YYYY-MM-DD HH:mm:ssZ')}] Initialising provider...`);
 				resolve(provider.init(this));
 			});
 		});
@@ -164,7 +167,7 @@ class CommandoClient extends discord.Client {
 		 * @param {SettingProvider} provider - Provider that was initialised
 		 */
 		this.emit('providerReady', provider);
-		this.emit('debug', 'Provider finished initialisation.');
+		this.emit('debug', `[${moment().format('YYYY-MM-DD HH:mm:ssZ')}] Provider finished initialisation.`);
 		return undefined;
 	}
 
