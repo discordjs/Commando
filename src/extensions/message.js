@@ -1,3 +1,4 @@
+const moment = require('moment');
 const { Structures, escapeMarkdown, splitMessage, resolveString } = require('discord.js');
 const { stripIndents, oneLine } = require('common-tags');
 const Command = require('../commands/base');
@@ -210,7 +211,8 @@ module.exports = Structures.extend('Message', Message => {
 			if(throttle) throttle.usages++;
 			const typingCount = this.channel.typingCount;
 			try {
-				this.client.emit('debug', `Running command ${this.command.groupID}:${this.command.memberName}.`);
+				// eslint-disable-next-line max-len
+				this.client.emit('debug', `[${moment().format('YYYY-MM-DD HH:mm:ssZ')}] Running command ${this.command.groupID}:${this.command.memberName}.`);
 				const promise = this.command.run(this, args, fromPattern);
 				/**
 				 * Emitted when running a command
