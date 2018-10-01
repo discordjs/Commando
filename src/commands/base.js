@@ -45,6 +45,7 @@ class Command {
 	 * in the command string.
 	 * @property {RegExp[]} [patterns] - Patterns to use for triggering the command
 	 * @property {boolean} [guarded=false] - Whether the command should be protected from disabling
+	 * @property {boolean} [hidden=false] - Whether the command is hidden from the help command
 	 */
 
 	/**
