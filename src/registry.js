@@ -321,6 +321,7 @@ class CommandRegistry {
 	 * @param {boolean} [types.role=true] - Whether to register the built-in role type
 	 * @param {boolean} [types.channel=true] - Whether to register the built-in channel type
 	 * @param {boolean} [types.message=true] - Whether to register the built-in message type
+	 * @param {boolean} [types.customEmoji=true] - Whether to register the built-in custom-emoji type
 	 * @param {boolean} [types.command=true] - Whether to register the built-in command type
 	 * @param {boolean} [types.group=true] - Whether to register the built-in group type
 	 * @return {CommandRegistry}
@@ -329,7 +330,7 @@ class CommandRegistry {
 		types = {
 			string: true, integer: true, float: true, boolean: true,
 			user: true, member: true, role: true, channel: true, message: true,
-			command: true, group: true,
+			customEmoji: true, command: true, group: true,
 			...types
 		};
 		if(types.string) this.registerType(require('./types/string'));
@@ -341,6 +342,7 @@ class CommandRegistry {
 		if(types.role) this.registerType(require('./types/role'));
 		if(types.channel) this.registerType(require('./types/channel'));
 		if(types.message) this.registerType(require('./types/message'));
+		if(types.customEmoji) this.registerType(require('./types/custom-emoji'));
 		if(types.command) this.registerType(require('./types/command'));
 		if(types.group) this.registerType(require('./types/group'));
 		return this;
