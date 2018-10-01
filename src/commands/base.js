@@ -45,7 +45,7 @@ class Command {
 	 * in the command string.
 	 * @property {RegExp[]} [patterns] - Patterns to use for triggering the command
 	 * @property {boolean} [guarded=false] - Whether the command should be protected from disabling
-	 * @property {boolean} [hidden=false] - Whether the command is hidden from the help command
+	 * @property {boolean} [hidden=false] - Whether the command should be hidden from the help command
 	 */
 
 	/**
@@ -209,7 +209,7 @@ class Command {
 		this.guarded = Boolean(info.guarded);
 
 		/**
-		 * Whether the command is hidden from the help command
+		 * Whether the command should be hidden from the help command
 		 * @type {boolean}
 		 */
 		this.hidden = Boolean(info.hidden);
