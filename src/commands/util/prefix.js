@@ -16,6 +16,8 @@ module.exports = class PrefixCommand extends Command {
 				Only administrators may change the prefix.
 			`,
 			examples: ['prefix', 'prefix -', 'prefix omg!', 'prefix default', 'prefix none'],
+			guildOnly: true,
+			guarded: true,
 
 			args: [
 				{
