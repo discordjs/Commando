@@ -88,6 +88,7 @@ declare module 'discord.js-commando' {
 		public group: CommandGroup;
 		public groupID: string;
 		public guarded: boolean;
+		public hidden: boolean;
 		public guildOnly: boolean;
 		public memberName: string;
 		public name: string;
@@ -478,6 +479,7 @@ declare module 'discord.js-commando' {
 		argsSingleQuotes?: boolean;
 		patterns?: RegExp[];
 		guarded?: boolean;
+		hidden?: boolean;
 	};
 
 	type CommandoClientOptions = ClientOptions & {
