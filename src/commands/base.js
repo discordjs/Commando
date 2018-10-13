@@ -52,7 +52,7 @@ class Command {
 	 * @param {CommandoClient} client - The client the command is for
 	 * @param {CommandInfo} info - The command information
 	 */
-	constructor(client, info) {
+	constructor(client, info) { // eslint-disable-line complexity
 		this.constructor.validateInfo(client, info);
 
 		/**
@@ -169,7 +169,9 @@ class Command {
 		 * The argument collector for the command
 		 * @type {?ArgumentCollector}
 		 */
-		this.argsCollector = info.args ? new ArgumentCollector(client, info.args, info.argsPromptLimit) : null;
+		this.argsCollector = info.args && info.args.length ?
+			new ArgumentCollector(client, info.args, info.argsPromptLimit) :
+			null;
 		if(this.argsCollector && typeof info.format === 'undefined') {
 			this.format = this.argsCollector.args.reduce((prev, arg) => {
 				const wrapL = arg.default !== null ? '[' : '<';
