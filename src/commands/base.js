@@ -45,13 +45,14 @@ class Command {
 	 * in the command string.
 	 * @property {RegExp[]} [patterns] - Patterns to use for triggering the command
 	 * @property {boolean} [guarded=false] - Whether the command should be protected from disabling
+	 * @property {boolean} [hidden=false] - Whether the command should be hidden from the help command
 	 */
 
 	/**
 	 * @param {CommandoClient} client - The client the command is for
 	 * @param {CommandInfo} info - The command information
 	 */
-	constructor(client, info) {
+	constructor(client, info) { // eslint-disable-line complexity
 		this.constructor.validateInfo(client, info);
 
 		/**
@@ -168,7 +169,9 @@ class Command {
 		 * The argument collector for the command
 		 * @type {?ArgumentCollector}
 		 */
-		this.argsCollector = info.args ? new ArgumentCollector(client, info.args, info.argsPromptLimit) : null;
+		this.argsCollector = info.args && info.args.length ?
+			new ArgumentCollector(client, info.args, info.argsPromptLimit) :
+			null;
 		if(this.argsCollector && typeof info.format === 'undefined') {
 			this.format = this.argsCollector.args.reduce((prev, arg) => {
 				const wrapL = arg.default !== null ? '[' : '<';
@@ -206,6 +209,12 @@ class Command {
 		 * @type {boolean}
 		 */
 		this.guarded = Boolean(info.guarded);
+
+		/**
+		 * Whether the command should be hidden from the help command
+		 * @type {boolean}
+		 */
+		this.hidden = Boolean(info.hidden);
 
 		/**
 		 * Whether the command is enabled globally
