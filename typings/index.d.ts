@@ -284,7 +284,7 @@ declare module 'discord.js-commando' {
 		on(event: 'typingStop', listener: (channel: Channel, user: User) => void): this;
 		on(event: 'userNoteUpdate', listener: (user: UserResolvable, oldNote: string, newNote: string) => void): this;
 		on(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
-		on(event: 'voiceStateUpdate', listener: (oldMember: VoiceState | undefined, newMember: VoiceState) => void): this;
+		on(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
 		on(event: 'warn', listener: (info: string) => void): this;
 	}
 
