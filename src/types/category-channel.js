@@ -8,7 +8,7 @@ class CategoryChannelArgumentType extends ArgumentType {
 	}
 
 	validate(val, msg, arg) {
-		const matches = val.match(/^(?:<#)?([0-9]+)>?$/);
+		const matches = val.match(/^([0-9]+)$/);
 		if(matches) {
 			try {
 				const channel = msg.client.channels.resolve(matches[1]);
@@ -41,7 +41,7 @@ class CategoryChannelArgumentType extends ArgumentType {
 	}
 
 	parse(val, msg) {
-		const matches = val.match(/^(?:<#)?([0-9]+)>?$/);
+		const matches = val.match(/^([0-9]+)$/);
 		if(matches) return msg.client.channels.get(matches[1]) || null;
 		if(!msg.guild) return null;
 		const search = val.toLowerCase();
