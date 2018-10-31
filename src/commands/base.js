@@ -1,5 +1,6 @@
 const path = require('path');
-const { oneLine } = require('common-tags');
+const { escapeMarkdown } = require('discord.js');
+const { oneLine, stripIndents } = require('common-tags');
 const ArgumentCollector = require('./collector');
 const { permissions } = require('../util');
 
@@ -261,7 +262,6 @@ class Command {
 		return true;
 	}
 
-	// eslint-disable-next-line valid-jsdoc
 	/**
 	 * Runs the command
 	 * @param {CommandoMessage} message - The message the command is being run for
@@ -276,6 +276,29 @@ class Command {
 	 */
 	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars, require-await
 		throw new Error(`${this.constructor.name} doesn't have a run() method.`);
+	}
+
+	/**
+	 * Ran when the command produces an error while running
+	 * @param {Error} err - Error that was thrown
+	 * @param {CommandoMessage} message - Command message that the command is running from (see {@link Command#run})
+	 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
+	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
+	 * @returns {any}
+	 */
+	onCommandError(err, message, args, fromPattern) { // eslint-disable-line no-unused-vars
+		const owners = this.client.owners;
+		let ownerList = owners ? owners.map((usr, i) => {
+			const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
+			return `${or}${escapeMarkdown(usr.username)}#${usr.discriminator}`;
+		}).join(owners.length > 2 ? ', ' : ' ') : '';
+
+		const invite = this.client.options.invite;
+		return message.reply(stripIndents`
+			An error occurred while running the command: \`${err.name}: ${err.message}\`
+			You shouldn't ever receive an error like this.
+			Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
+		`);
 	}
 
 	/**

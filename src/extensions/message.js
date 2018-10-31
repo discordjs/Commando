@@ -1,5 +1,5 @@
 const { Structures, escapeMarkdown, splitMessage, resolveString } = require('discord.js');
-const { stripIndents, oneLine } = require('common-tags');
+const { oneLine } = require('common-tags');
 const Command = require('../commands/base');
 const FriendlyError = require('../errors/friendly');
 const CommandFormatError = require('../errors/command-format');
@@ -246,18 +246,7 @@ module.exports = Structures.extend('Message', Message => {
 				if(err instanceof FriendlyError) {
 					return this.reply(err.message);
 				} else {
-					const owners = this.client.owners;
-					let ownerList = owners ? owners.map((usr, i) => {
-						const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
-						return `${or}${escapeMarkdown(usr.username)}#${usr.discriminator}`;
-					}).join(owners.length > 2 ? ', ' : ' ') : '';
-
-					const invite = this.client.options.invite;
-					return this.reply(stripIndents`
-						An error occurred while running the command: \`${err.name}: ${err.message}\`
-						You shouldn't ever receive an error like this.
-						Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
-					`);
+					return this.command.onCommandError(err, this, args, fromPattern);
 				}
 			}
 		}
