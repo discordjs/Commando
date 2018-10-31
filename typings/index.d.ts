@@ -98,11 +98,11 @@ declare module 'discord.js-commando' {
 		public throttling: ThrottlingOptions;
 		public userPermissions: PermissionResolvable[];
 
-		public onCommandError (err: Error, msg: string, args: object | string | string[], fromPattern: boolean): any;
-		public onCommandBlocked(message: CommandMessage, reason: string): any
 		public hasPermission(message: CommandMessage): boolean | string;
 		public isEnabledIn(guild: GuildResolvable, bypassGroup?: boolean): boolean;
 		public isUsable(message: Message): boolean;
+		public onCommandError (err: Error, message: CommandMessage, args: object | string | string[], fromPattern: boolean): any;
+		public onCommandBlocked(message: CommandMessage, reason: string): any
 		public reload(): void;
 		public run(message: CommandMessage, args: object | string | string[], fromPattern: boolean): Promise<Message | Message[]>
 		public setEnabledIn(guild: GuildResolvable, enabled: boolean): void;
