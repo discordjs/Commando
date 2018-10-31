@@ -320,7 +320,7 @@ class Command {
 				return message.reply(`You do not have permission to use the \`${this.name}\` command.`);
 			}
 			case 'clientPermissions': {
-				const missing = this.channel.permissionsFor(this.client.user).missing(this.clientPermissions);
+				const missing = message.channel.permissionsFor(this.client.user).missing(this.clientPermissions);
 				if(missing.length === 1) {
 					return this.reply(
 						`I need the "${permissions[missing[0]]}" permission for the \`${this.name}\` command to work.`
