@@ -279,9 +279,9 @@ class Command {
 	}
 
 	/**
-	 * Ran when the command produces an error while running
+	 * Called when the command produces an error while running
 	 * @param {Error} err - Error that was thrown
-	 * @param {CommandoMessage} message - Command message that the command is running from (see {@link Command#run})
+	 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
 	 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
 	 * @returns {any}
@@ -299,6 +299,48 @@ class Command {
 			You shouldn't ever receive an error like this.
 			Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
 		`);
+	}
+
+	/**
+	 * Called when the command is prevented from running
+	 * @param {CommandMessage} message - Command message that the command is running from
+	 * @param {string} reason - Reason that the command was blocked
+	 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
+	 * @returns {any}
+	 */
+	onCommandBlocked(message, reason) { // eslint-disable-line no-unused-vars
+		switch(reason) {
+			case 'guildOnly':
+				return message.reply(`The \`${this.name}\` command must be used in a server channel.`);
+			case 'nsfw':
+				return message.reply(`The \`${this.name}\` command can only be used in NSFW channels.`);
+			case 'permission': {
+				const hasPermission = this.hasPermission(message);
+				if(typeof hasPermission === 'string') return message.reply(hasPermission);
+				return message.reply(`You do not have permission to use the \`${this.name}\` command.`);
+			}
+			case 'clientPermissions': {
+				const missing = this.channel.permissionsFor(this.client.user).missing(this.clientPermissions);
+				if(missing.length === 1) {
+					return this.reply(
+						`I need the "${permissions[missing[0]]}" permission for the \`${this.name}\` command to work.`
+					);
+				}
+				return this.reply(oneLine`
+					I need the following permissions for the \`${this.name}\` command to work:
+					${missing.map(perm => permissions[perm]).join(', ')}
+				`);
+			}
+			case 'throttling': {
+				const throttle = this.throttle(message.author.id);
+				const remaining = (throttle.start + (this.throttling.duration * 1000) - Date.now()) / 1000;
+				return this.reply(
+					`You may not use the \`${this.name}\` command again for another ${remaining.toFixed(1)} seconds.`
+				);
+			}
+			default:
+				return null;
+		}
 	}
 
 	/**
