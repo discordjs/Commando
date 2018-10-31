@@ -303,7 +303,7 @@ class Command {
 				return null;
 		}
 	}
-	
+
 	/**
 	 * Called when the command produces an error while running
 	 * @param {Error} err - Error that was thrown
