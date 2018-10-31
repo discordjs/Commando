@@ -263,45 +263,6 @@ class Command {
 	}
 
 	/**
-	 * Runs the command
-	 * @param {CommandoMessage} message - The message the command is being run for
-	 * @param {Object|string|string[]} args - The arguments for the command, or the matches from a pattern.
-	 * If args is specified on the command, thise will be the argument values object. If argsType is single, then only
-	 * one string will be passed. If multiple, an array of strings will be passed. When fromPattern is true, this is the
-	 * matches array from the pattern match
-	 * (see [RegExp#exec](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec)).
-	 * @param {boolean} fromPattern - Whether or not the command is being run from a pattern match
-	 * @return {Promise<?Message|?Array<Message>>}
-	 * @abstract
-	 */
-	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars, require-await
-		throw new Error(`${this.constructor.name} doesn't have a run() method.`);
-	}
-
-	/**
-	 * Called when the command produces an error while running
-	 * @param {Error} err - Error that was thrown
-	 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
-	 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
-	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
-	 * @returns {any}
-	 */
-	onCommandError(err, message, args, fromPattern) { // eslint-disable-line no-unused-vars
-		const owners = this.client.owners;
-		const ownerList = owners ? owners.map((usr, i) => {
-			const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
-			return `${or}${escapeMarkdown(usr.username)}#${usr.discriminator}`;
-		}).join(owners.length > 2 ? ', ' : ' ') : '';
-
-		const invite = this.client.options.invite;
-		return message.reply(stripIndents`
-			An error occurred while running the command: \`${err.name}: ${err.message}\`
-			You shouldn't ever receive an error like this.
-			Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
-		`);
-	}
-
-	/**
 	 * Called when the command is prevented from running
 	 * @param {CommandMessage} message - Command message that the command is running from
 	 * @param {string} reason - Reason that the command was blocked
@@ -341,6 +302,45 @@ class Command {
 			default:
 				return null;
 		}
+	}
+	
+	/**
+	 * Called when the command produces an error while running
+	 * @param {Error} err - Error that was thrown
+	 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
+	 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
+	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
+	 * @returns {any}
+	 */
+	onCommandError(err, message, args, fromPattern) { // eslint-disable-line no-unused-vars
+		const owners = this.client.owners;
+		const ownerList = owners ? owners.map((usr, i) => {
+			const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
+			return `${or}${escapeMarkdown(usr.username)}#${usr.discriminator}`;
+		}).join(owners.length > 2 ? ', ' : ' ') : '';
+
+		const invite = this.client.options.invite;
+		return message.reply(stripIndents`
+			An error occurred while running the command: \`${err.name}: ${err.message}\`
+			You shouldn't ever receive an error like this.
+			Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
+		`);
+	}
+
+	/**
+	 * Runs the command
+	 * @param {CommandoMessage} message - The message the command is being run for
+	 * @param {Object|string|string[]} args - The arguments for the command, or the matches from a pattern.
+	 * If args is specified on the command, thise will be the argument values object. If argsType is single, then only
+	 * one string will be passed. If multiple, an array of strings will be passed. When fromPattern is true, this is the
+	 * matches array from the pattern match
+	 * (see [RegExp#exec](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec)).
+	 * @param {boolean} fromPattern - Whether or not the command is being run from a pattern match
+	 * @return {Promise<?Message|?Array<Message>>}
+	 * @abstract
+	 */
+	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars, require-await
+		throw new Error(`${this.constructor.name} doesn't have a run() method.`);
 	}
 
 	/**
