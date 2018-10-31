@@ -170,7 +170,7 @@ module.exports = Structures.extend('Message', Message => {
 			const throttle = this.command.throttle(this.author.id);
 			if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
 				this.client.emit('commandBlocked', this, 'throttling');
-				this.command.onCommandBlocked(this, 'throttling');
+				return this.command.onCommandBlocked(this, 'throttling');
 			}
 
 			// Figure out the command arguments
