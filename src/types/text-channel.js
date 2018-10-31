@@ -34,10 +34,10 @@ class TextChannelArgumentType extends ArgumentType {
 		}
 		if(exactChannels.size > 0) channels = exactChannels;
 		return channels.size <= 15 ?
-      `${disambiguation(
-        channels.map(chan => escapeMarkdown(chan.name)), 'text-channels', null
-      )}\n` :
-      'Multiple text-channels found. Please be more specific.';
+			`${disambiguation(
+				channels.map(chan => escapeMarkdown(chan.name)), 'text channels', null
+			)}\n` :
+			'Multiple text channels found. Please be more specific.';
 	}
 
 	parse(val, msg) {

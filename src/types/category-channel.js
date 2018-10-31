@@ -34,10 +34,10 @@ class CategoryChannelArgumentType extends ArgumentType {
 		}
 		if(exactChannels.size > 0) channels = exactChannels;
 		return channels.size <= 15 ?
-      `${disambiguation(
-        channels.map(chan => escapeMarkdown(chan.name)), 'category-channels', null
-      )}\n` :
-      'Multiple category-channels found. Please be more specific.';
+			`${disambiguation(
+				channels.map(chan => escapeMarkdown(chan.name)), 'categories', null
+			)}\n` :
+			'Multiple categories found. Please be more specific.';
 	}
 
 	parse(val, msg) {
