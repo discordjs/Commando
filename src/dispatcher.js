@@ -4,7 +4,7 @@ const escapeRegex = require('escape-string-regexp');
 class CommandDispatcher {
 	/**
 	 * @param {CommandoClient} client - Client the dispatcher is for
-	 * @param {CommandRegistry} registry - Registry the dispatcher will use
+	 * @param {CommandoRegistry} registry - Registry the dispatcher will use
 	 */
 	constructor(client, registry) {
 		/**
@@ -17,7 +17,7 @@ class CommandDispatcher {
 
 		/**
 		 * Registry this dispatcher uses
-		 * @type {CommandRegistry}
+		 * @type {CommandoRegistry}
 		 */
 		this.registry = registry;
 
