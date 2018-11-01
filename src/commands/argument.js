@@ -12,7 +12,7 @@ class Argument {
 	 * @property {string} [error] - Predefined error message to output for the argument when it isn't valid
 	 * @property {string} [type] - Type of the argument (must be the ID of one of the registered argument types
 	 * or multiple IDs in order of priority separated by `|` for a union type - see
-	 * {@link CommandRegistry#registerDefaultTypes} for the built-in types)
+	 * {@link CommandoRegistry#registerDefaultTypes} for the built-in types)
 	 * @property {number} [max] - If type is `integer` or `float`, this is the maximum value of the number.
 	 * If type is `string`, this is the maximum length of the string.
 	 * @property {number} [min] - If type is `integer` or `float`, this is the minimum value of the number.

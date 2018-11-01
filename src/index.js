@@ -1,7 +1,7 @@
 module.exports = {
 	Client: require('./client'),
 	CommandoClient: require('./client'),
-	CommandRegistry: require('./registry'),
+	CommandoRegistry: require('./registry'),
 	CommandoGuild: require('./extensions/guild'),
 	CommandoMessage: require('./extensions/message'),
 	Command: require('./commands/base'),
