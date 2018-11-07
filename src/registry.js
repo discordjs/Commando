@@ -352,6 +352,7 @@ class CommandoRegistry {
 	 * @param {Command} oldCommand - Old command
 	 */
 	reregisterCommand(command, oldCommand) {
+		if(typeof command.default === 'function') command = command.default;
 		if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
 		if(command.name !== oldCommand.name) throw new Error('Command name cannot change.');
 		if(command.groupID !== oldCommand.groupID) throw new Error('Command group cannot change.');
