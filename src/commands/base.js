@@ -263,6 +263,13 @@ class Command {
 		return true;
 	}
 
+	/**
+	 * Called when the command is prevented from running
+	 * @param {CommandMessage} message - Command message that the command is running from
+	 * @param {string} reason - Reason that the command was blocked
+	 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
+	 * @returns {void}
+	 */
 	onCommandBlocked(message, reason) { // eslint-disable-line no-unused-vars
 		switch(reason) {
 			case 'guildOnly':
@@ -304,7 +311,7 @@ class Command {
 	 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
 	 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
-	 * @returns {any}
+	 * @returns {void}
 	 */
 	onCommandError(err, message, args, fromPattern) { // eslint-disable-line no-unused-vars
 		const owners = this.client.owners;
