@@ -367,9 +367,11 @@ class CommandoRegistry {
 		if(command.name !== oldCommand.name) throw new Error('Command name cannot change.');
 		if(command.groupID !== oldCommand.groupID) throw new Error('Command group cannot change.');
 		if(command.memberName !== oldCommand.memberName) throw new Error('Command memberName cannot change.');
+
 		command.group = this.resolveGroup(command.groupID);
 		command.group.commands.set(command.name, command);
 		this.commands.set(command.name, command);
+
 		/**
 		 * Emitted when a command is reregistered
 		 * @event CommandoClient#commandReregister

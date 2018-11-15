@@ -89,7 +89,6 @@ class CommandDispatcher {
 		return this.inhibitors.delete(inhibitor);
 	}
 
-	/* eslint-disable valid-jsdoc */
 	/**
 	 * Handle a new message or a message update
 	 * @param {Message} message - The message to handle
@@ -97,7 +96,6 @@ class CommandDispatcher {
 	 * @return {Promise<void>}
 	 * @private
 	 */
-	/* eslint-enable valid-jsdoc */
 	async handleMessage(message, oldMessage) {
 		if(!this.shouldHandleMessage(message, oldMessage)) return;
 

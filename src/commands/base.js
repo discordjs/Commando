@@ -52,7 +52,8 @@ class Command {
 	 * @param {CommandoClient} client - The client the command is for
 	 * @param {CommandInfo} info - The command information
 	 */
-	constructor(client, info) { // eslint-disable-line complexity
+	// eslint-disable-next-line complexity
+	constructor(client, info) {
 		this.constructor.validateInfo(client, info);
 
 		/**
@@ -261,7 +262,6 @@ class Command {
 		return true;
 	}
 
-	// eslint-disable-next-line valid-jsdoc
 	/**
 	 * Runs the command
 	 * @param {CommandoMessage} message - The message the command is being run for
