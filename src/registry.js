@@ -353,6 +353,7 @@ class CommandoRegistry {
 	 */
 	reregisterCommand(command, oldCommand) {
 		if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
+		else if(typeof command.default === 'function') command = new command(this.client); // eslint-disable-line new-cap
 		if(command.name !== oldCommand.name) throw new Error('Command name cannot change.');
 		if(command.groupID !== oldCommand.groupID) throw new Error('Command group cannot change.');
 		if(command.memberName !== oldCommand.memberName) throw new Error('Command memberName cannot change.');
