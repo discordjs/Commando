@@ -53,7 +53,8 @@ class Command {
 	 * @param {CommandoClient} client - The client the command is for
 	 * @param {CommandInfo} info - The command information
 	 */
-	constructor(client, info) { // eslint-disable-line complexity
+	// eslint-disable-next-line complexity
+	constructor(client, info) {
 		this.constructor.validateInfo(client, info);
 
 		/**
@@ -262,13 +263,6 @@ class Command {
 		return true;
 	}
 
-	/**
-	 * Called when the command is prevented from running
-	 * @param {CommandMessage} message - Command message that the command is running from
-	 * @param {string} reason - Reason that the command was blocked
-	 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
-	 * @returns {any}
-	 */
 	onCommandBlocked(message, reason) { // eslint-disable-line no-unused-vars
 		switch(reason) {
 			case 'guildOnly':

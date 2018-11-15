@@ -186,6 +186,14 @@ module.exports = Structures.extend('Message', Message => {
 						const err = new CommandFormatError(this);
 						return this.reply(err.message);
 					}
+					/**
+					 * Emitted when a command is cancelled (either by typing 'cancel' or not responding in time)
+					 * @event CommandoClient#commandCancelled
+					 * @param {Command} command - Command that was cancelled
+					 * @param {string} reason - Reason for the command being cancelled
+					 * @param {CommandoMessage} message - Command message that the command ran from (see {@link Command#run})
+					 */
+					this.client.emit('commandCancelled', this.command, result.cancelled, this);
 					return this.reply('Cancelled command.');
 				}
 				args = result.values;
