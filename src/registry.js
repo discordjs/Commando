@@ -188,6 +188,7 @@ class CommandoRegistry {
 			}
 		}
 		if(typeof options === 'string' && !this.commandsPath) this.commandsPath = options;
+		else if(typeof options === 'object' && !this.commandsPath) this.commandsPath = options.dirname;
 		return this.registerCommands(commands, true);
 	}
 
