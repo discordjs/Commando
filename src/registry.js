@@ -320,12 +320,12 @@ class CommandoRegistry {
 	 * @param {boolean} [types.member=true] - Whether to register the built-in member type
 	 * @param {boolean} [types.role=true] - Whether to register the built-in role type
 	 * @param {boolean} [types.channel=true] - Whether to register the built-in channel type
-	 * @param {boolean} [types.message=true] - Whether to register the built-in message type
-	 * @param {boolean} [types.command=true] - Whether to register the built-in command type
-	 * @param {boolean} [types.group=true] - Whether to register the built-in group type
 	 * @param {boolean} [types.textChannel=true] - Whether to register the built-in text-channel type
 	 * @param {boolean} [types.voiceChannel=true] - Whether to register the built-in voice-channel type
 	 * @param {boolean} [types.categoryChannel=true] - Whether to register the built-in category-channel type
+	 * @param {boolean} [types.message=true] - Whether to register the built-in message type
+	 * @param {boolean} [types.command=true] - Whether to register the built-in command type
+	 * @param {boolean} [types.group=true] - Whether to register the built-in group type
 	 * @return {CommandoRegistry}
 	 */
 	registerDefaultTypes(types = {}) {
@@ -344,12 +344,12 @@ class CommandoRegistry {
 		if(types.member) this.registerType(require('./types/member'));
 		if(types.role) this.registerType(require('./types/role'));
 		if(types.channel) this.registerType(require('./types/channel'));
-		if(types.message) this.registerType(require('./types/message'));
-		if(types.command) this.registerType(require('./types/command'));
-		if(types.group) this.registerType(require('./types/group'));
 		if(types.textChannel) this.registerType(require('./types/text-channel'));
 		if(types.voiceChannel) this.registerType(require('./types/voice-channel'));
 		if(types.categoryChannel) this.registerType(require('./types/category-channel'));
+		if(types.message) this.registerType(require('./types/message'));
+		if(types.command) this.registerType(require('./types/command'));
+		if(types.group) this.registerType(require('./types/group'));
 		return this;
 	}
 
