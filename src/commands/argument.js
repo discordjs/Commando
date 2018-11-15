@@ -27,7 +27,7 @@ class Argument {
 	 */
 
 	/**
-	 * Either a value or a function that returns a value. The function is passed the CommandMessage and the Argument.
+	 * Either a value or a function that returns a value. The function is passed the CommandoMessage and the Argument.
 	 * @typedef {*|Function} ArgumentDefault
 	 */
 
@@ -144,7 +144,7 @@ class Argument {
 
 	/**
 	 * Prompts the user and obtains the value for the argument
-	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} msg - Message that triggered the command
 	 * @param {string} [val] - Pre-provided value for the argument
 	 * @param {number} [promptLimit=Infinity] - Maximum number of times to prompt for the argument
 	 * @return {Promise<ArgumentResult>}
@@ -230,7 +230,7 @@ class Argument {
 
 	/**
 	 * Prompts the user and obtains multiple values for the argument
-	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} msg - Message that triggered the command
 	 * @param {string[]} [vals] - Pre-provided values for the argument
 	 * @param {number} [promptLimit=Infinity] - Maximum number of times to prompt for the argument
 	 * @return {Promise<ArgumentResult>}
@@ -345,7 +345,7 @@ class Argument {
 	/**
 	 * Checks if a value is valid for the argument
 	 * @param {string} val - Value to check
-	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} msg - Message that triggered the command
 	 * @return {boolean|string|Promise<boolean|string>}
 	 */
 	validate(val, msg) {
@@ -358,7 +358,7 @@ class Argument {
 	/**
 	 * Parses a value string into a proper value for the argument
 	 * @param {string} val - Value to parse
-	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} msg - Message that triggered the command
 	 * @return {*|Promise<*>}
 	 */
 	parse(val, msg) {
@@ -369,7 +369,7 @@ class Argument {
 	/**
 	 * Checks whether a value for the argument is considered to be empty
 	 * @param {string} val - Value to check for emptiness
-	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} msg - Message that triggered the command
 	 * @return {boolean}
 	 */
 	isEmpty(val, msg) {

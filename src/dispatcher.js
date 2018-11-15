@@ -52,7 +52,7 @@ class CommandDispatcher {
 	/**
 	 * A function that decides whether the usage of a command should be blocked
 	 * @callback Inhibitor
-	 * @param {CommandMessage} msg - Message triggering the command
+	 * @param {CommandoMessage} msg - Message triggering the command
 	 * @return {boolean|string|Array<string|?Promise<Message>>} `false` if the command should *not* be blocked.
 	 * If the command *should* be blocked, then one of the following:
 	 * - A single string identifying the reason the command is blocked
