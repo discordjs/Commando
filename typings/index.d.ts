@@ -9,9 +9,9 @@ declare module 'better-sqlite3' {
 }
 
 declare module 'discord.js-commando' {
-	import { Channel, Client, ClientOptions, ClientUserSettings, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, Webhook } from 'discord.js';
+	import { Channel, Client, ClientOptions, Collection, DMChannel, Emoji, GroupDMChannel, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, VoiceState, Webhook } from 'discord.js';
 	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
-	import { Database as SyncSQLiteDatabase, Statement as SyncSQLiteStatement} from 'better-sqlite3';
+	import { Database as SyncSQLiteDatabase, Statement as SyncSQLiteStatement } from 'better-sqlite3';
 
 	export class Argument {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
@@ -88,6 +88,7 @@ declare module 'discord.js-commando' {
 		public group: CommandGroup;
 		public groupID: string;
 		public guarded: boolean;
+		public hidden: boolean;
 		public guildOnly: boolean;
 		public memberName: string;
 		public name: string;
@@ -110,7 +111,7 @@ declare module 'discord.js-commando' {
 	}
 
 	export class CommandDispatcher {
-		public constructor(client: CommandoClient, registry: CommandRegistry);
+		public constructor(client: CommandoClient, registry: CommandoRegistry);
 
 		private _awaiting: Set<string>;
 		private _commandPatterns: object;
@@ -126,7 +127,7 @@ declare module 'discord.js-commando' {
 
 		public readonly client: CommandoClient;
 		public inhibitors: Set<Function>;
-		public registry: CommandRegistry;
+		public registry: CommandoRegistry;
 
 		public addInhibitor(inhibitor: Inhibitor): boolean;
 		public removeInhibitor(inhibitor: Inhibitor): boolean;
@@ -224,7 +225,7 @@ declare module 'discord.js-commando' {
 		public options: CommandoClientOptions;
 		public readonly owners: User[];
 		public provider: SettingProvider;
-		public registry: CommandRegistry;
+		public registry: CommandoRegistry;
 		public settings: GuildSettingsHelper;
 
 		public isOwner(user: UserResolvable): boolean;
@@ -232,22 +233,22 @@ declare module 'discord.js-commando' {
 
 		on(event: string, listener: Function): this;
 		on(event: 'commandBlocked', listener: (message: CommandMessage, reason: string) => void): this;
+		on(event: 'commandCancelled', listener: (command: Command, reason: string, message: CommandMessage) => void): this;
 		on(event: 'commandError', listener: (command: Command, err: Error, message: CommandMessage, args: {} | string | string[], fromPattern: boolean) => void): this;
 		on(event: 'commandPrefixChange', listener: (guild: CommandoGuild, prefix: string) => void): this;
-		on(event: 'commandRegister', listener: (command: Command, registry: CommandRegistry) => void): this;
+		on(event: 'commandRegister', listener: (command: Command, registry: CommandoRegistry) => void): this;
 		on(event: 'commandReregister', listener: (newCommand: Command, oldCommand: Command) => void): this;
 		on(event: 'commandRun', listener: (command: Command, promise: Promise<any>, message: CommandMessage, args: object | string | string[], fromPattern: boolean) => void): this;
 		on(event: 'commandStatusChange', listener: (guild: CommandoGuild, command: Command, enabled: boolean) => void): this;
 		on(event: 'commandUnregister', listener: (command: Command) => void): this;
-		on(event: 'groupRegister', listener: (group: CommandGroup, registry: CommandRegistry) => void): this;
+		on(event: 'groupRegister', listener: (group: CommandGroup, registry: CommandoRegistry) => void): this;
 		on(event: 'groupStatusChange', listener: (guild: CommandoGuild, group: CommandGroup, enabled: boolean) => void): this;
-		on(event: 'typeRegister', listener: (type: ArgumentType, registry: CommandRegistry) => void): this;
+		on(event: 'typeRegister', listener: (type: ArgumentType, registry: CommandoRegistry) => void): this;
 		on(event: 'unknownCommand', listener: (message: CommandMessage) => void): this;
 		on(event: 'channelCreate', listener: (channel: Channel) => void): this;
 		on(event: 'channelDelete', listener: (channel: Channel) => void): this;
 		on(event: 'channelPinsUpdate', listener: (channel: Channel, time: Date) => void): this;
 		on(event: 'channelUpdate', listener: (oldChannel: Channel, newChannel: Channel) => void): this;
-		on(event: 'clientUserSettingsUpdate', listener: (clientUserSettings: ClientUserSettings) => void): this;
 		on(event: 'debug', listener: (info: string) => void): this;
 		on(event: 'disconnect', listener: (event: any) => void): this;
 		on(event: 'emojiCreate', listener: (emoji: Emoji) => void): this;
@@ -284,7 +285,7 @@ declare module 'discord.js-commando' {
 		on(event: 'typingStop', listener: (channel: Channel, user: User) => void): this;
 		on(event: 'userNoteUpdate', listener: (user: UserResolvable, oldNote: string, newNote: string) => void): this;
 		on(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
-		on(event: 'voiceStateUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
+		on(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
 		on(event: 'warn', listener: (info: string) => void): this;
 	}
 
@@ -306,7 +307,7 @@ declare module 'discord.js-commando' {
 		public setGroupEnabled(group: CommandGroupResolvable, enabled: boolean): void;
 	}
 
-	export class CommandRegistry {
+	export class CommandoRegistry {
 		public constructor(client?: CommandoClient);
 
 		public readonly client: CommandoClient;
@@ -318,20 +319,20 @@ declare module 'discord.js-commando' {
 
 		public findCommands(searchString?: string, exact?: boolean, message?: Message | CommandMessage): Command[];
 		public findGroups(searchString?: string, exact?: boolean): CommandGroup[];
-		public registerCommand(command: Command | Function): CommandRegistry;
-		public registerCommands(commands: Command[] | Function[], ignoreInvalid?: boolean): CommandRegistry;
-		public registerCommandsIn(options: string | {}): CommandRegistry;
-		public registerDefaultCommands(commands?: { help?: boolean, prefix?: boolean, eval?: boolean, ping?: boolean, commandState?: boolean }): CommandRegistry;
-		public registerDefaultGroups(): CommandRegistry;
-		public registerDefaults(): CommandRegistry;
-		public registerDefaultTypes(types?: { string?: boolean, integer?: boolean, float?: boolean, boolean?: boolean, user?: boolean, member?: boolean, role?: boolean, channel?: boolean, message?: boolean, command?: boolean, group?: boolean }): CommandRegistry;
-		public registerEvalObject(key: string, obj: {}): CommandRegistry;
-		public registerEvalObjects(obj: {}): CommandRegistry;
-		public registerGroup(group: CommandGroup | Function | { id: string, name?: string, guarded?: boolean } | string, name?: string, guarded?: boolean): CommandRegistry;
-		public registerGroups(groups: CommandGroup[] | Function[] | { id: string, name?: string, guarded?: boolean }[] | string[][]): CommandRegistry;
-		public registerType(type: ArgumentType | Function): CommandRegistry;
-		public registerTypes(type: ArgumentType[] | Function[], ignoreInvalid?: boolean): CommandRegistry;
-		public registerTypesIn(options: string | {}): CommandRegistry;
+		public registerCommand(command: Command | Function): CommandoRegistry;
+		public registerCommands(commands: Command[] | Function[], ignoreInvalid?: boolean): CommandoRegistry;
+		public registerCommandsIn(options: string | {}): CommandoRegistry;
+		public registerDefaultCommands(commands?: { help?: boolean, prefix?: boolean, eval?: boolean, ping?: boolean, commandState?: boolean }): CommandoRegistry;
+		public registerDefaultGroups(): CommandoRegistry;
+		public registerDefaults(): CommandoRegistry;
+		public registerDefaultTypes(types?: { string?: boolean, integer?: boolean, float?: boolean, boolean?: boolean, user?: boolean, member?: boolean, role?: boolean, channel?: boolean, message?: boolean, command?: boolean, group?: boolean }): CommandoRegistry;
+		public registerEvalObject(key: string, obj: {}): CommandoRegistry;
+		public registerEvalObjects(obj: {}): CommandoRegistry;
+		public registerGroup(group: CommandGroup | Function | { id: string, name?: string, guarded?: boolean } | string, name?: string, guarded?: boolean): CommandoRegistry;
+		public registerGroups(groups: CommandGroup[] | Function[] | { id: string, name?: string, guarded?: boolean }[] | string[][]): CommandoRegistry;
+		public registerType(type: ArgumentType | Function): CommandoRegistry;
+		public registerTypes(type: ArgumentType[] | Function[], ignoreInvalid?: boolean): CommandoRegistry;
+		public registerTypesIn(options: string | {}): CommandoRegistry;
 		public reregisterCommand(command: Command | Function, oldCommand: Command): void;
 		public resolveCommand(command: CommandResolvable): Command;
 		public resolveCommandPath(groups: string, memberName: string): string;
@@ -479,6 +480,7 @@ declare module 'discord.js-commando' {
 		argsSingleQuotes?: boolean;
 		patterns?: RegExp[];
 		guarded?: boolean;
+		hidden?: boolean;
 	};
 
 	type CommandoClientOptions = ClientOptions & {

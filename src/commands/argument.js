@@ -12,7 +12,7 @@ class Argument {
 	 * @property {string} [error] - Predefined error message to output for the argument when it isn't valid
 	 * @property {string} [type] - Type of the argument (must be the ID of one of the registered argument types
 	 * or multiple IDs in order of priority separated by `|` for a union type - see
-	 * {@link CommandRegistry#registerDefaultTypes} for the built-in types)
+	 * {@link CommandoRegistry#registerDefaultTypes} for the built-in types)
 	 * @property {number} [max] - If type is `integer` or `float`, this is the maximum value of the number.
 	 * If type is `string`, this is the maximum length of the string.
 	 * @property {number} [min] - If type is `integer` or `float`, this is the minimum value of the number.
@@ -27,7 +27,7 @@ class Argument {
 	 */
 
 	/**
-	 * Either a value or a function that returns a value. The function is passed the CommandMessage and the Argument.
+	 * Either a value or a function that returns a value. The function is passed the CommandoMessage and the Argument.
 	 * @typedef {*|Function} ArgumentDefault
 	 */
 
@@ -150,7 +150,7 @@ class Argument {
 
 	/**
 	 * Prompts the user and obtains the value for the argument
-	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} msg - Message that triggered the command
 	 * @param {string} [val] - Pre-provided value for the argument
 	 * @param {number} [promptLimit=Infinity] - Maximum number of times to prompt for the argument
 	 * @return {Promise<ArgumentResult>}
@@ -236,7 +236,7 @@ class Argument {
 
 	/**
 	 * Prompts the user and obtains multiple values for the argument
-	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} msg - Message that triggered the command
 	 * @param {string[]} [vals] - Pre-provided values for the argument
 	 * @param {number} [promptLimit=Infinity] - Maximum number of times to prompt for the argument
 	 * @return {Promise<ArgumentResult>}
@@ -351,7 +351,7 @@ class Argument {
 	/**
 	 * Checks if a value is valid for the argument
 	 * @param {string} val - Value to check
-	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} msg - Message that triggered the command
 	 * @return {boolean|string|Promise<boolean|string>}
 	 */
 	validate(val, msg) {
@@ -364,7 +364,7 @@ class Argument {
 	/**
 	 * Parses a value string into a proper value for the argument
 	 * @param {string} val - Value to parse
-	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} msg - Message that triggered the command
 	 * @return {*|Promise<*>}
 	 */
 	parse(val, msg) {
@@ -375,7 +375,7 @@ class Argument {
 	/**
 	 * Checks whether a value for the argument is considered to be empty
 	 * @param {string} val - Value to check for emptiness
-	 * @param {CommandMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} msg - Message that triggered the command
 	 * @return {boolean}
 	 */
 	isEmpty(val, msg) {
