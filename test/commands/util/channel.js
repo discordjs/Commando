@@ -7,7 +7,7 @@ module.exports = class ChannelCommand extends commando.Command {
 			aliases: ['chan'],
 			group: 'util',
 			memberName: 'channel',
-			description: 'Gets information about a user.',
+			description: 'Gets information about a channel.',
 			examples: ['channel #test', 'channel test'],
 			guildOnly: true,
 
@@ -24,6 +24,6 @@ module.exports = class ChannelCommand extends commando.Command {
 
 	async run(msg, args) {
 		const channel = args.channel;
-		return msg.reply(channel);
+		return msg.reply(`${channel.name} (${channel.id})`);
 	}
 };

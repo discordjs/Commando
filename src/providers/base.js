@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars, valid-jsdoc */
+/* eslint-disable no-unused-vars */
 const { Guild } = require('discord.js');
 
 /**

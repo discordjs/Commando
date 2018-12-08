@@ -26,19 +26,19 @@
 	"main": "src/index",
 	"types": "./typings/index.d.ts",
 	"dependencies": {
-		"common-tags": "^1.0.0",
+		"common-tags": "^1.8.0",
 		"require-all": "^3.0.0"
 	},
 	"devDependencies": {
-		"@types/node": "^9.0.0",
+		"@types/node": "^10.12.8",
 		"discord.js-docgen": "discordjs/docgen",
-		"eslint": "^4.0.0",
-		"typescript": "^2.0.0"
+		"eslint": "^5.9.0",
+		"typescript": "^3.1.6"
 	},
 	"peerDependencies": {
 		"better-sqlite3": "^4.1.4",
 		"discord.js": "^12.0.0",
-		"sqlite": "^2.0.0"
+		"sqlite": "^3.0.0"
 	},
 	"engines": {
 		"node": ">=8.6.0"

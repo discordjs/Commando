@@ -6,12 +6,12 @@ const CommandoMessage = require('./extensions/message');
 const ArgumentType = require('./types/base');
 
 /** Handles registration and searching of commands and groups */
-class CommandRegistry {
+class CommandoRegistry {
 	/** @param {CommandoClient} [client] - Client to use  */
 	constructor(client) {
 		/**
 		 * The client this registry is for
-		 * @name CommandRegistry#client
+		 * @name CommandoRegistry#client
 		 * @type {CommandoClient}
 		 * @readonly
 		 */
@@ -53,8 +53,8 @@ class CommandRegistry {
 	 * @param {CommandGroup|Function|Object|string} group - A CommandGroup instance, a constructor, or the group ID
 	 * @param {string} [name] - Name for the group (if the first argument is the group ID)
 	 * @param {boolean} [guarded] - Whether the group should be guarded (if the first argument is the group ID)
-	 * @return {CommandRegistry}
-	 * @see {@link CommandRegistry#registerGroups}
+	 * @return {CommandoRegistry}
+	 * @see {@link CommandoRegistry#registerGroups}
 	 */
 	registerGroup(group, name, guarded) {
 		if(typeof group === 'string') {
@@ -75,7 +75,7 @@ class CommandRegistry {
 			 * Emitted when a group is registered
 			 * @event CommandoClient#groupRegister
 			 * @param {CommandGroup} group - Group that was registered
-			 * @param {CommandRegistry} registry - Registry that the group was registered to
+			 * @param {CommandoRegistry} registry - Registry that the group was registered to
 			 */
 			this.client.emit('groupRegister', group, this);
 			this.client.emit('debug', `Registered group ${group.id}.`);
@@ -88,8 +88,8 @@ class CommandRegistry {
 	 * Registers multiple groups
 	 * @param {CommandGroup[]|Function[]|Object[]|Array<string[]>} groups - An array of CommandGroup instances,
 	 * constructors, plain objects (with ID, name, and guarded properties),
-	 * or arrays of {@link CommandRegistry#registerGroup} parameters
-	 * @return {CommandRegistry}
+	 * or arrays of {@link CommandoRegistry#registerGroup} parameters
+	 * @return {CommandoRegistry}
 	 * @example
 	 * registry.registerGroups([
 	 * 	['fun', 'Fun'],
@@ -113,8 +113,8 @@ class CommandRegistry {
 	/**
 	 * Registers a single command
 	 * @param {Command|Function} command - Either a Command instance, or a constructor for one
-	 * @return {CommandRegistry}
-	 * @see {@link CommandRegistry#registerCommands}
+	 * @return {CommandoRegistry}
+	 * @see {@link CommandoRegistry#registerCommands}
 	 */
 	registerCommand(command) {
 		if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
@@ -144,7 +144,7 @@ class CommandRegistry {
 		 * Emitted when a command is registered
 		 * @event CommandoClient#commandRegister
 		 * @param {Command} command - Command that was registered
-		 * @param {CommandRegistry} registry - Registry that the command was registered to
+		 * @param {CommandoRegistry} registry - Registry that the command was registered to
 		 */
 		this.client.emit('commandRegister', command, this);
 		this.client.emit('debug', `Registered command ${group.id}:${command.memberName}.`);
@@ -156,7 +156,7 @@ class CommandRegistry {
 	 * Registers multiple commands
 	 * @param {Command[]|Function[]} commands - An array of Command instances or constructors
 	 * @param {boolean} [ignoreInvalid=false] - Whether to skip over invalid objects without throwing an error
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerCommands(commands, ignoreInvalid = false) {
 		if(!Array.isArray(commands)) throw new TypeError('Commands must be an Array.');
@@ -173,7 +173,7 @@ class CommandRegistry {
 	/**
 	 * Registers all commands in a directory. The files must export a Command class constructor or instance.
 	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 * @example
 	 * const path = require('path');
 	 * registry.registerCommandsIn(path.join(__dirname, 'commands'));
@@ -188,14 +188,15 @@ class CommandRegistry {
 			}
 		}
 		if(typeof options === 'string' && !this.commandsPath) this.commandsPath = options;
+		else if(typeof options === 'object' && !this.commandsPath) this.commandsPath = options.dirname;
 		return this.registerCommands(commands, true);
 	}
 
 	/**
 	 * Registers a single argument type
 	 * @param {ArgumentType|Function} type - Either an ArgumentType instance, or a constructor for one
-	 * @return {CommandRegistry}
-	 * @see {@link CommandRegistry#registerTypes}
+	 * @return {CommandoRegistry}
+	 * @see {@link CommandoRegistry#registerTypes}
 	 */
 	registerType(type) {
 		if(typeof type === 'function') type = new type(this.client); // eslint-disable-line new-cap
@@ -211,7 +212,7 @@ class CommandRegistry {
 		 * Emitted when an argument type is registered
 		 * @event CommandoClient#typeRegister
 		 * @param {ArgumentType} type - Argument type that was registered
-		 * @param {CommandRegistry} registry - Registry that the type was registered to
+		 * @param {CommandoRegistry} registry - Registry that the type was registered to
 		 */
 		this.client.emit('typeRegister', type, this);
 		this.client.emit('debug', `Registered argument type ${type.id}.`);
@@ -223,7 +224,7 @@ class CommandRegistry {
 	 * Registers multiple argument types
 	 * @param {ArgumentType[]|Function[]} types - An array of ArgumentType instances or constructors
 	 * @param {boolean} [ignoreInvalid=false] - Whether to skip over invalid objects without throwing an error
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerTypes(types, ignoreInvalid = false) {
 		if(!Array.isArray(types)) throw new TypeError('Types must be an Array.');
@@ -240,7 +241,7 @@ class CommandRegistry {
 	/**
 	 * Registers all argument types in a directory. The files must export an ArgumentType class constructor or instance.
 	 * @param {string|RequireAllOptions} options - The path to the directory, or a require-all options object
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerTypesIn(options) {
 		const obj = require('require-all')(options);
@@ -256,7 +257,7 @@ class CommandRegistry {
 	 * 	.registerDefaultGroups()
 	 * 	.registerDefaultCommands();
 	 * ```
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerDefaults() {
 		this.registerDefaultTypes();
@@ -267,7 +268,7 @@ class CommandRegistry {
 
 	/**
 	 * Registers the default groups ("util" and "commands")
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerDefaultGroups() {
 		return this.registerGroups([
@@ -288,7 +289,7 @@ class CommandRegistry {
 	 * @param {boolean} [commands.ping=true] - Whether to register the built-in ping command (requires "util" group)
 	 * @param {boolean} [commands.commandState=true] - Whether to register the built-in command state commands
 	 * (enable, disable, load, unload, reload, list groups - requires "commands" group, "command" type, and "group" type)
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerDefaultCommands(commands = {}) {
 		commands = { help: true, prefix: true, ping: true, eval: true, commandState: true, ...commands };
@@ -320,17 +321,20 @@ class CommandRegistry {
 	 * @param {boolean} [types.member=true] - Whether to register the built-in member type
 	 * @param {boolean} [types.role=true] - Whether to register the built-in role type
 	 * @param {boolean} [types.channel=true] - Whether to register the built-in channel type
+	 * @param {boolean} [types.textChannel=true] - Whether to register the built-in text-channel type
+	 * @param {boolean} [types.voiceChannel=true] - Whether to register the built-in voice-channel type
+	 * @param {boolean} [types.categoryChannel=true] - Whether to register the built-in category-channel type
 	 * @param {boolean} [types.message=true] - Whether to register the built-in message type
 	 * @param {boolean} [types.command=true] - Whether to register the built-in command type
 	 * @param {boolean} [types.group=true] - Whether to register the built-in group type
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerDefaultTypes(types = {}) {
 		types = {
 			string: true, integer: true, float: true, boolean: true,
-			user: true, member: true, role: true, channel: true, message: true,
-			command: true, group: true,
-			...types
+			user: true, member: true, role: true, channel: true, textChannel: true,
+			voiceChannel: true, categoryChannel: true, message: true, command: true,
+			group: true, ...types
 		};
 		if(types.string) this.registerType(require('./types/string'));
 		if(types.integer) this.registerType(require('./types/integer'));
@@ -340,6 +344,9 @@ class CommandRegistry {
 		if(types.member) this.registerType(require('./types/member'));
 		if(types.role) this.registerType(require('./types/role'));
 		if(types.channel) this.registerType(require('./types/channel'));
+		if(types.textChannel) this.registerType(require('./types/text-channel'));
+		if(types.voiceChannel) this.registerType(require('./types/voice-channel'));
+		if(types.categoryChannel) this.registerType(require('./types/category-channel'));
 		if(types.message) this.registerType(require('./types/message'));
 		if(types.command) this.registerType(require('./types/command'));
 		if(types.group) this.registerType(require('./types/group'));
@@ -352,13 +359,19 @@ class CommandRegistry {
 	 * @param {Command} oldCommand - Old command
 	 */
 	reregisterCommand(command, oldCommand) {
-		if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
+		/* eslint-disable new-cap */
+		if(typeof command === 'function') command = new command(this.client);
+		else if(typeof command.default === 'function') command = new command.default(this.client);
+		/* eslint-enable new-cap */
+
 		if(command.name !== oldCommand.name) throw new Error('Command name cannot change.');
 		if(command.groupID !== oldCommand.groupID) throw new Error('Command group cannot change.');
 		if(command.memberName !== oldCommand.memberName) throw new Error('Command memberName cannot change.');
+
 		command.group = this.resolveGroup(command.groupID);
 		command.group.commands.set(command.name, command);
 		this.commands.set(command.name, command);
+
 		/**
 		 * Emitted when a command is reregistered
 		 * @event CommandoClient#commandReregister
@@ -389,8 +402,8 @@ class CommandRegistry {
 	 * Registers a single object to be usable by the eval command
 	 * @param {string} key - The key for the object
 	 * @param {Object} obj - The object
-	 * @return {CommandRegistry}
-	 * @see {@link CommandRegistry#registerEvalObjects}
+	 * @return {CommandoRegistry}
+	 * @see {@link CommandoRegistry#registerEvalObjects}
 	 */
 	registerEvalObject(key, obj) {
 		const registerObj = {};
@@ -401,7 +414,7 @@ class CommandRegistry {
 	/**
 	 * Registers multiple objects to be usable by the eval command
 	 * @param {Object} obj - An object of keys: values
-	 * @return {CommandRegistry}
+	 * @return {CommandoRegistry}
 	 */
 	registerEvalObjects(obj) {
 		Object.assign(this.evalObjects, obj);
@@ -537,4 +550,4 @@ function commandFilterInexact(search) {
 		(cmd.aliases && cmd.aliases.some(ali => ali.includes(search)));
 }
 
-module.exports = CommandRegistry;
+module.exports = CommandoRegistry;
