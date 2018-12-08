@@ -27,7 +27,6 @@
 	"types": "./typings/index.d.ts",
 	"dependencies": {
 		"common-tags": "^1.8.0",
-		"escape-string-regexp": "^1.0.0",
 		"require-all": "^3.0.0"
 	},
 	"devDependencies": {
