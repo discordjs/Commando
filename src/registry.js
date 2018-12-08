@@ -117,7 +117,11 @@ class CommandoRegistry {
 	 * @see {@link CommandoRegistry#registerCommands}
 	 */
 	registerCommand(command) {
-		if(typeof command === 'function') command = new command(this.client); // eslint-disable-line new-cap
+		/* eslint-disable new-cap */
+		if(typeof command === 'function') command = new command(this.client);
+		else if(typeof command.default === 'function') command = new command.default(this.client);
+		/* eslint-enable new-cap */
+
 		if(!(command instanceof Command)) throw new Error(`Invalid command object to register: ${command}`);
 
 		// Make sure there aren't any conflicts
