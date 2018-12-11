@@ -1,7 +1,7 @@
 /// <reference path='index.d.ts' />
 
 import { Message } from 'discord.js';
-import { Command, CommandMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 
 const client = new CommandoClient({
 	unknownCommandResponse: true
@@ -23,11 +23,11 @@ class TestCommand extends Command {
 		});
 	}
 
-	public hasPermission(message: CommandMessage): boolean {
+	public hasPermission(message: CommandoMessage): boolean {
 		return true;
 	}
 
-	public async run(message: CommandMessage, args: {} | string | string[]): Promise<Message | Message[]> {
+	public async run(message: CommandoMessage, args: {} | string | string[]): Promise<Message | Message[]> {
 		return message.say('test');
 	}
 }
