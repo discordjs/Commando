@@ -203,7 +203,11 @@ class CommandoRegistry {
 	 * @see {@link CommandoRegistry#registerTypes}
 	 */
 	registerType(type) {
-		if(typeof type === 'function') type = new type(this.client); // eslint-disable-line new-cap
+		/* eslint-disable new-cap */
+		if(typeof type === 'function') type = new type(this.client);
+		else if(typeof type.default === 'function') type = new type.default(this.client);
+		/* eslint-enable new-cap */
+
 		if(!(type instanceof ArgumentType)) throw new Error(`Invalid type object to register: ${type}`);
 
 		// Make sure there aren't any conflicts
