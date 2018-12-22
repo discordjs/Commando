@@ -1,10 +1,10 @@
-const escapeRegex = require('escape-string-regexp');
+const { escapeRegex } = require('./util');
 
 /** Handles parsing messages and running commands from them */
 class CommandDispatcher {
 	/**
 	 * @param {CommandoClient} client - Client the dispatcher is for
-	 * @param {CommandRegistry} registry - Registry the dispatcher will use
+	 * @param {CommandoRegistry} registry - Registry the dispatcher will use
 	 */
 	constructor(client, registry) {
 		/**
@@ -17,7 +17,7 @@ class CommandDispatcher {
 
 		/**
 		 * Registry this dispatcher uses
-		 * @type {CommandRegistry}
+		 * @type {CommandoRegistry}
 		 */
 		this.registry = registry;
 
@@ -52,7 +52,7 @@ class CommandDispatcher {
 	/**
 	 * A function that decides whether the usage of a command should be blocked
 	 * @callback Inhibitor
-	 * @param {CommandMessage} msg - Message triggering the command
+	 * @param {CommandoMessage} msg - Message triggering the command
 	 * @return {boolean|string|Array<string|?Promise<Message>>} `false` if the command should *not* be blocked.
 	 * If the command *should* be blocked, then one of the following:
 	 * - A single string identifying the reason the command is blocked
@@ -89,7 +89,6 @@ class CommandDispatcher {
 		return this.inhibitors.delete(inhibitor);
 	}
 
-	// eslint-disable-next-line valid-jsdoc
 	/**
 	 * Handle a new message or a message update
 	 * @param {Message} message - The message to handle
