@@ -143,12 +143,12 @@ module.exports = Structures.extend('Message', Message => {
 				 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, and `throttling`)
 				 */
 				this.client.emit('commandBlocked', this, 'guildOnly');
-				return this.reply(`The \`${this.command.name}\` command must be used in a server channel.`);
+				return this.reply(`⛔ \`${this.command.name}\` Komutunu sadece sunucularda kullanabilirsiniz.`);
 			}
 
 			if(this.command.nsfw && !this.channel.nsfw) {
 				this.client.emit('commandBlocked', this, 'nsfw');
-				return this.reply(`The \`${this.command.name}\` command can only be used in NSFW channels.`);
+				return this.reply(`⛔ \`${this.command.name}\`Komutunu sadece NSFW Kanalların da kullanabilirsiniz.`);
 			}
 
 			// Ensure the user has permission to use the command
@@ -156,7 +156,7 @@ module.exports = Structures.extend('Message', Message => {
 			if(!hasPermission || typeof hasPermission === 'string') {
 				this.client.emit('commandBlocked', this, 'permission');
 				if(typeof hasPermission === 'string') return this.reply(hasPermission);
-				else return this.reply(`You do not have permission to use the \`${this.command.name}\` command.`);
+				else return this.reply(`⛔ \`${this.command.name}\` Komutunu kullanabilmek için gerekli yetkiye sahip değilsiniz.`);
 			}
 
 			// Ensure the client user has the required permissions
@@ -166,12 +166,12 @@ module.exports = Structures.extend('Message', Message => {
 					this.client.emit('commandBlocked', this, 'clientPermissions');
 					if(missing.length === 1) {
 						return this.reply(
-							`I need the "${permissions[missing[0]]}" permission for the \`${this.command.name}\` command to work.`
+							`⛔ \`${this.command.name}\` komutunu çalıştırabilmek için "${permissions[missing[0]]}" yetkisine ihtiyacım var. ,`
 						);
 					}
 					return this.reply(oneLine`
-						I need the following permissions for the \`${this.command.name}\` command to work:
-						${missing.map(perm => permissions[perm]).join(', ')}
+						⛔ \`${this.command.name}\` komutunu çalıştırabilmek için:
+						${missing.map(perm => permissions[perm]).join(', ')} yetkilerine ihtiyacım var.
 					`);
 				}
 			}
@@ -182,7 +182,7 @@ module.exports = Structures.extend('Message', Message => {
 				const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
 				this.client.emit('commandBlocked', this, 'throttling');
 				return this.reply(
-					`You may not use the \`${this.command.name}\` command again for another ${remaining.toFixed(1)} seconds.`
+					`<:timeout:513007930849755136> \`${this.command.name}\` Komutunu ${remaining.toFixed(1)} saniye sonra  tekrar deneyiniz.`
 				);
 			}
 
@@ -207,7 +207,7 @@ module.exports = Structures.extend('Message', Message => {
 					 * @param {CommandoMessage} message - Command message that the command ran from (see {@link Command#run})
 					 */
 					this.client.emit('commandCancelled', this.command, result.cancelled, this);
-					return this.reply('Cancelled command.');
+					return this.reply('Komut iptal edildi');
 				}
 				args = result.values;
 			}
