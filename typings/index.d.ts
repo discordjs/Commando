@@ -101,6 +101,8 @@ declare module 'discord.js-commando' {
 		public hasPermission(message: CommandoMessage): boolean | string;
 		public isEnabledIn(guild: GuildResolvable, bypassGroup?: boolean): boolean;
 		public isUsable(message: Message): boolean;
+		public onBlocked(message: CommandMessage, reason: string): any
+		public onError (err: Error, message: CommandMessage, args: object | string | string[], fromPattern: boolean): any;
 		public reload(): void;
 		public run(message: CommandoMessage, args: object | string | string[], fromPattern: boolean): Promise<Message | Message[]>
 		public setEnabledIn(guild: GuildResolvable, enabled: boolean): void;
