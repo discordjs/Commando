@@ -81,6 +81,10 @@ module.exports = {
  * @see {@link https://discord.js.org/#/docs/main/master/typedef/MessageOptions}
  */
 /**
+ * @external PermissionResolvable
+ * @see {@link https://discord.js.org/#/docs/main/master/typedef/PermissionResolvable}
+ */
+/**
  * @external Role
  * @see {@link https://discord.js.org/#/docs/main/master/class/Role}
  */
