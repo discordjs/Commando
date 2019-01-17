@@ -101,10 +101,16 @@ declare module 'discord.js-commando' {
 		public hasPermission(message: CommandoMessage): boolean | string;
 		public isEnabledIn(guild: GuildResolvable, bypassGroup?: boolean): boolean;
 		public isUsable(message: Message): boolean;
-		public onBlocked(message: CommandMessage, reason: string): any
-		public onError (err: Error, message: CommandMessage, args: object | string | string[], fromPattern: boolean): any;
+		public onBlocked(message: CommandoMessage, reason: string, data?: Object): Promise<Message | Message[]>;
+		public onBlocked(message: CommandoMessage, reason: 'guildOnly' | 'nsfw'): Promise<Message | Message[]>;
+		public onBlocked(message: CommandoMessage, reason: 'permission', data: { response?: string }): Promise<Message | Message[]>;
+		public onBlocked(message: CommandoMessage, reason: 'clientPermissions', data: { missing: string }): Promise<Message | Message[]>;
+		public onBlocked(message: CommandoMessage, reason: 'throttling', data: { throttle: Object, remaining: number }): Promise<Message | Message[]>;
+		public onError(err: Error, message: CommandoMessage, args: object | string | string[], fromPattern: false): Promise<Message | Message[]>;
+		public onError(err: Error, message: CommandoMessage, args: string[], fromPattern: true): Promise<Message | Message[]>;
 		public reload(): void;
-		public run(message: CommandoMessage, args: object | string | string[], fromPattern: boolean): Promise<Message | Message[]>
+		public run(message: CommandoMessage, args: object | string | string[], fromPattern: false): Promise<Message | Message[]>;
+		public run(message: CommandoMessage, args: string[], fromPattern: true): Promise<Message | Message[]>;
 		public setEnabledIn(guild: GuildResolvable, enabled: boolean): void;
 		public unload(): void;
 		public usage(argString?: string, prefix?: string, user?: User): string;
@@ -122,7 +128,7 @@ declare module 'discord.js-commando' {
 		private buildCommandPattern(prefix: string): RegExp;
 		private cacheCommandoMessage(message: Message, oldMessage: Message, cmdMsg: CommandoMessage, responses: Message | Message[]): void;
 		private handleMessage(messge: Message, oldMessage?: Message): Promise<void>;
-		private inhibit(cmdMsg: CommandoMessage): [Inhibitor, undefined];
+		private inhibit(cmdMsg: CommandoMessage): Inhibition;
 		private matchDefault(message: Message, pattern: RegExp, commandNameIndex: number): CommandoMessage;
 		private parseMessage(message: Message): CommandoMessage;
 		private shouldHandleMessage(message: Message, oldMessage?: Message): boolean;
@@ -234,9 +240,14 @@ declare module 'discord.js-commando' {
 		public setProvider(provider: SettingProvider | Promise<SettingProvider>): Promise<void>;
 
 		on(event: string, listener: Function): this;
-		on(event: 'commandBlocked', listener: (message: CommandoMessage, reason: string) => void): this;
+		on(event: 'commandBlocked', listener: (message: CommandoMessage, reason: string, data?: Object) => void): this;
+		on(event: 'commandBlocked', listener: (message: CommandoMessage, reason: 'guildOnly' | 'nsfw') => void): this;
+		on(event: 'commandBlocked', listener: (message: CommandoMessage, reason: 'permission', data: { response?: string }) => void): this;
+		on(event: 'commandBlocked', listener: (message: CommandoMessage, reason: 'throttling', data: { throttle: Object, remaining: number }) => void): this;
+		on(event: 'commandBlocked', listener: (message: CommandoMessage, reason: 'clientPermissions', data: { missing: string }) => void): this;
 		on(event: 'commandCancelled', listener: (command: Command, reason: string, message: CommandoMessage) => void): this;
-		on(event: 'commandError', listener: (command: Command, err: Error, message: CommandoMessage, args: {} | string | string[], fromPattern: boolean) => void): this;
+		on(event: 'commandError', listener: (command: Command, err: Error, message: CommandoMessage, args: object | string | string[], fromPattern: false) => void): this;
+		on(event: 'commandError', listener: (command: Command, err: Error, message: CommandoMessage, args: string[], fromPattern: true) => void): this;
 		on(event: 'commandPrefixChange', listener: (guild: CommandoGuild, prefix: string) => void): this;
 		on(event: 'commandRegister', listener: (command: Command, registry: CommandoRegistry) => void): this;
 		on(event: 'commandReregister', listener: (newCommand: Command, oldCommand: Command) => void): this;
@@ -496,7 +507,11 @@ declare module 'discord.js-commando' {
 
 	type CommandResolvable = Command | string;
 
-	type Inhibitor = (msg: CommandoMessage) => false | string | [string, Promise<any>];
+	type Inhibitor = (msg: CommandoMessage) => false | string | Inhibition;
+	type Inhibition = {
+		reason: string;
+		response?: Promise<Message>;
+	}
 
 	type ThrottlingOptions = {
 		usages: number;

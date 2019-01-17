@@ -139,6 +139,12 @@ module.exports = Structures.extend('Message', Message => {
 				 * @param {CommandoMessage} message - Command message that the command is running from
 				 * @param {string} reason - Reason that the command was blocked
 				 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
+				 * @param {Object} [data] - Additional data associated with the block. Built-in reason data properties:
+				 * - guildOnly: none
+				 * - nsfw: none
+				 * - permission: `response` ({@link String}) to send
+				 * - throttling: `throttle` ({@link Object}), `remaining` ({@link number}) time in seconds
+				 * - clientPermissions: `missing` ({@link Array}<{@link string}>) permission names
 				 */
 				this.client.emit('commandBlocked', this, 'guildOnly');
 				return this.command.onBlocked(this, 'guildOnly');
@@ -153,24 +159,28 @@ module.exports = Structures.extend('Message', Message => {
 			// Ensure the user has permission to use the command
 			const hasPermission = this.command.hasPermission(this);
 			if(!hasPermission || typeof hasPermission === 'string') {
-				this.client.emit('commandBlocked', this, 'permission');
-				return this.command.onBlocked(this, 'permission');
+				const data = { response: typeof hasPermission === 'string' ? hasPermission : undefined };
+				this.client.emit('commandBlocked', this, 'permission', data);
+				return this.command.onBlocked(this, 'permission', data);
 			}
 
 			// Ensure the client user has the required permissions
 			if(this.channel.type === 'text' && this.command.clientPermissions) {
 				const missing = this.channel.permissionsFor(this.client.user).missing(this.command.clientPermissions);
 				if(missing.length > 0) {
-					this.client.emit('commandBlocked', this, 'clientPermissions');
-					return this.command.onBlocked(this, 'clientPermissions');
+					const data = { missing };
+					this.client.emit('commandBlocked', this, 'clientPermissions', data);
+					return this.command.onBlocked(this, 'clientPermissions', data);
 				}
 			}
 
 			// Throttle the command
 			const throttle = this.command.throttle(this.author.id);
 			if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
-				this.client.emit('commandBlocked', this, 'throttling');
-				return this.command.onBlocked(this, 'throttling');
+				const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
+				const data = { throttle, remaining };
+				this.client.emit('commandBlocked', this, 'throttling', data);
+				return this.command.onBlocked(this, 'throttling', data);
 			}
 
 			// Figure out the command arguments

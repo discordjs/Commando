@@ -50,13 +50,19 @@ class CommandDispatcher {
 	}
 
 	/**
+	 * @typedef {Object} Inhibition
+	 * @property {string} reason - Identifier for the reason the command is being blocked
+	 * @property {?Promise<Message>} - Response being sent to the user
+	 */
+
+	/**
 	 * A function that decides whether the usage of a command should be blocked
 	 * @callback Inhibitor
 	 * @param {CommandoMessage} msg - Message triggering the command
-	 * @return {boolean|string|Array<string|?Promise<Message>>} `false` if the command should *not* be blocked.
+	 * @return {boolean|string|Inhibition} `false` if the command should *not* be blocked.
 	 * If the command *should* be blocked, then one of the following:
 	 * - A single string identifying the reason the command is blocked
-	 * - An array of the above string as element 0, and a response promise or `null` as element 1
+	 * - An Inhibition object
 	 */
 
 	/**
@@ -145,7 +151,7 @@ class CommandDispatcher {
 					}
 				}
 			} else {
-				responses = await inhibited[1];
+				responses = await inhibited.response;
 			}
 
 			cmdMsg.finalize(responses);
@@ -180,15 +186,28 @@ class CommandDispatcher {
 	/**
 	 * Inhibits a command message
 	 * @param {CommandoMessage} cmdMsg - Command message to inhibit
-	 * @return {?Array} [reason, ?response]
+	 * @return {?Inhibition}
 	 * @private
 	 */
 	inhibit(cmdMsg) {
 		for(const inhibitor of this.inhibitors) {
-			const inhibited = inhibitor(cmdMsg);
-			if(inhibited) {
-				this.client.emit('commandBlocked', cmdMsg, inhibited instanceof Array ? inhibited[0] : inhibited);
-				return inhibited instanceof Array ? inhibited : [inhibited, undefined];
+			let inhibit = inhibitor(cmdMsg);
+			if(inhibit) {
+				if(typeof inhibit !== 'object') inhibit = { reason: inhibit, response: undefined };
+
+				const valid = typeof inhibit.reason === 'string' && (
+					typeof inhibit.response === 'undefined' ||
+					inhibit.response === null ||
+					inhibit.response instanceof Promise
+				);
+				if(!valid) {
+					throw new TypeError(
+						`Inhibitor "${inhibitor.name}" had an invalid result; must be a string or an Inhibition object.`
+					);
+				}
+
+				this.client.emit('commandBlocked', cmdMsg, inhibit.reason, inhibit);
+				return inhibit;
 			}
 		}
 		return null;

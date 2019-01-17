@@ -284,36 +284,38 @@ class Command {
 	 * @param {CommandMessage} message - Command message that the command is running from
 	 * @param {string} reason - Reason that the command was blocked
 	 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
+	 * @param {Object} [data] - Additional data associated with the block. Built-in reason data properties:
+	 * - guildOnly: none
+	 * - nsfw: none
+	 * - permission: `response` ({@link String}) to send
+	 * - throttling: `throttle` ({@link Object}), `remaining` ({@link number}) time in seconds
+	 * - clientPermissions: `missing` ({@link Array}<{@link string}>) permission names
 	 * @returns {Promise<?Message|?Array<Message>>}
 	 */
-	onBlocked(message, reason) { // eslint-disable-line no-unused-vars
+	onBlocked(message, reason, data) { // eslint-disable-line no-unused-vars
 		switch(reason) {
 			case 'guildOnly':
 				return message.reply(`The \`${this.name}\` command must be used in a server channel.`);
 			case 'nsfw':
 				return message.reply(`The \`${this.name}\` command can only be used in NSFW channels.`);
 			case 'permission': {
-				const hasPermission = this.hasPermission(message);
-				if(typeof hasPermission === 'string') return message.reply(hasPermission);
+				if(data.response) return message.reply(data.response);
 				return message.reply(`You do not have permission to use the \`${this.name}\` command.`);
 			}
 			case 'clientPermissions': {
-				const missing = message.channel.permissionsFor(this.client.user).missing(this.clientPermissions);
-				if(missing.length === 1) {
-					return this.reply(
-						`I need the "${permissions[missing[0]]}" permission for the \`${this.name}\` command to work.`
+				if(data.missing.length === 1) {
+					return message.reply(
+						`I need the "${permissions[data.missing[0]]}" permission for the \`${this.name}\` command to work.`
 					);
 				}
-				return this.reply(oneLine`
+				return message.reply(oneLine`
 					I need the following permissions for the \`${this.name}\` command to work:
-					${missing.map(perm => permissions[perm]).join(', ')}
+					${data.missing.map(perm => permissions[perm]).join(', ')}
 				`);
 			}
 			case 'throttling': {
-				const throttle = this.throttle(message.author.id);
-				const remaining = (throttle.start + (this.throttling.duration * 1000) - Date.now()) / 1000;
-				return this.reply(
-					`You may not use the \`${this.name}\` command again for another ${remaining.toFixed(1)} seconds.`
+				return message.reply(
+					`You may not use the \`${this.name}\` command again for another ${data.remaining.toFixed(1)} seconds.`
 				);
 			}
 			default:
