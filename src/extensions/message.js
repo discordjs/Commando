@@ -121,9 +121,8 @@ module.exports = Structures.extend('Message', Message => {
 		 * @return {Promise<?Message|?Array<Message>>}
 		 */
 		async run() { // eslint-disable-line complexity
-			// Obtain the member if we don't have it (ugly-ass if statement ahead)
-			if(this.channel.type === 'text' && !this.guild.members.has(this.author.id) &&
-				!this.webhookID) {
+			// Obtain the member if we don't have it
+			if(this.channel.type === 'text' && !this.guild.members.has(this.author.id) && !this.webhookID) {
 				this.member = await this.guild.members.fetch(this.author);
 			}
 
@@ -142,19 +141,20 @@ module.exports = Structures.extend('Message', Message => {
 				 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
 				 */
 				this.client.emit('commandBlocked', this, 'guildOnly');
-				return this.command.onCommandBlocked(this, 'guildOnly');
+				return this.command.onBlocked(this, 'guildOnly');
 			}
 
+			// Ensure the channel is a NSFW one if required
 			if(this.command.nsfw && !this.channel.nsfw) {
 				this.client.emit('commandBlocked', this, 'nsfw');
-				return this.command.onCommandBlocked(this, 'nsfw');
+				return this.command.onBlocked(this, 'nsfw');
 			}
 
 			// Ensure the user has permission to use the command
 			const hasPermission = this.command.hasPermission(this);
 			if(!hasPermission || typeof hasPermission === 'string') {
 				this.client.emit('commandBlocked', this, 'permission');
-				return this.command.onCommandBlocked(this, 'permission');
+				return this.command.onBlocked(this, 'permission');
 			}
 
 			// Ensure the client user has the required permissions
@@ -162,7 +162,7 @@ module.exports = Structures.extend('Message', Message => {
 				const missing = this.channel.permissionsFor(this.client.user).missing(this.command.clientPermissions);
 				if(missing.length > 0) {
 					this.client.emit('commandBlocked', this, 'clientPermissions');
-					return this.command.onCommandBlocked(this, 'clientPermissions');
+					return this.command.onBlocked(this, 'clientPermissions');
 				}
 			}
 
@@ -170,7 +170,7 @@ module.exports = Structures.extend('Message', Message => {
 			const throttle = this.command.throttle(this.author.id);
 			if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
 				this.client.emit('commandBlocked', this, 'throttling');
-				return this.command.onCommandBlocked(this, 'throttling');
+				return this.command.onBlocked(this, 'throttling');
 			}
 
 			// Figure out the command arguments
@@ -241,7 +241,7 @@ module.exports = Structures.extend('Message', Message => {
 				if(err instanceof FriendlyError) {
 					return this.reply(err.message);
 				} else {
-					return this.command.onCommandError(err, this, args, fromPattern);
+					return this.command.onError(err, this, args, fromPattern);
 				}
 			}
 		}

@@ -264,13 +264,29 @@ class Command {
 	}
 
 	/**
+	 * Runs the command
+	 * @param {CommandoMessage} message - The message the command is being run for
+	 * @param {Object|string|string[]} args - The arguments for the command, or the matches from a pattern.
+	 * If args is specified on the command, thise will be the argument values object. If argsType is single, then only
+	 * one string will be passed. If multiple, an array of strings will be passed. When fromPattern is true, this is the
+	 * matches array from the pattern match
+	 * (see [RegExp#exec](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec)).
+	 * @param {boolean} fromPattern - Whether or not the command is being run from a pattern match
+	 * @return {Promise<?Message|?Array<Message>>}
+	 * @abstract
+	 */
+	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars, require-await
+		throw new Error(`${this.constructor.name} doesn't have a run() method.`);
+	}
+
+	/**
 	 * Called when the command is prevented from running
 	 * @param {CommandMessage} message - Command message that the command is running from
 	 * @param {string} reason - Reason that the command was blocked
 	 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
-	 * @returns {void}
+	 * @returns {Promise<?Message|?Array<Message>>}
 	 */
-	onCommandBlocked(message, reason) { // eslint-disable-line no-unused-vars
+	onBlocked(message, reason) { // eslint-disable-line no-unused-vars
 		switch(reason) {
 			case 'guildOnly':
 				return message.reply(`The \`${this.name}\` command must be used in a server channel.`);
@@ -311,9 +327,9 @@ class Command {
 	 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
 	 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
-	 * @returns {void}
+	 * @returns {Promise<?Message|?Array<Message>>}
 	 */
-	onCommandError(err, message, args, fromPattern) { // eslint-disable-line no-unused-vars
+	onError(err, message, args, fromPattern) { // eslint-disable-line no-unused-vars
 		const owners = this.client.owners;
 		const ownerList = owners ? owners.map((usr, i) => {
 			const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
@@ -326,22 +342,6 @@ class Command {
 			You shouldn't ever receive an error like this.
 			Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
 		`);
-	}
-
-	/**
-	 * Runs the command
-	 * @param {CommandoMessage} message - The message the command is being run for
-	 * @param {Object|string|string[]} args - The arguments for the command, or the matches from a pattern.
-	 * If args is specified on the command, thise will be the argument values object. If argsType is single, then only
-	 * one string will be passed. If multiple, an array of strings will be passed. When fromPattern is true, this is the
-	 * matches array from the pattern match
-	 * (see [RegExp#exec](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec)).
-	 * @param {boolean} fromPattern - Whether or not the command is being run from a pattern match
-	 * @return {Promise<?Message|?Array<Message>>}
-	 * @abstract
-	 */
-	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars, require-await
-		throw new Error(`${this.constructor.name} doesn't have a run() method.`);
 	}
 
 	/**
