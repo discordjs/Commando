@@ -236,12 +236,7 @@ class CommandoRegistry {
 	 */
 	registerTypes(types, ignoreInvalid = false) {
 		if(!Array.isArray(types)) throw new TypeError('Types must be an Array.');
-		for(let type of types) {
-			/* eslint-disable new-cap */
-			if(typeof type === 'function') type = new type(this.client);
-			else if(typeof type.default === 'function') type = new type.default(this.client);
-			/* eslint-enable new-cap */
-
+		for(const type of types) {
 			if(ignoreInvalid && typeof type !== 'function' && !(type instanceof ArgumentType)) {
 				this.client.emit('warn', `Attempting to register an invalid argument type object: ${type}; skipping.`);
 				continue;
