@@ -47,6 +47,8 @@ class Command {
 	 * @property {RegExp[]} [patterns] - Patterns to use for triggering the command
 	 * @property {boolean} [guarded=false] - Whether the command should be protected from disabling
 	 * @property {boolean} [hidden=false] - Whether the command should be hidden from the help command
+	 * @property {boolean} [unknown=false] - Whether the command should be run when an unknown command is used - there
+	 * may only be one command registered with this property as `true`.
 	 */
 
 	/**
@@ -217,6 +219,12 @@ class Command {
 		 * @type {boolean}
 		 */
 		this.hidden = Boolean(info.hidden);
+
+		/**
+		 * Whether the command will be run when an unknown command is used
+		 * @type {boolean}
+		 */
+		this.unknown = Boolean(info.unknown);
 
 		/**
 		 * Whether the command is enabled globally
@@ -499,10 +507,10 @@ class Command {
 			throw new TypeError('Command aliases must be an Array of strings.');
 		}
 		if(info.aliases && info.aliases.some(ali => ali !== ali.toLowerCase())) {
-			throw new Error('Command aliases must be lowercase.');
+			throw new RangeError('Command aliases must be lowercase.');
 		}
 		if(typeof info.group !== 'string') throw new TypeError('Command group must be a string.');
-		if(info.group !== info.group.toLowerCase()) throw new Error('Command group must be lowercase.');
+		if(info.group !== info.group.toLowerCase()) throw new RangeError('Command group must be lowercase.');
 		if(typeof info.memberName !== 'string') throw new TypeError('Command memberName must be a string.');
 		if(info.memberName !== info.memberName.toLowerCase()) throw new Error('Command memberName must be lowercase.');
 		if(typeof info.description !== 'string') throw new TypeError('Command description must be a string.');

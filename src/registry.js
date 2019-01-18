@@ -18,19 +18,19 @@ class CommandoRegistry {
 		Object.defineProperty(this, 'client', { value: client });
 
 		/**
-		 * Registered commands
+		 * Registered commands, mapped by their name
 		 * @type {Collection<string, Command>}
 		 */
 		this.commands = new discord.Collection();
 
 		/**
-		 * Registered command groups
+		 * Registered command groups, mapped by their ID
 		 * @type {Collection<string, CommandGroup>}
 		 */
 		this.groups = new discord.Collection();
 
 		/**
-		 * Registered argument types
+		 * Registered argument types, mapped by their ID
 		 * @type {Collection<string, ArgumentType>}
 		 */
 		this.types = new discord.Collection();
@@ -46,6 +46,12 @@ class CommandoRegistry {
 		 * @type {?string}
 		 */
 		this.commandsPath = null;
+
+		/**
+		 * Command to run when an unknown command is used
+		 * @type {?Command}
+		 */
+		this.unknownCommand = null;
 	}
 
 	/**
@@ -138,11 +144,13 @@ class CommandoRegistry {
 		if(group.commands.some(cmd => cmd.memberName === command.memberName)) {
 			throw new Error(`A command with the member name "${command.memberName}" is already registered in ${group.id}`);
 		}
+		if(command.unknown && this.unknownCommand) throw new Error('An unknown command is already registered.');
 
 		// Add the command
 		command.group = group;
 		group.commands.set(command.name, command);
 		this.commands.set(command.name, command);
+		if(command.unknown) this.unknownCommand = command;
 
 		/**
 		 * Emitted when a command is registered
@@ -295,16 +303,22 @@ class CommandoRegistry {
 	 * @param {boolean} [commands.eval=true] - Whether to register the built-in eval command
 	 * (requires "util" group and "string" type)
 	 * @param {boolean} [commands.ping=true] - Whether to register the built-in ping command (requires "util" group)
+	 * @param {boolean} [commands.unknownCommand=true] - Whether to register the built-in unknown command
+	 * (requires "util" group)
 	 * @param {boolean} [commands.commandState=true] - Whether to register the built-in command state commands
 	 * (enable, disable, load, unload, reload, list groups - requires "commands" group, "command" type, and "group" type)
 	 * @return {CommandoRegistry}
 	 */
 	registerDefaultCommands(commands = {}) {
-		commands = { help: true, prefix: true, ping: true, eval: true, commandState: true, ...commands };
+		commands = {
+			help: true, prefix: true, ping: true, eval: true,
+			unknownCommand: true, commandState: true, ...commands
+		};
 		if(commands.help) this.registerCommand(require('./commands/util/help'));
 		if(commands.prefix) this.registerCommand(require('./commands/util/prefix'));
 		if(commands.ping) this.registerCommand(require('./commands/util/ping'));
 		if(commands.eval) this.registerCommand(require('./commands/util/eval'));
+		if(commands.unknownCommand) this.registerCommand(require('./commands/util/unknown-command'));
 		if(commands.commandState) {
 			this.registerCommands([
 				require('./commands/commands/groups'),
@@ -377,10 +391,15 @@ class CommandoRegistry {
 		if(command.name !== oldCommand.name) throw new Error('Command name cannot change.');
 		if(command.groupID !== oldCommand.groupID) throw new Error('Command group cannot change.');
 		if(command.memberName !== oldCommand.memberName) throw new Error('Command memberName cannot change.');
+		if(command.unknown && this.unknownCommand !== oldCommand) {
+			throw new Error('An unknown command is already registered.');
+		}
 
 		command.group = this.resolveGroup(command.groupID);
 		command.group.commands.set(command.name, command);
 		this.commands.set(command.name, command);
+		if(this.unknownCommand === oldCommand) this.unknownCommand = null;
+		if(command.unknown) this.unknownCommand = command;
 
 		/**
 		 * Emitted when a command is reregistered
@@ -399,6 +418,8 @@ class CommandoRegistry {
 	unregisterCommand(command) {
 		this.commands.delete(command.name);
 		command.group.commands.delete(command.name);
+		if(this.unknownCommand === command) this.unknownCommand = null;
+
 		/**
 		 * Emitted when a command is unregistered
 		 * @event CommandoClient#commandUnregister

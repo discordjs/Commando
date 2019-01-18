@@ -96,6 +96,7 @@ declare module 'discord.js-commando' {
 		public ownerOnly: boolean;
 		public patterns: RegExp[];
 		public throttling: ThrottlingOptions;
+		public unknown: boolean;
 		public userPermissions: PermissionResolvable[];
 
 		public hasPermission(message: CommandoMessage): boolean | string;
@@ -324,11 +325,12 @@ declare module 'discord.js-commando' {
 		public constructor(client?: CommandoClient);
 
 		public readonly client: CommandoClient;
-		public commands: Collection<string, Command>
+		public commands: Collection<string, Command>;
 		public commandsPath: string;
 		public evalObjects: object;
-		public groups: Collection<string, CommandGroup>
-		public types: Collection<string, ArgumentType>
+		public groups: Collection<string, CommandGroup>;
+		public types: Collection<string, ArgumentType>;
+		public unknownCommand?: Command;
 
 		public findCommands(searchString?: string, exact?: boolean, message?: Message | CommandoMessage): Command[];
 		public findGroups(searchString?: string, exact?: boolean): CommandGroup[];
@@ -494,13 +496,13 @@ declare module 'discord.js-commando' {
 		patterns?: RegExp[];
 		guarded?: boolean;
 		hidden?: boolean;
+		unknown?: boolean;
 	};
 
 	type CommandoClientOptions = ClientOptions & {
 		commandPrefix?: string;
 		commandEditableDuration?: number;
 		nonCommandEditable?: boolean;
-		unknownCommandResponse?: boolean;
 		owner?: string | string[] | Set<string>;
 		invite?: string;
 	};

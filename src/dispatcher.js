@@ -103,6 +103,7 @@ class CommandDispatcher {
 	 * @private
 	 */
 	async handleMessage(message, oldMessage) {
+		/* eslint-disable max-depth */
 		if(!this.shouldHandleMessage(message, oldMessage)) return;
 
 		// Parse the message, and get the old result if it exists
@@ -127,28 +128,25 @@ class CommandDispatcher {
 			if(!inhibited) {
 				if(cmdMsg.command) {
 					if(!cmdMsg.command.isEnabledIn(message.guild)) {
-						responses = await cmdMsg.reply(`The \`${cmdMsg.command.name}\` command is disabled.`);
+						if(!cmdMsg.command.unknown) {
+							responses = await cmdMsg.reply(`The \`${cmdMsg.command.name}\` command is disabled.`);
+						} else {
+							/**
+							 * Emitted when an unknown command is triggered
+							 * @event CommandoClient#unknownCommand
+							 * @param {CommandoMessage} message - Command message that triggered the command
+							 */
+							this.client.emit('unknownCommand', cmdMsg);
+							responses = undefined;
+						}
 					} else if(!oldMessage || typeof oldCmdMsg !== 'undefined') {
 						responses = await cmdMsg.run();
-						if(typeof responses === 'undefined') responses = null; // eslint-disable-line max-depth
-						if(Array.isArray(responses)) responses = await Promise.all(responses); // eslint-disable-line max-depth
+						if(typeof responses === 'undefined') responses = null;
+						if(Array.isArray(responses)) responses = await Promise.all(responses);
 					}
 				} else {
-					/**
-					 * Emitted when an unknown command is triggered
-					 * @event CommandoClient#unknownCommand
-					 * @param {CommandoMessage} message - Command message that triggered the command
-					 */
 					this.client.emit('unknownCommand', cmdMsg);
-					if(this.client.options.unknownCommandResponse) {
-						responses = await cmdMsg.reply(
-							`Unknown command. Use ${cmdMsg.anyUsage(
-								'help',
-								message.guild ? undefined : null,
-								message.guild ? undefined : null
-							)} to view the list of all commands.`
-						);
-					}
+					responses = undefined;
 				}
 			} else {
 				responses = await inhibited.response;
@@ -161,6 +159,7 @@ class CommandDispatcher {
 		}
 
 		this.cacheCommandoMessage(message, oldMessage, cmdMsg, responses);
+		/* eslint-enable max-depth */
 	}
 
 	/**
@@ -270,7 +269,9 @@ class CommandDispatcher {
 		const matches = pattern.exec(message.content);
 		if(!matches) return null;
 		const commands = this.registry.findCommands(matches[commandNameIndex], true);
-		if(commands.length !== 1 || !commands[0].defaultHandling) return message.initCommand(null);
+		if(commands.length !== 1 || !commands[0].defaultHandling) {
+			return message.initCommand(this.registry.unknownCommand, matches[2]);
+		}
 		const argString = message.content.substring(matches[1].length + (matches[2] ? matches[2].length : 0));
 		return message.initCommand(commands[0], argString);
 	}

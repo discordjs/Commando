@@ -3,13 +3,11 @@
 import { Message } from 'discord.js';
 import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
 
-const client = new CommandoClient({
-	unknownCommandResponse: true
-});
+const client = new CommandoClient();
 
 client.on('message', (message: Message) => {
 	if (message.content === 'hello') {
-		message.channel.sendMessage('o/');
+		message.channel.send('o/');
 	}
 });
 
