@@ -165,7 +165,8 @@ class CommandoRegistry {
 	registerCommands(commands, ignoreInvalid = false) {
 		if(!Array.isArray(commands)) throw new TypeError('Commands must be an Array.');
 		for(const command of commands) {
-			if(ignoreInvalid && typeof command !== 'function' && !(command instanceof Command)) {
+			if(ignoreInvalid && typeof command !== 'function' && typeof command.default !== 'function' &&
+			!(command instanceof Command)) {
 				this.client.emit('warn', `Attempting to register an invalid command object: ${command}; skipping.`);
 				continue;
 			}
