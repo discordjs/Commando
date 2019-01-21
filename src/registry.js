@@ -165,7 +165,7 @@ class CommandoRegistry {
 	registerCommands(commands, ignoreInvalid = false) {
 		if(!Array.isArray(commands)) throw new TypeError('Commands must be an Array.');
 		for(const command of commands) {
-			const valid = typeof command === 'function' || typeof command.default === 'function ||
+			const valid = typeof command === 'function' || typeof command.default === 'function' ||
 				command instanceof Command || command.default instanceof Command;
 			if(ignoreInvalid && !valid) {
 				this.client.emit('warn', `Attempting to register an invalid command object: ${command}; skipping.`);
@@ -239,7 +239,7 @@ class CommandoRegistry {
 	registerTypes(types, ignoreInvalid = false) {
 		if(!Array.isArray(types)) throw new TypeError('Types must be an Array.');
 		for(const type of types) {
-			const valid = typeof type === 'function' || typeof type.default === 'function ||
+			const valid = typeof type === 'function' || typeof type.default === 'function' ||
 				type instanceof ArgumentType || type.default instanceof ArgumentType;
 			if(ignoreInvalid && !valid) {
 				this.client.emit('warn', `Attempting to register an invalid argument type object: ${type}; skipping.`);
