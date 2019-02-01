@@ -194,7 +194,7 @@ module.exports = Structures.extend('Message', Message => {
 				if(result.cancelled) {
 					if(result.prompts.length === 0) {
 						const err = new CommandFormatError(this);
-						this.client.emit('commandInvalid', this.command, 'usage', this);
+						this.client.emit('commandInvalid', this.command, this);
 						return this.reply(err.message);
 					}
 					/**
