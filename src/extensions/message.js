@@ -194,7 +194,8 @@ module.exports = Structures.extend('Message', Message => {
 				if(result.cancelled) {
 					if(result.prompts.length === 0) {
 						const err = new CommandFormatError(this);
-						return this.reply(err.message);
+						this.client.emit('commandInvalid', this.command, 'usage', this);
+						return this.author.send(err.message);
 					}
 					/**
 					 * Emitted when a command is cancelled (either by typing 'cancel' or not responding in time)
@@ -204,7 +205,7 @@ module.exports = Structures.extend('Message', Message => {
 					 * @param {CommandoMessage} message - Command message that the command ran from (see {@link Command#run})
 					 */
 					this.client.emit('commandCancelled', this.command, result.cancelled, this);
-					return this.reply('Cancelled command.');
+					return this.author.send('Cancelled command.');
 				}
 				args = result.values;
 			}
