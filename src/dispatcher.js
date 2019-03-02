@@ -170,7 +170,7 @@ class CommandDispatcher {
 	 * @private
 	 */
 	shouldHandleMessage(message, oldMessage) {
-		//Ignore Partial Messages
+		// Ignore partial messages
 		if(message.partial) return false;
 
 		if(message.author.bot) return false;
