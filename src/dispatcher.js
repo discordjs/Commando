@@ -170,7 +170,10 @@ class CommandDispatcher {
 	 * @private
 	 */
 	shouldHandleMessage(message, oldMessage) {
-		if(message.partial || message.author.bot) return false;
+		//Ignore Partial Messages
+		if(message.partial) return false;
+
+		if(message.author.bot) return false;
 		else if(message.author.id === this.client.user.id) return false;
 
 		// Ignore messages from users that the bot is already waiting for input from
