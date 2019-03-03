@@ -105,8 +105,8 @@ class CommandDispatcher {
 	async handleMessage(message, oldMessage) {
 		/* eslint-disable max-depth */
 
-		if (message.partial) await message.fetch();
-		if (oldMessage.partial) await oldMessage.fetch();
+		if(message.partial) await message.fetch();
+		if(oldMessage.partial) await oldMessage.fetch();
 
 		if(!this.shouldHandleMessage(message, oldMessage)) return;
 
