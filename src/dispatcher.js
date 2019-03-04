@@ -102,11 +102,13 @@ class CommandDispatcher {
 	 * @return {Promise<void>}
 	 * @private
 	 */
+
+	// eslint-disable-next-line complexity
 	async handleMessage(message, oldMessage) {
 		/* eslint-disable max-depth */
 
-		if(message.partial) await message.fetch();
-		if(oldMessage.partial) await oldMessage.fetch();
+		if(message.partial) await message.fetch().catch(() => null);
+		if(oldMessage && oldMessage.partial) await oldMessage.fetch().catch(() => null);
 
 		if(!this.shouldHandleMessage(message, oldMessage)) return;
 
@@ -143,7 +145,8 @@ class CommandDispatcher {
 							this.client.emit('unknownCommand', cmdMsg);
 							responses = undefined;
 						}
-					} else if(!oldMessage || typeof oldCmdMsg !== 'undefined') {
+					// eslint-disable-next-line no-mixed-operators
+					} else if(oldMessage && oldMessage.partial || !oldMessage || typeof oldCmdMsg !== 'undefined') {
 						responses = await cmdMsg.run();
 						if(typeof responses === 'undefined') responses = null;
 						if(Array.isArray(responses)) responses = await Promise.all(responses);
