@@ -45,10 +45,6 @@ module.exports = {
  * @see {@link https://discord.js.org/#/docs/main/master/class/DMChannel}
  */
 /**
- * @external GroupDMChannel
- * @see {@link https://discord.js.org/#/docs/main/master/class/GroupDMChannel}
- */
-/**
  * @external Guild
  * @see {@link https://discord.js.org/#/docs/main/master/class/Guild}
  */
