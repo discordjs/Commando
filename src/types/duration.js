@@ -1,92 +1,101 @@
 const ArgumentType = require('./base');
-// const { disambiguation } = require('../util');
-// const { escapeMarkdown } = require('discord.js');
 
 class DurationArgumentType extends ArgumentType {
+	// This.duration::Milliseconds
 	constructor(client) {
 		super(client, 'duration');
 		this.timeIds = new Set(['mo', 'w', 'd', 'h', 'm', 's', 'ms']);
 		this.duration = 0;
 	}
 
+	// Confirms match before continuing.
+	// Checks if matched number is an int.
+	// Checks if matched string is in expected set.
 	validate(value) {
-		var ifInvalid = false;
 		const MATCHES_ALL = value.match(/(\d+)\s*([A-Za-z]+)/g);
-		MATCHES_ALL.forEach(dur => {
-			var tempNum = dur.match(/(\d+)/g);
-			var tempStr = dur.match(/([A-Za-z]+)/g);
-			//confirms match before continuing.
-			if(!tempNum || (tempNum.length != 1)) ifInvalid = true; break;
-			if(!tempStr || (tempStr.length != 1)) ifInvalid = true; break;
-			//checks if matched number is an int.
-			if(!Number.isInteger(parseInt(tempNum[0]))) ifInvalid = true; break;
-			//checks if matched string is in expected set.
-			if(!this.timeIds.has(tempStr[0])) ifInvalid = true; break;
-		});
-		if(!ifInvalid) return false; //TODO change to useful error message
+
+		for(var i = 0; i < MATCHES_ALL.length; i++) {
+			var tempNum = MATCHES_ALL[i].match(/(\d+)/g);
+			var tempStr = MATCHES_ALL[i].match(/([A-Za-z]+)/g);
+			if(!tempNum || (tempNum.length !== 1)) return false;
+			if(!tempStr || (tempStr.length !== 1)) return false;
+			if(!Number.isInteger(parseInt(tempNum[0])))	return false;
+			if(!this.timeIds.has(tempStr[0])) return false;
+		}
+		return true;
 	}
 
+	// Separate each time group (Xmo, Yw, Zd, ext.)
+	// Combine to a single time value (in milliseconds)
+	// Return time value unless null
 	parse(value) {
 		const MATCHES_ALL = value.match(/(\d+)\s*([A-Za-z]+)/g);
 		var totalTime = 0;
-		// Separate each time group (Xmo, Yw, Zd, ext.)
 		MATCHES_ALL.forEach(dur => {
 			var tempNum = parseInt(dur.match(/(\d+)/g));
 			var tempStr = dur.match(/([A-Za-z]+)/g);
-			// Combine to a single time value (in milliseconds)
-			if(tempNum === 'NaN') totalTime = null; //or mb ignore?
-			else totalTime += (tempNum * determineTimeType(tempStr));
+			if(tempNum === 'NaN') totalTime = null;
+			else totalTime += tempNum * determineTimeType(tempStr);
 		});
-		// Return time value unless null
-		if(totalTime != null) {
+		if(totalTime !== null) {
 			this.duration = totalTime;
 			return this.duration;
 		} else {
 			return null;
 		}
 	}
-	
-	// conversion methods
+
+	// Conversion methods. Each returns a float.
 	toMonths() {
-		
+		return Number.parseFloat(this.duration / (30 * 24 * 60 * 60 * 1000));
 	}
 	toWeeks() {
-		
+		return Number.parseFloat(this.duration / (7 * 24 * 60 * 60 * 1000));
 	}
 	toDays() {
-		
+		return Number.parseFloat(this.duration / (24 * 60 * 60 * 1000));
+	}
+	toHours() {
+		return Number.parseFloat(this.duration / (60 * 60 * 1000));
 	}
 	toMinutes() {
-		
+		return Number.parseFloat(this.duration / (60 * 1000));
 	}
 	toSeconds() {
-		
+		return Number.parseFloat(this.duration / 1000);
 	}
 	toMilliseconds() {
-		
+		return Number.parseFloat(this.duration);
 	}
 
-	//method aliases
+	// Method aliases
 	toMo() { return this.toMonths(); }
-	toW() { return this.toMonths(); }
-	toD() { return this.toMonths(); }
-	toD() { return this.toMonths(); }
-	toMo() { return this.toMonths(); }
-	toMo() { return this.toMonths(); }
-
+	toW() { return this.toWeeks(); }
+	toD() { return this.toDays(); }
+	toH() { return this.toHours(); }
+	toM() { return this.toMinutes(); }
+	tos() { return this.toSeconds(); }
+	toMs() { return this.toMilliseconds(); }
 }
 
 function determineTimeType(str) {
-	// match multipier
 	switch(str) {
-		case 'mo': return (30 * 24 * 60 * 60 * 1000)
-		case 'w': return (7  * 24 * 60 * 60 * 1000)
-		case 'd': return (24 * 60 * 60 * 1000)	
-		case 'h': return (60 * 60 * 1000)
-		case 'm': return (60 * 1000)
-		case 's': return (1000)
-		case 'ms': return (1)
-		default: return null;
+		case 'mo':
+			return 30 * 24 * 60 * 60 * 1000;
+		case 'w':
+			return 7 * 24 * 60 * 60 * 1000;
+		case 'd':
+			return 24 * 60 * 60 * 1000;
+		case 'h':
+			return 60 * 60 * 1000;
+		case 'm':
+			return 60 * 1000;
+		case 's':
+			return 1000;
+		case 'ms':
+			return 1;
+		default:
+			return null;
 	}
 }
 
