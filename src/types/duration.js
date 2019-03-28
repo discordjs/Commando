@@ -32,8 +32,8 @@ class DurationArgumentType extends ArgumentType {
 		const MATCHES_ALL = value.match(/(\d+)\s*([A-Za-z]+)/g);
 		var totalTime = 0;
 		MATCHES_ALL.forEach(dur => {
-			var tempNum = parseInt(dur.match(/(\d+)/g));
-			var tempStr = dur.match(/([A-Za-z]+)/g);
+			var tempNum = parseInt(dur.match(/(\d+)/g)[0]);
+			var tempStr = dur.match(/([A-Za-z]+)/g)[0];
 			if(tempNum === 'NaN') totalTime = null;
 			else totalTime += tempNum * determineTimeType(tempStr);
 		});

@@ -362,7 +362,7 @@ class CommandoRegistry {
 			string: true, integer: true, float: true, boolean: true,
 			user: true, member: true, role: true, channel: true, textChannel: true,
 			voiceChannel: true, categoryChannel: true, message: true, customEmoji: true,
-			command: true, group: true, ...types
+			duration: true, command: true, group: true, ...types
 		};
 		if(types.string) this.registerType(require('./types/string'));
 		if(types.integer) this.registerType(require('./types/integer'));
