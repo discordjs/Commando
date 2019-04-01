@@ -67,6 +67,7 @@
 		"yoda": "error",
 
 		"no-label-var": "error",
+		"no-var": "error",
 		"no-shadow": "error",
 		"no-undef-init": "error",
 
