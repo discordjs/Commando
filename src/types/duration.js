@@ -44,38 +44,6 @@ class DurationArgumentType extends ArgumentType {
 			return null;
 		}
 	}
-
-	// Conversion methods. Each returns a float.
-	toMonths() {
-		return Number.parseFloat(this.duration / (30 * 24 * 60 * 60 * 1000));
-	}
-	toWeeks() {
-		return Number.parseFloat(this.duration / (7 * 24 * 60 * 60 * 1000));
-	}
-	toDays() {
-		return Number.parseFloat(this.duration / (24 * 60 * 60 * 1000));
-	}
-	toHours() {
-		return Number.parseFloat(this.duration / (60 * 60 * 1000));
-	}
-	toMinutes() {
-		return Number.parseFloat(this.duration / (60 * 1000));
-	}
-	toSeconds() {
-		return Number.parseFloat(this.duration / 1000);
-	}
-	toMilliseconds() {
-		return Number.parseFloat(this.duration);
-	}
-
-	// Method aliases
-	toMo() { return this.toMonths(); }
-	toW() { return this.toWeeks(); }
-	toD() { return this.toDays(); }
-	toH() { return this.toHours(); }
-	toM() { return this.toMinutes(); }
-	tos() { return this.toSeconds(); }
-	toMs() { return this.toMilliseconds(); }
 }
 
 function determineTimeType(str) {
