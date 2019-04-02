@@ -14,9 +14,9 @@ class DurationArgumentType extends ArgumentType {
 	validate(value) {
 		const MATCHES_ALL = value.match(/(\d+)\s*([A-Za-z]+)/g);
 
-		for(var i = 0; i < MATCHES_ALL.length; i++) {
-			var tempNum = MATCHES_ALL[i].match(/(\d+)/g);
-			var tempStr = MATCHES_ALL[i].match(/([A-Za-z]+)/g);
+		for(let i = 0; i < MATCHES_ALL.length; i++) {
+			const tempNum = MATCHES_ALL[i].match(/(\d+)/g);
+			const tempStr = MATCHES_ALL[i].match(/([A-Za-z]+)/g);
 			if(!tempNum || (tempNum.length !== 1)) return false;
 			if(!tempStr || (tempStr.length !== 1)) return false;
 			if(!Number.isInteger(parseInt(tempNum[0])))	return false;
@@ -30,11 +30,11 @@ class DurationArgumentType extends ArgumentType {
 	// Return time value unless null
 	parse(value) {
 		const MATCHES_ALL = value.match(/(\d+)\s*([A-Za-z]+)/g);
-		var totalTime = 0;
+		let totalTime = 0;
 		MATCHES_ALL.forEach(dur => {
-			var tempNum = parseInt(dur.match(/(\d+)/g)[0]);
-			var tempStr = dur.match(/([A-Za-z]+)/g)[0];
-			if(tempNum === 'NaN') totalTime = null;
+			const tempNum = parseInt(dur.match(/(\d+)/g)[0]);
+			const tempStr = dur.match(/([A-Za-z]+)/g)[0];
+			if(isNaN(tempNum)) totalTime = null;
 			else totalTime += tempNum * determineTimeType(tempStr);
 		});
 		if(totalTime !== null) {
