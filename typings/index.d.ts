@@ -46,7 +46,7 @@ declare module 'discord.js-commando' {
 		public readonly client: CommandoClient;
 		public promptLimit: number;
 
-		public obtain(msg: CommandoMessage, provided?: any[], promptLimit?: number): Promise<ArgumentCollectorResult>;
+		public obtain<T extends {} = any>(msg: CommandoMessage, provided?: any[], promptLimit?: number): Promise<ArgumentCollectorResult<T>>;
 	}
 
 	export class ArgumentType {
@@ -437,8 +437,8 @@ declare module 'discord.js-commando' {
 
 	export const version: string;
 
-	export type ArgumentCollectorResult<T = object> = {
-		values: T | null;
+	export type ArgumentCollectorResult<T extends {} = any> = {
+		values: T extends any ? T : null;
 		cancelled?: 'user' | 'time' | 'promptLimit';
 		prompts: Message[];
 		answers: Message[];
