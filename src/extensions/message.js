@@ -135,7 +135,7 @@ module.exports = Structures.extend('Message', Message => {
 			if(this.command.guildOnly && !this.guild) {
 				/**
 				 * Emitted when a command is prevented from running
-				 * @event CommandoClient#commandBlocked
+				 * @event CommandoClient#commandBlock
 				 * @param {CommandoMessage} message - Command message that the command is running from
 				 * @param {string} reason - Reason that the command was blocked
 				 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
@@ -146,13 +146,13 @@ module.exports = Structures.extend('Message', Message => {
 				 * - throttling: `throttle` ({@link Object}), `remaining` ({@link number}) time in seconds
 				 * - clientPermissions: `missing` ({@link Array}<{@link string}>) permission names
 				 */
-				this.client.emit('commandBlocked', this, 'guildOnly');
+				this.client.emit('commandBlock', this, 'guildOnly');
 				return this.command.onBlocked(this, 'guildOnly');
 			}
 
 			// Ensure the channel is a NSFW one if required
 			if(this.command.nsfw && !this.channel.nsfw) {
-				this.client.emit('commandBlocked', this, 'nsfw');
+				this.client.emit('commandBlock', this, 'nsfw');
 				return this.command.onBlocked(this, 'nsfw');
 			}
 
@@ -160,7 +160,7 @@ module.exports = Structures.extend('Message', Message => {
 			const hasPermission = this.command.hasPermission(this);
 			if(!hasPermission || typeof hasPermission === 'string') {
 				const data = { response: typeof hasPermission === 'string' ? hasPermission : undefined };
-				this.client.emit('commandBlocked', this, 'permission', data);
+				this.client.emit('commandBlock', this, 'permission', data);
 				return this.command.onBlocked(this, 'permission', data);
 			}
 
@@ -169,7 +169,7 @@ module.exports = Structures.extend('Message', Message => {
 				const missing = this.channel.permissionsFor(this.client.user).missing(this.command.clientPermissions);
 				if(missing.length > 0) {
 					const data = { missing };
-					this.client.emit('commandBlocked', this, 'clientPermissions', data);
+					this.client.emit('commandBlock', this, 'clientPermissions', data);
 					return this.command.onBlocked(this, 'clientPermissions', data);
 				}
 			}
@@ -179,7 +179,7 @@ module.exports = Structures.extend('Message', Message => {
 			if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
 				const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
 				const data = { throttle, remaining };
-				this.client.emit('commandBlocked', this, 'throttling', data);
+				this.client.emit('commandBlock', this, 'throttling', data);
 				return this.command.onBlocked(this, 'throttling', data);
 			}
 
@@ -199,14 +199,14 @@ module.exports = Structures.extend('Message', Message => {
 					}
 					/**
 					 * Emitted when a command is cancelled (either by typing 'cancel' or not responding in time)
-					 * @event CommandoClient#commandCancelled
+					 * @event CommandoClient#commandCancel
 					 * @param {Command} command - Command that was cancelled
 					 * @param {string} reason - Reason for the command being cancelled
 					 * @param {CommandoMessage} message - Command message that the command ran from (see {@link Command#run})
 					 * @param {?ArgumentCollectorResult} result - Result from obtaining the arguments from the collector
 					 * (if applicable - see {@link Command#run})
 					 */
-					this.client.emit('commandCancelled', this.command, collResult.cancelled, this, collResult);
+					this.client.emit('commandCancel', this.command, collResult.cancelled, this, collResult);
 					return this.reply('Cancelled command.');
 				}
 				args = collResult.values;

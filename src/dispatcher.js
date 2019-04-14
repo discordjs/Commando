@@ -208,7 +208,7 @@ class CommandDispatcher {
 					);
 				}
 
-				this.client.emit('commandBlocked', cmdMsg, inhibit.reason, inhibit);
+				this.client.emit('commandBlock', cmdMsg, inhibit.reason, inhibit);
 				return inhibit;
 			}
 		}
