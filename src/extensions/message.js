@@ -185,14 +185,15 @@ module.exports = Structures.extend('Message', Message => {
 
 			// Figure out the command arguments
 			let args = this.patternMatches;
+			let collResult = null;
 			if(!args && this.command.argsCollector) {
 				const collArgs = this.command.argsCollector.args;
 				const count = collArgs[collArgs.length - 1].infinite ? Infinity : collArgs.length;
 				const provided = this.constructor.parseArgs(this.argString.trim(), count, this.command.argsSingleQuotes);
 
-				const result = await this.command.argsCollector.obtain(this, provided);
-				if(result.cancelled) {
-					if(result.prompts.length === 0) {
+				collResult = await this.command.argsCollector.obtain(this, provided);
+				if(collResult.cancelled) {
+					if(collResult.prompts.length === 0) {
 						const err = new CommandFormatError(this);
 						return this.reply(err.message);
 					}
@@ -202,11 +203,13 @@ module.exports = Structures.extend('Message', Message => {
 					 * @param {Command} command - Command that was cancelled
 					 * @param {string} reason - Reason for the command being cancelled
 					 * @param {CommandoMessage} message - Command message that the command ran from (see {@link Command#run})
+					 * @param {?ArgumentCollectorResult} result - Result from obtaining the arguments from the collector
+					 * (if applicable - see {@link Command#run})
 					 */
-					this.client.emit('commandCancelled', this.command, result.cancelled, this);
+					this.client.emit('commandCancelled', this.command, collResult.cancelled, this, collResult);
 					return this.reply('Cancelled command.');
 				}
-				args = result.values;
+				args = collResult.values;
 			}
 			if(!args) args = this.parseArgs();
 			const fromPattern = Boolean(this.patternMatches);
@@ -216,7 +219,7 @@ module.exports = Structures.extend('Message', Message => {
 			const typingCount = this.channel.typingCount;
 			try {
 				this.client.emit('debug', `Running command ${this.command.groupID}:${this.command.memberName}.`);
-				const promise = this.command.run(this, args, fromPattern);
+				const promise = this.command.run(this, args, fromPattern, collResult);
 				/**
 				 * Emitted when running a command
 				 * @event CommandoClient#commandRun
@@ -225,8 +228,10 @@ module.exports = Structures.extend('Message', Message => {
 				 * @param {CommandoMessage} message - Command message that the command is running from (see {@link Command#run})
 				 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 				 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
+				 * @param {?ArgumentCollectorResult} result - Result from obtaining the arguments from the collector
+				 * (if applicable - see {@link Command#run})
 				 */
-				this.client.emit('commandRun', this.command, promise, this, args, fromPattern);
+				this.client.emit('commandRun', this.command, promise, this, args, fromPattern, collResult);
 				const retVal = await promise;
 				if(!(retVal instanceof Message || retVal instanceof Array || retVal === null || retVal === undefined)) {
 					throw new TypeError(oneLine`
@@ -245,13 +250,15 @@ module.exports = Structures.extend('Message', Message => {
 				 * @param {CommandoMessage} message - Command message that the command is running from (see {@link Command#run})
 				 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 				 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
+				 * @param {?ArgumentCollectorResult} result - Result from obtaining the arguments from the collector
+				 * (if applicable - see {@link Command#run})
 				 */
-				this.client.emit('commandError', this.command, err, this, args, fromPattern);
+				this.client.emit('commandError', this.command, err, this, args, fromPattern, collResult);
 				if(this.channel.typingCount > typingCount) this.channel.stopTyping();
 				if(err instanceof FriendlyError) {
 					return this.reply(err.message);
 				} else {
-					return this.command.onError(err, this, args, fromPattern);
+					return this.command.onError(err, this, args, fromPattern, collResult);
 				}
 			}
 		}

@@ -242,7 +242,7 @@ class Command {
 	}
 
 	/**
-	 * Checks if the user has permission to use the command
+	 * Checks whether the user has permission to use the command
 	 * @param {CommandoMessage} message - The triggering command message
 	 * @param {boolean} [ownerOverride=true] - Whether the bot owner(s) will always have permission
 	 * @return {boolean|string} Whether the user has permission, or an error message to respond with if they don't
@@ -280,10 +280,11 @@ class Command {
 	 * matches array from the pattern match
 	 * (see [RegExp#exec](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec)).
 	 * @param {boolean} fromPattern - Whether or not the command is being run from a pattern match
+	 * @param {?ArgumentCollectorResult} result - Result from obtaining the arguments from the collector (if applicable)
 	 * @return {Promise<?Message|?Array<Message>>}
 	 * @abstract
 	 */
-	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars, require-await
+	async run(message, args, fromPattern, result) { // eslint-disable-line no-unused-vars, require-await
 		throw new Error(`${this.constructor.name} doesn't have a run() method.`);
 	}
 
@@ -300,7 +301,7 @@ class Command {
 	 * - clientPermissions: `missing` ({@link Array}<{@link string}>) permission names
 	 * @returns {Promise<?Message|?Array<Message>>}
 	 */
-	onBlocked(message, reason, data) { // eslint-disable-line no-unused-vars
+	onBlocked(message, reason, data) {
 		switch(reason) {
 			case 'guildOnly':
 				return message.reply(`The \`${this.name}\` command must be used in a server channel.`);
@@ -337,9 +338,11 @@ class Command {
 	 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
 	 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
+	 * @param {?ArgumentCollectorResult} result - Result from obtaining the arguments from the collector
+	 * (if applicable - see {@link Command#run})
 	 * @returns {Promise<?Message|?Array<Message>>}
 	 */
-	onError(err, message, args, fromPattern) { // eslint-disable-line no-unused-vars
+	onError(err, message, args, fromPattern, result) { // eslint-disable-line no-unused-vars
 		const owners = this.client.owners;
 		const ownerList = owners ? owners.map((usr, i) => {
 			const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
