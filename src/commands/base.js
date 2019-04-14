@@ -301,7 +301,7 @@ class Command {
 	 * - clientPermissions: `missing` ({@link Array}<{@link string}>) permission names
 	 * @returns {Promise<?Message|?Array<Message>>}
 	 */
-	onBlocked(message, reason, data) {
+	onBlock(message, reason, data) {
 		switch(reason) {
 			case 'guildOnly':
 				return message.reply(`The \`${this.name}\` command must be used in a server channel.`);

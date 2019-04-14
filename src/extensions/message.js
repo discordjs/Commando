@@ -147,13 +147,13 @@ module.exports = Structures.extend('Message', Message => {
 				 * - clientPermissions: `missing` ({@link Array}<{@link string}>) permission names
 				 */
 				this.client.emit('commandBlock', this, 'guildOnly');
-				return this.command.onBlocked(this, 'guildOnly');
+				return this.command.onBlock(this, 'guildOnly');
 			}
 
 			// Ensure the channel is a NSFW one if required
 			if(this.command.nsfw && !this.channel.nsfw) {
 				this.client.emit('commandBlock', this, 'nsfw');
-				return this.command.onBlocked(this, 'nsfw');
+				return this.command.onBlock(this, 'nsfw');
 			}
 
 			// Ensure the user has permission to use the command
@@ -161,7 +161,7 @@ module.exports = Structures.extend('Message', Message => {
 			if(!hasPermission || typeof hasPermission === 'string') {
 				const data = { response: typeof hasPermission === 'string' ? hasPermission : undefined };
 				this.client.emit('commandBlock', this, 'permission', data);
-				return this.command.onBlocked(this, 'permission', data);
+				return this.command.onBlock(this, 'permission', data);
 			}
 
 			// Ensure the client user has the required permissions
@@ -170,7 +170,7 @@ module.exports = Structures.extend('Message', Message => {
 				if(missing.length > 0) {
 					const data = { missing };
 					this.client.emit('commandBlock', this, 'clientPermissions', data);
-					return this.command.onBlocked(this, 'clientPermissions', data);
+					return this.command.onBlock(this, 'clientPermissions', data);
 				}
 			}
 
@@ -180,7 +180,7 @@ module.exports = Structures.extend('Message', Message => {
 				const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
 				const data = { throttle, remaining };
 				this.client.emit('commandBlock', this, 'throttling', data);
-				return this.command.onBlocked(this, 'throttling', data);
+				return this.command.onBlock(this, 'throttling', data);
 			}
 
 			// Figure out the command arguments
