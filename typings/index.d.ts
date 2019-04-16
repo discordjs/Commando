@@ -438,7 +438,7 @@ declare module 'discord.js-commando' {
 	export const version: string;
 
 	export type ArgumentCollectorResult<T extends {} = any> = {
-		values: T extends any ? T : any;
+		values: T;
 		cancelled?: 'user' | 'time' | 'promptLimit';
 		prompts: Message[];
 		answers: Message[];
