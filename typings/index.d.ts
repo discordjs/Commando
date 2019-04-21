@@ -99,7 +99,7 @@ declare module 'discord.js-commando' {
 		public unknown: boolean;
 		public userPermissions: PermissionResolvable[];
 
-		public hasPermission(message: CommandoMessage, ownerOverride: boolean): boolean | string;
+		public hasPermission(message: CommandoMessage, ownerOverride?: boolean): boolean | string;
 		public isEnabledIn(guild: GuildResolvable, bypassGroup?: boolean): boolean;
 		public isUsable(message: Message): boolean;
 		public onBlock(message: CommandoMessage, reason: string, data?: Object): Promise<Message | Message[]>;
