@@ -99,7 +99,7 @@ declare module 'discord.js-commando' {
 		public unknown: boolean;
 		public userPermissions: PermissionResolvable[];
 
-		public hasPermission(message: CommandoMessage): boolean | string;
+		public hasPermission(message: CommandoMessage, ownerOverride: boolean): boolean | string;
 		public isEnabledIn(guild: GuildResolvable, bypassGroup?: boolean): boolean;
 		public isUsable(message: Message): boolean;
 		public onBlock(message: CommandoMessage, reason: string, data?: Object): Promise<Message | Message[]>;
@@ -107,10 +107,10 @@ declare module 'discord.js-commando' {
 		public onBlock(message: CommandoMessage, reason: 'permission', data: { response?: string }): Promise<Message | Message[]>;
 		public onBlock(message: CommandoMessage, reason: 'clientPermissions', data: { missing: string }): Promise<Message | Message[]>;
 		public onBlock(message: CommandoMessage, reason: 'throttling', data: { throttle: Object, remaining: number }): Promise<Message | Message[]>;
-		public onError(err: Error, message: CommandoMessage, args: object | string | string[], fromPattern: false): Promise<Message | Message[]>;
-		public onError(err: Error, message: CommandoMessage, args: string[], fromPattern: true): Promise<Message | Message[]>;
+		public onError(err: Error, message: CommandoMessage, args: object | string | string[], fromPattern: false, result?: ArgumentCollectorResult): Promise<Message | Message[]>;
+		public onError(err: Error, message: CommandoMessage, args: string[], fromPattern: true, result?: ArgumentCollectorResult): Promise<Message | Message[]>;
 		public reload(): void;
-		public run(message: CommandoMessage, args: object | string | string[], fromPattern: boolean): Promise<Message | Message[] | null> | null;
+		public run(message: CommandoMessage, args: object | string | string[], fromPattern: boolean, result?: ArgumentCollectorResult): Promise<Message | Message[] | null> | null;
 		public setEnabledIn(guild: GuildResolvable, enabled: boolean): void;
 		public unload(): void;
 		public usage(argString?: string, prefix?: string, user?: User): string;
