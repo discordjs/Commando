@@ -27,6 +27,7 @@ module.exports = class EvalCommand extends Command {
 		});
 
 		this.lastResult = null;
+		Object.defineProperty(this, '_sensitivePattern', { value: null });
 	}
 
 	run(msg, args) {
@@ -34,7 +35,6 @@ module.exports = class EvalCommand extends Command {
 		/* eslint-disable no-unused-vars */
 		const message = msg;
 		const client = msg.client;
-		const objects = client.registry.evalObjects;
 		const lastResult = this.lastResult;
 		const doReply = val => {
 			if(val instanceof Error) {

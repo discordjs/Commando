@@ -36,12 +36,6 @@ class CommandoRegistry {
 		this.types = new discord.Collection();
 
 		/**
-		 * Registered objects for the eval command
-		 * @type {Object}
-		 */
-		this.evalObjects = {};
-
-		/**
 		 * Fully resolved path to the bot's commands directory
 		 * @type {?string}
 		 */
@@ -431,29 +425,6 @@ class CommandoRegistry {
 		 */
 		this.client.emit('commandUnregister', command);
 		this.client.emit('debug', `Unregistered command ${command.groupID}:${command.memberName}.`);
-	}
-
-	/**
-	 * Registers a single object to be usable by the eval command
-	 * @param {string} key - The key for the object
-	 * @param {Object} obj - The object
-	 * @return {CommandoRegistry}
-	 * @see {@link CommandoRegistry#registerEvalObjects}
-	 */
-	registerEvalObject(key, obj) {
-		const registerObj = {};
-		registerObj[key] = obj;
-		return this.registerEvalObjects(registerObj);
-	}
-
-	/**
-	 * Registers multiple objects to be usable by the eval command
-	 * @param {Object} obj - An object of keys: values
-	 * @return {CommandoRegistry}
-	 */
-	registerEvalObjects(obj) {
-		Object.assign(this.evalObjects, obj);
-		return this;
 	}
 
 	/**
