@@ -27,7 +27,7 @@ module.exports = class EvalCommand extends Command {
 		});
 
 		this.lastResult = null;
-		Object.defineProperty(this, '_sensitivePattern', { value: null });
+		Object.defineProperty(this, '_sensitivePattern', { value: null, configurable: true });
 	}
 
 	run(msg, args) {
@@ -104,7 +104,7 @@ module.exports = class EvalCommand extends Command {
 			const client = this.client;
 			let pattern = '';
 			if(client.token) pattern += escapeRegex(client.token);
-			Object.defineProperty(this, '_sensitivePattern', { value: new RegExp(pattern, 'gi') });
+			Object.defineProperty(this, '_sensitivePattern', { value: new RegExp(pattern, 'gi'), configurable: false });
 		}
 		return this._sensitivePattern;
 	}
