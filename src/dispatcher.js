@@ -256,7 +256,7 @@ class CommandDispatcher {
 		const prefix = message.guild ? message.guild.commandPrefix : this.client.commandPrefix;
 		if(!this._commandPatterns[prefix]) this.buildCommandPattern(prefix);
 		let cmdMsg = this.matchDefault(message, this._commandPatterns[prefix], 2);
-		if(!cmdMsg && !message.guild) cmdMsg = this.matchDefault(message, /^([^\s]+)/i);
+		if(!cmdMsg && !message.guild) cmdMsg = this.matchDefault(message, /^([^\s]+)/i, 1, true);
 		return cmdMsg;
 	}
 
@@ -265,15 +265,16 @@ class CommandDispatcher {
 	 * @param {Message} message - The message
 	 * @param {RegExp} pattern - The pattern to match against
 	 * @param {number} commandNameIndex - The index of the command name in the pattern matches
+	 * @param {boolean} prefixless - Whether the match is happening for a prefixless usage
 	 * @return {?CommandoMessage}
 	 * @private
 	 */
-	matchDefault(message, pattern, commandNameIndex = 1) {
+	matchDefault(message, pattern, commandNameIndex = 1, prefixless = false) {
 		const matches = pattern.exec(message.content);
 		if(!matches) return null;
 		const commands = this.registry.findCommands(matches[commandNameIndex], true);
 		if(commands.length !== 1 || !commands[0].defaultHandling) {
-			return message.initCommand(this.registry.unknownCommand, matches[2]);
+			return message.initCommand(this.registry.unknownCommand, prefixless ? message.content : matches[1]);
 		}
 		const argString = message.content.substring(matches[1].length + (matches[2] ? matches[2].length : 0));
 		return message.initCommand(commands[0], argString);
