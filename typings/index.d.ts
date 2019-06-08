@@ -9,7 +9,7 @@ declare module 'SyncSqlite' {
 }
 
 declare module 'discord.js-commando' {
-	import { Channel, Client, ClientOptions, Collection, DMChannel, Emoji, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, VoiceState, Webhook } from 'discord.js';
+	import { Channel, Client, ClientOptions, Collection, DMChannel, Emoji, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, VoiceState, Webhook } from 'discord.js';
 	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
 	import { Database as SyncSQLiteDatabase, Statement as SyncSQLiteStatement } from 'SyncSqlite';
 
@@ -218,7 +218,7 @@ declare module 'discord.js-commando' {
 		public reply(content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
 		public replyEmbed(embed: MessageEmbed | {}, content?: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
 		public run(): Promise<Message | Message[]>;
-		public say(content: StringResolvable, options?: MessageOptions): Promise<Message | Message[]>;
+		public say(content: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
 		public unpin(): Promise<Message>;
 		public usage(argString?: string, prefix?: string, user?: User): string;
 	}
