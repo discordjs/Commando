@@ -9,7 +9,7 @@ This will give you full access to control everything about the bot, in any guild
 ```javascript
 const Commando = require('discord.js-commando');
 
-const client = new Commando.Client({
+const client = new Commando.CommandoClient({
 	owner: '1234567890'
 });
 ```
