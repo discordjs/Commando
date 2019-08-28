@@ -52,7 +52,7 @@ class CommandDispatcher {
 	/**
 	 * @typedef {Object} Inhibition
 	 * @property {string} reason - Identifier for the reason the command is being blocked
-	 * @property {?Promise<Message>} - Response being sent to the user
+	 * @property {?Promise<Message>} response - Response being sent to the user
 	 */
 
 	/**
@@ -75,7 +75,7 @@ class CommandDispatcher {
 	 * });
 	 * @example
 	 * client.dispatcher.addInhibitor(msg => {
-	 * 	if(!coolUsers.has(msg.author.id)) return ['cool', msg.reply('You\'re not cool enough!')];
+	 * 	if(!coolUsers.has(msg.author.id)) return { reason: 'cool', response: msg.reply('You\'re not cool enough!') };
 	 * });
 	 */
 	addInhibitor(inhibitor) {
