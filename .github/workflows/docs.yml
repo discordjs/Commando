@@ -19,10 +19,10 @@ jobs:
           node-version: 12
 
       - name: Install dependencies
-        run: npm install
+        run: yarn
 
       - name: Build documentation
-        run: npm run docs
+        run: yarn docs
 
       - name: Deploy documentation
         run: bash ./.github/workflows/deploy.sh
