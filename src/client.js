@@ -138,21 +138,21 @@ class CommandoClient extends discord.Client {
 	 * @return {Promise<void>}
 	 */
 	async setProvider(provider) {
-		provider = await provider;
-		this.provider = provider;
+		const newProvider = await provider;
+		this.provider = newProvider;
 
 		if(this.readyTimestamp) {
-			this.emit('debug', `Provider set to ${provider.constructor.name} - initialising...`);
-			await provider.init(this);
+			this.emit('debug', `Provider set to ${newProvider.constructor.name} - initialising...`);
+			await newProvider.init(this);
 			this.emit('debug', 'Provider finished initialisation.');
 			return undefined;
 		}
 
-		this.emit('debug', `Provider set to ${provider.constructor.name} - will initialise once ready.`);
+		this.emit('debug', `Provider set to ${newProvider.constructor.name} - will initialise once ready.`);
 		await new Promise(resolve => {
 			this.once('ready', () => {
 				this.emit('debug', `Initialising provider...`);
-				resolve(provider.init(this));
+				resolve(newProvider.init(this));
 			});
 		});
 
