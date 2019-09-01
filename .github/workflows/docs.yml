@@ -1,0 +1,30 @@
+name: Documentation
+on:
+  push:
+    branches:
+      - '*'
+      - '!gh-action'
+      - '!docs'
+jobs:
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v1
+
+      - name: Install Node v12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build documentation
+        run: npm run docs
+
+      - name: Deploy documentation
+        run: bash ./.github/workflows/docs.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
