@@ -17,7 +17,11 @@ jobs:
         run: npm install
 
       - name: Run ESLint
-        run: npm run lint
+        uses: discordjs/action-eslint@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          job-name: ESLint
 
   test-docs:
     name: Test documentation
