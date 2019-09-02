@@ -458,6 +458,8 @@ class Command {
 			}
 		}
 
+		if(typeof newCmd.default === 'function') newCmd = newCmd.default;
+
 		this.client.registry.reregisterCommand(newCmd, this);
 	}
 
