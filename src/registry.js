@@ -260,7 +260,10 @@ class CommandoRegistry {
 	registerTypesIn(options) {
 		const obj = require('require-all')(options);
 		const types = [];
-		for(const type of Object.values(obj)) types.push(type);
+		for (let type of Object.values(obj)) {
+			if (typeof type.default === 'function') type = type.default
+			types.push(type)
+		}
 		return this.registerTypes(types, true);
 	}
 
