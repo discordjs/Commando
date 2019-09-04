@@ -1,7 +1,7 @@
-name: Test
+name: Testing
 on: [push, pull_request]
 jobs:
-  eslint:
+  lint:
     name: ESLint
     runs-on: ubuntu-latest
     steps:
@@ -23,8 +23,8 @@ jobs:
         with:
           job-name: ESLint
 
-  test-docs:
-    name: Test documentation
+  docs:
+    name: Documentation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
