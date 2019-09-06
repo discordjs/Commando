@@ -437,14 +437,14 @@ declare module 'discord.js-commando' {
 
 	export const version: string;
 
-	type ArgumentCollectorResult<T = object> = {
+	export interface ArgumentCollectorResult<T = object> {
 		values: T | null;
 		cancelled?: 'user' | 'time' | 'promptLimit';
 		prompts: Message[];
 		answers: Message[];
-	};
+	}
 
-	type ArgumentInfo = {
+	export interface ArgumentInfo {
 		key: string;
 		label?: string;
 		prompt: string;
@@ -459,18 +459,18 @@ declare module 'discord.js-commando' {
 		parse?: Function;
 		isEmpty?: Function;
 		wait?: number;
-	};
+	}
 
-	type ArgumentResult = {
+	export interface ArgumentResult {
 		value: any | any[];
 		cancelled?: 'user' | 'time' | 'promptLimit';
 		prompts: Message[];
 		answers: Message[];
-	};
+	}
 
 	type CommandGroupResolvable = CommandGroup | string;
 
-	type CommandInfo = {
+	export interface CommandInfo {
 		name: string;
 		aliases?: string[];
 		autoAliases?: boolean;
@@ -496,25 +496,25 @@ declare module 'discord.js-commando' {
 		guarded?: boolean;
 		hidden?: boolean;
 		unknown?: boolean;
-	};
+	}
 
-	type CommandoClientOptions = ClientOptions & {
+	export interface CommandoClientOptions extends ClientOptions {
 		commandPrefix?: string;
 		commandEditableDuration?: number;
 		nonCommandEditable?: boolean;
 		owner?: string | string[] | Set<string>;
 		invite?: string;
-	};
+	}
 
 	type CommandResolvable = Command | string;
 
 	type Inhibitor = (msg: CommandoMessage) => false | string | Inhibition;
-	type Inhibition = {
+	export interface Inhibition {
 		reason: string;
 		response?: Promise<Message>;
 	}
 
-	type ThrottlingOptions = {
+	export interface ThrottlingOptions {
 		usages: number;
 		duration: number;
 	}
