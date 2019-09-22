@@ -395,8 +395,8 @@ declare module 'discord.js-commando' {
 
 		public readonly client: CommandoClient;
 		public db: any;
-		private deleteStmt: amy;
-		private insertOrReplaceStmt: any
+		private deleteStmt: any;
+		private insertOrReplaceStmt: any;
 		private listeners: Map<any, any>;
 		private settings: Map<any, any>;
 
