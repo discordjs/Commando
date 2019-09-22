@@ -1,7 +1,5 @@
 declare module 'discord.js-commando' {
 	import { Channel, Client, ClientOptions, Collection, DMChannel, Emoji, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, VoiceState, Webhook } from 'discord.js';
-	import { Database as SQLiteDatabase, Statement as SQLiteStatement } from 'sqlite';
-	import { Database as SyncSQLiteDatabase, Statement as SyncSQLiteStatement } from 'SyncSqlite';
 
 	export class Argument {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
@@ -371,12 +369,12 @@ declare module 'discord.js-commando' {
 	}
 
 	export class SQLiteProvider extends SettingProvider {
-		public constructor(db: SQLiteDatabase);
+		public constructor(db: any | Promise<any>);
 
 		public readonly client: CommandoClient;
-		public db: SQLiteDatabase;
-		private deleteStmt: SQLiteStatement;
-		private insertOrReplaceStmt: SQLiteStatement;
+		public db: any;
+		private deleteStmt: any;
+		private insertOrReplaceStmt: any;
 		private listeners: Map<any, any>;
 		private settings: Map<any, any>;
 
@@ -393,12 +391,12 @@ declare module 'discord.js-commando' {
 	}
 
 	export class SyncSQLiteProvider extends SettingProvider {
-		public constructor(db: SyncSQLiteDatabase);
+		public constructor(db: any | Promise<any>);
 
 		public readonly client: CommandoClient;
-		public db: SyncSQLiteDatabase;
-		private deleteStmt: SyncSQLiteStatement;
-		private insertOrReplaceStmt: SyncSQLiteStatement
+		public db: any;
+		private deleteStmt: amy;
+		private insertOrReplaceStmt: any
 		private listeners: Map<any, any>;
 		private settings: Map<any, any>;
 
