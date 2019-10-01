@@ -41,6 +41,17 @@
 		"discord.js": "^12.0.0",
 		"sqlite": "^3.0.0"
 	},
+	"peerDependenciesMeta": {
+		"@types/better-sqlite3": {
+			"optional": true
+		},
+		"better-sqlite3": {
+			"optional": true
+		},
+		"sqlite": {
+			"optional": true
+		}
+	},
 	"engines": {
 		"node": ">=8.6.0"
 	}
