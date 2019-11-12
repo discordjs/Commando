@@ -14,6 +14,7 @@ class CommandoClient extends discord.Client {
 	 * @property {string} [commandPrefix=!] - Default command prefix
 	 * @property {number} [commandEditableDuration=30] - Time in seconds that command messages should be editable
 	 * @property {boolean} [nonCommandEditable=true] - Whether messages without commands can be edited to a command
+	 * @property {boolean} [ignoreBotMessages=true] - Whether the bot should ignore messages or commands from other bots
 	 * @property {string|string[]|Set<string>} [owner] - ID of the bot owner's Discord user, or multiple IDs
 	 * @property {string} [invite] - Invite URL to the bot's support server
 	 */
@@ -26,6 +27,7 @@ class CommandoClient extends discord.Client {
 		if(options.commandPrefix === null) options.commandPrefix = '';
 		if(typeof options.commandEditableDuration === 'undefined') options.commandEditableDuration = 30;
 		if(typeof options.nonCommandEditable === 'undefined') options.nonCommandEditable = true;
+		if(typeof options.ignoreBotMessages === 'undefined') options.ignoreBotMessages = true;
 		super(options);
 
 		/**

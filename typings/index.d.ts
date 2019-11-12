@@ -490,6 +490,7 @@ declare module 'discord.js-commando' {
 		commandPrefix?: string;
 		commandEditableDuration?: number;
 		nonCommandEditable?: boolean;
+		ignoreBotMessages?: boolean;
 		owner?: string | string[] | Set<string>;
 		invite?: string;
 	}
