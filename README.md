@@ -3,7 +3,7 @@
 [![Downloads](https://img.shields.io/npm/dt/discord.js-commando.svg)](https://www.npmjs.com/package/discord.js-commando)
 [![Version](https://img.shields.io/npm/v/discord.js-commando.svg)](https://www.npmjs.com/package/discord.js-commando)
 [![Dependency status](https://david-dm.org/discordjs/Commando.svg)](https://david-dm.org/discordjs/Commando)
-[![Build status](https://travis-ci.org/discordjs/Commando.svg)](https://travis-ci.org/discordjs/Commando)
+[![Build status](https://github.com/discordjs/Commando/workflows/Testing/badge.svg)](https://github.com/discordjs/Commando/actions?query=workflow%3ATesting)
 
 ## About
 Commando is the official command framework for [discord.js](https://github.com/discordjs/discord.js).
