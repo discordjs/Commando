@@ -11,7 +11,7 @@ class ChannelArgumentType extends ArgumentType {
 		const matches = val.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) return msg.guild.channels.has(matches[1]);
 		const search = val.toLowerCase();
-		let channels = msg.guild.channels.filter(nameFilterInexact(search));
+		let channels = msg.guild.channels.cache.filter(nameFilterInexact(search));
 		if(channels.size === 0) return false;
 		if(channels.size === 1) {
 			if(arg.oneOf && !arg.oneOf.includes(channels.first().id)) return false;
@@ -24,15 +24,15 @@ class ChannelArgumentType extends ArgumentType {
 		}
 		if(exactChannels.size > 0) channels = exactChannels;
 		return channels.size <= 15 ?
-			`${disambiguation(channels.map(chan => escapeMarkdown(chan.name)), 'channels', null)}\n` :
-			'Multiple channels found. Please be more specific.';
+            `${disambiguation(channels.map(chan => escapeMarkdown(chan.name)), 'channels', null)}\n` :
+            'Multiple channels found. Please be more specific.';
 	}
 
 	parse(val, msg) {
 		const matches = val.match(/^(?:<#)?([0-9]+)>?$/);
-		if(matches) return msg.guild.channels.get(matches[1]) || null;
+		if(matches) return msg.guild.channels.cache.get(matches[1]) || null;
 		const search = val.toLowerCase();
-		const channels = msg.guild.channels.filter(nameFilterInexact(search));
+		const channels = msg.guild.channels.cache.filter(nameFilterInexact(search));
 		if(channels.size === 0) return null;
 		if(channels.size === 1) return channels.first();
 		const exactChannels = channels.filter(nameFilterExact(search));

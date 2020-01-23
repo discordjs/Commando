@@ -21,7 +21,7 @@ class VoiceChannelArgumentType extends ArgumentType {
 		}
 		if(!msg.guild) return false;
 		const search = val.toLowerCase();
-		let channels = msg.guild.channels.filter(channelFilterInexact(search));
+		let channels = msg.guild.channels.cache.filter(channelFilterInexact(search));
 		if(channels.size === 0) return false;
 		if(channels.size === 1) {
 			if(arg.oneOf && !arg.oneOf.includes(channels.first().id)) return false;
@@ -34,18 +34,18 @@ class VoiceChannelArgumentType extends ArgumentType {
 		}
 		if(exactChannels.size > 0) channels = exactChannels;
 		return channels.size <= 15 ?
-			`${disambiguation(
+            `${disambiguation(
 				channels.map(chan => escapeMarkdown(chan.name)), 'voice channels', null
 			)}\n` :
-			'Multiple voice channels found. Please be more specific.';
+            'Multiple voice channels found. Please be more specific.';
 	}
 
 	parse(val, msg) {
 		const matches = val.match(/^([0-9]+)$/);
-		if(matches) return msg.client.channels.get(matches[1]) || null;
+		if(matches) return msg.client.channels.cache.get(matches[1]) || null;
 		if(!msg.guild) return null;
 		const search = val.toLowerCase();
-		const channels = msg.guild.channels.filter(channelFilterInexact(search));
+		const channels = msg.guild.channels.cache.filter(channelFilterInexact(search));
 		if(channels.size === 0) return null;
 		if(channels.size === 1) return channels.first();
 		const exactChannels = channels.filter(channelFilterExact(search));
