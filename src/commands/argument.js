@@ -106,8 +106,8 @@ class Argument {
 		 * Wether the prompt should be embedded or not.
 		 * @type {boolean}
 		 */
-		this.embed = Boolean(info.embed)
-		
+		this.embed = Boolean(info.embed);
+
 		/**
 		 * Validator function for validating a value for the argument
 		 * @type {?Function}
@@ -184,19 +184,23 @@ class Argument {
 			}
 
 			// Prompt the user for a new value
-			this.embed === true ? await msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
-		  ${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
-		  ${oneLine`
-			  Respond with \`cancel\` to cancel the command.
-			  ${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-		  `}
-	  `).setColor("RANDOM")) : prompts.push(await msg.reply(stripIndents`
-				${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
-				${oneLine`
-					Respond with \`cancel\` to cancel the command.
-					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-				`}
-			`));
+			if(this.embed) {
+				await msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
+		  		${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
+		  		${oneLine`
+			  	Respond with \`cancel\` to cancel the command.
+			  	${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+		  		`}
+				`).setColor('RANDOM'));
+			} else {
+				prompts.push(await msg.reply(stripIndents`
+					${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
+					${oneLine`
+						Respond with \`cancel\` to cancel the command.
+						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+					`}
+				`));
+			}
 
 			// Get the user's response
 			const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
@@ -275,41 +279,49 @@ class Argument {
 				// Prompt the user for a new value
 				if(val) {
 					const escaped = escapeMarkdown(val).replace(/@/g, '@\u200b');
-				        this.embed === true ? await msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
-					${valid ? valid : oneLine`
-						You provided an invalid ${this.label},
-						"${escaped.length < 1850 ? escaped : '[too long to show]'}".
-						Please try again.
-					`}
-					${oneLine`
-						Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
-						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-					`}
-				`).setColor("RANDOM")) : prompts.push(await msg.reply(stripIndents`
-						${valid ? valid : oneLine`
-							You provided an invalid ${this.label},
-							"${escaped.length < 1850 ? escaped : '[too long to show]'}".
-							Please try again.
-						`}
-						${oneLine`
-							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
-							${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-						`}
-					`));
+					if(this.embed) {
+						await msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
+							${valid ? valid : oneLine`
+								You provided an invalid ${this.label},
+								"${escaped.length < 1850 ? escaped : '[too long to show]'}".
+								Please try again.
+							`}
+							${oneLine`
+								Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
+								${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+							`}
+						`).setColor('RANDOM'));
+					} else {
+						prompts.push(await msg.reply(stripIndents`
+							${valid ? valid : oneLine`
+								You provided an invalid ${this.label},
+								"${escaped.length < 1850 ? escaped : '[too long to show]'}".
+								Please try again.
+							`}
+							${oneLine`
+								Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
+								${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+							`}
+						`));
+					}
 				} else if(results.length === 0) {
-					this.embed === true ? await msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
-					${this.prompt}
-					${oneLine`
-						Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
-						${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
-					`}
-				`).setColor("RANDOM")) : prompts.push(await msg.reply(stripIndents`
-						${this.prompt}
-						${oneLine`
+					if(this.embed) {
+						await msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
+							${this.prompt}
+							${oneLine`
 							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
 							${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
-						`}
-					`));
+							`}
+						`).setColor('RANDOM'));
+					} else {
+						prompts.push(await msg.reply(stripIndents`
+							${this.prompt}
+							${oneLine`
+							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
+							${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
+							`}
+						`));
+					}
 				}
 
 				// Get the user's response
