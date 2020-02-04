@@ -288,7 +288,7 @@ class Argument {
 					`}
 				`;
 					if(this.embed) {
-						await msg.replyEmbed(new MessageEmbed().setDescription(newPromptValue).setColor('RANDOM'));
+						prompts.push(await msg.replyEmbed(new MessageEmbed().setDescription(newPromptValue).setColor('RANDOM')));
 					} else {
 						prompts.push(await msg.reply(newPromptValue));
 					}
@@ -301,7 +301,7 @@ class Argument {
 					`}
 				`;
 					if(this.embed) {
-						await msg.replyEmbed(new MessageEmbed().setDescription(finishPrompt).setColor('RANDOM'));
+						prompts.push(await msg.replyEmbed(new MessageEmbed().setDescription(finishPrompt).setColor('RANDOM')));
 					} else {
 						prompts.push(await msg.reply(finishPrompt));
 					}
