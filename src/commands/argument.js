@@ -323,6 +323,7 @@ class Argument {
 						`));
 					}
 				}
+
 				// Get the user's response
 				const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
 					max: 1,
