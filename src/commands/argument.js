@@ -184,7 +184,7 @@ class Argument {
 			}
 
 			// Prompt the user for a new value
-			this.embed === true ? msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
+			this.embed === true ? await msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
 		  ${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
 		  ${oneLine`
 			  Respond with \`cancel\` to cancel the command.
@@ -275,7 +275,7 @@ class Argument {
 				// Prompt the user for a new value
 				if(val) {
 					const escaped = escapeMarkdown(val).replace(/@/g, '@\u200b');
-				        this.embed === true ? msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
+				        this.embed === true ? await msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
 					${valid ? valid : oneLine`
 						You provided an invalid ${this.label},
 						"${escaped.length < 1850 ? escaped : '[too long to show]'}".
@@ -297,7 +297,7 @@ class Argument {
 						`}
 					`));
 				} else if(results.length === 0) {
-					this.embed === true ? msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
+					this.embed === true ? await msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
 					${this.prompt}
 					${oneLine`
 						Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
