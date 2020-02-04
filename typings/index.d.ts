@@ -13,6 +13,7 @@ declare module 'discord.js-commando' {
 		public infinite: boolean;
 		public key: string;
 		public label: string;
+		public embed: boolean;
 		public max: number;
 		public min: number;
 		public oneOf: any[];
@@ -439,6 +440,7 @@ declare module 'discord.js-commando' {
 		error?: string;
 		type?: string;
 		max?: number;
+		embed?: boolean;
 		min?: number;
 		oneOf?: any[];
 		default?: any | Function;
