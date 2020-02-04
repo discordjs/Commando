@@ -155,6 +155,7 @@ class Argument {
 	 * @param {number} [promptLimit=Infinity] - Maximum number of times to prompt for the argument
 	 * @return {Promise<ArgumentResult>}
 	 */
+	// eslint-disable-next-line complexity
 	async obtain(msg, val, promptLimit = Infinity) {
 		let empty = this.isEmpty(val, msg);
 		if(empty && this.default !== null) {
@@ -184,22 +185,18 @@ class Argument {
 			}
 
 			// Prompt the user for a new value
+			const InvalidPrompt = stripIndents`
+			${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
+			${oneLine`
+			Respond with \`cancel\` to cancel the command.
+			${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+			`}
+		  `;
+
 			if(this.embed) {
-				await msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
-		  		${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
-		  		${oneLine`
-			  	Respond with \`cancel\` to cancel the command.
-			  	${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-		  		`}
-				`).setColor('RANDOM'));
+				prompts.push(await msg.replyEmbed(new MessageEmbed().setDescription(InvalidPrompt).setColor('RANDOM')));
 			} else {
-				prompts.push(await msg.reply(stripIndents`
-					${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
-					${oneLine`
-						Respond with \`cancel\` to cancel the command.
-						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-					`}
-				`));
+				prompts.push(await msg.reply(InvalidPrompt));
 			}
 
 			// Get the user's response
@@ -279,48 +276,34 @@ class Argument {
 				// Prompt the user for a new value
 				if(val) {
 					const escaped = escapeMarkdown(val).replace(/@/g, '@\u200b');
+					const newPromptValue = stripIndents`
+					${valid ? valid : oneLine`
+						You provided an invalid ${this.label},
+						"${escaped.length < 1850 ? escaped : '[too long to show]'}".
+						Please try again.
+					`}
+					${oneLine`
+						Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
+						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+					`}
+				`;
 					if(this.embed) {
-						await msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
-							${valid ? valid : oneLine`
-								You provided an invalid ${this.label},
-								"${escaped.length < 1850 ? escaped : '[too long to show]'}".
-								Please try again.
-							`}
-							${oneLine`
-								Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
-								${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-							`}
-						`).setColor('RANDOM'));
+						await msg.replyEmbed(new MessageEmbed().setDescription(newPromptValue).setColor('RANDOM'));
 					} else {
-						prompts.push(await msg.reply(stripIndents`
-							${valid ? valid : oneLine`
-								You provided an invalid ${this.label},
-								"${escaped.length < 1850 ? escaped : '[too long to show]'}".
-								Please try again.
-							`}
-							${oneLine`
-								Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
-								${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-							`}
-						`));
+						prompts.push(await msg.reply(newPromptValue));
 					}
 				} else if(results.length === 0) {
+					const finishPrompt = stripIndents`
+					${this.prompt}
+					${oneLine`
+					Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
+					${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
+					`}
+				`;
 					if(this.embed) {
-						await msg.replyEmbed(new MessageEmbed().setDescription(stripIndents`
-							${this.prompt}
-							${oneLine`
-							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
-							${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
-							`}
-						`).setColor('RANDOM'));
+						await msg.replyEmbed(new MessageEmbed().setDescription(finishPrompt).setColor('RANDOM'));
 					} else {
-						prompts.push(await msg.reply(stripIndents`
-							${this.prompt}
-							${oneLine`
-							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
-							${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
-							`}
-						`));
+						prompts.push(await msg.reply(finishPrompt));
 					}
 				}
 
