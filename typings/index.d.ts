@@ -2,13 +2,15 @@ declare module 'discord.js-commando' {
 	import { Channel, Client, ClientOptions, Collection, DMChannel, Emoji, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, VoiceState, Webhook } from 'discord.js';
 
 	export class Argument {
-		private constructor(client: CommandoClient, info: ArgumentInfo);
+		public constructor(client: CommandoClient, info: ArgumentInfo);
 
 		private obtainInfinite(msg: CommandoMessage, vals?: string[], promptLimit?: number): Promise<ArgumentResult>;
 
+		private static determineType(client: CommandoClient, id: string): ArgumentType;
 		private static validateInfo(client: CommandoClient, info: ArgumentInfo);
 
-		public default: any;
+		public default: ArgumentDefault;
+		public emptyChecker: Function;
 		public error: string;
 		public infinite: boolean;
 		public key: string;
@@ -22,6 +24,7 @@ declare module 'discord.js-commando' {
 		public validator: Function;
 		public wait: number;
 
+		public isEmpty(val: string, msg: CommandoMessage): boolean;
 		public obtain(msg: CommandoMessage, val?: string, promptLimit?: number): Promise<ArgumentResult>;
 		public parse(val: string, msg: CommandoMessage): any | Promise<any>;
 		public validate(val: string, msg: CommandoMessage): boolean | string | Promise<boolean | string>;
@@ -43,9 +46,9 @@ declare module 'discord.js-commando' {
 		public readonly client: CommandoClient;
 		public id: string;
 
+		public isEmpty(val: string, msg: CommandoMessage, arg: Argument): boolean;
 		public parse(val: string, msg: CommandoMessage, arg: Argument): any | Promise<any>;
 		public validate(val: string, msg: CommandoMessage, arg: Argument): boolean | string | Promise<boolean | string>;
-		public isEmpty(val: string, msg: CommandoMessage, arg: Argument): boolean;
 	}
 
 	export class ArgumentUnionType extends ArgumentType {
@@ -63,6 +66,7 @@ declare module 'discord.js-commando' {
 		private static validateInfo(client: CommandoClient, info: CommandInfo);
 
 		public aliases: string[];
+		public argsCollector: ArgumentCollector;
 		public argsCount: number;
 		public argsSingleQuotes: boolean;
 		public argsType: string;
@@ -76,8 +80,8 @@ declare module 'discord.js-commando' {
 		public group: CommandGroup;
 		public groupID: string;
 		public guarded: boolean;
-		public hidden: boolean;
 		public guildOnly: boolean;
+		public hidden: boolean;
 		public memberName: string;
 		public name: string;
 		public nsfw: boolean;
@@ -115,9 +119,9 @@ declare module 'discord.js-commando' {
 
 		private buildCommandPattern(prefix: string): RegExp;
 		private cacheCommandoMessage(message: Message, oldMessage: Message, cmdMsg: CommandoMessage, responses: Message | Message[]): void;
-		private handleMessage(messge: Message, oldMessage?: Message): Promise<void>;
+		private handleMessage(message: Message, oldMessage?: Message): Promise<void>;
 		private inhibit(cmdMsg: CommandoMessage): Inhibition;
-		private matchDefault(message: Message, pattern: RegExp, commandNameIndex: number): CommandoMessage;
+		private matchDefault(message: Message, pattern: RegExp, commandNameIndex: number, prefixless: boolean): CommandoMessage;
 		private parseMessage(message: Message): CommandoMessage;
 		private shouldHandleMessage(message: Message, oldMessage?: Message): boolean;
 
@@ -134,7 +138,9 @@ declare module 'discord.js-commando' {
 	}
 
 	export class CommandGroup {
-		public constructor(client: CommandoClient, id: string, name?: string, guarded?: boolean, commands?: Command[]);
+		public constructor(client: CommandoClient, id: string, name?: string, guarded?: boolean);
+
+		private _globalEnabled: boolean;
 
 		public readonly client: CommandoClient;
 		public commands: Collection<string, Command>
@@ -174,6 +180,7 @@ declare module 'discord.js-commando' {
 		public readonly embeds: MessageEmbed[];
 		public readonly guild: CommandoGuild;
 		public readonly id: string;
+		public isCommand: boolean;
 		public readonly member: GuildMember;
 		public readonly mentions: MessageMentions;
 		public message: Message;
@@ -197,10 +204,10 @@ declare module 'discord.js-commando' {
 		public editCode(lang: string, content: StringResolvable): Promise<Message>;
 		public embed(embed: MessageEmbed | {}, content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
 		public fetchWebhook(): Promise<Webhook>;
+		public initCommand(command: Command, argString: string, patternMatches?: string[]): Message;
 		public isMemberMentioned(member: GuildMember | User): boolean;
 		public isMentioned(data: GuildChannel | User | Role | string): boolean;
 		public parseArgs(): string | string[];
-		public static parseArgs(argString: string, argCount?: number, allowSingleQuote?: boolean): string[];
 		public pin(): Promise<Message>
 		public react(emoji: string | Emoji | ReactionEmoji): Promise<MessageReaction>;
 		public reply(content: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
@@ -209,6 +216,8 @@ declare module 'discord.js-commando' {
 		public say(content: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<Message | Message[]>;
 		public unpin(): Promise<Message>;
 		public usage(argString?: string, prefix?: string, user?: User): string;
+
+		public static parseArgs(argString: string, argCount?: number, allowSingleQuote?: boolean): string[];
 	}
 
 	export class CommandoClient extends Client {
@@ -302,7 +311,7 @@ declare module 'discord.js-commando' {
 		public readonly settings: GuildSettingsHelper;
 
 		public commandUsage(command?: string, user?: User): string;
-		public isCommandEndabled(command: CommandResolvable): boolean;
+		public isCommandEnabled(command: CommandResolvable): boolean;
 		public isGroupEnabled(group: CommandGroupResolvable): boolean;
 		public setCommandEnabled(command: CommandResolvable, enabled: boolean): void;
 		public setGroupEnabled(group: CommandGroupResolvable, enabled: boolean): void;
@@ -314,7 +323,6 @@ declare module 'discord.js-commando' {
 		public readonly client: CommandoClient;
 		public commands: Collection<string, Command>;
 		public commandsPath: string;
-		public evalObjects: object;
 		public groups: Collection<string, CommandGroup>;
 		public types: Collection<string, ArgumentType>;
 		public unknownCommand?: Command;
@@ -327,9 +335,7 @@ declare module 'discord.js-commando' {
 		public registerDefaultCommands(commands?: { help?: boolean, prefix?: boolean, eval?: boolean, ping?: boolean, commandState?: boolean, unknownCommand?: boolean }): CommandoRegistry;
 		public registerDefaultGroups(): CommandoRegistry;
 		public registerDefaults(): CommandoRegistry;
-		public registerDefaultTypes(types?: { string?: boolean, integer?: boolean, float?: boolean, boolean?: boolean, user?: boolean, member?: boolean, role?: boolean, channel?: boolean, message?: boolean, command?: boolean, group?: boolean }): CommandoRegistry;
-		public registerEvalObject(key: string, obj: {}): CommandoRegistry;
-		public registerEvalObjects(obj: {}): CommandoRegistry;
+		public registerDefaultTypes(types?: { string?: boolean, integer?: boolean, float?: boolean, boolean?: boolean, user?: boolean, member?: boolean, role?: boolean, channel?: boolean, textChannel?: boolean, voiceChannel?: boolean, categoryChannel?: boolean, message?: boolean, customEmoji?: true, command?: boolean, group?: boolean }): CommandoRegistry;
 		public registerGroup(group: CommandGroup | Function | { id: string, name?: string, guarded?: boolean } | string, name?: string, guarded?: boolean): CommandoRegistry;
 		public registerGroups(groups: CommandGroup[] | Function[] | { id: string, name?: string, guarded?: boolean }[] | string[][]): CommandoRegistry;
 		public registerType(type: ArgumentType | Function): CommandoRegistry;
@@ -337,7 +343,7 @@ declare module 'discord.js-commando' {
 		public registerTypesIn(options: string | {}): CommandoRegistry;
 		public reregisterCommand(command: Command | Function, oldCommand: Command): void;
 		public resolveCommand(command: CommandResolvable): Command;
-		public resolveCommandPath(groups: string, memberName: string): string;
+		public resolveCommandPath(group: string, memberName: string): string;
 		public resolveGroup(group: CommandGroupResolvable): CommandGroup;
 		public unregisterCommand(command: Command): void;
 	}
@@ -362,10 +368,11 @@ declare module 'discord.js-commando' {
 		public clear(guild: Guild | string): Promise<void>;
 		public destroy(): Promise<void>;
 		public get(guild: Guild | string, key: string, defVal?: any): any;
-		public static getGuildID(guild: Guild | string): string;
 		public init(client: CommandoClient): Promise<void>;
 		public remove(guild: Guild | string, key: string): Promise<any>;
 		public set(guild: Guild | string, key: string, val: any): Promise<any>;
+
+		public static getGuildID(guild: Guild | string): string;
 	}
 
 	export class SQLiteProvider extends SettingProvider {
@@ -432,6 +439,8 @@ declare module 'discord.js-commando' {
 		answers: Message[];
 	}
 
+	type ArgumentDefault = any | Function;
+
 	export interface ArgumentInfo {
 		key: string;
 		label?: string;
@@ -441,7 +450,7 @@ declare module 'discord.js-commando' {
 		max?: number;
 		min?: number;
 		oneOf?: any[];
-		default?: any | Function;
+		default?: ArgumentDefault;
 		infinite?: boolean;
 		validate?: Function;
 		parse?: Function;
