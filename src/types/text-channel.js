@@ -21,7 +21,7 @@ class TextChannelArgumentType extends ArgumentType {
 		}
 		if(!msg.guild) return false;
 		const search = val.toLowerCase();
-		let channels = msg.guild.channels.filter(channelFilterInexact(search));
+		let channels = msg.guild.channels.cache.filter(channelFilterInexact(search));
 		if(channels.size === 0) return false;
 		if(channels.size === 1) {
 			if(arg.oneOf && !arg.oneOf.includes(channels.first().id)) return false;
@@ -45,7 +45,7 @@ class TextChannelArgumentType extends ArgumentType {
 		if(matches) return msg.client.channels.resolve(matches[1]) || null;
 		if(!msg.guild) return null;
 		const search = val.toLowerCase();
-		const channels = msg.guild.channels.filter(channelFilterInexact(search));
+		const channels = msg.guild.channels.cache.filter(channelFilterInexact(search));
 		if(channels.size === 0) return null;
 		if(channels.size === 1) return channels.first();
 		const exactChannels = channels.filter(channelFilterExact(search));
