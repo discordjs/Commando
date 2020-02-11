@@ -122,12 +122,12 @@ module.exports = Structures.extend('Message', Message => {
 		 */
 		async run() { // eslint-disable-line complexity
 			// Obtain the member if we don't have it
-			if(this.channel.type === 'text' && !this.guild.members.has(this.author.id) && !this.webhookID) {
+			if(this.channel.type === 'text' && !this.guild.members.cache.has(this.author.id) && !this.webhookID) {
 				this.member = await this.guild.members.fetch(this.author);
 			}
 
 			// Obtain the member for the ClientUser if it doesn't already exist
-			if(this.channel.type === 'text' && !this.guild.members.has(this.client.user.id)) {
+			if(this.channel.type === 'text' && !this.guild.members.cache.has(this.client.user.id)) {
 				await this.guild.members.fetch(this.client.user.id);
 			}
 
