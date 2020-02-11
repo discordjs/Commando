@@ -9,7 +9,7 @@ class CustomEmojiArgumentType extends ArgumentType {
 
 	validate(value, msg) {
 		const matches = value.match(/^(?:<a?:([a-zA-Z0-9_]+):)?([0-9]+)>?$/);
-		if(matches && msg.client.emojis.has(matches[2])) return true;
+		if(matches && msg.client.emojis.cache.has(matches[2])) return true;
 		if(!msg.guild) return false;
 		const search = value.toLowerCase();
 		let emojis = msg.guild.emojis.filter(nameFilterInexact(search));
@@ -25,7 +25,7 @@ class CustomEmojiArgumentType extends ArgumentType {
 
 	parse(value, msg) {
 		const matches = value.match(/^(?:<a?:([a-zA-Z0-9_]+):)?([0-9]+)>?$/);
-		if(matches) return msg.client.emojis.get(matches[2]) || null;
+		if(matches) return msg.client.emojis.cache.get(matches[2]) || null;
 		const search = value.toLowerCase();
 		const emojis = msg.guild.emojis.filter(nameFilterInexact(search));
 		if(!emojis.size) return null;

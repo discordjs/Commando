@@ -81,7 +81,7 @@ class SQLiteProvider extends SettingProvider {
 
 			const guild = row.guild !== '0' ? row.guild : 'global';
 			this.settings.set(guild, settings);
-			if(guild !== 'global' && !client.guilds.has(row.guild)) continue;
+			if(guild !== 'global' && !client.guilds.cache.has(row.guild)) continue;
 			this.setupGuild(guild, settings);
 		}
 
@@ -105,14 +105,14 @@ class SQLiteProvider extends SettingProvider {
 			})
 			.set('commandRegister', command => {
 				for(const [guild, settings] of this.settings) {
-					if(guild !== 'global' && !client.guilds.has(guild)) continue;
-					this.setupGuildCommand(client.guilds.get(guild), command, settings);
+					if(guild !== 'global' && !client.guilds.cache.has(guild)) continue;
+					this.setupGuildCommand(client.guilds.cache.get(guild), command, settings);
 				}
 			})
 			.set('groupRegister', group => {
 				for(const [guild, settings] of this.settings) {
-					if(guild !== 'global' && !client.guilds.has(guild)) continue;
-					this.setupGuildGroup(client.guilds.get(guild), group, settings);
+					if(guild !== 'global' && !client.guilds.cache.has(guild)) continue;
+					this.setupGuildGroup(client.guilds.cache.get(guild), group, settings);
 				}
 			});
 		for(const [event, listener] of this.listeners) client.on(event, listener);
@@ -176,7 +176,7 @@ class SQLiteProvider extends SettingProvider {
 	 */
 	setupGuild(guild, settings) {
 		if(typeof guild !== 'string') throw new TypeError('The guild must be a guild ID or "global".');
-		guild = this.client.guilds.get(guild) || null;
+		guild = this.client.guilds.cache.get(guild) || null;
 
 		// Load the command prefix
 		if(typeof settings.prefix !== 'undefined') {

@@ -11,7 +11,7 @@ class VoiceChannelArgumentType extends ArgumentType {
 		const matches = val.match(/^([0-9]+)$/);
 		if(matches) {
 			try {
-				const channel = msg.client.channels.resolve(matches[1]);
+				const channel = msg.client.channels.cache.resolve(matches[1]);
 				if(!channel || channel.type !== 'voice') return false;
 				if(arg.oneOf && !arg.oneOf.includes(channel.id)) return false;
 				return true;
@@ -42,7 +42,7 @@ class VoiceChannelArgumentType extends ArgumentType {
 
 	parse(val, msg) {
 		const matches = val.match(/^([0-9]+)$/);
-		if(matches) return msg.client.channels.get(matches[1]) || null;
+		if(matches) return msg.client.channels.cache.get(matches[1]) || null;
 		if(!msg.guild) return null;
 		const search = val.toLowerCase();
 		const channels = msg.guild.channels.filter(channelFilterInexact(search));
