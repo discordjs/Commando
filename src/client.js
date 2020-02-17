@@ -111,9 +111,9 @@ class CommandoClient extends discord.Client {
 	 */
 	get owners() {
 		if(!this.options.owner) return null;
-		if(typeof this.options.owner === 'string') return [this.users.get(this.options.owner)];
+		if(typeof this.options.owner === 'string') return [this.users.cache.get(this.options.owner)];
 		const owners = [];
-		for(const owner of this.options.owner) owners.push(this.users.get(owner));
+		for(const owner of this.options.owner) owners.push(this.users.cache.get(owner));
 		return owners;
 	}
 
