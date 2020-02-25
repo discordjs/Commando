@@ -21,6 +21,9 @@ module.exports = {
 	},
 	get SyncSQLiteProvider() {
 		return require('./providers/sqlite-sync');
+	},
+	get FirebaseProvider() {
+		return require('./providers/firebase');
 	}
 };
 
