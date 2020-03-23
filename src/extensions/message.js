@@ -499,7 +499,7 @@ module.exports = Structures.extend('Message', Message => {
 		 * @return {string[]} The array of arguments
 		 */
 		static parseArgs(argString, argCount, allowSingleQuote = true) {
-			const argStringModified = removeSmartQuotes(argString);
+			const argStringModified = removeSmartQuotes(argString, allowSingleQuote);
 			const re = allowSingleQuote ? /\s*(?:("|')([^]*?)\1|(\S+))\s*/g : /\s*(?:(")([^]*?)"|(\S+))\s*/g;
 			const result = [];
 			let match = [];
@@ -519,8 +519,9 @@ module.exports = Structures.extend('Message', Message => {
 	return CommandoMessage;
 });
 
-function removeSmartQuotes(argString) {
-	return argString.replace(/[‘’]/g, '"');
+function removeSmartQuotes(argString, allowSingleQuote = true) {
+	const quoteReplacementRegex = allowSingleQuote ? /[‘’“”]/g : /[“”]/g;
+	return argString.replace(quoteReplacementRegex, '"');
 }
 
 function channelIDOrDM(channel) {
