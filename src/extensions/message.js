@@ -520,8 +520,12 @@ module.exports = Structures.extend('Message', Message => {
 });
 
 function removeSmartQuotes(argString, allowSingleQuote = true) {
-	const quoteReplacementRegex = allowSingleQuote ? /[‘’“”]/g : /[“”]/g;
-	return argString.replace(quoteReplacementRegex, '"');
+	let replacementArgString = argString;
+	const singleSmartQuote = /[‘’]/g;
+	const doubleSmartQuote = /[“”]/g;
+	if(allowSingleQuote) replacementArgString = argString.replace(singleSmartQuote, '\'');
+	return replacementArgString
+	.replace(doubleSmartQuote, '"');
 }
 
 function channelIDOrDM(channel) {
