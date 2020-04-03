@@ -2,6 +2,10 @@
 // without creating a new one each time this is called just to discard it the moment after.
 const isConstructorProxyHandler = { construct() { return Object.prototype; } };
 
+function escapeRegex(str) {
+	return str.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
+}
+
 function disambiguation(items, label, property = 'name') {
 	const itemList = items.map(item => `"${(property ? item[property] : item).replace(/ /g, '\xa0')}"`).join(',   ');
 	return `Multiple ${label} found, please be more specific: ${itemList}`;
@@ -63,6 +67,7 @@ const permissions = {
 };
 
 module.exports = {
+	escapeRegex,
 	disambiguation,
 	paginate,
 	permissions,

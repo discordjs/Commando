@@ -1,7 +1,7 @@
 const util = require('util');
 const discord = require('discord.js');
 const tags = require('common-tags');
-const escapeRegex = require('escape-string-regexp');
+const { escapeRegex } = require('../../util');
 const Command = require('../base');
 
 const nl = '!!NL!!';
@@ -27,6 +27,7 @@ module.exports = class EvalCommand extends Command {
 		});
 
 		this.lastResult = null;
+		Object.defineProperty(this, '_sensitivePattern', { value: null, configurable: true });
 	}
 
 	run(msg, args) {
@@ -34,7 +35,6 @@ module.exports = class EvalCommand extends Command {
 		/* eslint-disable no-unused-vars */
 		const message = msg;
 		const client = msg.client;
-		const objects = client.registry.evalObjects;
 		const lastResult = this.lastResult;
 		const doReply = val => {
 			if(val instanceof Error) {
@@ -62,7 +62,12 @@ module.exports = class EvalCommand extends Command {
 
 		// Prepare for callback time and respond
 		this.hrStart = process.hrtime();
-		return msg.reply(this.makeResultMessages(this.lastResult, hrDiff, args.script));
+		const result = this.makeResultMessages(this.lastResult, hrDiff, args.script);
+		if(Array.isArray(result)) {
+			return result.map(item => msg.reply(item));
+		} else {
+			return msg.reply(result);
+		}
 	}
 
 	makeResultMessages(result, hrDiff, input = null) {
@@ -99,7 +104,7 @@ module.exports = class EvalCommand extends Command {
 			const client = this.client;
 			let pattern = '';
 			if(client.token) pattern += escapeRegex(client.token);
-			Object.defineProperty(this, '_sensitivePattern', { value: new RegExp(pattern, 'gi') });
+			Object.defineProperty(this, '_sensitivePattern', { value: new RegExp(pattern, 'gi'), configurable: false });
 		}
 		return this._sensitivePattern;
 	}

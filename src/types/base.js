@@ -28,7 +28,7 @@ class ArgumentType {
 	/**
 	 * Validates a value string against the type
 	 * @param {string} val - Value to validate
-	 * @param {CommandMessage} msg - Message the value was obtained from
+	 * @param {CommandoMessage} msg - Message the value was obtained from
 	 * @param {Argument} arg - Argument the value was obtained from
 	 * @return {boolean|string|Promise<boolean|string>} Whether the value is valid, or an error message
 	 * @abstract
@@ -41,7 +41,7 @@ class ArgumentType {
 	/**
 	 * Parses the raw value string into a usable value
 	 * @param {string} val - Value to parse
-	 * @param {CommandMessage} msg - Message the value was obtained from
+	 * @param {CommandoMessage} msg - Message the value was obtained from
 	 * @param {Argument} arg - Argument the value was obtained from
 	 * @return {*|Promise<*>} Usable value
 	 * @abstract
@@ -54,11 +54,12 @@ class ArgumentType {
 	 * Checks whether a value is considered to be empty. This determines whether the default value for an argument
 	 * should be used and changes the response to the user under certain circumstances.
 	 * @param {string} val - Value to check for emptiness
-	 * @param {CommandMessage} msg - Message the value was obtained from
+	 * @param {CommandoMessage} msg - Message the value was obtained from
 	 * @param {Argument} arg - Argument the value was obtained from
 	 * @return {boolean} Whether the value is empty
 	 */
 	isEmpty(val, msg, arg) { // eslint-disable-line no-unused-vars
+		if(Array.isArray(val)) return val.length === 0;
 		return !val;
 	}
 }

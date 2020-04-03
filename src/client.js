@@ -1,5 +1,5 @@
 const discord = require('discord.js');
-const CommandRegistry = require('./registry');
+const CommandoRegistry = require('./registry');
 const CommandDispatcher = require('./dispatcher');
 const GuildSettingsHelper = require('./providers/helper');
 
@@ -14,7 +14,6 @@ class CommandoClient extends discord.Client {
 	 * @property {string} [commandPrefix=!] - Default command prefix
 	 * @property {number} [commandEditableDuration=30] - Time in seconds that command messages should be editable
 	 * @property {boolean} [nonCommandEditable=true] - Whether messages without commands can be edited to a command
-	 * @property {boolean} [unknownCommandResponse=true] - Whether the bot should respond to an unknown command
 	 * @property {string|string[]|Set<string>} [owner] - ID of the bot owner's Discord user, or multiple IDs
 	 * @property {string} [invite] - Invite URL to the bot's support server
 	 */
@@ -27,14 +26,13 @@ class CommandoClient extends discord.Client {
 		if(options.commandPrefix === null) options.commandPrefix = '';
 		if(typeof options.commandEditableDuration === 'undefined') options.commandEditableDuration = 30;
 		if(typeof options.nonCommandEditable === 'undefined') options.nonCommandEditable = true;
-		if(typeof options.unknownCommandResponse === 'undefined') options.unknownCommandResponse = true;
 		super(options);
 
 		/**
 		 * The client's command registry
-		 * @type {CommandRegistry}
+		 * @type {CommandoRegistry}
 		 */
-		this.registry = new CommandRegistry(this);
+		this.registry = new CommandoRegistry(this);
 
 		/**
 		 * The client's command dispatcher
@@ -113,9 +111,9 @@ class CommandoClient extends discord.Client {
 	 */
 	get owners() {
 		if(!this.options.owner) return null;
-		if(typeof this.options.owner === 'string') return [this.users.get(this.options.owner)];
+		if(typeof this.options.owner === 'string') return [this.users.cache.get(this.options.owner)];
 		const owners = [];
-		for(const owner of this.options.owner) owners.push(this.users.get(owner));
+		for(const owner of this.options.owner) owners.push(this.users.cache.get(owner));
 		return owners;
 	}
 
@@ -140,21 +138,21 @@ class CommandoClient extends discord.Client {
 	 * @return {Promise<void>}
 	 */
 	async setProvider(provider) {
-		provider = await provider;
-		this.provider = provider;
+		const newProvider = await provider;
+		this.provider = newProvider;
 
 		if(this.readyTimestamp) {
-			this.emit('debug', `Provider set to ${provider.constructor.name} - initialising...`);
-			await provider.init(this);
+			this.emit('debug', `Provider set to ${newProvider.constructor.name} - initialising...`);
+			await newProvider.init(this);
 			this.emit('debug', 'Provider finished initialisation.');
 			return undefined;
 		}
 
-		this.emit('debug', `Provider set to ${provider.constructor.name} - will initialise once ready.`);
+		this.emit('debug', `Provider set to ${newProvider.constructor.name} - will initialise once ready.`);
 		await new Promise(resolve => {
 			this.once('ready', () => {
 				this.emit('debug', `Initialising provider...`);
-				resolve(provider.init(this));
+				resolve(newProvider.init(this));
 			});
 		});
 

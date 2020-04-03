@@ -1,10 +1,11 @@
 module.exports = {
 	Client: require('./client'),
 	CommandoClient: require('./client'),
+	CommandoRegistry: require('./registry'),
 	CommandoGuild: require('./extensions/guild'),
+	CommandoMessage: require('./extensions/message'),
 	Command: require('./commands/base'),
 	CommandGroup: require('./commands/group'),
-	CommandMessage: require('./commands/message'),
 	ArgumentCollector: require('./commands/collector'),
 	Argument: require('./commands/argument'),
 	ArgumentType: require('./types/base'),
@@ -44,10 +45,6 @@ module.exports = {
  * @see {@link https://discord.js.org/#/docs/main/master/class/DMChannel}
  */
 /**
- * @external GroupDMChannel
- * @see {@link https://discord.js.org/#/docs/main/master/class/GroupDMChannel}
- */
-/**
  * @external Guild
  * @see {@link https://discord.js.org/#/docs/main/master/class/Guild}
  */
@@ -78,6 +75,10 @@ module.exports = {
 /**
  * @external MessageOptions
  * @see {@link https://discord.js.org/#/docs/main/master/typedef/MessageOptions}
+ */
+/**
+ * @external PermissionResolvable
+ * @see {@link https://discord.js.org/#/docs/main/master/typedef/PermissionResolvable}
  */
 /**
  * @external Role

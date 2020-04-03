@@ -1,5 +1,6 @@
 const path = require('path');
-const { oneLine } = require('common-tags');
+const { escapeMarkdown } = require('discord.js');
+const { oneLine, stripIndents } = require('common-tags');
 const ArgumentCollector = require('./collector');
 const { permissions } = require('../util');
 
@@ -45,12 +46,16 @@ class Command {
 	 * in the command string.
 	 * @property {RegExp[]} [patterns] - Patterns to use for triggering the command
 	 * @property {boolean} [guarded=false] - Whether the command should be protected from disabling
+	 * @property {boolean} [hidden=false] - Whether the command should be hidden from the help command
+	 * @property {boolean} [unknown=false] - Whether the command should be run when an unknown command is used - there
+	 * may only be one command registered with this property as `true`.
 	 */
 
 	/**
 	 * @param {CommandoClient} client - The client the command is for
 	 * @param {CommandInfo} info - The command information
 	 */
+	// eslint-disable-next-line complexity
 	constructor(client, info) {
 		this.constructor.validateInfo(client, info);
 
@@ -168,7 +173,9 @@ class Command {
 		 * The argument collector for the command
 		 * @type {?ArgumentCollector}
 		 */
-		this.argsCollector = info.args ? new ArgumentCollector(client, info.args, info.argsPromptLimit) : null;
+		this.argsCollector = info.args && info.args.length ?
+			new ArgumentCollector(client, info.args, info.argsPromptLimit) :
+			null;
 		if(this.argsCollector && typeof info.format === 'undefined') {
 			this.format = this.argsCollector.args.reduce((prev, arg) => {
 				const wrapL = arg.default !== null ? '[' : '<';
@@ -208,6 +215,18 @@ class Command {
 		this.guarded = Boolean(info.guarded);
 
 		/**
+		 * Whether the command should be hidden from the help command
+		 * @type {boolean}
+		 */
+		this.hidden = Boolean(info.hidden);
+
+		/**
+		 * Whether the command will be run when an unknown command is used
+		 * @type {boolean}
+		 */
+		this.unknown = Boolean(info.unknown);
+
+		/**
 		 * Whether the command is enabled globally
 		 * @type {boolean}
 		 * @private
@@ -223,8 +242,8 @@ class Command {
 	}
 
 	/**
-	 * Checks if the user has permission to use the command
-	 * @param {CommandMessage} message - The triggering command message
+	 * Checks whether the user has permission to use the command
+	 * @param {CommandoMessage} message - The triggering command message
 	 * @param {boolean} [ownerOverride=true] - Whether the bot owner(s) will always have permission
 	 * @return {boolean|string} Whether the user has permission, or an error message to respond with if they don't
 	 */
@@ -252,21 +271,90 @@ class Command {
 		return true;
 	}
 
-	// eslint-disable-next-line valid-jsdoc
 	/**
 	 * Runs the command
-	 * @param {CommandMessage} message - The message the command is being run for
+	 * @param {CommandoMessage} message - The message the command is being run for
 	 * @param {Object|string|string[]} args - The arguments for the command, or the matches from a pattern.
 	 * If args is specified on the command, thise will be the argument values object. If argsType is single, then only
 	 * one string will be passed. If multiple, an array of strings will be passed. When fromPattern is true, this is the
 	 * matches array from the pattern match
 	 * (see [RegExp#exec](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec)).
 	 * @param {boolean} fromPattern - Whether or not the command is being run from a pattern match
+	 * @param {?ArgumentCollectorResult} result - Result from obtaining the arguments from the collector (if applicable)
 	 * @return {Promise<?Message|?Array<Message>>}
 	 * @abstract
 	 */
-	async run(message, args, fromPattern) { // eslint-disable-line no-unused-vars, require-await
+	async run(message, args, fromPattern, result) { // eslint-disable-line no-unused-vars, require-await
 		throw new Error(`${this.constructor.name} doesn't have a run() method.`);
+	}
+
+	/**
+	 * Called when the command is prevented from running
+	 * @param {CommandMessage} message - Command message that the command is running from
+	 * @param {string} reason - Reason that the command was blocked
+	 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
+	 * @param {Object} [data] - Additional data associated with the block. Built-in reason data properties:
+	 * - guildOnly: none
+	 * - nsfw: none
+	 * - permission: `response` ({@link string}) to send
+	 * - throttling: `throttle` ({@link Object}), `remaining` ({@link number}) time in seconds
+	 * - clientPermissions: `missing` ({@link Array}<{@link string}>) permission names
+	 * @returns {Promise<?Message|?Array<Message>>}
+	 */
+	onBlock(message, reason, data) {
+		switch(reason) {
+			case 'guildOnly':
+				return message.reply(`The \`${this.name}\` command must be used in a server channel.`);
+			case 'nsfw':
+				return message.reply(`The \`${this.name}\` command can only be used in NSFW channels.`);
+			case 'permission': {
+				if(data.response) return message.reply(data.response);
+				return message.reply(`You do not have permission to use the \`${this.name}\` command.`);
+			}
+			case 'clientPermissions': {
+				if(data.missing.length === 1) {
+					return message.reply(
+						`I need the "${permissions[data.missing[0]]}" permission for the \`${this.name}\` command to work.`
+					);
+				}
+				return message.reply(oneLine`
+					I need the following permissions for the \`${this.name}\` command to work:
+					${data.missing.map(perm => permissions[perm]).join(', ')}
+				`);
+			}
+			case 'throttling': {
+				return message.reply(
+					`You may not use the \`${this.name}\` command again for another ${data.remaining.toFixed(1)} seconds.`
+				);
+			}
+			default:
+				return null;
+		}
+	}
+
+	/**
+	 * Called when the command produces an error while running
+	 * @param {Error} err - Error that was thrown
+	 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
+	 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
+	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
+	 * @param {?ArgumentCollectorResult} result - Result from obtaining the arguments from the collector
+	 * (if applicable - see {@link Command#run})
+	 * @returns {Promise<?Message|?Array<Message>>}
+	 */
+	onError(err, message, args, fromPattern, result) { // eslint-disable-line no-unused-vars
+		const owners = this.client.owners;
+		const ownerList = owners ? owners.map((usr, i) => {
+			const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
+			return `${or}${escapeMarkdown(usr.username)}#${usr.discriminator}`;
+		}).join(owners.length > 2 ? ', ' : ' ') : '';
+
+		const invite = this.client.options.invite;
+		return message.reply(stripIndents`
+			An error occurred while running the command: \`${err.name}: ${err.message}\`
+			You shouldn't ever receive an error like this.
+			Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
+		`);
 	}
 
 	/**
@@ -422,10 +510,10 @@ class Command {
 			throw new TypeError('Command aliases must be an Array of strings.');
 		}
 		if(info.aliases && info.aliases.some(ali => ali !== ali.toLowerCase())) {
-			throw new Error('Command aliases must be lowercase.');
+			throw new RangeError('Command aliases must be lowercase.');
 		}
 		if(typeof info.group !== 'string') throw new TypeError('Command group must be a string.');
-		if(info.group !== info.group.toLowerCase()) throw new Error('Command group must be lowercase.');
+		if(info.group !== info.group.toLowerCase()) throw new RangeError('Command group must be lowercase.');
 		if(typeof info.memberName !== 'string') throw new TypeError('Command memberName must be a string.');
 		if(info.memberName !== info.memberName.toLowerCase()) throw new Error('Command memberName must be lowercase.');
 		if(typeof info.description !== 'string') throw new TypeError('Command description must be a string.');
