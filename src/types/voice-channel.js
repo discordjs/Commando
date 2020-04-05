@@ -7,11 +7,11 @@ class VoiceChannelArgumentType extends ArgumentType {
 		super(client, 'voice-channel');
 	}
 
-	validate(val, msg, arg) {
+	async validate(val, msg, arg) {
 		const matches = val.match(/^([0-9]+)$/);
 		if(matches) {
 			try {
-				const channel = msg.client.channels.cache.resolve(matches[1]);
+				const channel = await msg.client.channels.cache.get(matches[1]);
 				if(!channel || channel.type !== 'voice') return false;
 				if(arg.oneOf && !arg.oneOf.includes(channel.id)) return false;
 				return true;
