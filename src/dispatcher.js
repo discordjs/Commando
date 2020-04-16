@@ -123,7 +123,7 @@ class CommandDispatcher {
 		// Run the command, or reply with an error
 		let responses;
 		if(cmdMsg) {
-			const inhibited = this.inhibit(cmdMsg);
+			const inhibited = await this.inhibit(cmdMsg);
 
 			if(!inhibited) {
 				if(cmdMsg.command) {
@@ -191,9 +191,10 @@ class CommandDispatcher {
 	 * @return {?Inhibition}
 	 * @private
 	 */
-	inhibit(cmdMsg) {
+	async inhibit(cmdMsg) {
 		for(const inhibitor of this.inhibitors) {
-			let inhibit = inhibitor(cmdMsg);
+			// eslint-disable-next-line no-await-in-loop
+			let inhibit = await inhibitor(cmdMsg);
 			if(inhibit) {
 				if(typeof inhibit !== 'object') inhibit = { reason: inhibit, response: undefined };
 
