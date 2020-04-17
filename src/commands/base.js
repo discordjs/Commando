@@ -350,8 +350,9 @@ class Command {
 		}).join(owners.length > 2 ? ', ' : ' ') : '';
 
 		const invite = this.client.options.invite;
+		console.warn('[ERROR!]', err);
 		return message.reply(stripIndents`
-			An error occurred while running the command: \`${err.name}: ${err.message}\`
+			An error occurred while running the command, timestamp: ${new Date().toString()}
 			You shouldn't ever receive an error like this.
 			Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
 		`);
