@@ -13,6 +13,7 @@ module.exports = class UnknownCommandCommand extends Command {
 		});
 	}
 
+	// eslint-disable-next-line
 	run(msg) {
 		try {
 			return msg.channel.send(
@@ -22,6 +23,7 @@ module.exports = class UnknownCommandCommand extends Command {
 				msg.guild ? undefined : null
 			)} to view the command list.`
 			);
-		} catch(exception) { return exception; }
+			// eslint-disable-next-line
+		} catch(exception) { }
 	}
 };
