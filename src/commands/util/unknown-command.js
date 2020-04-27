@@ -14,9 +14,9 @@ module.exports = class UnknownCommandCommand extends Command {
 	}
 
 	// eslint-disable-next-line
-	run(msg) {
+	async run(msg) {
 		try {
-			return msg.channel.send(
+			return await msg.channel.send(
 				`Unknown command \`${msg.content}\`. Use ${msg.anyUsage(
 				'help',
 				msg.guild ? undefined : null,
