@@ -14,7 +14,7 @@ module.exports = class UnknownCommandCommand extends Command {
 	}
 
 	run(msg) {
-		return msg.reply(
+		return msg.channel.send(
 			`Unknown command \`${msg.content}\`. Use ${msg.anyUsage(
 				'help',
 				msg.guild ? undefined : null,
