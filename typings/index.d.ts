@@ -443,6 +443,6 @@ declare module 'discord.js-commando' {
 	interface RespondEditOptions {
 		content: StringResolvable | MessageEditOptions | Exclude<MessageAdditions, MessageAttachment>;
 		options?: MessageEditOptions | Exclude<MessageAdditions, MessageAttachment>;
-		type: ResponseType;
+		type?: ResponseType;
 	}
 }
