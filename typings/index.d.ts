@@ -171,7 +171,14 @@ declare module 'discord.js-commando' {
 		public reply: CommandoMessage['say'];
 		public replyEmbed: CommandoMessage['embed'];
 		public run(): Promise<null | CommandoMessage | CommandoMessage[]>;
-		public say(content: StringResolvable | MessageOptions | MessageAdditions, options?: MessageOptions | MessageAdditions): Promise<CommandoMessage | CommandoMessage[]>;
+		public say(
+			content: StringResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
+			options?: (MessageOptions & { split?: false }) | MessageAdditions
+		): Promise<CommandoMessage>;
+		public say(
+			content: StringResolvable | (MessageOptions & { split: true | Exclude<MessageOptions['split'], boolean> }) | MessageAdditions,
+			options?: (MessageOptions & { split: true | Exclude<MessageOptions['split'], boolean> }) | MessageAdditions
+		): Promise<CommandoMessage[]>;
 		public usage(argString?: string, prefix?: string, user?: User): string;
 	}
 
