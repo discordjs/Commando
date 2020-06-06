@@ -1,5 +1,5 @@
 declare module 'discord.js-commando' {
-	import { Channel, Client, ClientOptions, Collection, DMChannel, Emoji, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, VoiceState, Webhook } from 'discord.js';
+	import { Channel, Client, ClientOptions, Collection, DMChannel, Emoji, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, VoiceState, Webhook } from "discord.js";
 
 	export class Argument {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
@@ -77,7 +77,8 @@ declare module 'discord.js-commando' {
 		public groupID: string;
 		public guarded: boolean;
 		public hidden: boolean;
-		public guildOnly: boolean;
+		public guildOnly: boolean
+		public dmOnly: boolean;
 		public memberName: string;
 		public name: string;
 		public nsfw: boolean;
@@ -91,7 +92,7 @@ declare module 'discord.js-commando' {
 		public isEnabledIn(guild: GuildResolvable, bypassGroup?: boolean): boolean;
 		public isUsable(message: Message): boolean;
 		public onBlock(message: CommandoMessage, reason: string, data?: Object): Promise<Message | Message[]>;
-		public onBlock(message: CommandoMessage, reason: 'guildOnly' | 'nsfw'): Promise<Message | Message[]>;
+		public onBlock(message: CommandoMessage, reason: 'dmOnly' | 'guildOnly' | 'nsfw'): Promise<Message | Message[]>;
 		public onBlock(message: CommandoMessage, reason: 'permission', data: { response?: string }): Promise<Message | Message[]>;
 		public onBlock(message: CommandoMessage, reason: 'clientPermissions', data: { missing: PermissionString[] }): Promise<Message | Message[]>;
 		public onBlock(message: CommandoMessage, reason: 'throttling', data: { throttle: Object, remaining: number }): Promise<Message | Message[]>;
@@ -229,7 +230,7 @@ declare module 'discord.js-commando' {
 
 		on(event: string, listener: Function): this;
 		on(event: 'commandBlock', listener: (message: CommandoMessage, reason: string, data?: Object) => void): this;
-		on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'guildOnly' | 'nsfw') => void): this;
+		on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'dmOnly' |'guildOnly' | 'nsfw') => void): this;
 		on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'permission', data: { response?: string }) => void): this;
 		on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'throttling', data: { throttle: Object, remaining: number }) => void): this;
 		on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'clientPermissions', data: { missing: string }) => void): this;
@@ -470,6 +471,7 @@ declare module 'discord.js-commando' {
 		examples?: string[];
 		nsfw?: boolean;
 		guildOnly?: boolean;
+		dmOnly?: boolean;
 		ownerOnly?: boolean;
 		clientPermissions?: PermissionResolvable[];
 		userPermissions?: PermissionResolvable[];

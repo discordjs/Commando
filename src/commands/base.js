@@ -25,6 +25,7 @@ class Command {
 	 * @property {string} [details] - A detailed description of the command and its functionality
 	 * @property {string[]} [examples] - Usage examples of the command
 	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
+	 * @property {boolean} [dmOnly=false] - Whether or not the command should only function in a dm channel
 	 * @property {boolean} [ownerOnly=false] - Whether or not the command is usable only by an owner
 	 * @property {PermissionResolvable[]} [clientPermissions] - Permissions required by the client to use the command.
 	 * @property {PermissionResolvable[]} [userPermissions] - Permissions required by the user to use the command.
@@ -132,6 +133,12 @@ class Command {
 		 * @type {boolean}
 		 */
 		this.guildOnly = Boolean(info.guildOnly);
+
+		/**
+		 * Whether the command can only be run in a dm channel
+		 * @type {boolean}
+		 */
+		this.dmOnly = Boolean(info.dmOnly);
 
 		/**
 		 * Whether the command can only be used by an owner
@@ -305,6 +312,8 @@ class Command {
 		switch(reason) {
 			case 'guildOnly':
 				return message.reply(`The \`${this.name}\` command must be used in a server channel.`);
+			case 'dmOnly':
+				return message.reply(`The \`${this.name}\` command must be used in a dm channel`)
 			case 'nsfw':
 				return message.reply(`The \`${this.name}\` command can only be used in NSFW channels.`);
 			case 'permission': {
@@ -420,6 +429,7 @@ class Command {
 	isUsable(message = null) {
 		if(!message) return this._globalEnabled;
 		if(this.guildOnly && message && !message.guild) return false;
+		if(this.dmOnly && message && message.channel.type !== 'dm') return false;
 		const hasPermission = this.hasPermission(message);
 		return this.isEnabledIn(message.guild) && hasPermission && typeof hasPermission !== 'string';
 	}
