@@ -313,7 +313,7 @@ class Command {
 			case 'guildOnly':
 				return message.reply(`The \`${this.name}\` command must be used in a server channel.`);
 			case 'dmOnly':
-				return message.reply(`The \`${this.name}\` command must be used in a dm channel`)
+				return message.reply(`The \`${this.name}\` command must be used in a dm channel`);
 			case 'nsfw':
 				return message.reply(`The \`${this.name}\` command can only be used in NSFW channels.`);
 			case 'permission': {
