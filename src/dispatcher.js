@@ -249,7 +249,7 @@ class CommandDispatcher {
 			if(!command.patterns) continue;
 			for(const pattern of command.patterns) {
 				const matches = pattern.exec(message.content);
-				if(matches) return message.initCommand(command, null, matches);
+				if(matches) return message.initCommand(command, null, matches, '-pattern-');
 			}
 		}
 
@@ -275,10 +275,14 @@ class CommandDispatcher {
 		if(!matches) return null;
 		const commands = this.registry.findCommands(matches[commandNameIndex], true);
 		if(commands.length !== 1 || !commands[0].defaultHandling) {
-			return message.initCommand(this.registry.unknownCommand, prefixless ? message.content : matches[1]);
+			return message.initCommand(
+				this.registry.unknownCommand,
+				prefixless ? message.content : matches[1],
+				matches[commandNameIndex]
+			);
 		}
 		const argString = message.content.substring(matches[1].length + (matches[2] ? matches[2].length : 0));
-		return message.initCommand(commands[0], argString);
+		return message.initCommand(commands[0], argString, null, matches[commandNameIndex]);
 	}
 
 	/**
