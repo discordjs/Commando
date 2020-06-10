@@ -14,6 +14,12 @@ module.exports = Structures.extend('Message', Message => {
 			super(...args);
 
 			/**
+			 * Alias which invoked the command
+			 * @type {?string}
+			 */
+			this.alias = null;
+
+			/**
 			 * Whether the message contains a command (even an unknown one)
 			 * @type {boolean}
 			 */
@@ -55,14 +61,16 @@ module.exports = Structures.extend('Message', Message => {
 	 	 * @param {Command} [command] - Command the message triggers
 	 	 * @param {string} [argString] - Argument string for the command
 	 	 * @param {?Array<string>} [patternMatches] - Command pattern matches (if from a pattern trigger)
+		 * @param {?string} alias - alias used for command
 		 * @return {Message} This message
 		 * @private
 		 */
-		initCommand(command, argString, patternMatches) {
+		initCommand(command, argString, patternMatches, alias = null) {
 			this.isCommand = true;
 			this.command = command;
 			this.argString = argString;
 			this.patternMatches = patternMatches;
+			this.alias = alias || command.name;
 			return this;
 		}
 
@@ -263,6 +271,7 @@ module.exports = Structures.extend('Message', Message => {
 			}
 		}
 
+		/* eslint-disable complexity*/
 		/**
 		 * Responds to the command message
 		 * @param {Object} [options] - Options for the response
