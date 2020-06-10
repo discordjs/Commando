@@ -23,6 +23,7 @@ class Command {
 	 * @property {string} [format] - The command usage format string - will be automatically generated if not specified,
 	 * and `args` is specified
 	 * @property {string} [details] - A detailed description of the command and its functionality
+	 * @property {string} [examplesName="examples"] - Title of examples in help command
 	 * @property {string[]} [examples] - Usage examples of the command
 	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
 	 * @property {boolean} [ownerOnly=false] - Whether or not the command is usable only by an owner
@@ -126,6 +127,12 @@ class Command {
 		 * @type {?string[]}
 		 */
 		this.examples = info.examples || null;
+
+		/**
+		 * Examples name in help
+		 * @type {?string}
+		 */
+		this.examplesName = info.examplesName || 'Examples';
 
 		/**
 		 * Whether the command can only be run in a guild channel
