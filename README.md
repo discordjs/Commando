@@ -14,6 +14,13 @@ Additionally, it makes full use of ES2017's `async`/`await` functionality for cl
 
 ## Features
 
+### New features in this fork
+
+- Async inhibitors
+- Async provider loading (loading only guilds that are actually needed)
+
+### Commando base features
+
 - Plain command names and aliases
 - Regular expression triggers
 - Robust parsing of arguments (with "quoted strings" support)
