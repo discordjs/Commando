@@ -25,7 +25,7 @@ class GuildSettingsHelper {
 	 * Gets a setting in the guild
 	 * @param {string} key - Name of the setting
 	 * @param {*} [defVal] - Value to default to if the setting isn't set
-	 * @return {*}
+	 * @return {Promise<*>}
 	 * @see {@link SettingProvider#get}
 	 */
 	get(key, defVal) {
