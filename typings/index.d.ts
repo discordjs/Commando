@@ -1,5 +1,5 @@
 declare module 'discord.js-commando' {
-	import { Channel, Client, ClientOptions, Collection, Guild, GuildResolvable, GuildMember, Message, MessageAttachment, MessageEditOptions, MessageEmbed, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, Role, Snowflake, StringResolvable, User, UserResolvable, VoiceState } from 'discord.js';
+	import { Client, ClientEvents, ClientOptions, Collection, Guild, GuildResolvable, Message, MessageAttachment, MessageEditOptions, MessageEmbed, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, StringResolvable, User, UserResolvable } from 'discord.js';
 
 	export class Argument {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
@@ -198,26 +198,9 @@ declare module 'discord.js-commando' {
 		public isOwner(user: UserResolvable): boolean;
 		public setProvider(provider: SettingProvider | Promise<SettingProvider>): Promise<void>;
 
-		public on(event: string, listener: Function): this;
-		public on(event: 'commandBlock', listener: (message: CommandoMessage, reason: string, data?: Object) => void): this;
-		public on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'guildOnly' | 'nsfw') => void): this;
-		public on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'permission', data: { response?: string }) => void): this;
-		public on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'throttling', data: { throttle: Object, remaining: number }) => void): this;
-		public on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'clientPermissions', data: { missing: string }) => void): this;
-		public on(event: 'commandCancel', listener: (command: Command, reason: string, message: CommandoMessage) => void): this;
-		public on(event: 'commandError', listener: (command: Command, err: Error, message: CommandoMessage, args: object | string | string[], fromPattern: false) => void): this;
-		public on(event: 'commandError', listener: (command: Command, err: Error, message: CommandoMessage, args: string[], fromPattern: true) => void): this;
-		public on(event: 'commandPrefixChange', listener: (guild: CommandoGuild, prefix: string) => void): this;
-		public on(event: 'commandRegister', listener: (command: Command, registry: CommandoRegistry) => void): this;
-		public on(event: 'commandReregister', listener: (newCommand: Command, oldCommand: Command) => void): this;
-		public on(event: 'commandRun', listener: (command: Command, promise: Promise<any>, message: CommandoMessage, args: object | string | string[], fromPattern: boolean) => void): this;
-		public on(event: 'commandStatusChange', listener: (guild: CommandoGuild, command: Command, enabled: boolean) => void): this;
-		public on(event: 'commandUnregister', listener: (command: Command) => void): this;
-		public on(event: 'groupRegister', listener: (group: CommandGroup, registry: CommandoRegistry) => void): this;
-		public on(event: 'groupStatusChange', listener: (guild: CommandoGuild, group: CommandGroup, enabled: boolean) => void): this;
-		public on(event: 'typeRegister', listener: (type: ArgumentType, registry: CommandoRegistry) => void): this;
-		public on(event: 'unknownCommand', listener: (message: CommandoMessage) => void): this;
-		public on(event: 'providerReady', listener: (provider: SettingProvider) => void): this;
+		public on<K extends keyof CommandoClientEvents>(event: K, listener: (...args: CommandoClientEvents[K]) => void): this;
+		public once<K extends keyof CommandoClientEvents>(event: K, listener: (...args: CommandoClientEvents[K]) => void): this;
+		public emit<K extends keyof CommandoClientEvents>(event: K, ...args: CommandoClientEvents[K]): boolean;
 	}
 
 	export { CommandoClient as Client };
@@ -414,6 +397,30 @@ declare module 'discord.js-commando' {
 		guarded?: boolean;
 		hidden?: boolean;
 		unknown?: boolean;
+	}
+
+	interface CommandoClientEvents extends ClientEvents {
+		commandBlock:
+		| [CommandoMessage, string, Object?]
+		| [CommandoMessage, 'guildOnly' | 'nsfw']
+		| [CommandoMessage, 'permission', { response?: string }]
+		| [CommandoMessage, 'throttling', { throttle: Object, remaining: number }]
+		| [CommandoMessage, 'clientPermissions', { missing: string }];
+		commandCancel: [Command, string, CommandoMessage];
+		commandError:
+		| [Command, Error, CommandoMessage, object | string | string[], false]
+		| [Command, Error, CommandoMessage, string[], true];
+		commandPrefixChange: [CommandoGuild, string];
+		commandRegister: [Command, CommandoRegistry];
+		commandReregister: [Command, Command];
+		commandRun: [Command, Promise<any>, CommandoMessage, object | string | string[], boolean];
+		commandStatusChange: [CommandoGuild, Command, boolean];
+		commandUnregister: [Command];
+		groupRegister: [CommandGroup, CommandoRegistry];
+		groupStatusChange: [CommandoGuild, CommandGroup, boolean];
+		typeRegister: [ArgumentType, CommandoRegistry];
+		unknownCommand: [CommandoMessage];
+		providerReady: [SettingProvider];
 	}
 
 	export interface CommandoClientOptions extends ClientOptions {
