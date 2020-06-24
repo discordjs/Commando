@@ -90,11 +90,11 @@ declare module 'discord.js-commando' {
 		public hasPermission(message: CommandoMessage, ownerOverride?: boolean): boolean | string;
 		public isEnabledIn(guild: GuildResolvable, bypassGroup?: boolean): boolean;
 		public isUsable(message: Message): boolean;
-		public onBlock(message: CommandoMessage, reason: string, data?: Object): Promise<Message | Message[]>;
+		public onBlock(message: CommandoMessage, reason: string, data?: object): Promise<Message | Message[]>;
 		public onBlock(message: CommandoMessage, reason: 'guildOnly' | 'nsfw'): Promise<Message | Message[]>;
 		public onBlock(message: CommandoMessage, reason: 'permission', data: { response?: string }): Promise<Message | Message[]>;
 		public onBlock(message: CommandoMessage, reason: 'clientPermissions', data: { missing: PermissionString[] }): Promise<Message | Message[]>;
-		public onBlock(message: CommandoMessage, reason: 'throttling', data: { throttle: Object, remaining: number }): Promise<Message | Message[]>;
+		public onBlock(message: CommandoMessage, reason: 'throttling', data: { throttle: object, remaining: number }): Promise<Message | Message[]>;
 		public onError(err: Error, message: CommandoMessage, args: object | string | string[], fromPattern: false, result?: ArgumentCollectorResult): Promise<Message | Message[]>;
 		public onError(err: Error, message: CommandoMessage, args: string[], fromPattern: true, result?: ArgumentCollectorResult): Promise<Message | Message[]>;
 		public reload(): void;
@@ -401,10 +401,10 @@ declare module 'discord.js-commando' {
 
 	interface CommandoClientEvents extends ClientEvents {
 		commandBlock:
-		| [CommandoMessage, string, Object?]
+		| [CommandoMessage, string, object?]
 		| [CommandoMessage, 'guildOnly' | 'nsfw']
 		| [CommandoMessage, 'permission', { response?: string }]
-		| [CommandoMessage, 'throttling', { throttle: Object, remaining: number }]
+		| [CommandoMessage, 'throttling', { throttle: object, remaining: number }]
 		| [CommandoMessage, 'clientPermissions', { missing: string }];
 		commandCancel: [Command, string, CommandoMessage];
 		commandError:
