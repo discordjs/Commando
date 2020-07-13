@@ -358,11 +358,15 @@ class Command {
 
 		const invite = this.client.options.invite;
 		console.warn('[ERROR!]', err);
-		return message.reply(stripIndents`
-			An error occurred while running the command, timestamp: ${new Date().toString()}
-			You shouldn't ever receive an error like this.
-			Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
-		`);
+		if(typeof this.error === 'function') {
+			return this.error(err, message, args, ownerList, invite);
+		} else {
+			return message.reply(stripIndents`
+				Unkown error happened. Incident code: \`${err.name}-${(new Date).valueOf()}\`
+				You shouldn't ever receive an error like this.
+				Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
+			`);
+		}
 	}
 
 	/**
