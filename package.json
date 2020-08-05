@@ -27,6 +27,7 @@
 	"types": "./typings/index.d.ts",
 	"dependencies": {
 		"common-tags": "^1.8.0",
+		"is-promise": "^4.0.0",
 		"require-all": "^3.0.0"
 	},
 	"devDependencies": {
