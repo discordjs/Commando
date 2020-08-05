@@ -190,7 +190,9 @@ class CommandoRegistry {
 		const obj = require('require-all')(options);
 		const commands = [];
 		for(const group of Object.values(obj)) {
+			if(!group) continue;
 			for(let command of Object.values(group)) {
+				if(!command) continue;
 				if(typeof command.default === 'function') command = command.default;
 				commands.push(command);
 			}
