@@ -182,13 +182,23 @@ module.exports = Structures.extend('Message', Message => {
 				}
 			}
 
-			// Throttle the command
-			const throttle = this.command.throttle(this.author.id);
-			if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
-				const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
-				const data = { throttle, remaining };
-				this.client.emit('commandBlock', this, 'throttling', data);
-				return this.command.onBlock(this, 'throttling', data);
+			let throttle;
+
+			if(typeof this.client.options.throttle === 'function') {
+				throttle = await this.client.options.throttle(this.command, this.author);
+				if(throttle) {
+					this.client.emit('commandBlock', this, 'throttling', throttle);
+					return this.command.onBlock(this, 'throttling', throttle);
+				}
+			} else {
+				// Throttle the command
+				throttle = this.command.throttle(this.author.id);
+				if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
+					const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
+					const data = { throttle, remaining };
+					this.client.emit('commandBlock', this, 'throttling', data);
+					return this.command.onBlock(this, 'throttling', data);
+				}
 			}
 
 			// Figure out the command arguments
@@ -222,8 +232,12 @@ module.exports = Structures.extend('Message', Message => {
 			if(!args) args = this.parseArgs();
 			const fromPattern = Boolean(this.patternMatches);
 
-			// Run the command
-			if(throttle) throttle.usages++;
+			if(typeof this.client.options.throttleUse === 'function') {
+				await this.client.options.throttleUse(this.command, this.author);
+			} else if(throttle) {
+				throttle.usages++;
+			}
+
 			const typingCount = this.channel.typingCount;
 			try {
 				this.client.emit('debug', `Running command ${this.command.groupID}:${this.command.memberName}.`);
