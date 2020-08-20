@@ -76,7 +76,7 @@ class Command {
 
 		/**
 		 * Aliases for this command
-		 * @type {string[], CommandoTranslatable}
+		 * @type {string[] | CommandoTranslatable}
 		 */
 		this.aliases = info.aliases || [];
 		if(typeof info.autoAliases === 'undefined' || info.autoAliases) {
@@ -106,25 +106,25 @@ class Command {
 
 		/**
 		 * Short description of the command
-		 * @type {string, CommandoTranslatable}
+		 * @type {string | CommandoTranslatable}
 		 */
 		this.description = info.description;
 
 		/**
 		 * Usage format string of the command
-		 * @type {string, CommandoTranslatable}
+		 * @type {string | CommandoTranslatable}
 		 */
 		this.format = info.format || null;
 
 		/**
 		 * Long description of the command
-		 * @type {?string, ?CommandoTranslatable}
+		 * @type {?string | ?CommandoTranslatable}
 		 */
 		this.details = info.details || null;
 
 		/**
 		 * Example usage strings
-		 * @type {?string[], ?CommandoTranslatable}
+		 * @type {?string[] | ?CommandoTranslatable}
 		 */
 		this.examples = info.examples || null;
 

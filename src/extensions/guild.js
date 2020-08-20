@@ -30,7 +30,7 @@ module.exports = Structures.extend('Guild', Guild => {
 			/**
 			 * Internal language for the guild, controlled by the {@link CommandoGuild#language}
 			 * getter/setter
-			 * @name CommandoGuild#_commandPrefix
+			 * @name CommandoGuild#_language
 			 * @type {?string}
 			 * @private
 			 */

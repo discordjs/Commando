@@ -155,15 +155,9 @@ class CommandoTranslatable {
 	/**
 	 * @typedef {Object} CommandoTranslatable - Represents a string which can be translated
 	 * @property {string} key - The key which will be resolved.
-	 * @function {string} key - Getter for the key
 	 */
 
 	constructor(key) {
-		/**
-		 * The key to identify the translation string
-		 * @type {string}
-		 * @private
-		 */
 		this._key = key;
 	}
 
