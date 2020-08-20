@@ -1,4 +1,5 @@
 declare module 'discord.js-commando' {
+	import {TOptions, Callback as TCallback, InitOptions as TInitOptions} from "i18next";
 	import { Channel, Client, ClientOptions, Collection, DMChannel, Emoji, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, VoiceState, Webhook } from 'discord.js';
 
 	export class Argument {
@@ -215,6 +216,7 @@ declare module 'discord.js-commando' {
 		public constructor(options?: CommandoClientOptions);
 
 		private _commandPrefix: string;
+		private _defaultLanguage: string;
 
 		public commandPrefix: string;
 		public dispatcher: CommandDispatcher;
@@ -222,6 +224,7 @@ declare module 'discord.js-commando' {
 		public readonly owners: User[];
 		public provider: SettingProvider;
 		public registry: CommandoRegistry;
+		public translator: CommandoTranslator;
 		public settings: GuildSettingsHelper;
 
 		public isOwner(user: UserResolvable): boolean;
@@ -237,6 +240,7 @@ declare module 'discord.js-commando' {
 		on(event: 'commandError', listener: (command: Command, err: Error, message: CommandoMessage, args: object | string | string[], fromPattern: false) => void): this;
 		on(event: 'commandError', listener: (command: Command, err: Error, message: CommandoMessage, args: string[], fromPattern: true) => void): this;
 		on(event: 'commandPrefixChange', listener: (guild: CommandoGuild, prefix: string) => void): this;
+		on(event: 'guildLanguageChange', listener: (guild: CommandoGuild, language: string) => void): this;
 		on(event: 'commandRegister', listener: (command: Command, registry: CommandoRegistry) => void): this;
 		on(event: 'commandReregister', listener: (newCommand: Command, oldCommand: Command) => void): this;
 		on(event: 'commandRun', listener: (command: Command, promise: Promise<any>, message: CommandoMessage, args: object | string | string[], fromPattern: boolean) => void): this;
@@ -294,6 +298,7 @@ declare module 'discord.js-commando' {
 
 	export class CommandoGuild extends Guild {
 		private _commandPrefix: string;
+		private _language: string;
 		private _commandsEnabled: object;
 		private _groupsEnabled: object;
 		private _settings: GuildSettingsHelper;
@@ -324,7 +329,7 @@ declare module 'discord.js-commando' {
 		public registerCommand(command: Command | Function): CommandoRegistry;
 		public registerCommands(commands: Command[] | Function[], ignoreInvalid?: boolean): CommandoRegistry;
 		public registerCommandsIn(options: string | {}): CommandoRegistry;
-		public registerDefaultCommands(commands?: { help?: boolean, prefix?: boolean, eval?: boolean, ping?: boolean, commandState?: boolean, unknownCommand?: boolean }): CommandoRegistry;
+		public registerDefaultCommands(commands?: { help?: boolean, prefix?: boolean, language?: boolean, eval?: boolean, ping?: boolean, commandState?: boolean, unknownCommand?: boolean }): CommandoRegistry;
 		public registerDefaultGroups(): CommandoRegistry;
 		public registerDefaults(): CommandoRegistry;
 		public registerDefaultTypes(types?: { string?: boolean, integer?: boolean, float?: boolean, boolean?: boolean, user?: boolean, member?: boolean, role?: boolean, channel?: boolean, message?: boolean, command?: boolean, group?: boolean }): CommandoRegistry;
@@ -413,7 +418,7 @@ declare module 'discord.js-commando' {
 	}
 
 	export class util {
-		public static disambiguation(items: any[], label: string, property?: string): string;
+		public static disambiguation(items: any[], property?: string): string;
 		public static paginate<T>(items: T[], page?: number, pageLength?: number): {
 			items: T[],
 			page: number,
@@ -421,6 +426,17 @@ declare module 'discord.js-commando' {
 			pageLength: number
 		};
 		public static readonly permissions: { [K in PermissionString]: string };
+	}
+
+	export type TranslateOptions = TOptions | string
+
+	export class CommandoTranslator {
+		constructor(client: CommandoClient, options?: CommandoTranslatorOptions)
+
+		public init(): Promise<void>;
+		public loadNamespaces(ns: string | string[], callback?: TCallback): Promise<void>;
+		public translate(key: string, options?: TranslateOptions): string;
+		public resolveLanguage(msg?: CommandoMessage): string;
 	}
 
 	export const version: string;
@@ -484,14 +500,17 @@ declare module 'discord.js-commando' {
 		guarded?: boolean;
 		hidden?: boolean;
 		unknown?: boolean;
+		language?: boolean;
 	}
 
 	export interface CommandoClientOptions extends ClientOptions {
 		commandPrefix?: string;
+		defaultLanguage?: string;
 		commandEditableDuration?: number;
 		nonCommandEditable?: boolean;
 		owner?: string | string[] | Set<string>;
 		invite?: string;
+		i18n?: CommandoTranslatorOptions;
 	}
 
 	type CommandResolvable = Command | string;
@@ -505,5 +524,13 @@ declare module 'discord.js-commando' {
 	export interface ThrottlingOptions {
 		usages: number;
 		duration: number;
+	}
+
+	export interface CommandoTranslatorOptions {
+		ns?: string | string[];
+		loadTranslations?: boolean;
+		localesPath?:string;
+		debug?:boolean;
+		overrides?: TInitOptions;
 	}
 }

@@ -1,4 +1,6 @@
 const Command = require('../base');
+const { CommandoTranslatable } = require('../../translator');
+const i18next = require('i18next');
 
 module.exports = class UnknownCommandCommand extends Command {
 	constructor(client) {
@@ -6,20 +8,22 @@ module.exports = class UnknownCommandCommand extends Command {
 			name: 'unknown-command',
 			group: 'util',
 			memberName: 'unknown-command',
-			description: 'Displays help information for when an unknown command is used.',
-			examples: ['unknown-command kickeverybodyever'],
+			description: new CommandoTranslatable('command.unknown_command.description'),
+			examples: new CommandoTranslatable('command.unknown_command.examples'),
 			unknown: true,
 			hidden: true
 		});
 	}
 
 	run(msg) {
-		return msg.reply(
-			`Unknown command. Use ${msg.anyUsage(
+		const lng = msg.client.translator.resolveLanguage(msg);
+		return msg.reply(i18next.t('command.unknown_command.run.response', {
+			lng,
+			usage: msg.anyUsage(
 				'help',
 				msg.guild ? undefined : null,
 				msg.guild ? undefined : null
-			)} to view the command list.`
-		);
+			)
+		}));
 	}
 };

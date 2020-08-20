@@ -1,6 +1,7 @@
 const ArgumentType = require('./base');
 const { disambiguation } = require('../util');
 const { escapeMarkdown } = require('discord.js');
+const i18next = require('i18next');
 
 class RoleArgumentType extends ArgumentType {
 	constructor(client) {
@@ -8,6 +9,7 @@ class RoleArgumentType extends ArgumentType {
 	}
 
 	validate(val, msg, arg) {
+		const lng = msg.client.translator.resolveLanguage(msg);
 		const matches = val.match(/^(?:<@&)?([0-9]+)>?$/);
 		if(matches) return msg.guild.roles.cache.has(matches[1]);
 		const search = val.toLowerCase();
@@ -24,8 +26,17 @@ class RoleArgumentType extends ArgumentType {
 		}
 		if(exactRoles.size > 0) roles = exactRoles;
 		return roles.size <= 15 ?
-			`${disambiguation(roles.map(role => `${escapeMarkdown(role.name)}`), 'roles', null)}\n` :
-			'Multiple roles found. Please be more specific.';
+			`${i18next.t('error.too_many_found_with_list', {
+				lng,
+				label: '$t(common.role_plural)',
+				itemList: disambiguation(
+					roles.map(role => `${escapeMarkdown(role.name)}`), null
+				)
+			})}\n` :
+			i18next.t('error.too_many_found', {
+				lng,
+				what: '$t(common.role_plural)'
+			});
 	}
 
 	parse(val, msg) {

@@ -1,8 +1,9 @@
 const path = require('path');
 const { escapeMarkdown } = require('discord.js');
-const { oneLine, stripIndents } = require('common-tags');
 const ArgumentCollector = require('./collector');
 const { permissions } = require('../util');
+const i18next = require('i18next');
+const { CommandoTranslator } = require('../translator');
 
 /** A command that can be run in a client */
 class Command {
@@ -75,7 +76,7 @@ class Command {
 
 		/**
 		 * Aliases for this command
-		 * @type {string[]}
+		 * @type {string[], CommandoTranslatable}
 		 */
 		this.aliases = info.aliases || [];
 		if(typeof info.autoAliases === 'undefined' || info.autoAliases) {
@@ -105,25 +106,25 @@ class Command {
 
 		/**
 		 * Short description of the command
-		 * @type {string}
+		 * @type {string, CommandoTranslatable}
 		 */
 		this.description = info.description;
 
 		/**
 		 * Usage format string of the command
-		 * @type {string}
+		 * @type {string, CommandoTranslatable}
 		 */
 		this.format = info.format || null;
 
 		/**
 		 * Long description of the command
-		 * @type {?string}
+		 * @type {?string, ?CommandoTranslatable}
 		 */
 		this.details = info.details || null;
 
 		/**
 		 * Example usage strings
-		 * @type {?string[]}
+		 * @type {?string[], ?CommandoTranslatable}
 		 */
 		this.examples = info.examples || null;
 
@@ -180,7 +181,12 @@ class Command {
 			this.format = this.argsCollector.args.reduce((prev, arg) => {
 				const wrapL = arg.default !== null ? '[' : '<';
 				const wrapR = arg.default !== null ? ']' : '>';
-				return `${prev}${prev ? ' ' : ''}${wrapL}${arg.label}${arg.infinite ? '...' : ''}${wrapR}`;
+				const label = typeof arg.label === 'undefined' || typeof arg.label === 'string' || !arg.label ?
+					arg.label : i18next.t(arg.label.key, {
+						lng: client.defaultLanguage,
+						interpolation: { escapeValue: false }
+					});
+				return `${prev}${prev ? ' ' : ''}${wrapL}${label}${arg.infinite ? '...' : ''}${wrapR}`;
 			}, '');
 		}
 
@@ -248,23 +254,35 @@ class Command {
 	 * @return {boolean|string} Whether the user has permission, or an error message to respond with if they don't
 	 */
 	hasPermission(message, ownerOverride = true) {
+		const lng = message.client.translator.resolveLanguage(message);
 		if(!this.ownerOnly && !this.userPermissions) return true;
 		if(ownerOverride && this.client.isOwner(message.author)) return true;
 
 		if(this.ownerOnly && (ownerOverride || !this.client.isOwner(message.author))) {
-			return `The \`${this.name}\` command can only be used by the bot owner.`;
+			return i18next.t('base.owner_only_command', {
+				lng,
+				commandName: this.name
+			});
 		}
 
 		if(message.channel.type === 'text' && this.userPermissions) {
-			const missing = message.channel.permissionsFor(message.author).missing(this.userPermissions);
+			const missing = message.channel.permissionsFor(message.author)
+				.missing(this.userPermissions);
 			if(missing.length > 0) {
 				if(missing.length === 1) {
-					return `The \`${this.name}\` command requires you to have the "${permissions[missing[0]]}" permission.`;
+					return i18next.t('base.permission_required', {
+						lng,
+						commandName: this.name,
+						permission: `$t(${permissions[missing[0]]})`
+					});
 				}
-				return oneLine`
-					The \`${this.name}\` command requires you to have the following permissions:
-					${missing.map(perm => permissions[perm]).join(', ')}
-				`;
+				return i18next.t('base.permission_required', {
+					lng,
+					commandName: this.name,
+					count: missing.length,
+					permissionList: missing.map(perm => `$t(${permissions[perm]})`)
+						.join(', ')
+				});
 			}
 		}
 
@@ -290,7 +308,7 @@ class Command {
 
 	/**
 	 * Called when the command is prevented from running
-	 * @param {CommandMessage} message - Command message that the command is running from
+	 * @param {CommandoMessage} message - Command message that the command is running from
 	 * @param {string} reason - Reason that the command was blocked
 	 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
 	 * @param {Object} [data] - Additional data associated with the block. Built-in reason data properties:
@@ -302,30 +320,47 @@ class Command {
 	 * @returns {Promise<?Message|?Array<Message>>}
 	 */
 	onBlock(message, reason, data) {
+		const lng = message.client.translator.resolveLanguage(message);
 		switch(reason) {
 			case 'guildOnly':
-				return message.reply(`The \`${this.name}\` command must be used in a server channel.`);
+				return message.reply(i18next.t('base.guild_only_command', {
+					lng,
+					commandName: this.name
+				}));
 			case 'nsfw':
-				return message.reply(`The \`${this.name}\` command can only be used in NSFW channels.`);
+				return message.reply(i18next.t('base.nsfw_only_command', {
+					lng,
+					commandName: this.name
+				}));
 			case 'permission': {
 				if(data.response) return message.reply(data.response);
-				return message.reply(`You do not have permission to use the \`${this.name}\` command.`);
+				return message.reply(i18next.t('base.missing_permissions', {
+					lng,
+					commandName: this.name
+				}));
 			}
 			case 'clientPermissions': {
 				if(data.missing.length === 1) {
-					return message.reply(
-						`I need the "${permissions[data.missing[0]]}" permission for the \`${this.name}\` command to work.`
-					);
+					return message.reply(i18next.t('base.i_need_permission', {
+						lng,
+						commandName: this.name,
+						permission: permissions[data.missing[0]]
+					}));
 				}
-				return message.reply(oneLine`
-					I need the following permissions for the \`${this.name}\` command to work:
-					${data.missing.map(perm => permissions[perm]).join(', ')}
-				`);
+				return message.reply(i18next.t('base.i_need_permission', {
+					lng,
+					commandName: this.name,
+					permissions: Array.isArray(data.missing) ? data.missing.map(perm => permissions[perm])
+						.join(', ') : null,
+					count: data.missing.length
+				}));
 			}
 			case 'throttling': {
-				return message.reply(
-					`You may not use the \`${this.name}\` command again for another ${data.remaining.toFixed(1)} seconds.`
-				);
+				return message.reply(i18next.t('base.user_ratelimited', {
+					lng,
+					commandName: this.name,
+					count: data.remaining.toFixed(1)
+				}));
 			}
 			default:
 				return null;
@@ -335,7 +370,7 @@ class Command {
 	/**
 	 * Called when the command produces an error while running
 	 * @param {Error} err - Error that was thrown
-	 * @param {CommandMessage} message - Command message that the command is running from (see {@link Command#run})
+	 * @param {CommandoMessage} message - Command message that the command is running from (see {@link Command#run})
 	 * @param {Object|string|string[]} args - Arguments for the command (see {@link Command#run})
 	 * @param {boolean} fromPattern - Whether the args are pattern matches (see {@link Command#run})
 	 * @param {?ArgumentCollectorResult} result - Result from obtaining the arguments from the collector
@@ -343,18 +378,24 @@ class Command {
 	 * @returns {Promise<?Message|?Array<Message>>}
 	 */
 	onError(err, message, args, fromPattern, result) { // eslint-disable-line no-unused-vars
+		const lng = message.client.translator.resolveLanguage(message);
 		const owners = this.client.owners;
-		const ownerList = owners ? owners.map((usr, i) => {
+		const ownerList = Array.isArray(owners) ? owners.map((usr, i) => {
 			const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
 			return `${or}${escapeMarkdown(usr.username)}#${usr.discriminator}`;
-		}).join(owners.length > 2 ? ', ' : ' ') : '';
+		})
+			.join(owners.length > 2 ? ', ' : ' ') : '';
 
 		const invite = this.client.options.invite;
-		return message.reply(stripIndents`
-			An error occurred while running the command: \`${err.name}: ${err.message}\`
-			You shouldn't ever receive an error like this.
-			Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
-		`);
+		return message.reply(i18next.t('base.unknown_error', {
+			lng,
+			errorName: err.name,
+			errorMessage: err.message,
+			ownerList,
+			invite,
+			ownerCount: owners.length,
+			interpolation: { escapeValue: false }
+		}));
 	}
 
 	/**
@@ -429,10 +470,12 @@ class Command {
 	 * @param {string} [argString] - A string of arguments for the command
 	 * @param {string} [prefix=this.client.commandPrefix] - Prefix to use for the prefixed command format
 	 * @param {User} [user=this.client.user] - User to use for the mention command format
+	 * @param {string} [language] - language used to translate the usage string
 	 * @return {string}
 	 */
-	usage(argString, prefix = this.client.commandPrefix, user = this.client.user) {
-		return this.constructor.usage(`${this.name}${argString ? ` ${argString}` : ''}`, prefix, user);
+	usage(argString, prefix = this.client.commandPrefix, user = this.client.user,
+		language = this.client.defaultLanguage) {
+		return this.constructor.usage(`${this.name}${argString ? ` ${argString}` : ''}`, prefix, user, language);
 	}
 
 	/**
@@ -476,9 +519,10 @@ class Command {
 	 * @param {string} command - A command + arg string
 	 * @param {string} [prefix] - Prefix to use for the prefixed command format
 	 * @param {User} [user] - User to use for the mention command format
+	 * @param {string} [language] - language used to translate the usage string
 	 * @return {string}
 	 */
-	static usage(command, prefix = null, user = null) {
+	static usage(command, prefix = null, user = null, language = CommandoTranslator.DEFAULT_LANGUAGE) {
 		const nbcmd = command.replace(/ /g, '\xa0');
 		if(!prefix && !user) return `\`\`${nbcmd}\`\``;
 
@@ -492,7 +536,8 @@ class Command {
 		let mentionPart;
 		if(user) mentionPart = `\`\`@${user.username.replace(/ /g, '\xa0')}#${user.discriminator}\xa0${nbcmd}\`\``;
 
-		return `${prefixPart || ''}${prefix && user ? ' or ' : ''}${mentionPart || ''}`;
+		return `${prefixPart || ''}${prefix && user ? ` ${i18next.t('common.or',
+			{ lng: language })} ` : ''}${mentionPart || ''}`;
 	}
 
 	/**
@@ -516,11 +561,18 @@ class Command {
 		if(info.group !== info.group.toLowerCase()) throw new RangeError('Command group must be lowercase.');
 		if(typeof info.memberName !== 'string') throw new TypeError('Command memberName must be a string.');
 		if(info.memberName !== info.memberName.toLowerCase()) throw new Error('Command memberName must be lowercase.');
-		if(typeof info.description !== 'string') throw new TypeError('Command description must be a string.');
-		if('format' in info && typeof info.format !== 'string') throw new TypeError('Command format must be a string.');
-		if('details' in info && typeof info.details !== 'string') throw new TypeError('Command details must be a string.');
-		if(info.examples && (!Array.isArray(info.examples) || info.examples.some(ex => typeof ex !== 'string'))) {
-			throw new TypeError('Command examples must be an Array of strings.');
+		if(typeof info.description !== 'string' && typeof info.description !== 'object') {
+			throw new TypeError('Command description must be a string, or a CommandoTranslatable.');
+		}
+		if('format' in info && typeof info.format !== 'string' && typeof info.format !== 'object') {
+			throw new TypeError('Command format must be a string, or a CommandoTranslatable.');
+		}
+		if('details' in info && typeof info.details !== 'string' && typeof info.details !== 'object') {
+			throw new TypeError('Command details must be a string, or a CommandoTranslatable.');
+		}
+		if(info.examples && typeof info.examples !== 'object' && (!Array.isArray(info.examples) ||
+			info.examples.some(ex => typeof ex !== 'string'))) {
+			throw new TypeError('Command examples must be an Array of strings, or a CommandoTranslatable.');
 		}
 		if(info.clientPermissions) {
 			if(!Array.isArray(info.clientPermissions)) {
@@ -565,6 +617,40 @@ class Command {
 		if(info.patterns && (!Array.isArray(info.patterns) || info.patterns.some(pat => !(pat instanceof RegExp)))) {
 			throw new TypeError('Command patterns must be an Array of regular expressions.');
 		}
+	}
+
+	/**
+	 * Translates the translatable command info parts
+	 * @param {Command} [command] - The command holding the command info
+	 * @param {string} [language] - The language the command info will be translated to
+	 * @param {TOptions} [options] - i18next translate options object
+	 * @return {Partial<CommandInfo>}
+	 */
+	translate(command, language, options) {
+		if(typeof language === 'undefined') language = this.client.defaultLanguage;
+		if(typeof options === 'undefined') options = {};
+
+		return {
+			description: typeof command.description === 'string' || typeof command.description === 'undefined' ||
+			!command.description ? command.description :
+				i18next.t(command.description.key, { lng: language, ...options }),
+
+			format: typeof command.format === 'string' || typeof command.format === 'undefined' || !command.format ?
+				command.format : i18next.t(command.format.key, {
+					lng: language,
+					interpolation: { escapeValue: false }, ...options
+				}),
+
+			details: typeof command.details === 'string' || typeof command.details === 'undefined' || !command.details ?
+				command.details : i18next.t(command.details.key, { lng: language, ...options }),
+
+			examples: typeof command.examples === 'undefined' || Array.isArray(command.examples) || !command.examples ||
+			typeof command.examples === 'string' ? command.examples : i18next.t(command.examples.key, {
+				lng: language || this.client.defaultLanguage,
+				returnObjects: true,
+				...options
+			})
+		};
 	}
 }
 

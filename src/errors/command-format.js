@@ -1,4 +1,5 @@
 const FriendlyError = require('./friendly');
+const i18next = require('i18next');
 
 /**
  * Has a descriptive message for a command not having proper format
@@ -9,17 +10,21 @@ class CommandFormatError extends FriendlyError {
 	 * @param {CommandoMessage} msg - The command message the error is for
 	 */
 	constructor(msg) {
-		super(
-			`Invalid command usage. The \`${msg.command.name}\` command's accepted format is: ${msg.usage(
+		const lng = msg.client.translator.resolveLanguage(msg);
+		super(i18next.t('invalid_command_usage', {
+			lng,
+			commandName: msg.command.name,
+			usage: msg.usage(
 				msg.command.format,
 				msg.guild ? undefined : null,
 				msg.guild ? undefined : null
-			)}. Use ${msg.anyUsage(
+			),
+			anyUsage: msg.anyUsage(
 				`help ${msg.command.name}`,
 				msg.guild ? undefined : null,
 				msg.guild ? undefined : null
-			)} for more information.`
-		);
+			)
+		}));
 		this.name = 'CommandFormatError';
 	}
 }

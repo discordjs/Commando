@@ -1,6 +1,7 @@
 const ArgumentType = require('./base');
 const { disambiguation } = require('../util');
 const { escapeMarkdown } = require('discord.js');
+const i18next = require('i18next');
 
 class MemberArgumentType extends ArgumentType {
 	constructor(client) {
@@ -8,6 +9,7 @@ class MemberArgumentType extends ArgumentType {
 	}
 
 	async validate(val, msg, arg) {
+		const lng = msg.client.translator.resolveLanguage(msg);
 		const matches = val.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) {
 			try {
@@ -33,10 +35,17 @@ class MemberArgumentType extends ArgumentType {
 		}
 		if(exactMembers.size > 0) members = exactMembers;
 		return members.size <= 15 ?
-			`${disambiguation(
-				members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), 'members', null
-			)}\n` :
-			'Multiple members found. Please be more specific.';
+			`${i18next.t('error.too_many_found_with_list', {
+				lng,
+				label: '$t(common.member_plural)',
+				itemList: disambiguation(
+					members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), null
+				)
+			})}\n` :
+			i18next.t('error.too_many_found', {
+				lng,
+				what: '$t(common.member_plural)'
+			});
 	}
 
 	parse(val, msg) {

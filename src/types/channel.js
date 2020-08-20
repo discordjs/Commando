@@ -1,6 +1,7 @@
 const ArgumentType = require('./base');
 const { disambiguation } = require('../util');
 const { escapeMarkdown } = require('discord.js');
+const i18next = require('i18next');
 
 class ChannelArgumentType extends ArgumentType {
 	constructor(client) {
@@ -8,6 +9,7 @@ class ChannelArgumentType extends ArgumentType {
 	}
 
 	validate(val, msg, arg) {
+		const lng = msg.client.translator.resolveLanguage(msg);
 		const matches = val.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) return msg.guild.channels.cache.has(matches[1]);
 		const search = val.toLowerCase();
@@ -24,8 +26,17 @@ class ChannelArgumentType extends ArgumentType {
 		}
 		if(exactChannels.size > 0) channels = exactChannels;
 		return channels.size <= 15 ?
-			`${disambiguation(channels.map(chan => escapeMarkdown(chan.name)), 'channels', null)}\n` :
-			'Multiple channels found. Please be more specific.';
+			`${i18next.t('error.too_many_found_with_list', {
+				lng,
+				label: '$t(common.category_channel_plural)',
+				itemList: disambiguation(
+					channels.map(chan => escapeMarkdown(chan.name)), null
+				)
+			})}\n` :
+			i18next.t('error.too_many_found', {
+				lng,
+				what: '$t(common.category_channel_plural)'
+			});
 	}
 
 	parse(val, msg) {
@@ -46,7 +57,8 @@ function nameFilterExact(search) {
 }
 
 function nameFilterInexact(search) {
-	return thing => thing.name.toLowerCase().includes(search);
+	return thing => thing.name.toLowerCase()
+		.includes(search);
 }
 
 module.exports = ChannelArgumentType;

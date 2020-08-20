@@ -1,4 +1,5 @@
 const ArgumentType = require('./base');
+const i18next = require('i18next');
 
 class StringArgumentType extends ArgumentType {
 	constructor(client) {
@@ -6,14 +7,27 @@ class StringArgumentType extends ArgumentType {
 	}
 
 	validate(val, msg, arg) {
+		const lng = msg.client.translator.resolveLanguage(msg);
 		if(arg.oneOf && !arg.oneOf.includes(val.toLowerCase())) {
-			return `Please enter one of the following options: ${arg.oneOf.map(opt => `\`${opt}\``).join(', ')}`;
+			return i18next.t('argument_type.string.available_options', {
+				lng,
+				options: arg.oneOf.map(opt => `\`${opt}\``)
+					.join(', ')
+			});
 		}
 		if(arg.min !== null && typeof arg.min !== 'undefined' && val.length < arg.min) {
-			return `Please keep the ${arg.label} above or exactly ${arg.min} characters.`;
+			return i18next.t('argument_type.string.value_too_small', {
+				lng,
+				min: arg.min,
+				label: arg.label
+			});
 		}
 		if(arg.max !== null && typeof arg.max !== 'undefined' && val.length > arg.max) {
-			return `Please keep the ${arg.label} below or exactly ${arg.max} characters.`;
+			return i18next.t('argument_type.string.value_too_big', {
+				lng,
+				max: arg.max,
+				label: arg.label
+			});
 		}
 		return true;
 	}

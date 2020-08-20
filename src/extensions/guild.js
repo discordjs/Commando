@@ -1,6 +1,7 @@
 const { Structures } = require('discord.js');
 const Command = require('../commands/base');
 const GuildSettingsHelper = require('../providers/helper');
+const i18next = require('i18next');
 
 module.exports = Structures.extend('Guild', Guild => {
 	/**
@@ -25,6 +26,15 @@ module.exports = Structures.extend('Guild', Guild => {
 			 * @private
 			 */
 			this._commandPrefix = null;
+
+			/**
+			 * Internal language for the guild, controlled by the {@link CommandoGuild#language}
+			 * getter/setter
+			 * @name CommandoGuild#_commandPrefix
+			 * @type {?string}
+			 * @private
+			 */
+			this._language = null;
 		}
 
 		/**
@@ -47,6 +57,31 @@ module.exports = Structures.extend('Guild', Guild => {
 			 * @param {?string} prefix - New command prefix (null for default)
 			 */
 			this.client.emit('commandPrefixChange', this, this._commandPrefix);
+		}
+
+		/**
+		 * Language in the guild.
+		 * Setting to `null` means that the language from {@link CommandoClient#defaultLanguage} will be used instead.
+		 * @type {string}
+		 * @emits {@link CommandoClient#guildLanguageChange}
+		 */
+		get language() {
+			if(this._language === null) return this.client.defaultLanguage;
+			return this._language;
+		}
+
+		set language(language) {
+			this._language = language;
+			if(i18next.hasResourceBundle(language, 'commando')) {
+				/**
+				 * Emitted whenever a guild's language is changed
+				 * @typedef {object} CommandoClient#guildLanguageChange
+				 * @event CommandoClient#guildLanguageChange
+				 * @param {?CommandoGuild} guild - Guild that the prefix was changed in (null for global)
+				 * @param {?string} language - New language (null for default)
+				 */
+				this.client.emit('guildLanguageChange', this, this._language);
+			}
 		}
 
 		/**
@@ -140,7 +175,7 @@ module.exports = Structures.extend('Guild', Guild => {
 		 * @return {string}
 		 */
 		commandUsage(command, user = this.client.user) {
-			return Command.usage(command, this.commandPrefix, user);
+			return Command.usage(command, this.commandPrefix, user, user.locale);
 		}
 	}
 

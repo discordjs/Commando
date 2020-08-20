@@ -1,4 +1,5 @@
 const ArgumentType = require('./base');
+const i18next = require('i18next');
 
 /**
  * A type for command arguments that handles multiple other types
@@ -31,12 +32,17 @@ class ArgumentUnionType extends ArgumentType {
 	}
 
 	async parse(val, msg, arg) {
+		const lng = msg.client.translator.resolveLanguage(msg);
 		let results = this.types.map(type => !type.isEmpty(val, msg, arg) && type.validate(val, msg, arg));
 		results = await Promise.all(results);
 		for(let i = 0; i < results.length; i++) {
 			if(results[i] && typeof results[i] !== 'string') return this.types[i].parse(val, msg, arg);
 		}
-		throw new Error(`Couldn't parse value "${val}" with union type ${this.id}.`);
+		throw new Error(i18next.t('argument_type.union.argument_not_registered', {
+			lng,
+			val,
+			id: this.id
+		}));
 	}
 
 	isEmpty(val, msg, arg) {

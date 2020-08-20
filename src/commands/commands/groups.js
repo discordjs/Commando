@@ -1,5 +1,6 @@
-const { stripIndents } = require('common-tags');
 const Command = require('../base');
+const i18next = require('i18next');
+const { CommandoTranslatable } = require('../../translator');
 
 module.exports = class ListGroupsCommand extends Command {
 	constructor(client) {
@@ -8,8 +9,8 @@ module.exports = class ListGroupsCommand extends Command {
 			aliases: ['list-groups', 'show-groups'],
 			group: 'commands',
 			memberName: 'groups',
-			description: 'Lists all command groups.',
-			details: 'Only administrators may use this command.',
+			description: new CommandoTranslatable('command.groups.description'),
+			details: new CommandoTranslatable('command.groups.details'),
 			guarded: true
 		});
 	}
@@ -20,11 +21,14 @@ module.exports = class ListGroupsCommand extends Command {
 	}
 
 	run(msg) {
-		return msg.reply(stripIndents`
-			__**Groups**__
-			${this.client.registry.groups.map(grp =>
-				`**${grp.name}:** ${grp.isEnabledIn(msg.guild) ? 'Enabled' : 'Disabled'}`
-			).join('\n')}
-		`);
+		const lng = msg.client.translator.resolveLanguage(msg);
+		return msg.reply(i18next.t('command.groups.run.response', {
+			lng,
+			groups: `${this.client.registry.groups.map(grp =>
+				`**${grp.name}:** ${grp.isEnabledIn(msg.guild) ?
+					'$t(common.enabled_uppercase)' : '$t(common.disabled_uppercase)'}`
+			)
+				.join('\n')}`
+		}));
 	}
 };

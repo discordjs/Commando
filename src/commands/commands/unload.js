@@ -1,5 +1,6 @@
-const { oneLine } = require('common-tags');
 const Command = require('../base');
+const i18next = require('i18next');
+const { CommandoTranslatable } = require('../../translator');
 
 module.exports = class UnloadCommandCommand extends Command {
 	constructor(client) {
@@ -8,19 +9,16 @@ module.exports = class UnloadCommandCommand extends Command {
 			aliases: ['unload-command'],
 			group: 'commands',
 			memberName: 'unload',
-			description: 'Unloads a command.',
-			details: oneLine`
-				The argument must be the name/ID (partial or whole) of a command.
-				Only the bot owner(s) may use this command.
-			`,
-			examples: ['unload some-command'],
 			ownerOnly: true,
 			guarded: true,
 
+			description: new CommandoTranslatable('command.unload.description'),
+			details: new CommandoTranslatable('command.unload.details'),
+			examples: new CommandoTranslatable('command.unload.examples'),
 			args: [
 				{
 					key: 'command',
-					prompt: 'Which command would you like to unload?',
+					prompt: new CommandoTranslatable('command.unload.args.command.prompt'),
 					type: 'command'
 				}
 			]
@@ -28,6 +26,7 @@ module.exports = class UnloadCommandCommand extends Command {
 	}
 
 	async run(msg, args) {
+		const lng = msg.client.translator.resolveLanguage(msg);
 		args.command.unload();
 
 		if(this.client.shard) {
@@ -38,12 +37,19 @@ module.exports = class UnloadCommandCommand extends Command {
 			} catch(err) {
 				this.client.emit('warn', `Error when broadcasting command unload to other shards`);
 				this.client.emit('error', err);
-				await msg.reply(`Unloaded \`${args.command.name}\` command, but failed to unload on other shards.`);
+
+				await msg.reply(i18next.t('command.unload.run.unload_failed', {
+					lng,
+					groupName: args.command.name
+				}));
 				return null;
 			}
 		}
-
-		await msg.reply(`Unloaded \`${args.command.name}\` command${this.client.shard ? ' on all shards' : ''}.`);
+		await msg.reply(i18next.t('command.unload.run.unload_succeed', {
+			lng,
+			onShards: this.client.shard ? ' $t(common.on_all_shards)' : '',
+			groupName: args.command.name
+		}));
 		return null;
 	}
 };

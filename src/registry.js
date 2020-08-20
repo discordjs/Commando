@@ -298,6 +298,8 @@ class CommandoRegistry {
 	 * (requires "util" group and "string" type)
 	 * @param {boolean} [commands.prefix=true] - Whether to register the built-in prefix command
 	 * (requires "util" group and "string" type)
+	 * @param {boolean} [commands.language=true] - Whether to register the built-in language command
+	 * (requires "util" group and "string" type)
 	 * @param {boolean} [commands.eval=true] - Whether to register the built-in eval command
 	 * (requires "util" group and "string" type)
 	 * @param {boolean} [commands.ping=true] - Whether to register the built-in ping command (requires "util" group)
@@ -309,11 +311,12 @@ class CommandoRegistry {
 	 */
 	registerDefaultCommands(commands = {}) {
 		commands = {
-			help: true, prefix: true, ping: true, eval: true,
+			help: true, prefix: true, language: true, ping: true, eval: true,
 			unknownCommand: true, commandState: true, ...commands
 		};
 		if(commands.help) this.registerCommand(require('./commands/util/help'));
 		if(commands.prefix) this.registerCommand(require('./commands/util/prefix'));
+		if(commands.language) this.registerCommand(require('./commands/util/language'));
 		if(commands.ping) this.registerCommand(require('./commands/util/ping'));
 		if(commands.eval) this.registerCommand(require('./commands/util/eval'));
 		if(commands.unknownCommand) this.registerCommand(require('./commands/util/unknown-command'));

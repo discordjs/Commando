@@ -1,5 +1,6 @@
-const { oneLine } = require('common-tags');
 const Command = require('../base');
+const i18next = require('i18next');
+const { CommandoTranslatable } = require('../../translator');
 
 module.exports = class ReloadCommandCommand extends Command {
 	constructor(client) {
@@ -8,21 +9,17 @@ module.exports = class ReloadCommandCommand extends Command {
 			aliases: ['reload-command'],
 			group: 'commands',
 			memberName: 'reload',
-			description: 'Reloads a command or command group.',
-			details: oneLine`
-				The argument must be the name/ID (partial or whole) of a command or command group.
-				Providing a command group will reload all of the commands in that group.
-				Only the bot owner(s) may use this command.
-			`,
-			examples: ['reload some-command'],
+			description: new CommandoTranslatable('command.reload.description'),
+			details: new CommandoTranslatable('command.reload.details'),
+			examples: new CommandoTranslatable('command.reload.examples'),
 			ownerOnly: true,
 			guarded: true,
 
 			args: [
 				{
 					key: 'cmdOrGrp',
-					label: 'command/group',
-					prompt: 'Which command or group would you like to reload?',
+					label: new CommandoTranslatable('command.reload.args.cmd_or_grp.label'),
+					prompt: new CommandoTranslatable('command.reload.args.cmd_or_grp.prompt'),
 					type: 'group|command'
 				}
 			]
@@ -30,6 +27,7 @@ module.exports = class ReloadCommandCommand extends Command {
 	}
 
 	async run(msg, args) {
+		const lng = msg.client.translator.resolveLanguage(msg);
 		const { cmdOrGrp } = args;
 		const isCmd = Boolean(cmdOrGrp.groupID);
 		cmdOrGrp.reload();
@@ -44,24 +42,20 @@ module.exports = class ReloadCommandCommand extends Command {
 			} catch(err) {
 				this.client.emit('warn', `Error when broadcasting command reload to other shards`);
 				this.client.emit('error', err);
-				if(isCmd) {
-					await msg.reply(`Reloaded \`${cmdOrGrp.name}\` command, but failed to reload on other shards.`);
-				} else {
-					await msg.reply(
-						`Reloaded all of the commands in the \`${cmdOrGrp.name}\` group, but failed to reload on other shards.`
-					);
-				}
+				await msg.reply(i18next.t('command.reload.run.reload_failed', {
+					lng,
+					count: isCmd ? 1 : 100
+				}));
 				return null;
 			}
 		}
 
-		if(isCmd) {
-			await msg.reply(`Reloaded \`${cmdOrGrp.name}\` command${this.client.shard ? ' on all shards' : ''}.`);
-		} else {
-			await msg.reply(
-				`Reloaded all of the commands in the \`${cmdOrGrp.name}\` group${this.client.shard ? ' on all shards' : ''}.`
-			);
-		}
+		await msg.reply(i18next.t('command.reload.run.reload_succeed', {
+			lng,
+			onShards: this.client.shard ? ' $t(common.on_all_shards)' : '',
+			groupName: cmdOrGrp.name,
+			count: isCmd ? 1 : 100
+		}));
 		return null;
 	}
 };

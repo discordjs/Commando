@@ -1,6 +1,6 @@
 const fs = require('fs');
-const { oneLine } = require('common-tags');
 const Command = require('../base');
+const { CommandoTranslatable } = require('../../translator');
 
 module.exports = class LoadCommandCommand extends Command {
 	constructor(client) {
@@ -9,25 +9,22 @@ module.exports = class LoadCommandCommand extends Command {
 			aliases: ['load-command'],
 			group: 'commands',
 			memberName: 'load',
-			description: 'Loads a new command.',
-			details: oneLine`
-				The argument must be full name of the command in the format of \`group:memberName\`.
-				Only the bot owner(s) may use this command.
-			`,
-			examples: ['load some-command'],
+			description: new CommandoTranslatable('command.load.description'),
+			details: new CommandoTranslatable('command.load.details'),
+			examples: new CommandoTranslatable('command.load.examples'),
 			ownerOnly: true,
 			guarded: true,
 
 			args: [
 				{
 					key: 'command',
-					prompt: 'Which command would you like to load?',
+					prompt: new CommandoTranslatable('command.load.args.command.prompt'),
 					validate: val => new Promise(resolve => {
 						if(!val) return resolve(false);
 						const split = val.split(':');
 						if(split.length !== 2) return resolve(false);
 						if(this.client.registry.findCommands(val).length > 0) {
-							return resolve('That command is already registered.');
+							return resolve(new CommandoTranslatable('command.load.run.command_already_registered'));
 						}
 						const cmdPath = this.client.registry.resolveCommandPath(split[0], split[1]);
 						fs.access(cmdPath, fs.constants.R_OK, err => err ? resolve(false) : resolve(true));

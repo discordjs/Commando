@@ -1,6 +1,7 @@
 const { escapeMarkdown } = require('discord.js');
 const { oneLine, stripIndents } = require('common-tags');
 const ArgumentUnionType = require('../types/union');
+const i18next = require('i18next');
 
 /** A fancy argument */
 class Argument {
@@ -149,6 +150,7 @@ class Argument {
 	 * @param {number} [promptLimit=Infinity] - Maximum number of times to prompt for the argument
 	 * @return {Promise<ArgumentResult>}
 	 */
+	// eslint-disable-next-line complexity
 	async obtain(msg, val, promptLimit = Infinity) {
 		let empty = this.isEmpty(val, msg);
 		if(empty && this.default !== null) {
@@ -166,6 +168,10 @@ class Argument {
 		const answers = [];
 		let valid = !empty ? await this.validate(val, msg) : false;
 
+		if(typeof valid !== 'string' && typeof valid !== 'undefined' && valid.key) {
+			valid = i18next.t(valid.key, { lng: msg.client.translator.resolveLanguage(msg) });
+		}
+
 		while(!valid || typeof valid === 'string') {
 			/* eslint-disable no-await-in-loop */
 			if(prompts.length >= promptLimit) {
@@ -177,12 +183,33 @@ class Argument {
 				};
 			}
 
+			const lng = msg.client.translator.resolveLanguage(msg);
+			const label = typeof this.label === 'string' || typeof this.label === 'undefined' || !this.label ?
+				this.label : i18next.t(this.label.key, {
+					lng,
+					interpolation: { escapeValue: false }
+				});
+
 			// Prompt the user for a new value
 			prompts.push(await msg.reply(stripIndents`
-				${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
+				${empty ? typeof this.prompt === 'string' || typeof this.prompt === 'undefined' || !this.prompt ?
+				this.prompt : i18next.t(this.prompt.key, {
+					lng,
+					interpolation: { escapeValue: false }
+				}) :
+				valid ? valid : i18next.t('argument.invalid_label', {
+					lng,
+					label,
+					interpolation: { escapeValue: false }
+				})}
 				${oneLine`
-					Respond with \`cancel\` to cancel the command.
-					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+					${i18next.t('common.respond_to_cancel', { lng })}
+					${wait ?
+				i18next.t('common.command_will_be_canceled', {
+					lng,
+					seconds: this.wait
+				}) :
+				''}
 				`}
 			`));
 
@@ -206,7 +233,9 @@ class Argument {
 			}
 
 			// See if they want to cancel
-			if(val.toLowerCase() === 'cancel') {
+			if(val.toLowerCase() === i18next.t('common.cancel_command', {
+				lng
+			})) {
 				return {
 					value: null,
 					cancelled: 'user',
@@ -217,6 +246,9 @@ class Argument {
 
 			empty = this.isEmpty(val, msg);
 			valid = await this.validate(val, msg);
+			if(typeof valid !== 'string' && typeof valid !== 'undefined' && valid.key) {
+				valid = i18next.t(valid.key, { lng });
+			}
 			/* eslint-enable no-await-in-loop */
 		}
 
@@ -249,6 +281,10 @@ class Argument {
 			let valid = val ? await this.validate(val, msg) : false;
 			let attempts = 0;
 
+			if(typeof valid !== 'string' && typeof valid !== 'undefined' && valid.key) {
+				valid = i18next.t(valid.key, { lng: msg.client.translator.resolveLanguage(msg) });
+			}
+
 			while(!valid || typeof valid === 'string') {
 				attempts++;
 				if(attempts > promptLimit) {
@@ -260,26 +296,47 @@ class Argument {
 					};
 				}
 
+				const lng = msg.client.translator.resolveLanguage(msg);
+				const label = typeof this.label === 'string' || typeof this.label === 'undefined' || !this.label ?
+					this.label : i18next.t(this.label.key, {
+						lng,
+						interpolation: { escapeValue: false }
+					});
+
 				// Prompt the user for a new value
 				if(val) {
-					const escaped = escapeMarkdown(val).replace(/@/g, '@\u200b');
+					const escaped = escapeMarkdown(val)
+						.replace(/@/g, '@\u200b');
 					prompts.push(await msg.reply(stripIndents`
-						${valid ? valid : oneLine`
-							You provided an invalid ${this.label},
-							"${escaped.length < 1850 ? escaped : '[too long to show]'}".
-							Please try again.
-						`}
+						${valid ? valid :
+						i18next.t('argument.invalid_label', {
+							lng,
+							label,
+							context: 'extended',
+							escaped: escaped.length < 1850 ? escaped : '[$t(common.too_long_to_show)]',
+							interpolation: { escapeValue: false }
+						})}
 						${oneLine`
-							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
-							${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+							${i18next.t('common.respond_to_cancel_or_finish', { lng })}
+							${wait ?
+						i18next.t('common.command_will_be_canceled', {
+							lng,
+							seconds: this.wait
+						}) : ''}
 						`}
 					`));
 				} else if(results.length === 0) {
 					prompts.push(await msg.reply(stripIndents`
-						${this.prompt}
+						${typeof this.prompt === 'string' || typeof this.prompt === 'undefined' || !this.prompt ?
+						this.prompt : i18next.t(this.prompt.key,
+							{ lng: msg.client.translator.resolveLanguage(msg) })}
 						${oneLine`
-							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
-							${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
+							${i18next.t('common.respond_to_cancel_or_finish', { lng })}
+							${wait ?
+						i18next.t('common.command_will_be_canceled', {
+							lng,
+							seconds: this.wait
+						}) : ''}
 						`}
 					`));
 				}
@@ -305,7 +362,9 @@ class Argument {
 
 				// See if they want to finish or cancel
 				const lc = val.toLowerCase();
-				if(lc === 'finish') {
+				if(lc === i18next.t('common.finish_command', {
+					lng
+				})) {
 					return {
 						value: results.length > 0 ? results : null,
 						cancelled: this.default ? null : results.length > 0 ? null : 'user',
@@ -313,7 +372,9 @@ class Argument {
 						answers
 					};
 				}
-				if(lc === 'cancel') {
+				if(lc === i18next.t('common.cancel_command', {
+					lng
+				})) {
 					return {
 						value: null,
 						cancelled: 'user',
@@ -323,6 +384,9 @@ class Argument {
 				}
 
 				valid = await this.validate(val, msg);
+				if(typeof valid !== 'string' && typeof valid !== 'undefined' && valid.key) {
+					valid = i18next.t(valid.key, { lng });
+				}
 			}
 
 			results.push(await this.parse(val, msg));
@@ -349,7 +413,10 @@ class Argument {
 	 * @return {boolean|string|Promise<boolean|string>}
 	 */
 	validate(val, msg) {
-		const valid = this.validator ? this.validator(val, msg, this) : this.type.validate(val, msg, this);
+		let valid = this.validator ? this.validator(val, msg, this) : this.type.validate(val, msg, this);
+		if(typeof valid !== 'string' && typeof valid !== 'undefined' && valid.key) {
+			valid = i18next.t(valid.key, { lng: msg.client.translator.resolveLanguage(msg) });
+		}
 		if(!valid || typeof valid === 'string') return this.error || valid;
 		if(valid instanceof Promise) return valid.then(vld => !vld || typeof vld === 'string' ? this.error || vld : vld);
 		return valid;
@@ -389,8 +456,12 @@ class Argument {
 		if(!client) throw new Error('The argument client must be specified.');
 		if(typeof info !== 'object') throw new TypeError('Argument info must be an Object.');
 		if(typeof info.key !== 'string') throw new TypeError('Argument key must be a string.');
-		if(info.label && typeof info.label !== 'string') throw new TypeError('Argument label must be a string.');
-		if(typeof info.prompt !== 'string') throw new TypeError('Argument prompt must be a string.');
+		if(info.label && typeof info.label !== 'string' && typeof info.label !== 'object') {
+			throw new TypeError('Argument label must be a string, or a CommandoTranslatable.');
+		}
+		if(typeof info.prompt !== 'string' && typeof info.prompt !== 'object') {
+			throw new TypeError('Argument prompt must be a string, or a CommandoTranslatable.');
+		}
 		if(info.error && typeof info.error !== 'string') throw new TypeError('Argument error must be a string.');
 		if(info.type && typeof info.type !== 'string') throw new TypeError('Argument type must be a string.');
 		if(info.type && !info.type.includes('|') && !client.registry.types.has(info.type)) {

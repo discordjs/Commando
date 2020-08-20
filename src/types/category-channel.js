@@ -1,6 +1,7 @@
 const ArgumentType = require('./base');
 const { disambiguation } = require('../util');
 const { escapeMarkdown } = require('discord.js');
+const i18next = require('i18next');
 
 class CategoryChannelArgumentType extends ArgumentType {
 	constructor(client) {
@@ -8,6 +9,7 @@ class CategoryChannelArgumentType extends ArgumentType {
 	}
 
 	validate(val, msg, arg) {
+		const lng = msg.client.translator.resolveLanguage(msg);
 		const matches = val.match(/^([0-9]+)$/);
 		if(matches) {
 			try {
@@ -34,10 +36,17 @@ class CategoryChannelArgumentType extends ArgumentType {
 		}
 		if(exactChannels.size > 0) channels = exactChannels;
 		return channels.size <= 15 ?
-			`${disambiguation(
-				channels.map(chan => escapeMarkdown(chan.name)), 'categories', null
-			)}\n` :
-			'Multiple categories found. Please be more specific.';
+			`${i18next.t('error.too_many_found_with_list', {
+				lng,
+				label: '$t(common.categories)',
+				itemList: disambiguation(
+					channels.map(chan => escapeMarkdown(chan.name)), null
+				)
+			})}\n` :
+			i18next.t('error.too_many_found', {
+				lng,
+				what: '$t(common.categories)'
+			});
 	}
 
 	parse(val, msg) {
@@ -59,7 +68,8 @@ function channelFilterExact(search) {
 }
 
 function channelFilterInexact(search) {
-	return chan => chan.type === 'category' && chan.name.toLowerCase().includes(search);
+	return chan => chan.type === 'category' && chan.name.toLowerCase()
+		.includes(search);
 }
 
 module.exports = CategoryChannelArgumentType;

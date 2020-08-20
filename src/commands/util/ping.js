@@ -1,5 +1,7 @@
-const { oneLine } = require('common-tags');
 const Command = require('../base');
+const { CommandoTranslatable } = require('../../translator');
+const i18next = require('i18next');
+
 
 module.exports = class PingCommand extends Command {
 	constructor(client) {
@@ -7,7 +9,7 @@ module.exports = class PingCommand extends Command {
 			name: 'ping',
 			group: 'util',
 			memberName: 'ping',
-			description: 'Checks the bot\'s ping to the Discord server.',
+			description: new CommandoTranslatable('command.ping.description'),
 			throttling: {
 				usages: 5,
 				duration: 10
@@ -16,13 +18,17 @@ module.exports = class PingCommand extends Command {
 	}
 
 	async run(msg) {
-		const pingMsg = await msg.reply('Pinging...');
-		return pingMsg.edit(oneLine`
-			${msg.channel.type !== 'dm' ? `${msg.author},` : ''}
-			Pong! The message round-trip took ${
-				(pingMsg.editedTimestamp || pingMsg.createdTimestamp) - (msg.editedTimestamp || msg.createdTimestamp)
-			}ms.
-			${this.client.ws.ping ? `The heartbeat ping is ${Math.round(this.client.ws.ping)}ms.` : ''}
-		`);
+		const lng = msg.client.translator.resolveLanguage(msg);
+		const pingMsg = await msg.reply(i18next.t('command.ping.run.pinging', {
+			lng
+		}));
+		return pingMsg.edit(i18next.t('command.ping.run.pong', {
+			lng,
+			mention: msg.channel.type !== 'dm' ? `${msg.author},` : '',
+			duration: (pingMsg.editedTimestamp || pingMsg.createdTimestamp) - (msg.editedTimestamp || msg.createdTimestamp),
+			heartbeatPing: Math.round(this.client.ws.ping),
+			pingResponse: this.client.ws.ping ?
+				`$t(command.ping.run.heartbeat_ping)` : ''
+		}));
 	}
 };

@@ -1,5 +1,6 @@
-const { oneLine } = require('common-tags');
 const Command = require('../base');
+const i18next = require('i18next');
+const { CommandoTranslatable } = require('../../translator');
 
 module.exports = class EnableCommandCommand extends Command {
 	constructor(client) {
@@ -8,19 +9,16 @@ module.exports = class EnableCommandCommand extends Command {
 			aliases: ['enable-command', 'cmd-on', 'command-on'],
 			group: 'commands',
 			memberName: 'enable',
-			description: 'Enables a command or command group.',
-			details: oneLine`
-				The argument must be the name/ID (partial or whole) of a command or command group.
-				Only administrators may use this command.
-			`,
-			examples: ['enable util', 'enable Utility', 'enable prefix'],
+			description: new CommandoTranslatable('command.enable.description'),
+			details: new CommandoTranslatable('command.enable.details'),
+			examples: new CommandoTranslatable('command.enable.examples'),
 			guarded: true,
 
 			args: [
 				{
 					key: 'cmdOrGrp',
-					label: 'command/group',
-					prompt: 'Which command or group would you like to enable?',
+					label: new CommandoTranslatable('command.enable.args.cmd_or_grp.label'),
+					prompt: new CommandoTranslatable('command.enable.args.cmd_or_grp.prompt'),
 					type: 'group|command'
 				}
 			]
@@ -33,23 +31,27 @@ module.exports = class EnableCommandCommand extends Command {
 	}
 
 	run(msg, args) {
+		const lng = msg.client.translator.resolveLanguage(msg);
 		const group = args.cmdOrGrp.group;
+		const type = args.cmdOrGrp.group ? 'command' : 'group';
 		if(args.cmdOrGrp.isEnabledIn(msg.guild, true)) {
 			return msg.reply(
-				`The \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'} is already enabled${
-					group && !group.isEnabledIn(msg.guild) ?
-					`, but the \`${group.name}\` group is disabled, so it still can't be used` :
-					''
-				}.`
+				i18next.t('command.enable.run.group_already_enabled', {
+					group,
+					type,
+					disabledMessage: '$t(command.enable.run.group_disabled)',
+					lng
+				})
 			);
 		}
 		args.cmdOrGrp.setEnabledIn(msg.guild, true);
 		return msg.reply(
-			`Enabled the \`${args.cmdOrGrp.name}\` ${group ? 'command' : 'group'}${
-				group && !group.isEnabledIn(msg.guild) ?
-				`, but the \`${group.name}\` group is disabled, so it still can't be used` :
-				''
-			}.`
+			i18next.t('command.enable.run.group_enabled', {
+				group,
+				type,
+				disabledMessage: '$t(command.enable.run.group_disabled)',
+				lng
+			})
 		);
 	}
 };

@@ -92,6 +92,7 @@ class SyncSQLiteProvider extends SettingProvider {
 		// Listen for changes
 		this.listeners
 			.set('commandPrefixChange', (guild, prefix) => this.set(guild, 'prefix', prefix))
+			.set('guildLanguageChange', (guild, language) => this.set(guild, 'language', language))
 			.set('commandStatusChange', (guild, command, enabled) => this.set(guild, `cmd-${command.name}`, enabled))
 			.set('groupStatusChange', (guild, group, enabled) => this.set(guild, `grp-${group.id}`, enabled))
 			.set('guildCreate', guild => {
@@ -172,6 +173,12 @@ class SyncSQLiteProvider extends SettingProvider {
 		if(typeof settings.prefix !== 'undefined') {
 			if(guild) guild._commandPrefix = settings.prefix;
 			else this.client._commandPrefix = settings.prefix;
+		}
+
+		// Load the command prefix
+		if(typeof settings.language !== 'undefined') {
+			if(guild) guild._language = settings.language;
+			else this.client._defaultLanguage = settings.language;
 		}
 
 		// Load all command/group statuses

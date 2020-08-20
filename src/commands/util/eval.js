@@ -3,6 +3,8 @@ const discord = require('discord.js');
 const tags = require('common-tags');
 const { escapeRegex } = require('../../util');
 const Command = require('../base');
+const { CommandoTranslatable } = require('../../translator');
+const i18next = require('i18next');
 
 const nl = '!!NL!!';
 const nlPattern = new RegExp(nl, 'g');
@@ -13,21 +15,24 @@ module.exports = class EvalCommand extends Command {
 			name: 'eval',
 			group: 'util',
 			memberName: 'eval',
-			description: 'Executes JavaScript code.',
-			details: 'Only the bot owner(s) may use this command.',
+			description: new CommandoTranslatable('command.eval.description'),
+			details: new CommandoTranslatable('command.eval.details'),
 			ownerOnly: true,
 
 			args: [
 				{
 					key: 'script',
-					prompt: 'What code would you like to evaluate?',
+					prompt: new CommandoTranslatable('command.eval.args.script.prompt'),
 					type: 'string'
 				}
 			]
 		});
 
 		this.lastResult = null;
-		Object.defineProperty(this, '_sensitivePattern', { value: null, configurable: true });
+		Object.defineProperty(this, '_sensitivePattern', {
+			value: null,
+			configurable: true
+		});
 	}
 
 	run(msg, args) {
@@ -36,11 +41,15 @@ module.exports = class EvalCommand extends Command {
 		const message = msg;
 		const client = msg.client;
 		const lastResult = this.lastResult;
+		const lng = msg.client.translator.resolveLanguage(msg);
 		const doReply = val => {
 			if(val instanceof Error) {
-				msg.reply(`Callback error: \`${val}\``);
+				msg.reply(i18next.t('command.eval.run.callback_error', {
+					lng,
+					val
+				}));
 			} else {
-				const result = this.makeResultMessages(val, process.hrtime(this.hrStart));
+				const result = this.makeResultMessages(val, process.hrtime(this.hrStart), lng);
 				if(Array.isArray(result)) {
 					for(const item of result) msg.reply(item);
 				} else {
@@ -57,12 +66,15 @@ module.exports = class EvalCommand extends Command {
 			this.lastResult = eval(args.script);
 			hrDiff = process.hrtime(hrStart);
 		} catch(err) {
-			return msg.reply(`Error while evaluating: \`${err}\``);
+			return msg.reply(i18next.t('command.eval.run.evaluating_error', {
+				lng,
+				err
+			}));
 		}
 
 		// Prepare for callback time and respond
 		this.hrStart = process.hrtime();
-		const result = this.makeResultMessages(this.lastResult, hrDiff, args.script);
+		const result = this.makeResultMessages(this.lastResult, hrDiff, args.script, lng);
 		if(Array.isArray(result)) {
 			return result.map(item => msg.reply(item));
 		} else {
@@ -70,32 +82,52 @@ module.exports = class EvalCommand extends Command {
 		}
 	}
 
-	makeResultMessages(result, hrDiff, input = null) {
+	makeResultMessages(result, hrDiff, input = null, lng) {
 		const inspected = util.inspect(result, { depth: 0 })
 			.replace(nlPattern, '\n')
 			.replace(this.sensitivePattern, '--snip--');
 		const split = inspected.split('\n');
 		const last = inspected.length - 1;
-		const prependPart = inspected[0] !== '{' && inspected[0] !== '[' && inspected[0] !== "'" ? split[0] : inspected[0];
-		const appendPart = inspected[last] !== '}' && inspected[last] !== ']' && inspected[last] !== "'" ?
+		const prependPart = inspected[0] !== '{' && inspected[0] !== '[' && inspected[0] !== '\'' ? split[0] : inspected[0];
+		const appendPart = inspected[last] !== '}' && inspected[last] !== ']' && inspected[last] !== '\'' ?
 			split[split.length - 1] :
 			inspected[last];
 		const prepend = `\`\`\`javascript\n${prependPart}\n`;
 		const append = `\n${appendPart}\n\`\`\``;
 		if(input) {
 			return discord.splitMessage(tags.stripIndents`
-				*Executed in ${hrDiff[0] > 0 ? `${hrDiff[0]}s ` : ''}${hrDiff[1] / 1000000}ms.*
+				${
+				i18next.t('command.eval.run.executed_in', {
+					lng,
+					// eslint-disable-next-line id-length
+					s: hrDiff[0] > 0 ? `${hrDiff[0]}$t(common.s) ` : '',
+					ms: `${hrDiff[1] / 1000000}$t(common.ms)`
+				})}
 				\`\`\`javascript
 				${inspected}
 				\`\`\`
-			`, { maxLength: 1900, prepend, append });
+			`, {
+				maxLength: 1900,
+				prepend,
+				append
+			});
 		} else {
 			return discord.splitMessage(tags.stripIndents`
-				*Callback executed after ${hrDiff[0] > 0 ? `${hrDiff[0]}s ` : ''}${hrDiff[1] / 1000000}ms.*
+			${
+				i18next.t('command.eval.run.executed_after', {
+					lng,
+					// eslint-disable-next-line id-length
+					s: hrDiff[0] > 0 ? `${hrDiff[0]}$t(common.s) ` : '',
+					ms: `${hrDiff[1] / 1000000}$t(common.ms)`
+				})}
 				\`\`\`javascript
 				${inspected}
 				\`\`\`
-			`, { maxLength: 1900, prepend, append });
+			`, {
+				maxLength: 1900,
+				prepend,
+				append
+			});
 		}
 	}
 
@@ -104,7 +136,10 @@ module.exports = class EvalCommand extends Command {
 			const client = this.client;
 			let pattern = '';
 			if(client.token) pattern += escapeRegex(client.token);
-			Object.defineProperty(this, '_sensitivePattern', { value: new RegExp(pattern, 'gi'), configurable: false });
+			Object.defineProperty(this, '_sensitivePattern', {
+				value: new RegExp(pattern, 'gi'),
+				configurable: false
+			});
 		}
 		return this._sensitivePattern;
 	}

@@ -1,6 +1,7 @@
 const ArgumentType = require('./base');
 const { disambiguation } = require('../util');
 const { escapeMarkdown } = require('discord.js');
+const i18next = require('i18next');
 
 class UserArgumentType extends ArgumentType {
 	constructor(client) {
@@ -8,6 +9,7 @@ class UserArgumentType extends ArgumentType {
 	}
 
 	async validate(val, msg, arg) {
+		const lng = msg.client.translator.resolveLanguage(msg);
 		const matches = val.match(/^(?:<@!?)?([0-9]+)>?$/);
 		if(matches) {
 			try {
@@ -34,10 +36,17 @@ class UserArgumentType extends ArgumentType {
 		}
 		if(exactMembers.size > 0) members = exactMembers;
 		return members.size <= 15 ?
-			`${disambiguation(
-				members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), 'users', null
-			)}\n` :
-			'Multiple users found. Please be more specific.';
+			`${i18next.t('error.too_many_found_with_list', {
+				lng,
+				label: '$t(common.user_plural)',
+				itemList: disambiguation(
+					members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), null
+				)
+			})}\n` :
+			i18next.t('error.too_many_found', {
+				lng,
+				what: '$t(common.user_plural)'
+			});
 	}
 
 	parse(val, msg) {
@@ -61,8 +70,10 @@ function memberFilterExact(search) {
 }
 
 function memberFilterInexact(search) {
-	return mem => mem.user.username.toLowerCase().includes(search) ||
-		(mem.nickname && mem.nickname.toLowerCase().includes(search)) ||
+	return mem => mem.user.username.toLowerCase()
+			.includes(search) ||
+		(mem.nickname && mem.nickname.toLowerCase()
+			.includes(search)) ||
 		`${mem.user.username.toLowerCase()}#${mem.user.discriminator}`.includes(search);
 }
 

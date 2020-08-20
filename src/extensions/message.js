@@ -3,6 +3,7 @@ const { oneLine } = require('common-tags');
 const Command = require('../commands/base');
 const FriendlyError = require('../errors/friendly');
 const CommandFormatError = require('../errors/command-format');
+const i18next = require('i18next');
 
 module.exports = Structures.extend('Message', Message => {
 	/**
@@ -52,9 +53,9 @@ module.exports = Structures.extend('Message', Message => {
 
 		/**
 		 * Initialises the message for a command
-	 	 * @param {Command} [command] - Command the message triggers
-	 	 * @param {string} [argString] - Argument string for the command
-	 	 * @param {?Array<string>} [patternMatches] - Command pattern matches (if from a pattern trigger)
+		 * @param {Command} [command] - Command the message triggers
+		 * @param {string} [argString] - Argument string for the command
+		 * @param {?Array<string>} [patternMatches] - Command pattern matches (if from a pattern trigger)
 		 * @return {Message} This message
 		 * @private
 		 */
@@ -76,8 +77,11 @@ module.exports = Structures.extend('Message', Message => {
 		 */
 		usage(argString, prefix, user = this.client.user) {
 			if(typeof prefix === 'undefined') {
-				if(this.guild) prefix = this.guild.commandPrefix;
-				else prefix = this.client.commandPrefix;
+				if(this.guild) {
+					prefix = this.guild.commandPrefix;
+				} else {
+					prefix = this.client.commandPrefix;
+				}
 			}
 			return this.command.usage(argString, prefix, user);
 		}
@@ -92,8 +96,11 @@ module.exports = Structures.extend('Message', Message => {
 		 */
 		anyUsage(command, prefix, user = this.client.user) {
 			if(typeof prefix === 'undefined') {
-				if(this.guild) prefix = this.guild.commandPrefix;
-				else prefix = this.client.commandPrefix;
+				if(this.guild) {
+					prefix = this.guild.commandPrefix;
+				} else {
+					prefix = this.client.commandPrefix;
+				}
 			}
 			return Command.usage(command, prefix, user);
 		}
@@ -106,9 +113,10 @@ module.exports = Structures.extend('Message', Message => {
 		parseArgs() {
 			switch(this.command.argsType) {
 				case 'single':
-					return this.argString.trim().replace(
-						this.command.argsSingleQuotes ? /^("|')([^]*)\1$/g : /^(")([^]*)"$/g, '$2'
-					);
+					return this.argString.trim()
+						.replace(
+							this.command.argsSingleQuotes ? /^("|')([^]*)\1$/g : /^(")([^]*)"$/g, '$2'
+						);
 				case 'multiple':
 					return this.constructor.parseArgs(this.argString, this.command.argsCount, this.command.argsSingleQuotes);
 				default:
@@ -166,7 +174,8 @@ module.exports = Structures.extend('Message', Message => {
 
 			// Ensure the client user has the required permissions
 			if(this.channel.type === 'text' && this.command.clientPermissions) {
-				const missing = this.channel.permissionsFor(this.client.user).missing(this.command.clientPermissions);
+				const missing = this.channel.permissionsFor(this.client.user)
+					.missing(this.command.clientPermissions);
 				if(missing.length > 0) {
 					const data = { missing };
 					this.client.emit('commandBlock', this, 'clientPermissions', data);
@@ -178,7 +187,10 @@ module.exports = Structures.extend('Message', Message => {
 			const throttle = this.command.throttle(this.author.id);
 			if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
 				const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
-				const data = { throttle, remaining };
+				const data = {
+					throttle,
+					remaining
+				};
 				this.client.emit('commandBlock', this, 'throttling', data);
 				return this.command.onBlock(this, 'throttling', data);
 			}
@@ -207,7 +219,8 @@ module.exports = Structures.extend('Message', Message => {
 					 * (if applicable - see {@link Command#run})
 					 */
 					this.client.emit('commandCancel', this.command, collResult.cancelled, this, collResult);
-					return this.reply('Cancelled command.');
+					const lng = this.client.translator.resolveLanguage(this);
+					return this.reply(i18next.t('common.canceled_command', { lng }));
 				}
 				args = collResult.values;
 			}
@@ -277,7 +290,8 @@ module.exports = Structures.extend('Message', Message => {
 
 			if(type === 'reply' && this.channel.type === 'dm') type = 'plain';
 			if(type !== 'direct') {
-				if(this.guild && !this.channel.permissionsFor(this.client.user).has('SEND_MESSAGES')) {
+				if(this.guild && !this.channel.permissionsFor(this.client.user)
+					.has('SEND_MESSAGES')) {
 					type = 'direct';
 				}
 			}
@@ -287,14 +301,26 @@ module.exports = Structures.extend('Message', Message => {
 			switch(type) {
 				case 'plain':
 					if(!shouldEdit) return this.channel.send(content, options);
-					return this.editCurrentResponse(channelIDOrDM(this.channel), { type, content, options });
+					return this.editCurrentResponse(channelIDOrDM(this.channel), {
+						type,
+						content,
+						options
+					});
 				case 'reply':
 					if(!shouldEdit) return super.reply(content, options);
 					if(options && options.split && !options.split.prepend) options.split.prepend = `${this.author}, `;
-					return this.editCurrentResponse(channelIDOrDM(this.channel), { type, content, options });
+					return this.editCurrentResponse(channelIDOrDM(this.channel), {
+						type,
+						content,
+						options
+					});
 				case 'direct':
 					if(!shouldEdit) return this.author.send(content, options);
-					return this.editCurrentResponse('dm', { type, content, options });
+					return this.editCurrentResponse('dm', {
+						type,
+						content,
+						options
+					});
 				case 'code':
 					if(!shouldEdit) return this.channel.send(content, options);
 					if(options && options.split) {
@@ -302,7 +328,11 @@ module.exports = Structures.extend('Message', Message => {
 						if(!options.split.append) options.split.append = '\n```';
 					}
 					content = `\`\`\`${lang || ''}\n${escapeMarkdown(content, true)}\n\`\`\``;
-					return this.editCurrentResponse(channelIDOrDM(this.channel), { type, content, options });
+					return this.editCurrentResponse(channelIDOrDM(this.channel), {
+						type,
+						content,
+						options
+					});
 				default:
 					throw new RangeError(`Unknown response type "${type}".`);
 			}
@@ -316,7 +346,14 @@ module.exports = Structures.extend('Message', Message => {
 		 * @private
 		 */
 		editResponse(response, { type, content, options }) {
-			if(!response) return this.respond({ type, content, options, fromEdit: true });
+			if(!response) {
+				return this.respond({
+					type,
+					content,
+					options,
+					fromEdit: true
+				});
+			}
 			if(options && options.split) content = splitMessage(content, options.split);
 
 			let prepend = '';
@@ -326,8 +363,11 @@ module.exports = Structures.extend('Message', Message => {
 				const promises = [];
 				if(response instanceof Array) {
 					for(let i = 0; i < content.length; i++) {
-						if(response.length > i) promises.push(response[i].edit(`${prepend}${content[i]}`, options));
-						else promises.push(response[0].channel.send(`${prepend}${content[i]}`));
+						if(response.length > i) {
+							promises.push(response[i].edit(`${prepend}${content[i]}`, options));
+						} else {
+							promises.push(response[0].channel.send(`${prepend}${content[i]}`));
+						}
 					}
 				} else {
 					promises.push(response.edit(`${prepend}${content[0]}`, options));
@@ -371,7 +411,11 @@ module.exports = Structures.extend('Message', Message => {
 				options = content;
 				content = '';
 			}
-			return this.respond({ type: 'plain', content, options });
+			return this.respond({
+				type: 'plain',
+				content,
+				options
+			});
 		}
 
 		/**
@@ -385,7 +429,11 @@ module.exports = Structures.extend('Message', Message => {
 				options = content;
 				content = '';
 			}
-			return this.respond({ type: 'reply', content, options });
+			return this.respond({
+				type: 'reply',
+				content,
+				options
+			});
 		}
 
 		/**
@@ -399,7 +447,11 @@ module.exports = Structures.extend('Message', Message => {
 				options = content;
 				content = '';
 			}
-			return this.respond({ type: 'direct', content, options });
+			return this.respond({
+				type: 'direct',
+				content,
+				options
+			});
 		}
 
 		/**
@@ -416,7 +468,11 @@ module.exports = Structures.extend('Message', Message => {
 			}
 			if(typeof options !== 'object') options = {};
 			options.code = lang;
-			return this.respond({ type: 'code', content, options });
+			return this.respond({
+				type: 'code',
+				content,
+				options
+			});
 		}
 
 		/**
@@ -429,7 +485,11 @@ module.exports = Structures.extend('Message', Message => {
 		embed(embed, content = '', options) {
 			if(typeof options !== 'object') options = {};
 			options.embed = embed;
-			return this.respond({ type: 'plain', content, options });
+			return this.respond({
+				type: 'plain',
+				content,
+				options
+			});
 		}
 
 		/**
@@ -442,7 +502,11 @@ module.exports = Structures.extend('Message', Message => {
 		replyEmbed(embed, content = '', options) {
 			if(typeof options !== 'object') options = {};
 			options.embed = embed;
-			return this.respond({ type: 'reply', content, options });
+			return this.respond({
+				type: 'reply',
+				content,
+				options
+			});
 		}
 
 		/**
@@ -509,7 +573,8 @@ module.exports = Structures.extend('Message', Message => {
 			// If text remains, push it to the array as-is (except for wrapping quotes, which are removed)
 			if(match && re.lastIndex < argString.length) {
 				const re2 = allowSingleQuote ? /^("|')([^]*)\1$/g : /^(")([^]*)"$/g;
-				result.push(argString.substr(re.lastIndex).replace(re2, '$2'));
+				result.push(argString.substr(re.lastIndex)
+					.replace(re2, '$2'));
 			}
 			return result;
 		}
