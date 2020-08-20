@@ -28,7 +28,8 @@ module.exports = class PingCommand extends Command {
 			duration: (pingMsg.editedTimestamp || pingMsg.createdTimestamp) - (msg.editedTimestamp || msg.createdTimestamp),
 			heartbeatPing: Math.round(this.client.ws.ping),
 			pingResponse: this.client.ws.ping ?
-				`$t(command.ping.run.heartbeat_ping)` : ''
+				`$t(command.ping.run.heartbeat_ping)` : '',
+			interpolation: { escapeValue: false }
 		}));
 	}
 };
