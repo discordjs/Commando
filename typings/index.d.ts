@@ -529,8 +529,10 @@ declare module 'discord.js-commando' {
 	export interface CommandoTranslatorOptions {
 		ns?: string | string[];
 		loadTranslations?: boolean;
-		localesPath?:string;
-		debug?:boolean;
+		localesPath?: string;
+		supportedLanguages?: string[];
+		defaultNamespace?: string;
+		debug?: boolean;
 		overrides?: TInitOptions;
 	}
 }

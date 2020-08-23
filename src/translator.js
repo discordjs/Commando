@@ -12,8 +12,11 @@ class CommandoTranslator {
 	 * @typedef {Object} CommandoTranslatorOptions
 	 * @property {?boolean} loadTranslations - Weather the translator should load translation files or only the builtins.
 	 * @property {?boolean} debug - Sets the i18next debug flag. Use it to resolve issues when loading i18n files.
-	 * @property {?string} localesPath - path where the i18n files are located.
+	 * @property {?string} localesPath - Path where the i18n files are located.
 	 * @see {@link https://www.i18next.com/how-to/add-or-load-translations#add-or-load-translations}
+	 * @property {?string[]} supportedLanguages - Array of language codes, your bot will support.
+	 * @property {?string} defaultNamespace - The namespace used for builtin strings.
+	 * @see {@link https://www.i18next.com/principles/namespaces} to learn more about namespaces in i18next!
 	 * @property {?TranslateOptions} overrides - Overrides the i18next options.
 	 * @see {@link https://www.i18next.com/overview/configuration-options}
 	 */
@@ -38,12 +41,14 @@ class CommandoTranslator {
 		this.loadPath = options.localesPath;
 		this.debug = options.debug === true;
 		this.overrides = options.overrides || {};
+		this.supportedLanguages = options.supportedLanguages || [];
+		this.defaultNamespace = options.defaultNamespace || 'commando';
 
 		this.options = {
 			lng: client.defaultLanguage,
-			ns: ['commando', ...this.ns],
-			fallbackLng: ['dev'],
-			defaultNS: 'commando',
+			ns: [this.defaultNamespace, ...this.ns],
+			fallbackLng: ['dev', ...this.supportedLanguages],
+			defaultNS: this.defaultNamespace,
 			debug: this.debug,
 			...this.overrides
 		};
