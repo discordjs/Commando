@@ -88,13 +88,13 @@ module.exports = class LanguageCommand extends Command {
 		} else {
 			// Set the language
 			if(!i18next.hasResourceBundle(language, 'commando')) {
-				const availableLanguages = i18next.languages || [];
+				const availableLanguages = i18next.languages.filter(languageCode => languageCode !== 'dev');
+
 				return msg.reply(i18next.t('command.language.run.language_not_supported', {
 					lng,
 					language,
 					context: availableLanguages.length === 0 ? 'short' : '',
-					availableLanguages: availableLanguages.filter(languageCode => languageCode !== 'dev')
-						.join('\n- ')
+					availableLanguages: availableLanguages.join(', ')
 				}));
 			}
 			if(msg.guild) msg.guild.language = language; else this.client.defaultLanguage = language;
