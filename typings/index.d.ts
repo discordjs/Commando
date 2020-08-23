@@ -13,12 +13,12 @@ declare module 'discord.js-commando' {
 		public error: string;
 		public infinite: boolean;
 		public key: string;
-		public label: string;
+		public label: string | CommandoTranslatable;
 		public max: number;
 		public min: number;
 		public oneOf: any[];
 		public parser: Function;
-		public prompt: string;
+		public prompt: string | CommandoTranslatable;
 		public type: ArgumentType;
 		public validator: Function;
 		public wait: number;
@@ -439,6 +439,14 @@ declare module 'discord.js-commando' {
 		public resolveLanguage(msg?: CommandoMessage): string;
 	}
 
+	export class CommandoTranslatable {
+		constructor(key: string)
+
+		public readonly key: string;
+
+		public translate(options: TranslateOptions)
+	}
+
 	export const version: string;
 
 	export interface ArgumentCollectorResult<T = object> {
@@ -480,10 +488,10 @@ declare module 'discord.js-commando' {
 		autoAliases?: boolean;
 		group: string;
 		memberName: string;
-		description: string;
-		format?: string;
-		details?: string;
-		examples?: string[];
+		description: string | CommandoTranslatable;
+		format?: string | CommandoTranslatable;
+		details?: string | CommandoTranslatable;
+		examples?: string[] | CommandoTranslatable;
 		nsfw?: boolean;
 		guildOnly?: boolean;
 		ownerOnly?: boolean;
