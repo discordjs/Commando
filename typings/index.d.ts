@@ -458,8 +458,8 @@ declare module 'discord.js-commando' {
 
 	export interface ArgumentInfo {
 		key: string;
-		label?: string;
-		prompt: string;
+		label?: string | CommandoTranslatable;
+		prompt: string | CommandoTranslatable;
 		error?: string;
 		type?: string;
 		max?: number;
