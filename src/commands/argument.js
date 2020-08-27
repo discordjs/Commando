@@ -94,9 +94,7 @@ class Argument {
 		 * If type is `channel`, `member`, `role`, or `user`, this will be the IDs.
 		 * @type {?string[]}
 		 */
-		this.oneOf = typeof info.oneOf !== 'undefined' ?
-			info.oneOf.map(el => el.toLowerCase ? el.toLowerCase() : el) :
-			null;
+		this.oneOf = typeof info.oneOf !== 'undefined' ? info.oneOf.map(x => x.toLowerCase ? x.toLowerCase() : x) : null;
 
 		/**
 		 * Whether the argument accepts an infinite number of values
