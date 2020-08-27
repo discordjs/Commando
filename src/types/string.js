@@ -6,7 +6,7 @@ class StringArgumentType extends ArgumentType {
 	}
 
 	validate(val, msg, arg) {
-		if(arg.oneOf && !arg.oneOf.map(ind => ind.toLowerCase ? ind.toLowerCase() : ind).includes(val.toLowerCase()))
+		if(arg.oneOf && !arg.oneOf.includes(val.toLowerCase())) {
 			return `Please enter one of the following options: ${arg.oneOf.map(opt => `\`${opt}\``).join(', ')}`;
 		}
 		if(arg.min !== null && typeof arg.min !== 'undefined' && val.length < arg.min) {
