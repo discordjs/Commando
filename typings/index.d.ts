@@ -27,6 +27,85 @@ declare module '@iceprod/discord.js-commando' {
 		public validate(val: string, msg: CommandoMessage): boolean | string | Promise<boolean | string>;
 	}
 
+	class RegisteredHandlers {
+		handlers: Map<string, Function>;
+
+		on(event: string, listener: Function): this;
+		on(event: 'commandBlock', listener: (message: CommandoMessage, reason: string, data?: Object) => void): this;
+		on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'guildOnly' | 'nsfw') => void): this;
+		on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'permission', data: { response?: string }) => void): this;
+		on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'throttling', data: { throttle: Object, remaining: number }) => void): this;
+		on(event: 'commandBlock', listener: (message: CommandoMessage, reason: 'clientPermissions', data: { missing: string }) => void): this;
+		on(event: 'commandCancel', listener: (command: Command, reason: string, message: CommandoMessage) => void): this;
+		on(event: 'commandError', listener: (command: Command, err: Error, message: CommandoMessage, args: object | string | string[], fromPattern: false) => void): this;
+		on(event: 'commandError', listener: (command: Command, err: Error, message: CommandoMessage, args: string[], fromPattern: true) => void): this;
+		on(event: 'commandPrefixChange', listener: (guild: CommandoGuild, prefix: string) => void): this;
+		on(event: 'commandRegister', listener: (command: Command, registry: CommandoRegistry) => void): this;
+		on(event: 'commandReregister', listener: (newCommand: Command, oldCommand: Command) => void): this;
+		on(event: 'commandRun', listener: (command: Command, promise: Promise<any>, message: CommandoMessage, args: object | string | string[], fromPattern: boolean) => void): this;
+		on(event: 'commandStatusChange', listener: (guild: CommandoGuild, command: Command, enabled: boolean) => void): this;
+		on(event: 'commandUnregister', listener: (command: Command) => void): this;
+		on(event: 'groupRegister', listener: (group: CommandGroup, registry: CommandoRegistry) => void): this;
+		on(event: 'groupStatusChange', listener: (guild: CommandoGuild, group: CommandGroup, enabled: boolean) => void): this;
+		on(event: 'typeRegister', listener: (type: ArgumentType, registry: CommandoRegistry) => void): this;
+		on(event: 'unknownCommand', listener: (message: CommandoMessage) => void): this;
+		on(event: 'channelCreate', listener: (channel: Channel) => void): this;
+		on(event: 'channelDelete', listener: (channel: Channel) => void): this;
+		on(event: 'channelPinsUpdate', listener: (channel: Channel, time: Date) => void): this;
+		on(event: 'channelUpdate', listener: (oldChannel: Channel, newChannel: Channel) => void): this;
+		on(event: 'debug', listener: (info: string) => void): this;
+		on(event: 'disconnect', listener: (event: any) => void): this;
+		on(event: 'emojiCreate', listener: (emoji: Emoji) => void): this;
+		on(event: 'emojiDelete', listener: (emoji: Emoji) => void): this;
+		on(event: 'emojiUpdate', listener: (oldEmoji: Emoji, newEmoji: Emoji) => void): this;
+		on(event: 'error', listener: (error: Error) => void): this;
+		on(event: 'guildBanAdd', listener: (guild: CommandoGuild, user: User) => void): this;
+		on(event: 'guildBanRemove', listener: (guild: CommandoGuild, user: User) => void): this;
+		on(event: 'guildCreate', listener: (guild: CommandoGuild) => void): this;
+		on(event: 'guildDelete', listener: (guild: CommandoGuild) => void): this;
+		on(event: 'guildMemberAdd', listener: (member: GuildMember) => void): this;
+		on(event: 'guildMemberAvailable', listener: (member: GuildMember) => void): this;
+		on(event: 'guildMemberRemove', listener: (member: GuildMember) => void): this;
+		on(event: 'guildMembersChunk', listener: (members: Collection<Snowflake, GuildMember>, guild: CommandoGuild) => void): this;
+		on(event: 'guildMemberSpeaking', listener: (member: GuildMember, speaking: boolean) => void): this;
+		on(event: 'guildMemberUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
+		on(event: 'guildUnavailable', listener: (guild: CommandoGuild) => void): this;
+		on(event: 'guildUpdate', listener: (oldGuild: CommandoGuild, newGuild: CommandoGuild) => void): this;
+		on(event: 'message', listener: (message: Message) => void): this;
+		on(event: 'messageDelete', listener: (message: Message) => void): this;
+		on(event: 'messageDeleteBulk', listener: (messages: Collection<Snowflake, Message>) => void): this;
+		on(event: 'messageReactionAdd', listener: (messageReaction: MessageReaction, user: User) => void): this;
+		on(event: 'messageReactionRemove', listener: (messageReaction: MessageReaction, user: User) => void): this;
+		on(event: 'messageReactionRemoveAll', listener: (message: Message) => void): this;
+		on(event: 'messageUpdate', listener: (oldMessage: Message, newMessage: Message) => void): this;
+		on(event: 'presenceUpdate', listener: (oldMember: GuildMember, newMember: GuildMember) => void): this;
+		on(event: 'providerReady', listener: (provider: SettingProvider) => void): this;
+		on(event: 'ready', listener: () => void): this;
+		on(event: 'reconnecting', listener: () => void): this;
+		on(event: 'roleCreate', listener: (role: Role) => void): this;
+		on(event: 'roleDelete', listener: (role: Role) => void): this;
+		on(event: 'roleUpdate', listener: (oldRole: Role, newRole: Role) => void): this;
+		on(event: 'typingStart', listener: (channel: Channel, user: User) => void): this;
+		on(event: 'typingStop', listener: (channel: Channel, user: User) => void): this;
+		on(event: 'userNoteUpdate', listener: (user: UserResolvable, oldNote: string, newNote: string) => void): this;
+		on(event: 'userUpdate', listener: (oldUser: User, newUser: User) => void): this;
+		on(event: 'voiceStateUpdate', listener: (oldState: VoiceState | undefined, newState: VoiceState) => void): this;
+		on(event: 'warn', listener: (info: string) => void): this;
+	}
+
+	export abstract class Service {
+		private intervals: NodeJS.Timeout[];
+		public realClient: CommandoClient;
+		public client: RegisteredHandlers;
+		public abstract name: string;
+
+		public setInterval(handler: Function, length: number): void;
+		public unload(): void;
+		public abstract load(): void;
+		public appendHandlers(): void;
+		public reload(): void;
+	}
+
 	export class ArgumentCollector {
 		public constructor(client: CommandoClient, args: ArgumentInfo[], promptLimit?: number);
 
@@ -318,6 +397,7 @@ declare module '@iceprod/discord.js-commando' {
 		public groups: Collection<string, CommandGroup>;
 		public types: Collection<string, ArgumentType>;
 		public unknownCommand?: Command;
+		public services: Map<string, Service>;
 
 		public findCommands(searchString?: string, exact?: boolean, message?: Message | CommandoMessage): Command[];
 		public findGroups(searchString?: string, exact?: boolean): CommandGroup[];
@@ -340,6 +420,11 @@ declare module '@iceprod/discord.js-commando' {
 		public resolveCommandPath(groups: string, memberName: string): string;
 		public resolveGroup(group: CommandGroupResolvable): CommandGroup;
 		public unregisterCommand(command: Command): void;
+		public registerService(service: Service): CommandoRegistry;
+		public registerServiceFrom(path: string): CommandoRegistry;
+		public registerServicesIn(path: string): CommandoRegistry;
+		public unregisterService(service: Service): CommandoRegistry;
+		public reregisterService(service: Service, current: Service): CommandoRegistry;
 	}
 
 	export class FriendlyError extends Error {
