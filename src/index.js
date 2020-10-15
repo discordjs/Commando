@@ -11,6 +11,7 @@ module.exports = {
 	ArgumentType: require('./types/base'),
 	FriendlyError: require('./errors/friendly'),
 	CommandFormatError: require('./errors/command-format'),
+	Service: require('./service'),
 
 	util: require('./util'),
 	version: require('../package').version,

@@ -1,6 +1,6 @@
 {
 	"name": "@iceprod/discord.js-commando",
-	"version": "0.13.0",
+	"version": "0.13.1",
 	"description": "The unofficial command framework for Discord.js",
 	"license": "Apache-2.0",
 	"author": "Daniel Bulant (https://danbulant.eu/)",
