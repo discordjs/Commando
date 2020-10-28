@@ -236,6 +236,7 @@ declare module '@iceprod/discord.js-commando' {
 		private respond(options?: {}): Message | Message[];
 
 		public argString: string;
+		public arguments: object;
 		public readonly attachments: Collection<string, MessageAttachment>;
 		public readonly author: User;
 		public readonly channel: TextChannel | DMChannel;
