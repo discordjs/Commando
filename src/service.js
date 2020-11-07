@@ -1,28 +1,31 @@
 /**
-	* @property {Map<string, Function>} handlers
-	*/
-class RegisteredHandlers {
-	constructor() {
-		this.handlers = new Map();
-	}
-
-	on(event, handler) {
-		this.handlers.set(event, handler);
-		return this;
-	}
-}
-
-/**
  * Handles a single service
-* @property {CommandoClient} client
 * @property {string} name
 * @global
 */
 module.exports = class Service {
+	/**
+	 * Creates new service
+	 * @param {CommandoClient} client The commando client
+	 */
 	constructor(client) {
+		/** @type {NodeJS.Timeout[]} */
 		this.intervals = [];
 		this.realClient = client;
-		this.client = new RegisteredHandlers();
+		this.handlers = new Map();
+		var handlers = this.handlers;
+		const proxyHandler = {
+			apply: function apply(target, prop, receiver) {
+				if(prop === 'on') {
+					return function on(event, handler) {
+						handlers.set(event, handler);
+						return target;
+					};
+				}
+				return Reflect.get(target, prop, receiver);
+			}
+		};
+		this.client = new Proxy(client, proxyHandler);
 	}
 
 	setInterval(handler, length) {
@@ -31,9 +34,9 @@ module.exports = class Service {
 
 	unload() {
 		this.intervals.forEach(id => clearInterval(id));
-		this.client.handlers.forEach((handler, event) => {
+		this.handlers.forEach((handler, event) => {
 			this.realClient.off(event, handler);
-			this.client.handlers.delete(event);
+			this.handlers.delete(event);
 		});
 	}
 
