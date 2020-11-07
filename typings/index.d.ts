@@ -1,4 +1,4 @@
-declare module 'discord.js-commando' {
+declare module '@iceprod/discord.js-commando' {
 	import { Channel, Client, ClientOptions, Collection, DMChannel, Emoji, Guild, GuildChannel, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEmbed, MessageMentions, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, ReactionEmoji, Role, Snowflake, StringResolvable, TextChannel, User, UserResolvable, VoiceState, Webhook } from 'discord.js';
 
 	export class Argument {
@@ -25,6 +25,19 @@ declare module 'discord.js-commando' {
 		public obtain(msg: CommandoMessage, val?: string, promptLimit?: number): Promise<ArgumentResult>;
 		public parse(val: string, msg: CommandoMessage): any | Promise<any>;
 		public validate(val: string, msg: CommandoMessage): boolean | string | Promise<boolean | string>;
+	}
+
+	export abstract class Service {
+		private intervals: NodeJS.Timeout[];
+		public realClient: CommandoClient;
+		public client: CommandoClient;
+		public abstract name: string;
+
+		public setInterval(handler: Function, length: number): void;
+		public unload(): void;
+		public abstract load(): void;
+		public appendHandlers(): void;
+		public reload(): void;
 	}
 
 	export class ArgumentCollector {
@@ -157,6 +170,7 @@ declare module 'discord.js-commando' {
 		private respond(options?: {}): Message | Message[];
 
 		public argString: string;
+		public arguments: object;
 		public readonly attachments: Collection<string, MessageAttachment>;
 		public readonly author: User;
 		public readonly channel: TextChannel | DMChannel;
@@ -318,6 +332,7 @@ declare module 'discord.js-commando' {
 		public groups: Collection<string, CommandGroup>;
 		public types: Collection<string, ArgumentType>;
 		public unknownCommand?: Command;
+		public services: Map<string, Service>;
 
 		public findCommands(searchString?: string, exact?: boolean, message?: Message | CommandoMessage): Command[];
 		public findGroups(searchString?: string, exact?: boolean): CommandGroup[];
@@ -340,6 +355,11 @@ declare module 'discord.js-commando' {
 		public resolveCommandPath(groups: string, memberName: string): string;
 		public resolveGroup(group: CommandGroupResolvable): CommandGroup;
 		public unregisterCommand(command: Command): void;
+		public registerService(service: Service): CommandoRegistry;
+		public registerServiceFrom(path: string): CommandoRegistry;
+		public registerServicesIn(path: string): CommandoRegistry;
+		public unregisterService(service: Service): CommandoRegistry;
+		public reregisterService(service: Service, current: Service): CommandoRegistry;
 	}
 
 	export class FriendlyError extends Error {
