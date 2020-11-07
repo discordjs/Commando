@@ -45,7 +45,7 @@ module.exports = class Service {
 	}
 
 	appendHandlers() {
-		this.client.handlers.forEach((handler, event) => {
+		this.handlers.forEach((handler, event) => {
 			this.realClient.on(event, handler);
 		});
 	}
