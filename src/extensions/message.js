@@ -14,7 +14,7 @@ module.exports = Structures.extend('Message', Message => {
 			super(...args);
 
 			/**
-			 * Alias which invoked the command
+			 * Alias which invoked the command, if any
 			 * @type {?string}
 			 */
 			this.alias = null;
