@@ -10,6 +10,14 @@ Commando is the official command framework for [discord.js](https://github.com/d
 It is flexible, fully object-oriented, easy to use, and makes it trivial to create your own powerful commands.
 Additionally, it makes full use of ES2017's `async`/`await` functionality for clear, concise code that is simple to write and easy to comprehend.
 
+### New features in this fork
+
+- Async inhibitors
+- Async provider loading (loading only guilds that are actually needed)
+- Services
+- Aliases for commands
+- Arguments accessible for types
+
 ## Features
 - Plain command names and aliases
 - Regular expression triggers

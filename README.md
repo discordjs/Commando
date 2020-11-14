@@ -19,6 +19,8 @@ Additionally, it makes full use of ES2017's `async`/`await` functionality for cl
 - Async inhibitors
 - Async provider loading (loading only guilds that are actually needed)
 - Services
+- Aliases for commands
+- Arguments accessible for types
 
 ### Commando base features
 

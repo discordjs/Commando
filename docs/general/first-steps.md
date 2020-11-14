@@ -28,7 +28,7 @@ client.registry
 		['other', 'Some other group']
 	])
 
-	// Registers all built-in groups, commands, and argument types
+	// Registers all built-in groups, commands, services and argument types
 	.registerDefaults()
 
 	// Registers all of your commands in the ./commands/ directory
