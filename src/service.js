@@ -1,7 +1,7 @@
 /**
  * Handles a single service
  */
-module.exports = class Service {
+class Service {
 	/**
 	 * Creates new service
 	 * @param {CommandoClient} client - The commando client
@@ -95,4 +95,6 @@ module.exports = class Service {
 		delete require.cache[path];
 		this.realClient.registry.registerServiceFrom(this.path);
 	}
-};
+}
+
+module.exports = Service;
