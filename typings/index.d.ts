@@ -170,6 +170,7 @@ declare module '@iceprod/discord.js-commando' {
 		private respond(options?: {}): Message | Message[];
 
 		public argString: string;
+		public alias: string | null;
 		public arguments: object;
 		public readonly attachments: Collection<string, MessageAttachment>;
 		public readonly author: User;
