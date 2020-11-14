@@ -70,7 +70,7 @@ module.exports = Structures.extend('Message', Message => {
 			this.command = command;
 			this.argString = argString;
 			this.patternMatches = patternMatches;
-			this.alias = alias || command ? command.name : null;
+			this.alias = alias && alias.length ? alias : command ? command.name : null;
 			return this;
 		}
 
