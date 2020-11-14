@@ -4,6 +4,7 @@ module.exports = class DankCommand extends commando.Command {
 	constructor(client) {
 		super(client, {
 			name: 'dank',
+			aliases: ['dank2'],
 			group: 'math',
 			memberName: 'dank',
 			description: 'Checks whether the argument provided is dank.',
@@ -20,6 +21,6 @@ module.exports = class DankCommand extends commando.Command {
 	}
 
 	run(msg, { dank }) {
-		return msg.reply(dank);
+		return msg.reply(`${dank} from alias ${msg.alias}`);
 	}
 };
