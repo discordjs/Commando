@@ -513,6 +513,8 @@ declare module '@iceprod/discord.js-commando' {
 		nonCommandEditable?: boolean;
 		owner?: string | string[] | Set<string>;
 		invite?: string;
+		noErrorReply?: boolean;
+		ignorePermissions?: boolean;
 	}
 
 	type CommandResolvable = Command | string;

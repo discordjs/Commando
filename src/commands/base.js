@@ -357,15 +357,19 @@ class Command {
 		}).join(owners.length > 2 ? ', ' : ' ') : '';
 
 		const invite = this.client.options.invite;
+		/* Console warning
 		console.warn('[ERROR!]', err);
-		if(typeof this.error === 'function') {
-			return this.error(err, message, args, ownerList, invite);
-		} else {
-			return message.reply(stripIndents`
-				Unkown error happened. Incident code: \`${err.name}-${(new Date).valueOf()}\`
+		*/
+		if(!this.client.options.noErrorReply) {
+			if(typeof this.error === 'function') {
+				return this.error(err, message, args, ownerList, invite);
+			} else {
+				return message.reply(stripIndents`
+				Unknown error happened. Incident code: \`${err.name}-${(new Date).valueOf()}\`
 				You shouldn't ever receive an error like this.
 				Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
-			`);
+				`);
+			}
 		}
 	}
 

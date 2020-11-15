@@ -16,6 +16,10 @@ class CommandoClient extends discord.Client {
 	 * @property {boolean} [nonCommandEditable=true] - Whether messages without commands can be edited to a command
 	 * @property {string|string[]|Set<string>} [owner] - ID of the bot owner's Discord user, or multiple IDs
 	 * @property {string} [invite] - Invite URL to the bot's support server
+	 * @property {boolean} [noErrorReply] - True if errors shouldn't send a message
+	 * (useful when using custom error handlers)
+	 * @property {boolean} [ignorePermissions] - True to not check for user permissions.
+	 * Useful when using custom inhibitors.
 	 */
 
 	/**
@@ -166,6 +170,10 @@ class CommandoClient extends discord.Client {
 		return undefined;
 	}
 
+	/**
+	 * Destroys the client and clears up memory.
+	 * @returns {Promise<void>}
+	 */
 	async destroy() {
 		await super.destroy();
 		if(this.provider) await this.provider.destroy();
