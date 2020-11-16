@@ -349,7 +349,7 @@ class Command {
 	 * (if applicable - see {@link Command#run})
 	 * @returns {Promise<?Message|?Array<Message>>}
 	 */
-	onError(err, message, args, fromPattern, result) { // eslint-disable-line no-unused-vars
+	onError(err, message, args, fromPattern, result) { // eslint-disable-line
 		const owners = this.client.owners;
 		const ownerList = owners ? owners.map((usr, i) => {
 			const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
