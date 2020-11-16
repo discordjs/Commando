@@ -376,7 +376,7 @@ class Command {
 	/**
 	 * Creates/obtains the throttle object for a user, if necessary (owners are excluded)
 	 * @param {string} userID - ID of the user to throttle for
-	 * @return {?Object}
+	 * @return {?ThrottleResult}
 	 * @private
 	 */
 	throttle(userID) {

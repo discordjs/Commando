@@ -9,6 +9,17 @@ const GuildSettingsHelper = require('./providers/helper');
  */
 class CommandoClient extends discord.Client {
 	/**
+	 * Result of throttle function, returned when the command should be blocked
+	 * @typedef {object} ThrottleResult
+	 * @property {{
+			start: number,
+			usages: number,
+			timeout: NodeJS.Timeout
+		}} throttle
+		@property {number} remaining - remaining seconds
+	 */
+
+	/**
 	 * Options for a CommandoClient
 	 * @typedef {ClientOptions} CommandoClientOptions
 	 * @property {string} [commandPrefix=!] - Default command prefix
@@ -20,6 +31,10 @@ class CommandoClient extends discord.Client {
 	 * (useful when using custom error handlers)
 	 * @property {boolean} [ignorePermissions] - True to not check for user permissions.
 	 * Useful when using custom inhibitors.
+	 * @property {(command: Command, user: User) => Promise<ThrottleResult?>} [throttle] - Used for custom throttling.
+	 * When object is returned, commando blocks the use of command.
+	 * @property {(command: Command, user: User) => Promise<void>} [throttleUse] - Used for custom throttling.
+	 * Called when the command is used,should increase the counter.
 	 */
 
 	/**

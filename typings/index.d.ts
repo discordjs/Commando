@@ -515,6 +515,8 @@ declare module '@iceprod/discord.js-commando' {
 		invite?: string;
 		noErrorReply?: boolean;
 		ignorePermissions?: boolean;
+		throttle: (command: Command, user: User) => Promise<Object | void>;
+		throttleUse: (command: Command, user: User) => Promise<void>;
 	}
 
 	type CommandResolvable = Command | string;
