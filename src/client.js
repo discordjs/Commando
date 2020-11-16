@@ -20,6 +20,21 @@ class CommandoClient extends discord.Client {
 	 */
 
 	/**
+	 * Throttles the command usage
+	 * @callback Throttle
+	 * @param {Command} command - Command to throttle
+	 * @param {User} user - The user that triggered the command
+	 * @returns {Promise<ThrottleResult?>} - Whether to throttle the use or allow the command to run
+	 */
+	/**
+	 * Updates the throttle database after command use
+	 * @callback ThrottleUse
+	 * @param {Command} command - Command to throttle
+	 * @param {User} user - The user that triggered the command
+	 * @returns {Promise<void>}
+	 */
+
+	/**
 	 * Options for a CommandoClient
 	 * @typedef {ClientOptions} CommandoClientOptions
 	 * @property {string} [commandPrefix=!] - Default command prefix
@@ -31,9 +46,9 @@ class CommandoClient extends discord.Client {
 	 * (useful when using custom error handlers)
 	 * @property {boolean} [ignorePermissions] - True to not check for user permissions.
 	 * Useful when using custom inhibitors.
-	 * @property {(command: Command, user: User) => Promise<ThrottleResult?>} [throttle] - Used for custom throttling.
+	 * @property {Throttle} [throttle] - Used for custom throttling.
 	 * When object is returned, commando blocks the use of command.
-	 * @property {(command: Command, user: User) => Promise<void>} [throttleUse] - Used for custom throttling.
+	 * @property {ThrottleUse} [throttleUse] - Used for custom throttling.
 	 * Called when the command is used,should increase the counter.
 	 */
 
