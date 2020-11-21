@@ -222,8 +222,8 @@ class Argument {
 				};
 			}
 
-			empty = this.isEmpty(val, msg);
-			valid = await this.validate(val, msg);
+			empty = this.isEmpty(val, msg, responses.first());
+			valid = await this.validate(val, msg, responses.first());
 			/* eslint-enable no-await-in-loop */
 		}
 
@@ -353,10 +353,11 @@ class Argument {
 	 * Checks if a value is valid for the argument
 	 * @param {string} val - Value to check
 	 * @param {CommandoMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage?} vmsg - Message of the response, may be missing
 	 * @return {boolean|string|Promise<boolean|string>}
 	 */
-	validate(val, msg) {
-		const valid = this.validator ? this.validator(val, msg, this) : this.type.validate(val, msg, this);
+	validate(val, msg, vmsg) {
+		const valid = this.validator ? this.validator(val, msg, this, vmsg) : this.type.validate(val, msg, this, vmsg);
 		if(!valid || typeof valid === 'string') return this.error || valid;
 		if(valid instanceof Promise) return valid.then(vld => !vld || typeof vld === 'string' ? this.error || vld : vld);
 		return valid;
@@ -366,22 +367,24 @@ class Argument {
 	 * Parses a value string into a proper value for the argument
 	 * @param {string} val - Value to parse
 	 * @param {CommandoMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage?} vmsg - Message of the response, may be missing
 	 * @return {*|Promise<*>}
 	 */
-	parse(val, msg) {
-		if(this.parser) return this.parser(val, msg, this);
-		return this.type.parse(val, msg, this);
+	parse(val, msg, vmsg) {
+		if(this.parser) return this.parser(val, msg, this, vmsg);
+		return this.type.parse(val, msg, this, vmsg);
 	}
 
 	/**
 	 * Checks whether a value for the argument is considered to be empty
 	 * @param {string} val - Value to check for emptiness
 	 * @param {CommandoMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage?} vmsg - Message of the response, may be missing
 	 * @return {boolean}
 	 */
-	isEmpty(val, msg) {
-		if(this.emptyChecker) return this.emptyChecker(val, msg, this);
-		if(this.type) return this.type.isEmpty(val, msg, this);
+	isEmpty(val, msg, vmsg) {
+		if(this.emptyChecker) return this.emptyChecker(val, msg, this, vmsg);
+		if(this.type) return this.type.isEmpty(val, msg, this, vmsg);
 		if(Array.isArray(val)) return val.length === 0;
 		return !val;
 	}
