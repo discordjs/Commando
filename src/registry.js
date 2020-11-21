@@ -552,6 +552,11 @@ class CommandoRegistry {
 		service.load();
 		service.appendHandlers();
 		this.services.set(service.name, service);
+		/**
+		 * Fired whenever a new service is registered and loaded
+		 * @event CommandoClient#serviceLoad
+		 * @param {Service} service - The service that got loaded.
+		 */
 		this.client.emit('serviceLoad', service);
 
 		return this;
@@ -589,6 +594,12 @@ class CommandoRegistry {
 					srv.path = path.join(dir, groupID, ServiceName);
 					this.registerService(srv);
 				} catch(err) {
+					/**
+					 * Emitted when a service fails to load
+					 * @event CommandoClient#serviceLoadError
+					 * @param {Error} err - The error
+					 * @param {typeof Service} - The service class
+					 */
 					this.client.emit('serviceLoadError', err, Service);
 				}
 			}
