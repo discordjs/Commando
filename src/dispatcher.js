@@ -257,8 +257,6 @@ class CommandDispatcher {
 		const prefix = message.guild ? message.guild.commandPrefix : this.client.commandPrefix;
 		const mentionAsPrefix = this.client.mentionPrefix;
 
-		console.log(prefix);
-		console.log(this._commandPatterns[prefix]);
 		if(!this._commandPatterns[prefix]) this.buildCommandPattern(prefix, mentionAsPrefix);
 		let cmdMsg = this.matchDefault(message, this._commandPatterns[prefix], 2);
 		if(!cmdMsg && !message.guild) cmdMsg = this.matchDefault(message, /^([^\s]+)/i, 1, true);
