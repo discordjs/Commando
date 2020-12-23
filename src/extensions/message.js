@@ -95,7 +95,7 @@ module.exports = Structures.extend('Message', Message => {
 				if(this.guild) prefix = this.guild.commandPrefix;
 				else prefix = this.client.commandPrefix;
 			}
-			return Command.usage(command, prefix, user);
+			return Command.usage(command, prefix, user, this.client.mentionPrefix);
 		}
 
 		/**
