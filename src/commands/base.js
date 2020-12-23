@@ -476,9 +476,10 @@ class Command {
 	 * @param {string} command - A command + arg string
 	 * @param {string} [prefix] - Prefix to use for the prefixed command format
 	 * @param {User} [user] - User to use for the mention command format
+	 * @param {boolean} [mentionPrefix] - Value, wether or not mention as prefix is enabled.
 	 * @return {string}
 	 */
-	static usage(command, prefix = null, user = null) {
+	static usage(command, prefix = null, user = null, mentionPrefix = null) {
 		const nbcmd = command.replace(/ /g, '\xa0');
 		if(!prefix && !user) return `\`\`${nbcmd}\`\``;
 
@@ -490,9 +491,11 @@ class Command {
 		}
 
 		let mentionPart;
-		if(user) mentionPart = `\`\`@${user.username.replace(/ /g, '\xa0')}#${user.discriminator}\xa0${nbcmd}\`\``;
+		if(user && mentionPrefix) {
+			mentionPart = `\`\`@${user.username.replace(/ /g, '\xa0')}#${user.discriminator}\xa0${nbcmd}\`\``;
+		}
 
-		return `${prefixPart || ''}${prefix && user ? ' or ' : ''}${mentionPart || ''}`;
+		return `${prefixPart || ''}${prefix && user && mentionPrefix ? ' or ' : ''}${mentionPart || ''}`;
 	}
 
 	/**
