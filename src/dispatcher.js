@@ -252,9 +252,14 @@ class CommandDispatcher {
 			}
 		}
 
+
 		// Find the command to run with default command handling
 		const prefix = message.guild ? message.guild.commandPrefix : this.client.commandPrefix;
-		if(!this._commandPatterns[prefix]) this.buildCommandPattern(prefix);
+		const mentionAsPrefix = this.client.mentionPrefix;
+
+		console.log(prefix);
+		console.log(this._commandPatterns[prefix]);
+		if(!this._commandPatterns[prefix]) this.buildCommandPattern(prefix, mentionAsPrefix);
 		let cmdMsg = this.matchDefault(message, this._commandPatterns[prefix], 2);
 		if(!cmdMsg && !message.guild) cmdMsg = this.matchDefault(message, /^([^\s]+)/i, 1, true);
 		return cmdMsg;
@@ -283,18 +288,25 @@ class CommandDispatcher {
 	/**
 	 * Creates a regular expression to match the command prefix and name in a message
 	 * @param {?string} prefix - Prefix to build the pattern for
+	 * @param {boolean} mentionPrefix - Boolean value, for mention as a prefix.
 	 * @return {RegExp}
 	 * @private
 	 */
-	buildCommandPattern(prefix) {
+	buildCommandPattern(prefix, mentionPrefix) {
 		let pattern;
-		if(prefix) {
+		if(prefix && mentionPrefix) {
 			const escapedPrefix = escapeRegex(prefix);
 			pattern = new RegExp(
 				`^(<@!?${this.client.user.id}>\\s+(?:${escapedPrefix}\\s*)?|${escapedPrefix}\\s*)([^\\s]+)`, 'i'
 			);
-		} else {
+		} else if(!prefix && mentionPrefix) {
 			pattern = new RegExp(`(^<@!?${this.client.user.id}>\\s+)([^\\s]+)`, 'i');
+		} else if(prefix && !mentionPrefix) {
+			const escapedPrefix = escapeRegex(prefix);
+			pattern = new RegExp(`((?:${escapedPrefix}\\s*)?|${escapedPrefix}\\s*)([^\\s]+)`, 'i');
+		} else {
+			const escapedDefaultPrefix = escapeRegex('!');
+			pattern = new RegExp(`((?:${escapedDefaultPrefix}\\s*)?|${escapedDefaultPrefix}\\s*)([^\\s]+)`, 'i');
 		}
 		this._commandPatterns[prefix] = pattern;
 		this.client.emit('debug', `Built command pattern for prefix "${prefix}": ${pattern}`);
