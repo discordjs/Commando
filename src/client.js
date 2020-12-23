@@ -16,6 +16,7 @@ class CommandoClient extends discord.Client {
 	 * @property {boolean} [nonCommandEditable=true] - Whether messages without commands can be edited to a command
 	 * @property {string|string[]|Set<string>} [owner] - ID of the bot owner's Discord user, or multiple IDs
 	 * @property {string} [invite] - Invite URL to the bot's support server
+	 * @property {boolean} [mentionPrefix=true] Enable whether the bot mention, should also be a command prefix.
 	 */
 
 	/**
@@ -26,6 +27,7 @@ class CommandoClient extends discord.Client {
 		if(options.commandPrefix === null) options.commandPrefix = '';
 		if(typeof options.commandEditableDuration === 'undefined') options.commandEditableDuration = 30;
 		if(typeof options.nonCommandEditable === 'undefined') options.nonCommandEditable = true;
+		if(options.mentionPrefix === null) options.mentionPrefix = true;
 		super(options);
 
 		/**
@@ -164,6 +166,15 @@ class CommandoClient extends discord.Client {
 		this.emit('providerReady', provider);
 		this.emit('debug', 'Provider finished initialisation.');
 		return undefined;
+	}
+
+	get mentionPrefix() {
+		if(!this.options.mentionPrefix) return null;
+		return this.options.mentionPrefix;
+	}
+
+	set mentionPrefix(value) {
+		this.options.mentionPrefix = value;
 	}
 
 	async destroy() {
