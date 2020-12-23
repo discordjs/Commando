@@ -169,7 +169,7 @@ class CommandoClient extends discord.Client {
 	}
 
 	get mentionPrefix() {
-		if(!this.options.mentionPrefix) return null;
+		if(!this.options.mentionPrefix) return true;
 		return this.options.mentionPrefix;
 	}
 
