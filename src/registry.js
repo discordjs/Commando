@@ -495,9 +495,17 @@ class CommandoRegistry {
 
 		// Find all matches
 		const lcSearch = searchString.toLowerCase();
-		const matchedCommands = Array.from(this.commands.filter(
-			exact ? commandFilterExact(lcSearch) : commandFilterInexact(lcSearch)
-		).values());
+		var matchedCommands = Array.from(
+			this.commands
+			.filter(
+				exact ? commandFilterExact(lcSearch) : commandFilterInexact(lcSearch)
+			).values()
+		);
+		if(message && !this.client.isOwner(message.author)) {
+			matchedCommands = matchedCommands.filter(
+				command => command.ownerOnly
+			);
+		}
 		if(exact) return matchedCommands;
 
 		// See if there's an exact match
