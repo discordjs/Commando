@@ -39,6 +39,12 @@ class Argument {
 		this.constructor.validateInfo(client, info);
 
 		/**
+		 * The command client
+		 * @type {CommandoClient}
+		 */
+		this.client = client;
+
+		/**
 		 * Key for the argument
 		 * @type {string}
 		 */
@@ -141,6 +147,22 @@ class Argument {
 	 * @property {Message[]} prompts - All messages that were sent to prompt the user
 	 * @property {Message[]} answers - All of the user's messages that answered a prompt
 	 */
+
+
+	/**
+	 * Blocks command use and prompts the user and obtains the value for the argument
+	 * @param {CommandoMessage} msg - Message that triggered the command
+	 * @param {string} [val] - Pre-provided value for the argument
+	 * @param {number} [promptLimit=Infinity] - Maximum number of times to prompt for the argument
+	 * @return {Promise<ArgumentResult>}
+	 */
+	async promptArgument(msg, val, promptLimit = Infinity) {
+		this.client.dispatcher._awaiting.add(msg.author.id + msg.channel.id);
+		var result = await this.obtain(msg, val, promptLimit);
+		this.client.dispatcher._awaiting.delete(msg.author.id + msg.channel.id);
+
+		return result;
+	}
 
 	/**
 	 * Prompts the user and obtains the value for the argument

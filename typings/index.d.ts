@@ -22,6 +22,7 @@ declare module '@iceprod/discord.js-commando' {
 		public validator: Function;
 		public wait: number;
 
+		public promptArgument(msg: CommandoMessage, val?: string, promptLimit?: number): Promise<ArgumentResult>;
 		public obtain(msg: CommandoMessage, val?: string, promptLimit?: number): Promise<ArgumentResult>;
 		public parse(val: string, msg: CommandoMessage): any | Promise<any>;
 		public validate(val: string, msg: CommandoMessage): boolean | string | Promise<boolean | string>;
