@@ -35,12 +35,6 @@
 		"eslint": "^6.3.0",
 		"typescript": "^3.6.2"
 	},
-	"peerDependencies": {
-		"@types/better-sqlite3": "^5.0.0",
-		"better-sqlite3": "^5.0.0",
-		"discord.js": "^12.0.0",
-		"sqlite": "^3.0.0"
-	},
 	"engines": {
 		"node": ">=8.6.0"
 	}
