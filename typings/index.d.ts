@@ -168,7 +168,6 @@ declare module 'discord.js-commando' {
 		public initCommand(command?: Command, argString?: string[], patternMatches?: string[]): this;
 		public parseArgs(): string | string[];
 		public static parseArgs(argString: string, argCount?: number, allowSingleQuote?: boolean): string[];
-		public reply: CommandoMessage['say'];
 		public replyEmbed: CommandoMessage['embed'];
 		public run(): Promise<null | CommandoMessage | CommandoMessage[]>;
 		public say(
