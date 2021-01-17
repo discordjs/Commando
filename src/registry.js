@@ -4,6 +4,7 @@ const Command = require('./commands/base');
 const CommandGroup = require('./commands/group');
 const CommandoMessage = require('./extensions/message');
 const ArgumentType = require('./types/base');
+const { isConstructor } = require('./util');
 
 /** Handles registration and searching of commands and groups */
 class CommandoRegistry {
@@ -59,7 +60,7 @@ class CommandoRegistry {
 	registerGroup(group, name, guarded) {
 		if(typeof group === 'string') {
 			group = new CommandGroup(this.client, group, name, guarded);
-		} else if(typeof group === 'function') {
+		} else if(isConstructor(group, CommandGroup)) {
 			group = new group(this.client); // eslint-disable-line new-cap
 		} else if(typeof group === 'object' && !(group instanceof CommandGroup)) {
 			group = new CommandGroup(this.client, group.id, group.name, group.guarded);
@@ -118,10 +119,9 @@ class CommandoRegistry {
 	 */
 	registerCommand(command) {
 		/* eslint-disable new-cap */
-		if(typeof command === 'function') command = new command(this.client);
-		else if(typeof command.default === 'function') command = new command.default(this.client);
+		if(isConstructor(command, Command)) command = new command(this.client);
+		else if(isConstructor(command.default, Command)) command = new command.default(this.client);
 		/* eslint-enable new-cap */
-
 		if(!(command instanceof Command)) throw new Error(`Invalid command object to register: ${command}`);
 
 		// Make sure there aren't any conflicts
@@ -167,7 +167,7 @@ class CommandoRegistry {
 	registerCommands(commands, ignoreInvalid = false) {
 		if(!Array.isArray(commands)) throw new TypeError('Commands must be an Array.');
 		for(const command of commands) {
-			const valid = typeof command === 'function' || typeof command.default === 'function' ||
+			const valid = isConstructor(command, Command) || isConstructor(command.default, Command) ||
 				command instanceof Command || command.default instanceof Command;
 			if(ignoreInvalid && !valid) {
 				this.client.emit('warn', `Attempting to register an invalid command object: ${command}; skipping.`);
@@ -208,8 +208,8 @@ class CommandoRegistry {
 	 */
 	registerType(type) {
 		/* eslint-disable new-cap */
-		if(typeof type === 'function') type = new type(this.client);
-		else if(typeof type.default === 'function') type = new type.default(this.client);
+		if(isConstructor(type, ArgumentType)) type = new type(this.client);
+		else if(isConstructor(type.default, ArgumentType)) type = new type.default(this.client);
 		/* eslint-enable new-cap */
 
 		if(!(type instanceof ArgumentType)) throw new Error(`Invalid type object to register: ${type}`);
@@ -241,7 +241,7 @@ class CommandoRegistry {
 	registerTypes(types, ignoreInvalid = false) {
 		if(!Array.isArray(types)) throw new TypeError('Types must be an Array.');
 		for(const type of types) {
-			const valid = typeof type === 'function' || typeof type.default === 'function' ||
+			const valid = isConstructor(type, ArgumentType) || isConstructor(type.default, ArgumentType) ||
 				type instanceof ArgumentType || type.default instanceof ArgumentType;
 			if(ignoreInvalid && !valid) {
 				this.client.emit('warn', `Attempting to register an invalid argument type object: ${type}; skipping.`);
@@ -384,8 +384,8 @@ class CommandoRegistry {
 	 */
 	reregisterCommand(command, oldCommand) {
 		/* eslint-disable new-cap */
-		if(typeof command === 'function') command = new command(this.client);
-		else if(typeof command.default === 'function') command = new command.default(this.client);
+		if(isConstructor(command, Command)) command = new command(this.client);
+		else if(isConstructor(command.default, Command)) command = new command.default(this.client);
 		/* eslint-enable new-cap */
 
 		if(command.name !== oldCommand.name) throw new Error('Command name cannot change.');
