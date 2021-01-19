@@ -606,7 +606,7 @@ class CommandoRegistry {
 					 * Emitted when a service fails to load
 					 * @event CommandoClient#serviceLoadError
 					 * @param {Error} err - The error
-					 * @param {typeof Service} Service - The service class
+					 * @param {Service} Service - The service class (not an instance)
 					 */
 					this.client.emit('serviceLoadError', err, Service);
 				}
