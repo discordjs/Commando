@@ -37,7 +37,8 @@ module.exports = class ReloadCommandCommand extends Command {
 		if(this.client.shard) {
 			try {
 				await this.client.shard.broadcastEval(`
-					if(this.shard.id !== ${this.client.shard.id}) {
+					const ids = [${this.client.shard.ids.join(',')}];
+					if(!this.shard.ids.some(id => ids.includes(id))) {
 						this.registry.${isCmd ? 'commands' : 'groups'}.get('${isCmd ? cmdOrGrp.name : cmdOrGrp.id}').reload();
 					}
 				`);
