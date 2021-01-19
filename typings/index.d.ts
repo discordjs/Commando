@@ -53,7 +53,7 @@ declare module 'discord.js-commando' {
 	export class ArgumentUnionType extends ArgumentType {
 		public types: ArgumentType[];
 
-		public parse(val: string, msg: CommandoMessage, arg: Argument);
+		public parse(val: string, msg: CommandoMessage, arg: Argument): any | Promise<any>;
 		public validate(val: string, msg: CommandoMessage, arg: Argument): string | boolean | Promise<string | boolean>;
 	}
 
