@@ -6,7 +6,7 @@ declare module 'discord.js-commando' {
 
 		private obtainInfinite(msg: CommandoMessage, vals?: string[], promptLimit?: number): Promise<ArgumentResult>;
 
-		private static validateInfo(client: CommandoClient, info: ArgumentInfo);
+		private static validateInfo(client: CommandoClient, info: ArgumentInfo): void;
 
 		public default: ArgumentDefault;
 		public emptyChecker: Function;
