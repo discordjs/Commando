@@ -160,6 +160,7 @@ declare module 'discord.js-commando' {
 		public patternMatches: string[] | null;
 		public responsePositions: { [key: string]: number } | null;
 		public responses: { [key: string]: CommandoMessage[] } | null;
+		public readonly guild: CommandoGuild;
 
 		private deleteRemainingResponses(): void;
 		private editCurrentResponse(id: string, options: MessageEditOptions | Exclude<MessageAdditions, MessageAttachment>): Promise<CommandoMessage | CommandoMessage[]>;
