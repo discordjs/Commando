@@ -193,7 +193,7 @@ module.exports = Structures.extend('Message', Message => {
 
 				collResult = await this.command.argsCollector.obtain(this, provided);
 				if(collResult.cancelled) {
-					if(collResult.prompts.length === 0 && collResult.cancelled !== 'promptLimit') {
+					if(collResult.prompts.length === 0 || collResult.cancelled === 'promptLimit') {
 						const err = new CommandFormatError(this);
 						return this.reply(err.message);
 					}
