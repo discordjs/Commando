@@ -325,10 +325,10 @@ class Argument {
 					};
 				}
 
-				valid = await this.validate(val, msg);
+				valid = await this.validate(val, responses.first());
 			}
 
-			results.push(await this.parse(val, msg));
+			results.push(await this.parse(val, answers.length ? answers[answers.length - 1] : msg));
 
 			if(vals) {
 				currentVal++;
