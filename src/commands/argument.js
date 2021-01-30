@@ -218,13 +218,13 @@ class Argument {
 				};
 			}
 
-			empty = this.isEmpty(val, msg);
-			valid = await this.validate(val, msg);
+			empty = this.isEmpty(val, responses.first());
+			valid = await this.validate(val, responses.first());
 			/* eslint-enable no-await-in-loop */
 		}
 
 		return {
-			value: await this.parse(val, msg),
+			value: await this.parse(val, answers.length ? answers[answers.length - 1] : msg),
 			cancelled: null,
 			prompts,
 			answers
