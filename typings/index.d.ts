@@ -63,7 +63,7 @@ declare module 'discord.js-commando' {
 		private _globalEnabled: boolean;
 		private _throttles: Map<string, object>;
 
-		private throttle(userID: string): object;
+		protected throttle(userID: string): object | null;
 
 		private static validateInfo(client: CommandoClient, info: CommandInfo);
 
