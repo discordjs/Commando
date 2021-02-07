@@ -1,28 +1,28 @@
-const { oneLine } = require('common-tags');
 const Command = require('../base');
+const { makeCallback } = require('../../util');
 
 module.exports = class PingCommand extends Command {
-	constructor(client) {
+	constructor(client, props = {}) {
 		super(client, {
 			name: 'ping',
 			group: 'util',
 			memberName: 'ping',
-			description: 'Checks the bot\'s ping to the Discord server.',
+			description: makeCallback(locale => locale.commands.util.ping.constructor.description),
 			throttling: {
 				usages: 5,
 				duration: 10
 			}
-		});
+		}, props);
 	}
 
 	async run(msg) {
-		const pingMsg = await msg.reply('Pinging...');
-		return pingMsg.edit(oneLine`
-			${msg.channel.type !== 'dm' ? `${msg.author},` : ''}
-			Pong! The message round-trip took ${
-				(pingMsg.editedTimestamp || pingMsg.createdTimestamp) - (msg.editedTimestamp || msg.createdTimestamp)
-			}ms.
-			${this.client.ws.ping ? `The heartbeat ping is ${Math.round(this.client.ws.ping)}ms.` : ''}
-		`);
+		const pingMsg = await msg.reply(msg.locale.commands.util.ping.run.pinging);
+		return pingMsg.edit(msg.locale.commands.util.ping.run.success({
+			author: msg.channel.type !== 'dm' ? `${msg.author},` : '',
+			ping: (pingMsg.editedTimestamp || pingMsg.createdTimestamp) - (msg.editedTimestamp || msg.createdTimestamp),
+			heartbeat: this.client.ws.ping ? msg.locale.commands.util.ping.run.heartbeat({
+				ping: Math.round(this.client.ws.ping)
+			}) : ''
+		}));
 	}
 };

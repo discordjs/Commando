@@ -1,8 +1,7 @@
 const path = require('path');
 const { escapeMarkdown } = require('discord.js');
-const { oneLine, stripIndents } = require('common-tags');
 const ArgumentCollector = require('./collector');
-const { permissions } = require('../util');
+const { permissions, assignDeepCheck } = require('../util');
 
 /** A command that can be run in a client */
 class Command {
@@ -56,7 +55,10 @@ class Command {
 	 * @param {CommandInfo} info - The command information
 	 */
 	// eslint-disable-next-line complexity
-	constructor(client, info) {
+	constructor(client, info, props = {}) {
+		console.log(`props size:${Object.keys(props).length}`);
+		info = assignDeepCheck(info, props);
+
 		this.constructor.validateInfo(client, info);
 
 		/**
@@ -239,6 +241,8 @@ class Command {
 		 * @private
 		 */
 		this._throttles = new Map();
+
+		this._props = props;
 	}
 
 	/**
@@ -252,19 +256,24 @@ class Command {
 		if(ownerOverride && this.client.isOwner(message.author)) return true;
 
 		if(this.ownerOnly && (ownerOverride || !this.client.isOwner(message.author))) {
-			return `The \`${this.name}\` command can only be used by the bot owner.`;
+			return message.locale.commands.base.onlyOwner({
+				name: this.name
+			});
 		}
 
 		if(message.channel.type === 'text' && this.userPermissions) {
 			const missing = message.channel.permissionsFor(message.author).missing(this.userPermissions);
 			if(missing.length > 0) {
 				if(missing.length === 1) {
-					return `The \`${this.name}\` command requires you to have the "${permissions[missing[0]]}" permission.`;
+					return message.locale.commands.base.requiresPermission({
+						name: this.name,
+						permission: permissions(message.locale)[missing[0]]
+					});
 				}
-				return oneLine`
-					The \`${this.name}\` command requires you to have the following permissions:
-					${missing.map(perm => permissions[perm]).join(', ')}
-				`;
+				return message.locale.commands.base.requiresPermissions({
+					name: this.name,
+					permissions: missing.map(perm => permissions(message.locale)[perm]).join(', ')
+				});
 			}
 		}
 
@@ -304,28 +313,36 @@ class Command {
 	onBlock(message, reason, data) {
 		switch(reason) {
 			case 'guildOnly':
-				return message.reply(`The \`${this.name}\` command must be used in a server channel.`);
+				return message.reply(message.locale.commands.base.guildOnly({
+					name: this.name
+				}));
 			case 'nsfw':
-				return message.reply(`The \`${this.name}\` command can only be used in NSFW channels.`);
+				return message.reply(message.locale.commands.base.nsfw({
+					name: this.name
+				}));
 			case 'permission': {
 				if(data.response) return message.reply(data.response);
-				return message.reply(`You do not have permission to use the \`${this.name}\` command.`);
+				return message.reply(message.locale.commands.base.noPermission({
+					name: this.name
+				}));
 			}
 			case 'clientPermissions': {
 				if(data.missing.length === 1) {
-					return message.reply(
-						`I need the "${permissions[data.missing[0]]}" permission for the \`${this.name}\` command to work.`
-					);
+					return message.reply(message.locale.commands.base.noClientPermission({
+						name: this.name,
+						permission: permissions(message.locale)[data.missing[0]]
+					}));
 				}
-				return message.reply(oneLine`
-					I need the following permissions for the \`${this.name}\` command to work:
-					${data.missing.map(perm => permissions[perm]).join(', ')}
-				`);
+				return message.reply(message.locale.commands.base.noClientPermissions({
+					name: this.name,
+					permissions: data.missing.map(perm => permissions(message.locale)[perm]).join(', ')
+				}));
 			}
 			case 'throttling': {
-				return message.reply(
-					`You may not use the \`${this.name}\` command again for another ${data.remaining.toFixed(1)} seconds.`
-				);
+				return message.reply(message.locale.commands.base.throttling({
+					name: this.name,
+					seconds: data.remaining.toFixed(1)
+				}));
 			}
 			default:
 				return null;
@@ -345,16 +362,17 @@ class Command {
 	onError(err, message, args, fromPattern, result) { // eslint-disable-line no-unused-vars
 		const owners = this.client.owners;
 		const ownerList = owners ? owners.map((usr, i) => {
-			const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
+			const or = i === owners.length - 1 && owners.length > 1 ? message.locale.commands.base.or : '';
 			return `${or}${escapeMarkdown(usr.username)}#${usr.discriminator}`;
 		}).join(owners.length > 2 ? ', ' : ' ') : '';
 
 		const invite = this.client.options.invite;
-		return message.reply(stripIndents`
-			An error occurred while running the command: \`${err.name}: ${err.message}\`
-			You shouldn't ever receive an error like this.
-			Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
-		`);
+		return message.reply(message.locale.commands.base.unexpectedError({
+			errName: err.name,
+			errMessage: err.message,
+			who: ownerList || message.locale.commands.base.theBotOwner,
+			where: invite ? message.locale.commands.base.inThisServer({ invite }) : '.'
+		}));
 	}
 
 	/**
@@ -516,9 +534,9 @@ class Command {
 		if(info.group !== info.group.toLowerCase()) throw new RangeError('Command group must be lowercase.');
 		if(typeof info.memberName !== 'string') throw new TypeError('Command memberName must be a string.');
 		if(info.memberName !== info.memberName.toLowerCase()) throw new Error('Command memberName must be lowercase.');
-		if(typeof info.description !== 'string') throw new TypeError('Command description must be a string.');
-		if('format' in info && typeof info.format !== 'string') throw new TypeError('Command format must be a string.');
-		if('details' in info && typeof info.details !== 'string') throw new TypeError('Command details must be a string.');
+		if(!['string', 'function'].includes(typeof info.description)) throw new TypeError('Command description must be a string.');
+		if('format' in info && !['string', 'function'].includes(typeof info.format)) throw new TypeError('Command format must be a string.');
+		if('details' in info && !['string', 'function'].includes(typeof info.details)) throw new TypeError('Command details must be a string.');
 		if(info.examples && (!Array.isArray(info.examples) || info.examples.some(ex => typeof ex !== 'string'))) {
 			throw new TypeError('Command examples must be an Array of strings.');
 		}
@@ -527,7 +545,7 @@ class Command {
 				throw new TypeError('Command clientPermissions must be an Array of permission key strings.');
 			}
 			for(const perm of info.clientPermissions) {
-				if(!permissions[perm]) throw new RangeError(`Invalid command clientPermission: ${perm}`);
+				if(!client.locale.util.permissions[perm]) throw new RangeError(`Invalid command clientPermission: ${perm}`);
 			}
 		}
 		if(info.userPermissions) {
@@ -535,7 +553,7 @@ class Command {
 				throw new TypeError('Command userPermissions must be an Array of permission key strings.');
 			}
 			for(const perm of info.userPermissions) {
-				if(!permissions[perm]) throw new RangeError(`Invalid command userPermission: ${perm}`);
+				if(!client.locale.util.permissions[perm]) throw new RangeError(`Invalid command userPermission: ${perm}`);
 			}
 		}
 		if(info.throttling) {

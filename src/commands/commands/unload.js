@@ -1,18 +1,15 @@
-const { oneLine } = require('common-tags');
 const Command = require('../base');
+const { makeCallback } = require('../../util');
 
 module.exports = class UnloadCommandCommand extends Command {
-	constructor(client) {
+	constructor(client, props = {}) {
 		super(client, {
 			name: 'unload',
 			aliases: ['unload-command'],
 			group: 'commands',
 			memberName: 'unload',
-			description: 'Unloads a command.',
-			details: oneLine`
-				The argument must be the name/ID (partial or whole) of a command.
-				Only the bot owner(s) may use this command.
-			`,
+			description: makeCallback(locale => locale.commands.commands.unload.constructor.description),
+			details: makeCallback(locale => locale.commands.commands.unload.constructor.details),
 			examples: ['unload some-command'],
 			ownerOnly: true,
 			guarded: true,
@@ -20,11 +17,11 @@ module.exports = class UnloadCommandCommand extends Command {
 			args: [
 				{
 					key: 'command',
-					prompt: 'Which command would you like to unload?',
+					prompt: makeCallback(locale => locale.commands.commands.unload.constructor.args[0].prompt),
 					type: 'command'
 				}
 			]
-		});
+		}, props);
 	}
 
 	async run(msg, args) {
@@ -41,12 +38,17 @@ module.exports = class UnloadCommandCommand extends Command {
 			} catch(err) {
 				this.client.emit('warn', `Error when broadcasting command unload to other shards`);
 				this.client.emit('error', err);
-				await msg.reply(`Unloaded \`${args.command.name}\` command, but failed to unload on other shards.`);
+				await msg.reply(msg.locale.commands.commands.unload.run.errorShards({
+					name: args.command.name
+				}));
 				return null;
 			}
 		}
 
-		await msg.reply(`Unloaded \`${args.command.name}\` command${this.client.shard ? ' on all shards' : ''}.`);
+		await msg.reply(msg.locale.commands.commands.unload.run.success({
+			name: args.command.name,
+			where: this.client.shard ? msg.locale.TEMPLATE.onAllShards : ''
+		}));
 		return null;
 	}
 };

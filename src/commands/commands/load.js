@@ -1,19 +1,16 @@
 const fs = require('fs');
-const { oneLine } = require('common-tags');
 const Command = require('../base');
+const { makeCallback } = require('../../util');
 
 module.exports = class LoadCommandCommand extends Command {
-	constructor(client) {
+	constructor(client, props = {}) {
 		super(client, {
 			name: 'load',
 			aliases: ['load-command'],
 			group: 'commands',
 			memberName: 'load',
-			description: 'Loads a new command.',
-			details: oneLine`
-				The argument must be full name of the command in the format of \`group:memberName\`.
-				Only the bot owner(s) may use this command.
-			`,
+			description: makeCallback(locale => locale.commands.commands.load.constructor.description),
+			details: makeCallback(locale => locale.commands.commands.load.constructor.details),
 			examples: ['load some-command'],
 			ownerOnly: true,
 			guarded: true,
@@ -21,13 +18,13 @@ module.exports = class LoadCommandCommand extends Command {
 			args: [
 				{
 					key: 'command',
-					prompt: 'Which command would you like to load?',
-					validate: val => new Promise(resolve => {
+					prompt: makeCallback(locale => locale.commands.commands.load.constructor.args[0].prompt),
+					validate: (val, msg) => new Promise(resolve => {
 						if(!val) return resolve(false);
 						const split = val.split(':');
 						if(split.length !== 2) return resolve(false);
 						if(this.client.registry.findCommands(val).length > 0) {
-							return resolve('That command is already registered.');
+							return resolve(msg.locale.commands.commands.load.constructor.args[0].validate.alreadyRegistered);
 						}
 						const cmdPath = this.client.registry.resolveCommandPath(split[0], split[1]);
 						fs.access(cmdPath, fs.constants.R_OK, err => err ? resolve(false) : resolve(true));
@@ -41,7 +38,7 @@ module.exports = class LoadCommandCommand extends Command {
 					}
 				}
 			]
-		});
+		}, props);
 	}
 
 	async run(msg, args) {
@@ -61,12 +58,17 @@ module.exports = class LoadCommandCommand extends Command {
 			} catch(err) {
 				this.client.emit('warn', `Error when broadcasting command load to other shards`);
 				this.client.emit('error', err);
-				await msg.reply(`Loaded \`${command.name}\` command, but failed to load on other shards.`);
+				await msg.reply(msg.locale.commands.commands.load.run.errorShards({
+					command: command.name
+				}));
 				return null;
 			}
 		}
 
-		await msg.reply(`Loaded \`${command.name}\` command${this.client.shard ? ' on all shards' : ''}.`);
+		await msg.reply(msg.locale.commands.commands.load.run.success({
+			command: command.name,
+			where: this.client.shard ? msg.locale.TEMPLATE.onAllShards : ''
+		}));
 		return null;
 	}
 };

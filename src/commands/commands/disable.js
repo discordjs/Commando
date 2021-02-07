@@ -1,30 +1,27 @@
-const { oneLine } = require('common-tags');
 const Command = require('../base');
+const { makeCallback } = require('../../util');
 
 module.exports = class DisableCommandCommand extends Command {
-	constructor(client) {
+	constructor(client, props = {}) {
 		super(client, {
 			name: 'disable',
 			aliases: ['disable-command', 'cmd-off', 'command-off'],
 			group: 'commands',
 			memberName: 'disable',
-			description: 'Disables a command or command group.',
-			details: oneLine`
-				The argument must be the name/ID (partial or whole) of a command or command group.
-				Only administrators may use this command.
-			`,
+			description: makeCallback(locale => locale.commands.commands.disable.constructor.description),
+			details: makeCallback(locale => locale.commands.commands.disable.constructor.details),
 			examples: ['disable util', 'disable Utility', 'disable prefix'],
 			guarded: true,
 
 			args: [
 				{
 					key: 'cmdOrGrp',
-					label: 'command/group',
-					prompt: 'Which command or group would you like to disable?',
+					label: makeCallback(locale => locale.commands.commands.disable.constructor.args[0].label),
+					prompt: makeCallback(locale => locale.commands.commands.disable.constructor.args[0].prompt),
 					type: 'group|command'
 				}
 			]
-		});
+		}, props);
 	}
 
 	hasPermission(msg) {
@@ -35,15 +32,23 @@ module.exports = class DisableCommandCommand extends Command {
 	run(msg, args) {
 		if(!args.cmdOrGrp.isEnabledIn(msg.guild, true)) {
 			return msg.reply(
-				`The \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'} is already disabled.`
+				args.cmdOrGrp.group ?
+				msg.locale.commands.commands.disable.run.groupAlreadyDisabled({ name: args.cmdOrGrp.name }) :
+				msg.locale.commands.commands.disable.run.commandAlreadyDisabled({ name: args.cmdOrGrp.name })
 			);
 		}
 		if(args.cmdOrGrp.guarded) {
 			return msg.reply(
-				`You cannot disable the \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'}.`
+				args.cmdOrGrp.group ?
+				msg.locale.commands.commands.disable.run.groupGuarded({ name: args.cmdOrGrp.name }) :
+				msg.locale.commands.commands.disable.run.commandGuarded({ name: args.cmdOrGrp.name })
 			);
 		}
 		args.cmdOrGrp.setEnabledIn(msg.guild, false);
-		return msg.reply(`Disabled the \`${args.cmdOrGrp.name}\` ${args.cmdOrGrp.group ? 'command' : 'group'}.`);
+		return msg.reply(
+			args.cmdOrGrp.group ?
+			msg.locale.commands.commands.disable.run.groupSuccess({ name: args.cmdOrGrp.name }) :
+			msg.locale.commands.commands.disable.run.commandSuccess({ name: args.cmdOrGrp.name })
+		);
 	}
 };

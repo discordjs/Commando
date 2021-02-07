@@ -7,13 +7,13 @@ class GroupArgumentType extends ArgumentType {
 		super(client, 'group');
 	}
 
-	validate(val) {
+	validate(val, msg) {
 		const groups = this.client.registry.findGroups(val);
 		if(groups.length === 1) return true;
 		if(groups.length === 0) return false;
 		return groups.length <= 15 ?
-			`${disambiguation(groups.map(grp => escapeMarkdown(grp.name)), 'groups', null)}\n` :
-			'Multiple groups found. Please be more specific.';
+			`${disambiguation(groups.map(grp => escapeMarkdown(grp.name)), msg.locale, msg.locale.types.group.disambiguation, null)}\n` :
+			msg.locale.types.group.multipleFound;
 	}
 
 	parse(val) {

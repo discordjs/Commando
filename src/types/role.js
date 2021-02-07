@@ -24,8 +24,8 @@ class RoleArgumentType extends ArgumentType {
 		}
 		if(exactRoles.size > 0) roles = exactRoles;
 		return roles.size <= 15 ?
-			`${disambiguation(roles.map(role => `${escapeMarkdown(role.name)}`), 'roles', null)}\n` :
-			'Multiple roles found. Please be more specific.';
+			`${disambiguation(roles.map(role => `${escapeMarkdown(role.name)}`), msg.locale, msg.locale.types.role.disambiguation, null)}\n` :
+			msg.locale.types.role.multipleFound;
 	}
 
 	parse(val, msg) {

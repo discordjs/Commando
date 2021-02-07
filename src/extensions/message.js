@@ -50,6 +50,15 @@ module.exports = Structures.extend('Message', Message => {
 			this.responsePositions = null;
 		}
 
+		get locale() {
+			if(this.channel.type === 'dm') return this.client.locale;
+			return this.guild.locale;
+		}
+
+		localeCallback(callback) {
+			return (typeof callback === 'function') ? callback(this.locale) : callback;
+		}
+
 		/**
 		 * Initialises the message for a command
 	 	 * @param {Command} [command] - Command the message triggers
@@ -208,7 +217,9 @@ module.exports = Structures.extend('Message', Message => {
 					 * (if applicable - see {@link Command#run})
 					 */
 					this.client.emit('commandCancel', this.command, collResult.cancelled, this, collResult);
-					return this.reply('Cancelled command.');
+					//
+					// return this.react('❌');
+					return this.reply(this.locale.extensions.message.cancelledCommand);
 				}
 				args = collResult.values;
 			}

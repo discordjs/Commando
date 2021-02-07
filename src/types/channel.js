@@ -24,8 +24,8 @@ class ChannelArgumentType extends ArgumentType {
 		}
 		if(exactChannels.size > 0) channels = exactChannels;
 		return channels.size <= 15 ?
-			`${disambiguation(channels.map(chan => escapeMarkdown(chan.name)), 'channels', null)}\n` :
-			'Multiple channels found. Please be more specific.';
+			`${disambiguation(channels.map(chan => escapeMarkdown(chan.name)), msg.locale, 'channels', null)}\n` :
+			msg.locale.types.channel.multipleFound;
 	}
 
 	parse(val, msg) {

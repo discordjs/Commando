@@ -9,7 +9,7 @@ class DefaultEmojiArgumentType extends ArgumentType {
 	validate(value, msg, arg) {
 		if(!new RegExp(`^(?:${emojiRegex().source})$`).test(value)) return false;
 		if(arg.oneOf && !arg.oneOf.includes(value)) {
-			return `Please enter one of the following options: ${arg.oneOf.join(' | ')}`;
+			return msg.locale.types.enterOne({ list: arg.oneOf.join(' | ') });
 		}
 		return true;
 	}

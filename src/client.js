@@ -2,6 +2,7 @@ const discord = require('discord.js');
 const CommandoRegistry = require('./registry');
 const CommandDispatcher = require('./dispatcher');
 const GuildSettingsHelper = require('./providers/helper');
+const LocaleProvider = require('./locales/localeProvider.js');
 
 /**
  * Discord.js Client with a command framework
@@ -26,7 +27,12 @@ class CommandoClient extends discord.Client {
 		if(options.commandPrefix === null) options.commandPrefix = '';
 		if(typeof options.commandEditableDuration === 'undefined') options.commandEditableDuration = 30;
 		if(typeof options.nonCommandEditable === 'undefined') options.nonCommandEditable = true;
+		if(typeof options.locale === 'undefined') options.locale = 'en';
 		super(options);
+
+		this._localeName = options.locale;
+
+		this.locales = new LocaleProvider([this._localeName]);
 
 		/**
 		 * The client's command registry
@@ -84,6 +90,17 @@ class CommandoClient extends discord.Client {
 				}
 			});
 		}
+	}
+
+	get locale() {
+		return this.locales.get(this._localeName);
+	}
+
+	set locale(locale) {
+		if(!this.locales.loaded(locale)) throw new Error(`Locale ${locale} is not loaded.`);
+		this._localeName = locale;
+
+		this.client.emit('localeChange', null, this._localeName);
 	}
 
 	/**

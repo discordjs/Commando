@@ -25,6 +25,30 @@ module.exports = Structures.extend('Guild', Guild => {
 			 * @private
 			 */
 			this._commandPrefix = null;
+
+			this._localeName = null;
+		}
+
+		get locale() {
+			if(this._localeName === null) return this.client.locale;
+			return this.client.locales.get(this._localeName);
+		}
+
+		set locale(locale) {
+			if(!this.client.locales.loaded(locale)) throw new Error(`Locale ${locale} is not loaded.`);
+			this._localeName = locale;
+
+			this.client.emit('localeChange', this, this._localeName);
+		}
+
+		static makeLocaleCallback(callback) {
+			return function(locale) {
+				return callback(locale);
+			};
+		}
+
+		static localeCallback(callback) {
+			return (typeof callback === 'function') ? callback(this.locale) : callback;
 		}
 
 		/**

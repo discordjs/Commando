@@ -2,6 +2,7 @@ const { escapeMarkdown } = require('discord.js');
 const { oneLine, stripIndents } = require('common-tags');
 const isPromise = require('is-promise');
 const ArgumentUnionType = require('../types/union');
+const { execCallback } = require('../util');
 
 /** A fancy argument */
 class Argument {
@@ -182,10 +183,12 @@ class Argument {
 
 			// Prompt the user for a new value
 			prompts.push(await msg.reply(stripIndents`
-				${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
+				${empty ? execCallback(this.prompt, msg.locale) :
+					valid ? valid :
+						msg.locale.commands.argument.invalidValue({ type: execCallback(this.label, msg.locale) })}
 				${oneLine`
-					Respond with \`cancel\` to cancel the command.
-					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+					${msg.locale.commands.argument.respondCancel}
+					${wait ? msg.locale.commands.argument.autoCancel({ wait: this.wait }) : ''}
 				`}
 			`));
 
@@ -267,22 +270,22 @@ class Argument {
 				if(val) {
 					const escaped = escapeMarkdown(val).replace(/@/g, '@\u200b');
 					prompts.push(await msg.reply(stripIndents`
-						${valid ? valid : oneLine`
-							You provided an invalid ${this.label},
-							"${escaped.length < 1850 ? escaped : '[too long to show]'}".
-							Please try again.
-						`}
+						${valid ? valid : msg.locale.commands.argument.invalidValueShow({
+							type: execCallback(this.label, msg.locale),
+							value: escaped.length < 1850 ? escaped : msg.locale.commands.argument.tooLongToShow
+						})}
+
 						${oneLine`
-							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry up to this point.
-							${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+							${msg.locale.commands.argument.respondCancelOrFinishNow}
+							${wait ? msg.locale.commands.argument.autoCancel({ wait: this.wait }) : ''}
 						`}
 					`));
 				} else if(results.length === 0) {
 					prompts.push(await msg.reply(stripIndents`
-						${this.prompt}
+						${execCallback(this.prompt, msg.locale)}
 						${oneLine`
-							Respond with \`cancel\` to cancel the command, or \`finish\` to finish entry.
-							${wait ? `The command will automatically be cancelled in ${this.wait} seconds, unless you respond.` : ''}
+							${msg.locale.commands.argument.respondCancelOrFinish}
+							${wait ? msg.locale.commands.argument.autoCancelUnlessRespond({ wait: this.wait }) : ''}
 						`}
 					`));
 				}
@@ -397,8 +400,8 @@ class Argument {
 		if(!client) throw new Error('The argument client must be specified.');
 		if(typeof info !== 'object') throw new TypeError('Argument info must be an Object.');
 		if(typeof info.key !== 'string') throw new TypeError('Argument key must be a string.');
-		if(info.label && typeof info.label !== 'string') throw new TypeError('Argument label must be a string.');
-		if(typeof info.prompt !== 'string') throw new TypeError('Argument prompt must be a string.');
+		if(info.label && !['string', 'function'].includes(typeof info.label)) throw new TypeError('Argument label must be a string.');
+		if(!['string', 'function'].includes(typeof info.prompt)) throw new TypeError('Argument prompt must be a string.');
 		if(info.error && typeof info.error !== 'string') throw new TypeError('Argument error must be a string.');
 		if(info.type && typeof info.type !== 'string') throw new TypeError('Argument type must be a string.');
 		if(info.type && !info.type.includes('|') && !client.registry.types.has(info.type)) {

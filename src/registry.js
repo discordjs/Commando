@@ -114,13 +114,14 @@ class CommandoRegistry {
 	/**
 	 * Registers a single command
 	 * @param {Command|Function} command - Either a Command instance, or a constructor for one
+	 * @param {Object} props Property overrides of the command
 	 * @return {CommandoRegistry}
 	 * @see {@link CommandoRegistry#registerCommands}
 	 */
-	registerCommand(command) {
+	registerCommand(command, props) {
 		/* eslint-disable new-cap */
-		if(isConstructor(command, Command)) command = new command(this.client);
-		else if(isConstructor(command.default, Command)) command = new command.default(this.client);
+		if(isConstructor(command, Command)) command = new command(this.client, props);
+		else if(isConstructor(command.default, Command)) command = new command.default(this.client, props);
 		/* eslint-enable new-cap */
 		if(!(command instanceof Command)) throw new Error(`Invalid command object to register: ${command}`);
 
@@ -282,12 +283,17 @@ class CommandoRegistry {
 
 	/**
 	 * Registers the default groups ("util" and "commands")
+	 * @param {Object} groups Properties to load groups with
 	 * @return {CommandoRegistry}
 	 */
-	registerDefaultGroups() {
+	registerDefaultGroups(groups = {}) {
+		groups = { commands: {}, util: {}, ...groups };
+		groups.commands = { guarded: true, ...groups.commands };
+		groups.util = { guarded: false, ...groups.util };
+
 		return this.registerGroups([
-			['commands', 'Commands', true],
-			['util', 'Utility']
+			['commands', 'Commands', groups.commands.guarded],
+			['util', 'Utility', groups.util.guarded]
 		]);
 	}
 
@@ -305,27 +311,38 @@ class CommandoRegistry {
 	 * (requires "util" group)
 	 * @param {boolean} [commands.commandState=true] - Whether to register the built-in command state commands
 	 * (enable, disable, load, unload, reload, list groups - requires "commands" group, "command" type, and "group" type)
+	 * @param {Object} props Property overrides for all the loaded commands
 	 * @return {CommandoRegistry}
 	 */
-	registerDefaultCommands(commands = {}) {
+	registerDefaultCommands(commands = {}, props = {}) {
 		commands = {
 			help: true, prefix: true, ping: true, eval: true,
-			unknownCommand: true, commandState: true, ...commands
+			unknownCommand: true, commandState: true, locale: true, ...commands
 		};
-		if(commands.help) this.registerCommand(require('./commands/util/help'));
-		if(commands.prefix) this.registerCommand(require('./commands/util/prefix'));
-		if(commands.ping) this.registerCommand(require('./commands/util/ping'));
-		if(commands.eval) this.registerCommand(require('./commands/util/eval'));
-		if(commands.unknownCommand) this.registerCommand(require('./commands/util/unknown-command'));
+
+		props = {
+			help: {}, prefix: {}, ping: {}, eval: {},
+			unknownCommand: {}, locale: {}, ...props
+		};
+
+		if(commands.help) this.registerCommand(require('./commands/util/help'), props.help);
+		if(commands.prefix) this.registerCommand(require('./commands/util/prefix'), props.prefix);
+		if(commands.locale) this.registerCommand(require('./commands/util/locale'), props.locale);
+		if(commands.ping) this.registerCommand(require('./commands/util/ping'), props.ping);
+		if(commands.eval) this.registerCommand(require('./commands/util/eval'), props.ping);
+		if(commands.unknownCommand) this.registerCommand(require('./commands/util/unknown-command'), props.unknownCommand);
 		if(commands.commandState) {
-			this.registerCommands([
-				require('./commands/commands/groups'),
-				require('./commands/commands/enable'),
-				require('./commands/commands/disable'),
-				require('./commands/commands/reload'),
-				require('./commands/commands/load'),
-				require('./commands/commands/unload')
-			]);
+			props = {
+				disable: {}, enable: {}, groups: {},
+				load: {}, reload: {}, unload: {}, ...props
+			};
+
+			this.registerCommand(require('./commands/commands/groups'), props.groups);
+			this.registerCommand(require('./commands/commands/enable'), props.enable);
+			this.registerCommand(require('./commands/commands/disable'), props.disable);
+			this.registerCommand(require('./commands/commands/reload'), props.reload);
+			this.registerCommand(require('./commands/commands/load'), props.load);
+			this.registerCommand(require('./commands/commands/unload'), props.unload);
 		}
 		return this;
 	}
@@ -381,11 +398,12 @@ class CommandoRegistry {
 	 * Reregisters a command (does not support changing name, group, or memberName)
 	 * @param {Command|Function} command - New command
 	 * @param {Command} oldCommand - Old command
+	 * @param {Object} props Property overrider for the new command
 	 */
 	reregisterCommand(command, oldCommand) {
 		/* eslint-disable new-cap */
-		if(isConstructor(command, Command)) command = new command(this.client);
-		else if(isConstructor(command.default, Command)) command = new command.default(this.client);
+		if(isConstructor(command, Command)) command = new command(this.client, oldCommand._props);
+		else if(isConstructor(command.default, Command)) command = new command.default(this.client, oldCommand._props);
 		/* eslint-enable new-cap */
 
 		if(command.name !== oldCommand.name) throw new Error('Command name cannot change.');
