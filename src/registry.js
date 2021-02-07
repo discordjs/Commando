@@ -389,7 +389,7 @@ class CommandoRegistry {
 		if(types.categoryChannel) this.registerType(require('./types/category-channel'));
 		if(types.message) this.registerType(require('./types/message'));
 		if(types.customEmoji) this.registerType(require('./types/custom-emoji'));
-		if(types.customGuildEmoji) this.registerCommand(require('./types/custom-guild-emoji'));
+		if(types.customGuildEmoji) this.registerType(require('./types/custom-guild-emoji'));
 		if(types.defaultEmoji) this.registerType(require('./types/default-emoji'));
 		if(types.command) this.registerType(require('./types/command'));
 		if(types.group) this.registerType(require('./types/group'));
