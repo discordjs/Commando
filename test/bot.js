@@ -23,7 +23,7 @@ client
 		if(err instanceof commando.FriendlyError) return;
 		console.error(`Error in command ${cmd.groupID}:${cmd.memberName}`, err);
 	})
-	.on('commandBlocked', (msg, reason) => {
+	.on('commandBlock', (msg, reason) => {
 		console.log(oneLine`
 			Command ${msg.command ? `${msg.command.groupID}:${msg.command.memberName}` : ''}
 			blocked; ${reason}
@@ -50,9 +50,12 @@ client
 		`);
 	});
 
-client.setProvider(
-	sqlite.open(path.join(__dirname, 'database.sqlite3')).then(db => new commando.SQLiteProvider(db))
-).catch(console.error);
+sqlite.open({
+	filename: path.join(__dirname, 'database.sqlite3'),
+	driver: sqlite3.Database
+}).then(db => {
+	client.setProvider(new commando.SQLiteProvider(db));
+}).catch(console.error);
 
 client.registry
 	.registerGroup('math', 'Math')
