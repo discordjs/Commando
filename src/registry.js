@@ -363,6 +363,7 @@ class CommandoRegistry {
 	 * @param {boolean} [types.categoryChannel=true] - Whether to register the built-in category-channel type
 	 * @param {boolean} [types.message=true] - Whether to register the built-in message type
 	 * @param {boolean} [types.customEmoji=true] - Whether to register the built-in custom-emoji type
+	 * @param {boolean} [types.customGuildEmoji=true] - Whether to register the built-in custom-guild-emoji type
 	 * @param {boolean} [types.defaultEmoji=true] - Whether to register the built-in default-emoji type
 	 * @param {boolean} [types.command=true] - Whether to register the built-in command type
 	 * @param {boolean} [types.group=true] - Whether to register the built-in group type
@@ -373,7 +374,7 @@ class CommandoRegistry {
 			string: true, integer: true, float: true, boolean: true,
 			user: true, member: true, role: true, channel: true, textChannel: true,
 			voiceChannel: true, categoryChannel: true, message: true, customEmoji: true,
-			defaultEmoji: true, command: true, group: true, ...types
+			defaultEmoji: true, customGuildEmoji: true, command: true, group: true, ...types
 		};
 		if(types.string) this.registerType(require('./types/string'));
 		if(types.integer) this.registerType(require('./types/integer'));
@@ -388,6 +389,7 @@ class CommandoRegistry {
 		if(types.categoryChannel) this.registerType(require('./types/category-channel'));
 		if(types.message) this.registerType(require('./types/message'));
 		if(types.customEmoji) this.registerType(require('./types/custom-emoji'));
+		if(types.customGuildEmoji) this.registerCommand(require('./types/custom-guild-emoji'));
 		if(types.defaultEmoji) this.registerType(require('./types/default-emoji'));
 		if(types.command) this.registerType(require('./types/command'));
 		if(types.group) this.registerType(require('./types/group'));
