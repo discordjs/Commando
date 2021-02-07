@@ -1,15 +1,15 @@
 {
-	"name": "discord.js-commando",
-	"version": "0.12.3",
-	"description": "The official command framework for Discord.js",
+	"name": "nw-discord.js-commando",
+	"version": "0.12.0",
+	"description": "Fork of the official command framework for Discord.js",
 	"license": "Apache-2.0",
-	"author": "Schuyler Cebulskie <Gawdl3y@gawdl3y.com> (https://gawdl3y.com/)",
+	"author": "Maxim Shamber <36640388+nowifi4u@users.noreply.github.com>",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/discordjs/Commando.git"
+		"url": "https://github.com/nowifi4u/Commando.git"
 	},
 	"bugs": {
-		"url": "https://github.com/discordjs/Commando/issues"
+		"url": "https://github.com/nowifi4u/Commando/issues"
 	},
 	"keywords": [
 		"discord",
