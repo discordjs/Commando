@@ -21,17 +21,20 @@ class CustomEmojiArgumentType extends ArgumentType {
 		if(exactEmojis.size === 1) return true;
 		if(exactEmojis.size > 0) emojis = exactEmojis;
 		return emojis.size <= 15 ?
-			`${disambiguation(emojis.map(emoji => escapeMarkdown(emoji.name)), msg.locale, msg.locale.types.customEmoji.disambiguation, null)}\n` :
+			`${disambiguation(emojis.map(emoji =>
+				escapeMarkdown(emoji.name)), msg.locale, msg.locale.types.customEmoji.disambiguation, null)}\n` :
 			msg.locale.types.customEmoji.multipleFound;
 	}
 
 	parse(value, msg) {
 		const matches = value.match(/^(?:(?:<a?:([^\s]+):([0-9]+)>)|(?::([^\s]+):)|([0-9]+))$/);
+		let search;
 		if(matches) {
-			if(msg.client.emojis.cache.has(matches[2])) return msg.client.emojis.cache.get(matches[2]) || null;
-			if(msg.client.emojis.cache.has(matches[4])) return msg.client.emojis.cache.get(matches[4]) || null;
+			if(msg.client.emojis.cache.has(matches[2])) return msg.client.emojis.cache.get(matches[2]);
+			if(msg.client.emojis.cache.has(matches[4])) return msg.client.emojis.cache.get(matches[4]);
+			search = matches[1] || matches[3];
 		}
-		const search = (matches[1] || matches[3] || value).toLowerCase();
+		search = (search || value).toLowerCase();
 		const emojis = msg.client.emojis.cache.filter(nameFilterInexact(search));
 		if(!emojis.size) return null;
 		if(emojis.size === 1) return emojis.first();
