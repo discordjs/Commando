@@ -1,6 +1,5 @@
 const ArgumentType = require('./base');
 const { disambiguation } = require('../util');
-const { escapeMarkdown } = require('discord.js');
 
 class CustomGuildEmojiArgumentType extends ArgumentType {
 	constructor(client) {
@@ -25,7 +24,7 @@ class CustomGuildEmojiArgumentType extends ArgumentType {
 		if(exactEmojis.size > 0) emojis = exactEmojis;
 		return emojis.size <= 15 ?
 			`${disambiguation(emojis.map(emoji =>
-				escapeMarkdown(emoji.name)), msg.locale, msg.locale.types.customEmoji.disambiguation, null)}\n` :
+				`${emoji}`), msg.locale, msg.locale.types.customEmoji.disambiguation, null)}\n` :
 			msg.locale.types.customEmoji.multipleFound;
 	}
 
