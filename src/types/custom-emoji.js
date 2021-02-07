@@ -9,11 +9,13 @@ class CustomEmojiArgumentType extends ArgumentType {
 
 	validate(value, msg) {
 		const matches = value.match(/^(?:(?:<a?:([^\s]+):([0-9]+)>)|(?::([^\s]+):)|([0-9]+))$/);
+		let search;
 		if(matches) {
 			if(msg.client.emojis.cache.has(matches[2])) return true;
 			if(msg.client.emojis.cache.has(matches[4])) return true;
+			search = matches[1] || matches[3];
 		}
-		const search = (matches[1] || matches[3] || value).toLowerCase();
+		search = (search || value).toLowerCase();
 		let emojis = msg.client.emojis.cache.filter(nameFilterInexact(search));
 		if(!emojis.size) return false;
 		if(emojis.size === 1) return true;
