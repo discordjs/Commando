@@ -284,6 +284,11 @@ class CommandoRegistry {
 	/**
 	 * Registers the default groups ("util" and "commands")
 	 * @param {Object} groups Properties to load groups with
+	 * @param {Object} [groups.commands] -
+	 * @param {boolean} [groups.commands.guarded] -
+	 * @param {Object} [groups.util] -
+	 * @param {boolean} [groups.util.guarded] -
+	 *
 	 * @return {CommandoRegistry}
 	 */
 	registerDefaultGroups(groups = {}) {
@@ -311,7 +316,21 @@ class CommandoRegistry {
 	 * (requires "util" group)
 	 * @param {boolean} [commands.commandState=true] - Whether to register the built-in command state commands
 	 * (enable, disable, load, unload, reload, list groups - requires "commands" group, "command" type, and "group" type)
-	 * @param {Object} props Property overrides for all the loaded commands
+	 *
+	 * @param {Object} [props] - Property overrides for commands
+	 * @param {CommandoR} [props.help] -
+	 * @param {CommandInfo} [props.prefix] -
+	 * @param {CommandInfo} [props.locale] -
+	 * @param {CommandInfo} [props.ping] -
+	 * @param {CommandInfo} [props.eval] -
+	 * @param {CommandInfo} [props.unknownCommand] -
+	 * @param {CommandInfo} [props.groups] -
+	 * @param {CommandInfo} [props.enable] -
+	 * @param {CommandInfo} [props.disable] -
+	 * @param {CommandInfo} [props.reload] -
+	 * @param {CommandInfo} [props.load] -
+	 * @param {CommandInfo} [props.unload] -
+	 *
 	 * @return {CommandoRegistry}
 	 */
 	registerDefaultCommands(commands = {}, props = {}) {
