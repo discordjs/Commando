@@ -17,6 +17,7 @@ module.exports = class LocaleCommand extends Command {
 					key: 'locale',
 					prompt: makeCallback(locale => locale.commands.util.locale.constructor.args[0].prompt),
 					validate: (val, msg) => new Promise(resolve => {
+						if(!val) return resolve(false);
 						const locale = val.toLowerCase();
 						if(locale === 'list') return resolve(true);
 						if(!this.client.locales.loaded(locale)) {
@@ -25,6 +26,7 @@ module.exports = class LocaleCommand extends Command {
 						return resolve(true);
 					}),
 					type: 'string',
+					min: 2,
 					max: 8,
 					default: 'en'
 				}
