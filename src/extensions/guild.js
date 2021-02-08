@@ -41,16 +41,6 @@ module.exports = Structures.extend('Guild', Guild => {
 			this.client.emit('localeChange', this, this._localeName);
 		}
 
-		static makeLocaleCallback(callback) {
-			return function(locale) {
-				return callback(locale);
-			};
-		}
-
-		static localeCallback(callback) {
-			return (typeof callback === 'function') ? callback(this.locale) : callback;
-		}
-
 		/**
 		 * Command prefix in the guild. An empty string indicates that there is no prefix, and only mentions will be used.
 		 * Setting to `null` means that the prefix from {@link CommandoClient#commandPrefix} will be used instead.
@@ -165,6 +155,55 @@ module.exports = Structures.extend('Guild', Guild => {
 		 */
 		commandUsage(command, user = this.client.user) {
 			return Command.usage(command, this.commandPrefix, user);
+		}
+
+		/**
+		 *
+		 * @param {string} val
+		 * @returns {Discord.GuildEmoji}
+		 */
+		parseGuildEmoji(val) {
+			if(val === null || val === undefined) return undefined;
+
+			if(typeof val === 'string') {
+				const strcut = val.substring(1, val.length - 1).toLowerCase();
+
+				const guildemoji = this.emojis.cache.find(emoji => emoji.name.toLowerCase() === strcut);
+
+				return guildemoji;
+			}
+
+			return undefined;
+		}
+
+		/**
+		 *
+		 * @param {string} val
+		 * @returns {string}
+		 */
+		parseEmoji(val) {
+			if(!val) return undefined;
+
+			if(typeof val === 'string') {
+				const guildemoji = this.parseGuildEmoji(this, val);
+				if(guildemoji && guildemoji.animated) return guildemoji;
+				else return val;
+			}
+
+			return undefined;
+		}
+
+		/**
+		 *
+		 * @param {string} str
+		 * @returns {string}
+		 */
+		parseEmojis(str) {
+			if(typeof str === 'string') {
+				return str.replace(/(?:(?!<)(?!<a):([^\s]+?):(?![\d]+>))/gi, emoji => this.parseEmoji(emoji) || emoji);
+			}
+
+			return str;
 		}
 	}
 
