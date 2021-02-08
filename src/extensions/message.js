@@ -55,10 +55,6 @@ module.exports = Structures.extend('Message', Message => {
 			return this.guild.locale;
 		}
 
-		localeCallback(callback) {
-			return (typeof callback === 'function') ? callback(this.locale) : callback;
-		}
-
 		/**
 		 * Initialises the message for a command
 	 	 * @param {Command} [command] - Command the message triggers
@@ -130,6 +126,8 @@ module.exports = Structures.extend('Message', Message => {
 		 * @return {Promise<?Message|?Array<Message>>}
 		 */
 		async run() { // eslint-disable-line complexity
+			if(!this.command.readBots && this.author.bot) return this.command.onBlock(this, null);
+
 			// Obtain the member if we don't have it
 			if(this.channel.type === 'text' && !this.guild.members.cache.has(this.author.id) && !this.webhookID) {
 				this.member = await this.guild.members.fetch(this.author);
