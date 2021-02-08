@@ -3,6 +3,7 @@ const commando = require('../src');
 const path = require('path');
 const oneLine = require('common-tags').oneLine;
 const sqlite = require('sqlite');
+const sqlite3 = require('sqlite3');
 const token = require('./auth').token;
 
 const client = new commando.Client({
