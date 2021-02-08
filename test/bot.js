@@ -7,9 +7,12 @@ const sqlite3 = require('sqlite3');
 const token = require('./auth').token;
 
 const client = new commando.Client({
-	owner: '90997305578106880',
+	owner: '250148489797828609',
 	commandPrefix: 'cdev'
 });
+
+client.locales.loadDefault('en');
+client.locales.loadDefault('ru');
 
 client
 	.on('error', console.error)
@@ -60,7 +63,12 @@ sqlite.open({
 
 client.registry
 	.registerGroup('math', 'Math')
-	.registerDefaults()
+	.registerDefaultTypes()
+	.registerDefaultGroups()
+	.registerDefaultCommands(
+	{
+		unknownCommand: false
+	})
 	.registerTypesIn(path.join(__dirname, 'types'))
 	.registerCommandsIn(path.join(__dirname, 'commands'));
 
