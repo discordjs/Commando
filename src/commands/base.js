@@ -56,7 +56,6 @@ class Command {
 	 */
 	// eslint-disable-next-line complexity
 	constructor(client, info, props = {}) {
-		console.log(`props size:${Object.keys(props).length}`);
 		info = assignDeepCheck(info, props);
 
 		this.constructor.validateInfo(client, info);
@@ -74,6 +73,15 @@ class Command {
 		 * @type {string}
 		 */
 		this.name = info.name;
+
+		/**
+		 * Weather commands can be executed by bots
+		 * (only if client.readBots is true)
+		 * @name Command#readBots
+		 * @type {boolean}
+		 * @readonly
+		 */
+		this.readBots = info.readBots;
 
 		/**
 		 * Aliases for this command
