@@ -161,6 +161,7 @@ module.exports = Structures.extend('Guild', Guild => {
 		 *
 		 * @param {string} val
 		 * @returns {Discord.GuildEmoji}
+		 * @private
 		 */
 		parseGuildEmoji(val) {
 			if(typeof val === 'string') {
@@ -175,6 +176,7 @@ module.exports = Structures.extend('Guild', Guild => {
 		 *
 		 * @param {string} val
 		 * @returns {string}
+		 * @private
 		 */
 		parseEmoji(val) {
 			if(typeof val === 'string') {
