@@ -163,14 +163,9 @@ module.exports = Structures.extend('Guild', Guild => {
 		 * @returns {Discord.GuildEmoji}
 		 */
 		parseGuildEmoji(val) {
-			if(val === null || val === undefined) return undefined;
-
 			if(typeof val === 'string') {
-				const strcut = val.substring(1, val.length - 1).toLowerCase();
-
-				const guildemoji = this.emojis.cache.find(emoji => emoji.name.toLowerCase() === strcut);
-
-				return guildemoji;
+				val = val.substr(1, val.length - 2).toLowerCase();
+				return this.emojis.cache.find(emoji => emoji.name.toLowerCase() === val);
 			}
 
 			return undefined;
@@ -182,10 +177,8 @@ module.exports = Structures.extend('Guild', Guild => {
 		 * @returns {string}
 		 */
 		parseEmoji(val) {
-			if(!val) return undefined;
-
 			if(typeof val === 'string') {
-				const guildemoji = this.parseGuildEmoji(this, val);
+				const guildemoji = this.parseGuildEmoji(val);
 				if(guildemoji && guildemoji.animated) return guildemoji;
 				else return val;
 			}
