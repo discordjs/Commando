@@ -10,7 +10,7 @@ module.exports = class LocaleCommand extends Command {
 			description: makeCallback(locale => locale.commands.util.locale.constructor.description),
 			details: makeCallback(locale => locale.commands.util.locale.constructor.details),
 			examples: ['locale en', 'locale ru', 'locale list'],
-			guildOnly: true,
+			channelType: 'guild',
 
 			args: [
 				{

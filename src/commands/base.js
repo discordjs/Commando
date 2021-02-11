@@ -81,7 +81,6 @@ class Command {
 		 * @type {boolean}
 		 * @readonly
 		 */
-		this.readBots = info.readBots;
 		this.readBots = Boolean(info.readBots);
 
 		/**
@@ -138,11 +137,15 @@ class Command {
 		 */
 		this.examples = info.examples || null;
 
+		if(!['guild', 'dm', 'any'].includes(info.channelType)) {
+			throw new TypeError('channelType can only have values "guild", "dm" or "any"');
+		}
+
 		/**
-		 * Whether the command can only be run in a guild channel
-		 * @type {boolean}
+		 * Whether the command can only be run in a guild, dm or any channel
+		 * @type {string}
 		 */
-		this.guildOnly = Boolean(info.guildOnly);
+		this.channelType = info.channelType || 'any';
 
 		/**
 		 * Whether the command can only be used by an owner
@@ -325,6 +328,10 @@ class Command {
 				return message.reply(message.locale.commands.base.guildOnly({
 					name: this.name
 				}));
+			case 'dmOnly':
+				return message.reply(message.locale.commands.base.dmOnly({
+					name: this.name
+				}));
 			case 'nsfw':
 				return message.reply(message.locale.commands.base.nsfw({
 					name: this.name
@@ -446,7 +453,8 @@ class Command {
 	 */
 	isUsable(message = null) {
 		if(!message) return this._globalEnabled;
-		if(this.guildOnly && message && !message.guild) return false;
+		if(this.channelType === 'guild' && message && !message.guild) return false;
+		if(this.channelType === 'dm' && message && message.guild) return false;
 		const hasPermission = this.hasPermission(message);
 		return this.isEnabledIn(message.guild) && hasPermission && typeof hasPermission !== 'string';
 	}

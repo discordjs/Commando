@@ -139,13 +139,13 @@ module.exports = Structures.extend('Message', Message => {
 			}
 
 			// Make sure the command is usable in this context
-			if(this.command.guildOnly && !this.guild) {
+			if(this.command.channelType === 'guild' && !this.guild) {
 				/**
 				 * Emitted when a command is prevented from running
 				 * @event CommandoClient#commandBlock
 				 * @param {CommandoMessage} message - Command message that the command is running from
 				 * @param {string} reason - Reason that the command was blocked
-				 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
+				 * (built-in reasons are `guildOnly`, `dmOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
 				 * @param {Object} [data] - Additional data associated with the block. Built-in reason data properties:
 				 * - guildOnly: none
 				 * - nsfw: none
@@ -155,6 +155,11 @@ module.exports = Structures.extend('Message', Message => {
 				 */
 				this.client.emit('commandBlock', this, 'guildOnly');
 				return this.command.onBlock(this, 'guildOnly');
+			}
+
+			if(this.command.channelType === 'dm' && this.guild) {
+				this.client.emit('commandBlock', this, 'dmOnly');
+				return this.command.onBlock(this, 'dmOnly');
 			}
 
 			// Ensure the channel is a NSFW one if required

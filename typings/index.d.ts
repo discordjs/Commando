@@ -82,7 +82,7 @@ declare module 'discord.js-commando' {
 		public group: CommandGroup;
 		public groupID: string;
 		public guarded: boolean;
-		public guildOnly: boolean;
+		public channelType: 'dm' | 'guild' | 'any';
 		public hidden: boolean;
 		public memberName: string;
 		public name: string;
@@ -97,7 +97,7 @@ declare module 'discord.js-commando' {
 		public isEnabledIn(guild: GuildResolvable, bypassGroup?: boolean): boolean;
 		public isUsable(message?: Message): boolean;
 		public onBlock(message: CommandoMessage, reason: string, data?: object): Promise<Message | Message[]>;
-		public onBlock(message: CommandoMessage, reason: 'guildOnly' | 'nsfw'): Promise<Message | Message[]>;
+		public onBlock(message: CommandoMessage, reason: 'guildOnly' | 'dmOnly' | 'nsfw'): Promise<Message | Message[]>;
 		public onBlock(message: CommandoMessage, reason: 'permission', data: { response?: string }): Promise<Message | Message[]>;
 		public onBlock(message: CommandoMessage, reason: 'clientPermissions', data: { missing: PermissionString[] }): Promise<Message | Message[]>;
 		public onBlock(message: CommandoMessage, reason: 'throttling', data: { throttle: object, remaining: number }): Promise<Message | Message[]>;
@@ -400,7 +400,7 @@ declare module 'discord.js-commando' {
 		details?: string;
 		examples?: string[];
 		nsfw?: boolean;
-		guildOnly?: boolean;
+		channelType?: 'dm' | 'guild' | 'any';
 		ownerOnly?: boolean;
 		clientPermissions?: PermissionResolvable[];
 		userPermissions?: PermissionResolvable[];

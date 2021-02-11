@@ -34,7 +34,8 @@ module.exports = class HelpCommand extends Command {
 				let help = msg.locale.commands.util.help.run.show({
 					name: commands[0].name,
 					description: execCallback(commands[0].description, msg.locale),
-					onlyServers: commands[0].guildOnly ? msg.locale.commands.util.help.run.onlyServer : '',
+					onlyServers: commands[0].channelType === 'guild' ? msg.locale.commands.util.help.run.onlyServers : '',
+					onlyDms: commands[0].channelType === 'dm' ? msg.locale.commands.util.help.run.onlyDms : '',
 					onlyNSFW: commands[0].nsfw ? msg.locale.commands.util.help.run.onlyNSFW : '',
 					format: msg.anyUsage(`${commands[0].name}${commands[0].format ? ` ${commands[0].format}` : ''}`)
 				});

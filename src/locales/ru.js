@@ -314,11 +314,13 @@ exports.commands = {
 			},
 			run: {
 				onlyServers: ' (Только для сервера)',
+				onlyDms: ' (Только для лс)',
 				onlyNSFW: ' (NSFW)',
 				show: applyExtensionsLater(tags.stripIndents`
                     ${tags.oneLine`
                         __Команда **{{name}}**:__ {{description}}
-                        {{onlyServers}}
+						{{onlyServers}}
+						{{onlyDms}}
                         {{onlyNSFW}}    
                     `}
 
@@ -449,6 +451,7 @@ exports.commands = {
 		requiresPermission: applyExtensionsLater('Команда \`{{name}}\` требует чтобы у вас было разрешение "{{permission}}".'),
 		requiresPermissions: applyExtensionsLater('Команда \`{{name}}\` требует чтобы у вас были стедующие разрешения: {{permissions}}'),
 		guildOnly: applyExtensionsLater('Команда \`{{name}}\` может быть использована только на сервере.'),
+		dnOnly: applyExtensionsLater('Команда \`{{name}}\` может быть использована только в лс.'),
 		nsfw: applyExtensionsLater('Команда \`{{name}}\` может быть использовага только в NSFW каналах.'),
 		noPermission: applyExtensionsLater('У вас нет разрешения на использование команды \`{{name}}\`.'),
 		noClientPermission: applyExtensionsLater('Мне необходимо разрешение "{{permission}}" чтобы команда \`{{name}}\` работала.'),
