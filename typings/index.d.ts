@@ -1,5 +1,5 @@
 declare module 'discord.js-commando' {
-	import { Client, ClientEvents, ClientOptions, Collection, Guild, GuildResolvable, Message, MessageAttachment, MessageEditOptions, MessageEmbed, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, StringResolvable, User, UserResolvable } from 'discord.js';
+	import { Client, ClientEvents, ClientOptions, Collection, Guild, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEditOptions, MessageEmbed, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, Role, StringResolvable, User, UserResolvable } from 'discord.js';
 
 	export class Argument {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
@@ -231,6 +231,11 @@ declare module 'discord.js-commando' {
 		public isGroupEnabled(group: CommandGroupResolvable): boolean;
 		public setCommandEnabled(command: CommandResolvable, enabled: boolean): void;
 		public setGroupEnabled(group: CommandGroupResolvable, enabled: boolean): void;
+	}
+
+	export class CommandoGuildMember extends GuildMember {
+		public hasRole(role: string): boolean;
+		public hasRole(role: Role): boolean;
 	}
 
 	export class CommandoRegistry {
