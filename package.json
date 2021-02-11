@@ -1,6 +1,6 @@
 {
 	"name": "nw-discord.js-commando",
-	"version": "0.12.15",
+	"version": "0.12.16",
 	"description": "Fork of the official command framework for Discord.js",
 	"license": "Apache-2.0",
 	"author": "Maxim Shamber <36640388+nowifi4u@users.noreply.github.com>",
