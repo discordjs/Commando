@@ -82,6 +82,7 @@ class Command {
 		 * @readonly
 		 */
 		this.readBots = info.readBots;
+		this.readBots = Boolean(info.readBots);
 
 		/**
 		 * Aliases for this command
