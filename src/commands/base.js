@@ -137,7 +137,7 @@ class Command {
 		 */
 		this.examples = info.examples || null;
 
-		if(!['guild', 'dm', 'any'].includes(info.channelType)) {
+		if('channelType' in info && !['guild', 'dm', 'any'].includes(info.channelType)) {
 			throw new TypeError('channelType can only have values "guild", "dm" or "any"');
 		}
 
