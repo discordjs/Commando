@@ -453,8 +453,8 @@ class Command {
 	 */
 	isUsable(message = null) {
 		if(!message) return this._globalEnabled;
-		if(this.channelType === 'guild' && message && !message.guild) return false;
-		if(this.channelType === 'dm' && message && message.guild) return false;
+		if(this.channelType === 'guild' && !message.guild) return false;
+		if(this.channelType === 'dm' && message.guild) return false;
 		const hasPermission = this.hasPermission(message);
 		return this.isEnabledIn(message.guild) && hasPermission && typeof hasPermission !== 'string';
 	}
