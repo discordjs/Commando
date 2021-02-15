@@ -34,7 +34,7 @@ module.exports = class PrefixCommand extends Command {
 		if(!args.prefix) {
 			const prefix = msg.guild ? msg.guild.commandPrefix : this.client.commandPrefix;
 			return msg.reply(stripIndents`
-				${prefix ? `The command prefix is \`\`${prefix}\`\`.` : 'There is no command prefix.'}
+				${prefix ? `The command prefix is \`${prefix}\`.` : 'There is no command prefix.'}
 				To run commands, use ${msg.anyUsage('command')}.
 			`);
 		}
@@ -54,11 +54,11 @@ module.exports = class PrefixCommand extends Command {
 		let response;
 		if(lowercase === 'default') {
 			if(msg.guild) msg.guild.commandPrefix = null; else this.client.commandPrefix = null;
-			const current = this.client.commandPrefix ? `\`\`${this.client.commandPrefix}\`\`` : 'no prefix';
+			const current = this.client.commandPrefix ? `\`${this.client.commandPrefix}\`` : 'no prefix';
 			response = `Reset the command prefix to the default (currently ${current}).`;
 		} else {
 			if(msg.guild) msg.guild.commandPrefix = prefix; else this.client.commandPrefix = prefix;
-			response = prefix ? `Set the command prefix to \`\`${args.prefix}\`\`.` : 'Removed the command prefix entirely.';
+			response = prefix ? `Set the command prefix to \`${args.prefix}\`.` : 'Removed the command prefix entirely.';
 		}
 
 		await msg.reply(`${response} To run commands, use ${msg.anyUsage('command')}.`);

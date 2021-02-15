@@ -1,3 +1,7 @@
+// This returns Object.prototype in order to return a valid object
+// without creating a new one each time this is called just to discard it the moment after.
+const isConstructorProxyHandler = { construct() { return Object.prototype; } };
+
 function escapeRegex(str) {
 	return str.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
 }
@@ -5,6 +9,17 @@ function escapeRegex(str) {
 function disambiguation(items, label, property = 'name') {
 	const itemList = items.map(item => `"${(property ? item[property] : item).replace(/ /g, '\xa0')}"`).join(',   ');
 	return `Multiple ${label} found, please be more specific: ${itemList}`;
+}
+
+function isConstructor(func, _class) {
+	try {
+		// eslint-disable-next-line no-new
+		new new Proxy(func, isConstructorProxyHandler)();
+		if(!_class) return true;
+		return func.prototype instanceof _class;
+	} catch(err) {
+		return false;
+	}
 }
 
 function paginate(items, page = 1, pageLength = 10) {
@@ -55,5 +70,6 @@ module.exports = {
 	escapeRegex,
 	disambiguation,
 	paginate,
-	permissions
+	permissions,
+	isConstructor
 };

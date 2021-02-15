@@ -1,5 +1,6 @@
 const { escapeMarkdown } = require('discord.js');
 const { oneLine, stripIndents } = require('common-tags');
+const isPromise = require('is-promise');
 const ArgumentUnionType = require('../types/union');
 
 /** A fancy argument */
@@ -94,7 +95,9 @@ class Argument {
 		 * If type is `channel`, `member`, `role`, or `user`, this will be the IDs.
 		 * @type {?string[]}
 		 */
-		this.oneOf = typeof info.oneOf !== 'undefined' ? info.oneOf : null;
+		this.oneOf = typeof info.oneOf !== 'undefined' ?
+			info.oneOf.map(el => el.toLowerCase ? el.toLowerCase() : el) :
+			null;
 
 		/**
 		 * Whether the argument accepts an infinite number of values
@@ -215,13 +218,13 @@ class Argument {
 				};
 			}
 
-			empty = this.isEmpty(val, msg);
-			valid = await this.validate(val, msg);
+			empty = this.isEmpty(val, msg, responses.first());
+			valid = await this.validate(val, msg, responses.first());
 			/* eslint-enable no-await-in-loop */
 		}
 
 		return {
-			value: await this.parse(val, msg),
+			value: await this.parse(val, msg, answers.length ? answers[answers.length - 1] : msg),
 			cancelled: null,
 			prompts,
 			answers
@@ -322,10 +325,10 @@ class Argument {
 					};
 				}
 
-				valid = await this.validate(val, msg);
+				valid = await this.validate(val, msg, responses.first());
 			}
 
-			results.push(await this.parse(val, msg));
+			results.push(await this.parse(val, msg, answers.length ? answers[answers.length - 1] : msg));
 
 			if(vals) {
 				currentVal++;
@@ -345,36 +348,41 @@ class Argument {
 	/**
 	 * Checks if a value is valid for the argument
 	 * @param {string} val - Value to check
-	 * @param {CommandoMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} originalMsg - Message that triggered the command
+	 * @param {?CommandoMessage} [currentMsg=originalMsg] - Current response message
 	 * @return {boolean|string|Promise<boolean|string>}
 	 */
-	validate(val, msg) {
-		const valid = this.validator ? this.validator(val, msg, this) : this.type.validate(val, msg, this);
+	validate(val, originalMsg, currentMsg = originalMsg) {
+		const valid = this.validator ?
+			this.validator(val, originalMsg, this, currentMsg) :
+			this.type.validate(val, originalMsg, this, currentMsg);
 		if(!valid || typeof valid === 'string') return this.error || valid;
-		if(valid instanceof Promise) return valid.then(vld => !vld || typeof vld === 'string' ? this.error || vld : vld);
+		if(isPromise(valid)) return valid.then(vld => !vld || typeof vld === 'string' ? this.error || vld : vld);
 		return valid;
 	}
 
 	/**
 	 * Parses a value string into a proper value for the argument
 	 * @param {string} val - Value to parse
-	 * @param {CommandoMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} originalMsg - Message that triggered the command
+	 * @param {?CommandoMessage} [currentMsg=originalMsg] - Current response message
 	 * @return {*|Promise<*>}
 	 */
-	parse(val, msg) {
-		if(this.parser) return this.parser(val, msg, this);
-		return this.type.parse(val, msg, this);
+	parse(val, originalMsg, currentMsg = originalMsg) {
+		if(this.parser) return this.parser(val, originalMsg, this, currentMsg);
+		return this.type.parse(val, originalMsg, this, currentMsg);
 	}
 
 	/**
 	 * Checks whether a value for the argument is considered to be empty
 	 * @param {string} val - Value to check for emptiness
-	 * @param {CommandoMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage} originalMsg - Message that triggered the command
+	 * @param {?CommandoMessage} [currentMsg=originalMsg] - Current response message
 	 * @return {boolean}
 	 */
-	isEmpty(val, msg) {
-		if(this.emptyChecker) return this.emptyChecker(val, msg, this);
-		if(this.type) return this.type.isEmpty(val, msg, this);
+	isEmpty(val, originalMsg, currentMsg = originalMsg) {
+		if(this.emptyChecker) return this.emptyChecker(val, originalMsg, this, currentMsg);
+		if(this.type) return this.type.isEmpty(val, originalMsg, this, currentMsg);
 		if(Array.isArray(val)) return val.length === 0;
 		return !val;
 	}

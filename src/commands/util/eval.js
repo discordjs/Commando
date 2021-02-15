@@ -50,6 +50,11 @@ module.exports = class EvalCommand extends Command {
 		};
 		/* eslint-enable no-unused-vars */
 
+		// Remove any surrounding code blocks before evaluation
+		if(args.script.startsWith('```') && args.script.endsWith('```')) {
+			args.script = args.script.replace(/(^.*?\s)|(\n.*$)/g, '');
+		}
+
 		// Run the code and measure its execution time
 		let hrDiff;
 		try {
