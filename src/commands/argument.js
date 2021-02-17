@@ -417,7 +417,9 @@ class Argument {
 	 * @return {boolean|string|Promise<boolean|string>}
 	 */
 	validate(val, originalMsg, currentMsg = originalMsg) {
-		let valid = this.validator ? this.validator(val, originalMsg, this, currentMsg) : this.type.validate(val, originalMsg, this, currentMsg);
+		let valid = this.validator ?
+			this.validator(val, originalMsg, this, currentMsg) :
+			this.type.validate(val, originalMsg, this, currentMsg);
 		if(typeof valid !== 'string' && typeof valid !== 'undefined' && valid.key) {
 			valid = i18next.t(valid.key, { lng: originalMsg.client.translator.resolveLanguage(currentMsg) });
 		}

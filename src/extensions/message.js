@@ -282,6 +282,7 @@ module.exports = Structures.extend('Message', Message => {
 		 * @return {Message|Message[]}
 		 * @private
 		 */
+		// eslint-disable-next-line complexity
 		respond({ type = 'reply', content, options, lang, fromEdit = false }) {
 			const shouldEdit = this.responses && !fromEdit;
 			if(shouldEdit) {
