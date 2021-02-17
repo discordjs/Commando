@@ -25,9 +25,10 @@ class CommandoLanguage {
 
 		/**
 		 * Method to translate this specific language.
+		 * @type {function}
 		 * @example new CommandoLanguage(client, 'fr').translate('myKey')
 		 */
-		this.translate = i18next.getFixedT(languageCode);
+		this._translate = i18next.getFixedT(languageCode).bind(this);
 	}
 
 	/**
@@ -109,6 +110,16 @@ class CommandoLanguage {
 
 		// Set this language as unloaded.
 		this.loaded = false;
+	}
+
+	/**
+	 * Function which returns the value for a given a key in this language.
+	 * @param {string} key - The key of the value to be translated.
+	 * @return {string}
+	 */
+	translate(key) {
+		const fixedTranslateFunction = i18next.getFixedT(this.code);
+		return fixedTranslateFunction(key);
 	}
 }
 

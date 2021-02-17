@@ -377,6 +377,8 @@ declare module 'discord.js-commando' {
 		public load(): Promise<void>;
 		public reload(): Promise<void>;
 		public unload(): Promise<void>;
+
+		public translate(key: string): string;
 	}
 
 	export const version: string;
