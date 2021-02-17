@@ -1,6 +1,6 @@
 const Command = require('../base');
 const i18next = require('i18next');
-const { CommandoTranslatable } = require('../../translator');
+const CommandoTranslatable = require('../../translator/translatable');
 
 module.exports = class DisableCommandCommand extends Command {
 	constructor(client) {

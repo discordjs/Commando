@@ -12,7 +12,8 @@ module.exports = {
 	ArgumentType: require('./types/base'),
 	FriendlyError: require('./errors/friendly'),
 	CommandFormatError: require('./errors/command-format'),
-	CommandoTranslatable: require('./translator').CommandoTranslatable,
+	CommandoTranslatable: require('./translator/translatable'),
+	CommandoLanguage: require('./translator/language'),
 
 	util: require('./util'),
 	version: require('../package').version,

@@ -1,7 +1,7 @@
 const discord = require('discord.js');
 const CommandoRegistry = require('./registry');
 const CommandDispatcher = require('./dispatcher');
-const { CommandoTranslator } = require('./translator');
+const CommandoTranslator = require('./translator/index');
 const GuildSettingsHelper = require('./providers/helper');
 const i18next = require('i18next');
 

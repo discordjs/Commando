@@ -3,7 +3,7 @@ const { escapeMarkdown } = require('discord.js');
 const ArgumentCollector = require('./collector');
 const { permissions } = require('../util');
 const i18next = require('i18next');
-const { CommandoTranslator } = require('../translator');
+const CommandoTranslator = require('../translator/index');
 
 /** A command that can be run in a client */
 class Command {
@@ -623,10 +623,10 @@ class Command {
 	 * Translates the translatable command info parts
 	 * @param {Command} [command] - The command holding the command info
 	 * @param {string} [language] - The language the command info will be translated to
-	 * @param {TOptions} [options] - i18next translate options object
+	 * @param {any} [options] - i18next translate options object
 	 * @return {Partial<CommandInfo>}
 	 */
-	translate(command, language, options) {
+	translateCommandInfo(command, language, options) {
 		if(typeof language === 'undefined') language = this.client.defaultLanguage;
 		if(typeof options === 'undefined') options = {};
 

@@ -1,7 +1,8 @@
 const i18next = require('i18next');
 const Backend = require('i18next-fs-backend');
 const { oneLine } = require('common-tags');
-const { defaultCommandoTranslations } = require('./i18n/dev');
+const { defaultCommandoTranslations } = require('../i18n/dev');
+const CommandoLanguage = require('./language');
 
 /**
  * Provides methods for translation
@@ -12,10 +13,11 @@ class CommandoTranslator {
 	 * @typedef {Object} CommandoTranslatorOptions
 	 * @property {?boolean} loadTranslations - Weather the translator should load translation files or only the builtins.
 	 * @property {?boolean} debug - Sets the i18next debug flag. Use it to resolve issues when loading i18n files.
-	 * @property {?string} localesPath - Path where the i18n files are located.
+	 * @property {?string} localesPath - Path pattern where the language files are located.
 	 * @see {@link https://www.i18next.com/how-to/add-or-load-translations#add-or-load-translations}
 	 * @property {?string[]} supportedLanguages - Array of language codes, your bot will support.
 	 * @property {?string} defaultNamespace - The namespace used for builtin strings.
+	 * @property {?string[]} namespaces - The namespaces to load.
 	 * @see {@link https://www.i18next.com/principles/namespaces} to learn more about namespaces in i18next!
 	 * @property {?TranslateOptions} overrides - Overrides the i18next options.
 	 * @see {@link https://www.i18next.com/overview/configuration-options}
@@ -26,22 +28,54 @@ class CommandoTranslator {
 	 * @param {?CommandoTranslatorOptions} [options] - Options for the translator
 	 */
 	constructor(client, options = {}) {
+		this.client = client;
+
 		// Set additional namespaces
-		if(Array.isArray(options.ns)) {
-			this.ns = options.ns;
-		} else if(typeof ns === 'string') {
-			this.ns = [options.ns];
+		if(Array.isArray(options.namespaces)) {
+			this.ns = options.namespaces;
+		} else if(typeof options.namespaces === 'string') {
+			this.ns = [options.namespaces];
 		} else {
 			this.ns = [];
 		}
 
-		this.client = client;
-
+		/**
+		 * Whether language files should be loaded or not.
+		 * @type {?boolean}
+		 * */
 		this.loadTranslations = options.loadTranslations;
+
+		/**
+		 * Path pattern where the language files are located.
+		 * @type {?string}
+		 * */
 		this.loadPath = options.localesPath;
+
+		/**
+		 * Whether the debug mode of i18next should be enabled.
+		 * @type {boolean}
+		 * */
 		this.debug = options.debug === true;
+
+
+		/**
+		 * Path pattern where the language files are located.
+		 * @type {Partial<TranslateOptions>}
+		 * */
 		this.overrides = options.overrides || {};
+
+
+		/**
+		 * Languages which can be switched to.
+		 * @type {string[]}
+		 * */
 		this.supportedLanguages = options.supportedLanguages || [];
+
+
+		/**
+		 * The namespace used for builtin strings. Default is 'commando'.
+		 * @type {string}
+		 * */
 		this.defaultNamespace = options.defaultNamespace || 'commando';
 
 		this.options = {
@@ -53,8 +87,29 @@ class CommandoTranslator {
 			...this.overrides
 		};
 
-		// Only loads the builtin commando translations
-		this.init();
+
+		/**
+		 * The Languages in which can be translated.
+		 * @type {CommandoLanguage[]}
+		 * @private
+		 */
+		this._languages = this.supportedLanguages.map(languageCode => new CommandoLanguage(client, languageCode));
+
+		// Initialize the i18next lib.
+		this.init().catch(console.error);
+	}
+
+	/**
+	 * Getter/Setter
+	 * @name CommandoTranslatable#_languages
+	 * @type {CommandoLanguage[]}
+	 */
+	get languages() {
+		return this._languages;
+	}
+
+	set languages(languages) {
+		this._languages = languages;
 	}
 
 	static get DEFAULT_LANGUAGE() {
@@ -67,7 +122,11 @@ class CommandoTranslator {
 	 */
 	async init() {
 		const timeLabel = `[${CommandoTranslator.name}] Initialized in`;
-		console.time(timeLabel);
+
+		if(this.debug) {
+			console.time(timeLabel);
+		}
+
 		if(this.loadTranslations) {
 			if(typeof this.loadPath === 'undefined') {
 				throw new Error(
@@ -118,11 +177,25 @@ class CommandoTranslator {
 			);
 		}
 
+		for(const languageCode of Object.keys(i18next.services.resourceStore.data)) {
+			if(i18next.services.resourceStore.data[languageCode] !== {}) {
+				const language = this.languages.find(lng => lng.code === languageCode);
+				language.loaded = true;
+			}
+		}
+
+		for(const language of this.languages) {
+			language.loaded = i18next.services.resourceStore.data[language.code] !== undefined;
+		}
+
 		const loadedLanguages = i18next.languages || [];
-		console.timeEnd(timeLabel);
-		console.log(oneLine`[${CommandoTranslator.name}] 
-		The following languages have been loaded: ${loadedLanguages.join(', ')}. 
-		Default language is: ${this.client.defaultLanguage}.`);
+
+		if(this.debug) {
+			console.timeEnd(timeLabel);
+			console.log(oneLine`[${CommandoTranslator.name}] 
+			The following languages have been loaded: ${loadedLanguages.join(', ')}. 
+			Default language is: ${this.client.defaultLanguage}.`);
+		}
 	}
 
 	/**
@@ -140,7 +213,6 @@ class CommandoTranslator {
 		}
 	}
 
-
 	/**
 	 * Loads additional namespaces
 	 * @see {@link https://www.i18next.com/principles/namespaces}
@@ -153,47 +225,4 @@ class CommandoTranslator {
 	}
 }
 
-/**
- * Represents a string which can be translated
- * */
-class CommandoTranslatable {
-	/**
-	 * @typedef {Object} CommandoTranslatable - Represents a string which can be translated
-	 * @property {string} key - The key which will be resolved.
-	 */
-
-	constructor(key) {
-		this._key = key;
-	}
-
-
-	/**
-	 * Getter
-	 * @name CommandoTranslatable#_key
-	 * @type {string}
-	 * @readonly
-	 */
-	get key() {
-		return this._key;
-	}
-
-	/**
-	 * Translates this Translatable. This method calls i18next.t() with the key passed through the constructor.
-	 * @see {@link https://www.i18next.com/translation-function/essentials}
-	 * @param {TranslateOptions} options - I18next options object
-	 * @return {string} - The translated string
-	 */
-	translate(options) {
-		const isUndefined = typeof this._key === 'undefined';
-		const isEmptyString = typeof this._key === 'string' && this._key.length === 0;
-
-		if(isUndefined || isEmptyString) return '';
-
-		return i18next.t(this._key, options);
-	}
-}
-
-module.exports = {
-	CommandoTranslator,
-	CommandoTranslatable
-};
+module.exports = CommandoTranslator;

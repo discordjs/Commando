@@ -1,7 +1,7 @@
 const { stripIndents } = require('common-tags');
 const Command = require('../base');
 const { disambiguation } = require('../../util');
-const { CommandoTranslatable } = require('../../translator');
+const CommandoTranslatable = require('../../translator/translatable');
 const i18next = require('i18next');
 
 
@@ -37,7 +37,7 @@ module.exports = class HelpCommand extends Command {
 
 		if(args.command && !showAll) {
 			if(commands.length === 1) {
-				const commandInfo = this.translate(commands[0], lng);
+				const commandInfo = this.translateCommandInfo(commands[0], lng);
 				const helpDescription = i18next.t('command.help.run.description', {
 					lng,
 					name: commands[0].name,

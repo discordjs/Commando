@@ -1,6 +1,6 @@
 const fs = require('fs');
 const Command = require('../base');
-const { CommandoTranslatable } = require('../../translator');
+const CommandoTranslatable = require('../../translator/translatable');
 
 module.exports = class LoadCommandCommand extends Command {
 	constructor(client) {

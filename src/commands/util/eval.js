@@ -3,7 +3,7 @@ const discord = require('discord.js');
 const tags = require('common-tags');
 const { escapeRegex } = require('../../util');
 const Command = require('../base');
-const { CommandoTranslatable } = require('../../translator');
+const CommandoTranslatable = require('../../translator/translatable');
 const i18next = require('i18next');
 
 const nl = '!!NL!!';

@@ -1,5 +1,5 @@
 const Command = require('../base');
-const { CommandoTranslatable } = require('../../translator');
+const CommandoTranslatable = require('../../translator/translatable');
 const i18next = require('i18next');
 
 
