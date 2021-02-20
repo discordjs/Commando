@@ -35,8 +35,11 @@ class UserArgumentType extends ArgumentType {
 		if(exactMembers.size > 0) members = exactMembers;
 		return members.size <= 15 ?
 			`${disambiguation(
-				members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`), msg.locale, msg.locale.types.user.disambiguation, null
-			)}\n` :
+				members.map(mem => `${escapeMarkdown(mem.user.username)}#${mem.user.discriminator}`),
+				msg.locale,
+				msg.locale.types.user.disambiguation,
+				null
+				)}\n` :
 			msg.locale.types.user.multipleFound;
 	}
 

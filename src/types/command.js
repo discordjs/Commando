@@ -12,7 +12,11 @@ class CommandArgumentType extends ArgumentType {
 		if(commands.length === 1) return true;
 		if(commands.length === 0) return false;
 		return commands.length <= 15 ?
-			`${disambiguation(commands.map(cmd => escapeMarkdown(cmd.name)), msg.locale, msg.locale.types.command.disambiguation, null)}\n` :
+			`${disambiguation(commands.map(cmd => escapeMarkdown(cmd.name)),
+				msg.locale,
+				msg.locale.types.command.disambiguation,
+				null
+				)}\n` :
 			msg.locale.types.command.multipleFound;
 	}
 

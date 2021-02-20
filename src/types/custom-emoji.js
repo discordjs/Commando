@@ -22,8 +22,11 @@ class CustomEmojiArgumentType extends ArgumentType {
 		if(exactEmojis.size === 1) return true;
 		if(exactEmojis.size > 0) emojis = exactEmojis;
 		return emojis.size <= 15 ?
-			`${disambiguation(emojis.map(emoji =>
-				`${emoji}`), msg.locale, msg.locale.types.customEmoji.disambiguation, null)}\n` :
+			`${disambiguation(emojis.map(emoji => emoji.toString()),
+				msg.locale,
+				msg.locale.types.customEmoji.disambiguation,
+				null
+				)}\n` :
 			msg.locale.types.customEmoji.multipleFound;
 	}
 
