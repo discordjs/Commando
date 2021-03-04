@@ -27,7 +27,8 @@ class ChannelArgumentType extends ArgumentType {
 			`${disambiguation(channels.map(chan => escapeMarkdown(chan.name)),
 				msg.locale,
 				msg.locale.types.channel.disambiguation,
-				null)}\n` :
+				null
+				)}\n` :
 			msg.locale.types.channel.multipleFound;
 	}
 

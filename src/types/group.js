@@ -12,7 +12,9 @@ class GroupArgumentType extends ArgumentType {
 		if(groups.length === 1) return true;
 		if(groups.length === 0) return false;
 		return groups.length <= 15 ?
-			`${disambiguation(groups.map(grp => escapeMarkdown(grp.name)), msg.locale, msg.locale.types.group.disambiguation, null)}\n` :
+			`${disambiguation(groups.map(grp => escapeMarkdown(grp.name)),
+				msg.locale,
+				msg.locale.types.group.disambiguation, null)}\n` :
 			msg.locale.types.group.multipleFound;
 	}
 
