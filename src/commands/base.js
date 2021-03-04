@@ -23,7 +23,7 @@ class Command {
 	 * and `args` is specified
 	 * @property {string} [details] - A detailed description of the command and its functionality
 	 * @property {string[]} [examples] - Usage examples of the command
-	 * @property {string} [channelType="all"] - Whether or not the command should only function in a guild channel, dm channel or all
+	 * @property {string} [channelType='any'] - Whether or not the command should only function in a guild channel, dm channel or all
 	 * @property {boolean} [ownerOnly=false] - Whether or not the command is usable only by an owner
 	 * @property {PermissionResolvable[]} [clientPermissions] - Permissions required by the client to use the command.
 	 * @property {PermissionResolvable[]} [userPermissions] - Permissions required by the user to use the command.
