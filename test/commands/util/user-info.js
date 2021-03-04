@@ -10,7 +10,7 @@ module.exports = class UserInfoCommand extends commando.Command {
 			memberName: 'user-info',
 			description: 'Gets information about a user.',
 			examples: ['user-info @Crawl#3208', 'user-info Crawl'],
-			guildOnly: true,
+			channelType: 'guild',
 
 			args: [
 				{

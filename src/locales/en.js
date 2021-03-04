@@ -451,7 +451,7 @@ exports.commands = {
 		requiresPermission: applyExtensionsLater('The \`{{name}}\` command requires you to have the "{{permission}}" permission.'),
 		requiresPermissions: applyExtensionsLater('The \`{{name}}\` command requires you to have the following permissions: {{permissions}}'),
 		guildOnly: applyExtensionsLater('The \`{{name}}\` command must be used in a server channel.'),
-		dnOnly: applyExtensionsLater('The \`{{name}}\` command must be used in a dm.'),
+		dmOnly: applyExtensionsLater('The \`{{name}}\` command must be used in a dm.'),
 		nsfw: applyExtensionsLater('The \`{{name}}\` command can only be used in NSFW channels.'),
 		noPermission: applyExtensionsLater('You do not have permission to use the \`{{name}}\` command.'),
 		noClientPermission: applyExtensionsLater('I need the "{{permission}}" permission for the \`{{name}}\` command to work.'),

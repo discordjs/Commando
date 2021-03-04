@@ -23,7 +23,7 @@ class Command {
 	 * and `args` is specified
 	 * @property {string} [details] - A detailed description of the command and its functionality
 	 * @property {string[]} [examples] - Usage examples of the command
-	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
+	 * @property {string} [channelType="all"] - Whether or not the command should only function in a guild channel, dm channel or all
 	 * @property {boolean} [ownerOnly=false] - Whether or not the command is usable only by an owner
 	 * @property {PermissionResolvable[]} [clientPermissions] - Permissions required by the client to use the command.
 	 * @property {PermissionResolvable[]} [userPermissions] - Permissions required by the user to use the command.
@@ -313,9 +313,10 @@ class Command {
 	 * Called when the command is prevented from running
 	 * @param {CommandMessage} message - Command message that the command is running from
 	 * @param {string} reason - Reason that the command was blocked
-	 * (built-in reasons are `guildOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
+	 * (built-in reasons are `guildOnly`, `dmOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
 	 * @param {Object} [data] - Additional data associated with the block. Built-in reason data properties:
 	 * - guildOnly: none
+	 * - dmOnly: none
 	 * - nsfw: none
 	 * - permission: `response` ({@link string}) to send
 	 * - throttling: `throttle` ({@link Object}), `remaining` ({@link number}) time in seconds

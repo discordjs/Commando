@@ -421,7 +421,7 @@ declare module 'discord.js-commando' {
 	interface CommandoClientEvents extends ClientEvents {
 		commandBlock:
 		| [CommandoMessage, string, object?]
-		| [CommandoMessage, 'guildOnly' | 'nsfw']
+		| [CommandoMessage, 'guildOnly' | 'dmOnly' | 'nsfw']
 		| [CommandoMessage, 'permission', { response?: string }]
 		| [CommandoMessage, 'throttling', { throttle: object, remaining: number }]
 		| [CommandoMessage, 'clientPermissions', { missing: string }];

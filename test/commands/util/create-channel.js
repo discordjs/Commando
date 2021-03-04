@@ -9,7 +9,7 @@ module.exports = class CreateChannelCommand extends commando.Command {
 			memberName: 'create-channel',
 			description: 'Creates a channel.',
 			examples: ['create-channel Test channel'],
-			guildOnly: true,
+			channelType: 'guild',
 			clientPermissions: ['MANAGE_CHANNELS'],
 			userPermissions: ['MANAGE_CHANNELS'],
 

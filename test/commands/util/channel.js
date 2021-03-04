@@ -9,7 +9,7 @@ module.exports = class ChannelCommand extends commando.Command {
 			memberName: 'channel',
 			description: 'Gets information about a channel.',
 			examples: ['channel #test', 'channel test'],
-			guildOnly: true,
+			channelType: 'guild',
 
 			args: [
 				{

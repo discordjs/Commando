@@ -148,6 +148,7 @@ module.exports = Structures.extend('Message', Message => {
 				 * (built-in reasons are `guildOnly`, `dmOnly`, `nsfw`, `permission`, `throttling`, and `clientPermissions`)
 				 * @param {Object} [data] - Additional data associated with the block. Built-in reason data properties:
 				 * - guildOnly: none
+				 * - dmOnly: none
 				 * - nsfw: none
 				 * - permission: `response` ({@link string}) to send
 				 * - throttling: `throttle` ({@link Object}), `remaining` ({@link number}) time in seconds
