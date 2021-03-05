@@ -38,13 +38,14 @@ client.registry
 Commando has built-in command prefix configuration per-guild, as well as enabling and disabling commands per-guild.
 In order for this to persist across restarts, you should use a [SettingProvider](https://discord.js.org/#/docs/commando/master/class/SettingProvider).
 There is a built-in SQLiteProvider that comes with Commando, which stores all settings in an SQLite3 database.
-To use it, install the `sqlite` module with NPM (`npm install --save sqlite`). Then, set the provider on the client:
+To use it, install the `sqlite` and the `sqlite3` module with NPM (`npm install --save sqlite sqlite3`). Then, set the provider on the client:
 
 ```javascript
 const sqlite = require('sqlite');
+const sqlite3 = require('sqlite3');
 
 client.setProvider(
-	sqlite.open(path.join(__dirname, 'settings.sqlite3')).then(db => new Commando.SQLiteProvider(db))
+	sqlite.open({ filename: 'database.db', driver: sqlite3.Database }).then(db => new Commando.SQLiteProvider(db))
 ).catch(console.error);
 ```
 
