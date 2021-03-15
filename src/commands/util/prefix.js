@@ -41,7 +41,7 @@ module.exports = class PrefixCommand extends Command {
 
 		// Check the user's permission before changing anything
 		if(msg.guild) {
-			if(!msg.member.hasPermission('ADMINISTRATOR') && !this.client.isOwner(msg.author)) {
+			if(!msg.member.permissions.has('ADMINISTRATOR') && !this.client.isOwner(msg.author)) {
 				return msg.reply('Only administrators may change the command prefix.');
 			}
 		} else if(!this.client.isOwner(msg.author)) {
