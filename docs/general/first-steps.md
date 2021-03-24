@@ -7,7 +7,7 @@ You should provide the `owner` option to the constructor, which is an option spe
 This will give you full access to control everything about the bot, in any guild.
 
 ```javascript
-const Commando = require('discord.js-commando');
+const Commando = require('@iceprod/discord.js-commando');
 
 const client = new Commando.Client({
 	owner: '1234567890'
