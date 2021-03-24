@@ -1,7 +1,7 @@
 /// <reference path='index.d.ts' />
 
 import { Message } from 'discord.js';
-import { Command, CommandoMessage, CommandoClient } from 'discord.js-commando';
+import { Command, CommandoMessage, CommandoClient } from '@iceprod/discord.js-commando';
 
 const client = new CommandoClient();
 
