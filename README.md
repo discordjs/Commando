@@ -8,7 +8,7 @@
 
 ## About
 
-Commando is the official command framework for [discord.js](https://github.com/discordjs/discord.js).
+Commando is a command framework for [discord.js](https://github.com/discordjs/discord.js).
 It is flexible, fully object-oriented, easy to use, and makes it trivial to create your own powerful commands.
 Additionally, it makes full use of ES2017's `async`/`await` functionality for clear, concise code that is simple to write and easy to comprehend.
 
@@ -21,6 +21,7 @@ Additionally, it makes full use of ES2017's `async`/`await` functionality for cl
 - Services
 - Aliases for commands
 - Arguments accessible for types
+- Some default messages can be turned off (so they can be handled by event handler instead, allowing for translation)
 
 ### Commando base features
 
