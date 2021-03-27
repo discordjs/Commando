@@ -48,7 +48,7 @@ const permissions = {
 	MANAGE_NICKNAMES: 'Manage nicknames',
 	MANAGE_EMOJIS: 'Manage emojis',
 	MANAGE_WEBHOOKS: 'Manage webhooks',
-	VIEW_CHANNEL: 'Read text channels and see voice channels',
+	VIEW_CHANNEL: 'View channels',
 	SEND_MESSAGES: 'Send messages',
 	SEND_TTS_MESSAGES: 'Send TTS messages',
 	MANAGE_MESSAGES: 'Manage messages',
@@ -63,7 +63,10 @@ const permissions = {
 	MUTE_MEMBERS: 'Mute members',
 	DEAFEN_MEMBERS: 'Deafen members',
 	MOVE_MEMBERS: 'Move members',
-	USE_VAD: 'Use voice activity'
+	USE_VAD: 'Use voice activity',
+	PRIORITY_SPEAKER: 'Priority speaker',
+	VIEW_GUILD_INSIGHTS: 'View server insights',
+	STREAM: 'Video'
 };
 
 module.exports = {
