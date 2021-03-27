@@ -361,7 +361,7 @@ class Command {
 	 * Creates/obtains the throttle object for a user, if necessary (owners are excluded)
 	 * @param {string} userID - ID of the user to throttle for
 	 * @return {?Object}
-	 * @private
+	 * @protected
 	 */
 	throttle(userID) {
 		if(!this.throttling || this.client.isOwner(userID)) return null;
