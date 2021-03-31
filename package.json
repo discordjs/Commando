@@ -30,6 +30,8 @@
 		"emoji-regex": "^9.2.0",
 		"is-promise": "^4.0.0",
 		"require-all": "^3.0.0"
+		"sqlite": "^4.0.19",
+		"sqlite3": "^5.0.2"
 	},
 	"devDependencies": {
 		"@types/node": "^12.7.3",
