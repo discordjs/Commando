@@ -195,7 +195,7 @@ module.exports = Structures.extend('Guild', Guild => {
 		 */
 		parseEmojis(str) {
 			if(typeof str === 'string') {
-				return str.replace(/(?:(?!<)(?!<a):([^\s]+?):(?![\d]+>))/gi, emoji => this.parseEmoji(emoji) || emoji);
+				return str.replace(/(?<!<a?):([^\s\\]+?):(?!\d+>)/gi, emoji => this.parseEmoji(emoji) || emoji);
 			}
 
 			return str;
