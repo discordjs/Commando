@@ -21,7 +21,7 @@ module.exports = function makeTypedChannelClass(channelTypeName, validateChannel
 
 	return class TypedChannelArgumentType extends ArgumentType {
 		constructor(client) {
-			super(client, `${channelTypeName}-channel`);
+			super(client, `${channelTypeName}channel`);
 		}
 
 		validate(val, msg, arg) {
