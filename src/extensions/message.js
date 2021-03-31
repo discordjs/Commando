@@ -338,7 +338,7 @@ module.exports = Structures.extend('Message', Message => {
 				}
 				return Promise.all(promises);
 			} else {
-				if(response instanceof Array) { // eslint-disable-line no-lonely-if
+				if(Array.isArray(response)) { // eslint-disable-line no-lonely-if
 					for(let i = response.length - 1; i > 0; i--) response[i].delete();
 					return response[0].edit(`${prepend}${content}`, options);
 				} else {
@@ -368,7 +368,7 @@ module.exports = Structures.extend('Message', Message => {
 		 * @return {Promise<Message|Message[]>}
 		 */
 		say(content, options) {
-			if(!options && typeof content === 'object' && !(content instanceof Array)) {
+			if(!options && typeof content === 'object' && !(Array.isArray(content))) {
 				options = content;
 				content = '';
 			}
@@ -382,7 +382,7 @@ module.exports = Structures.extend('Message', Message => {
 		 * @return {Promise<Message|Message[]>}
 		 */
 		reply(content, options) {
-			if(!options && typeof content === 'object' && !(content instanceof Array)) {
+			if(!options && typeof content === 'object' && !(Array.isArray(content))) {
 				options = content;
 				content = '';
 			}
@@ -396,7 +396,7 @@ module.exports = Structures.extend('Message', Message => {
 		 * @return {Promise<Message|Message[]>}
 		 */
 		direct(content, options) {
-			if(!options && typeof content === 'object' && !(content instanceof Array)) {
+			if(!options && typeof content === 'object' && !(Array.isArray(content))) {
 				options = content;
 				content = '';
 			}
@@ -411,7 +411,7 @@ module.exports = Structures.extend('Message', Message => {
 		 * @return {Promise<Message|Message[]>}
 		 */
 		code(lang, content, options) {
-			if(!options && typeof content === 'object' && !(content instanceof Array)) {
+			if(!options && typeof content === 'object' && !(Array.isArray(content))) {
 				options = content;
 				content = '';
 			}
@@ -456,9 +456,9 @@ module.exports = Structures.extend('Message', Message => {
 			this.responses = {};
 			this.responsePositions = {};
 
-			if(responses instanceof Array) {
+			if(Array.isArray(responses)) {
 				for(const response of responses) {
-					const channel = (response instanceof Array ? response[0] : response).channel;
+					const channel = (Array.isArray(response) ? response[0] : response).channel;
 					const id = channelIDOrDM(channel);
 					if(!this.responses[id]) {
 						this.responses[id] = [];
@@ -482,7 +482,7 @@ module.exports = Structures.extend('Message', Message => {
 				const responses = this.responses[id];
 				for(let i = this.responsePositions[id] + 1; i < responses.length; i++) {
 					const response = responses[i];
-					if(response instanceof Array) {
+					if(Array.isArray(response)) {
 						for(const resp of response) resp.delete();
 					} else {
 						response.delete();
