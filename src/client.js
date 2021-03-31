@@ -69,7 +69,7 @@ class CommandoClient extends discord.Client {
 		// Fetch the owner(s)
 		if(options.owner) {
 			this.once('ready', () => {
-				if(options.owner instanceof Array || options.owner instanceof Set) {
+				if(Array.isArray(options.owner) || options.owner.toString() == "[object Set]") {
 					for(const owner of options.owner) {
 						this.users.fetch(owner).catch(err => {
 							this.emit('warn', `Unable to fetch owner ${owner}.`);
@@ -127,8 +127,8 @@ class CommandoClient extends discord.Client {
 		user = this.users.resolve(user);
 		if(!user) throw new RangeError('Unable to resolve user.');
 		if(typeof this.options.owner === 'string') return user.id === this.options.owner;
-		if(this.options.owner instanceof Array) return this.options.owner.includes(user.id);
-		if(this.options.owner instanceof Set) return this.options.owner.has(user.id);
+		if(Array.isArray(this.options.owner)) return this.options.owner.includes(user.id);
+		if(this.options.owner.toString() == "[object Set]") return this.options.owner.has(user.id);
 		throw new RangeError('The client\'s "owner" option is an unknown value.');
 	}
 
