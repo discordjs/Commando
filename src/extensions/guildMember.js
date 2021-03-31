@@ -8,11 +8,11 @@ module.exports = Discord.Structures.extend('GuildMember', GuildMember => {
 		 * @returns {boolean}
 		 */
 		hasRole(role) {
-			if(role instanceof Discord.GuildMember) {
-				if(role.guild !== this.guild) return undefined;
-				role = role.id;
-			} else if(typeof role === 'string') {
-				return this.roles.cache.find(ro => ro.id === role) !== undefined;
+			if(role instanceof Discord.Role) {
+				if(this.guild.id !== role.guild.id) return false;
+				return this.roles.cache.has(role.id);
+			} else if(typeof role === 'string' && /^[0-9]+$/.test(role)) {
+				return this.roles.cache.has(role);
 			}
 
 			throw new TypeError('Role must be of type Role or Snowflake');
