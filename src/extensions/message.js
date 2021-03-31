@@ -234,7 +234,7 @@ module.exports = Structures.extend('Message', Message => {
 				 */
 				this.client.emit('commandRun', this.command, promise, this, args, fromPattern, collResult);
 				const retVal = await promise;
-				if(!(retVal instanceof Message || retVal instanceof Array || retVal === null || retVal === undefined)) {
+				if(!(retVal instanceof Message || Array.isArray(retVal) || retVal === null || retVal === undefined)) {
 					throw new TypeError(oneLine`
 						Command ${this.command.name}'s run() resolved with an unknown type
 						(${retVal !== null ? retVal && retVal.constructor ? retVal.constructor.name : typeof retVal : null}).
@@ -323,9 +323,9 @@ module.exports = Structures.extend('Message', Message => {
 			let prepend = '';
 			if(type === 'reply') prepend = `${this.author}, `;
 
-			if(content instanceof Array) {
+			if(Array.isArray(content)) {
 				const promises = [];
-				if(response instanceof Array) {
+				if(Array.isArray(response)) {
 					for(let i = 0; i < content.length; i++) {
 						if(response.length > i) promises.push(response[i].edit(`${prepend}${content[i]}`, options));
 						else promises.push(response[0].channel.send(`${prepend}${content[i]}`));
