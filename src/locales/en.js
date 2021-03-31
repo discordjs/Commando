@@ -117,6 +117,12 @@ exports.types = {
 		multipleFound: `Multiple members found. ${exports.TEMPLATE.beMoreSpecific}`,
 		disambiguation: 'members'
 	},
+	message: {
+		linkGuildInDm: `Cannot use link to a guild message in a dm`,
+		linkGuildOther: `Cannot use link to some other guild message`,
+		linkDmInGuild: `Cannot use link to a dm message in a guild`,
+		linkDmOther: `Cannot use link to a dm message of some other user`
+	},
 	role: {
 		multipleFound: `Multiple roles found. ${exports.TEMPLATE.beMoreSpecific}`,
 		disambiguation: 'roles'
@@ -128,6 +134,10 @@ exports.types = {
 	textChannel: {
 		multipleFound: `Multiple text channels found. ${exports.TEMPLATE.beMoreSpecific}`,
 		disambiguation: 'text channels'
+	},
+	textableChannel: {
+		multipleFound: `Multiple textable channels found. ${exports.TEMPLATE.beMoreSpecific}`,
+		disambiguation: 'textable channels'
 	},
 	union: {
 		typeNotRegistered: applyExtensionsLater('Argument type "{{typeID}}" is not registered.'),

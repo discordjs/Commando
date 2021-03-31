@@ -88,8 +88,8 @@ exports.types = {
 	enterBelow: applyExtensionsLater('Пожалуйста введите число не больше {{max}}.'),
 
 	boolean: {
-		truthy: ['да', 'д'],
-		falsy: ['нет', 'н']
+		truthy: ['true', 't', 'yes', 'y', 'on', 'enable', 'enabled', 'да', 'д'],
+		falsy: ['false', 'f', 'no', 'n', 'off', 'disable', 'disabled', 'нет', 'н']
 	},
 	category: {
 		multipleFound: `Найдено много катагорий. ${exports.TEMPLATE.beMoreSpecific}`,
@@ -117,6 +117,12 @@ exports.types = {
 		multipleFound: `Найдено много участников. ${exports.TEMPLATE.beMoreSpecific}`,
 		disambiguation: 'участники'
 	},
+	message: {
+		linkGuildInDm: `Нельзя использовать ссылку на сообщение сервера в лс`,
+		linkGuildOther: `Нельзя использовать ссылку на сообщение другого сервера`,
+		linkDmInGuild: `Нельзя использовать ссылку на сообщение лс в сервере`,
+		linkDmOther: `Нельзя использовать ссылку на сообщение другого пользователя`
+	},
 	role: {
 		multipleFound: `Найдено много ролей. ${exports.TEMPLATE.beMoreSpecific}`,
 		disambiguation: 'роли'
@@ -126,6 +132,10 @@ exports.types = {
 		lengthEnterBelow: applyExtensionsLater('{{label}} должен быть не более {{max}} символов.')
 	},
 	textChannel: {
+		multipleFound: `Найдено много текстовых каналов. ${exports.TEMPLATE.beMoreSpecific}`,
+		disambiguation: 'текстовые каналы'
+	},
+	textableChannel: {
 		multipleFound: `Найдено много текстовых каналов. ${exports.TEMPLATE.beMoreSpecific}`,
 		disambiguation: 'текстовые каналы'
 	},
