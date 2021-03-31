@@ -1,7 +1,7 @@
 const baseTypedChannel = require('./baseTypedChannel');
 
 function validateChannelType(channel) {
-	return channel.type === 'text';
+	return channel.isText();
 }
 
-module.exports = baseTypedChannel('text-', validateChannelType);
+module.exports = baseTypedChannel('textable-', validateChannelType);
