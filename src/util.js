@@ -1,3 +1,7 @@
+// This returns Object.prototype in order to return a valid object
+// without creating a new one each time this is called just to discard it the moment after.
+const isConstructorProxyHandler = { construct() { return Object.prototype; } };
+
 function escapeRegex(str) {
 	return str.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
 }
@@ -5,6 +9,17 @@ function escapeRegex(str) {
 function disambiguation(items, label, property = 'name') {
 	const itemList = items.map(item => `"${(property ? item[property] : item).replace(/ /g, '\xa0')}"`).join(',   ');
 	return `Multiple ${label} found, please be more specific: ${itemList}`;
+}
+
+function isConstructor(func, _class) {
+	try {
+		// eslint-disable-next-line no-new
+		new new Proxy(func, isConstructorProxyHandler)();
+		if(!_class) return true;
+		return func.prototype instanceof _class;
+	} catch(err) {
+		return false;
+	}
 }
 
 function paginate(items, page = 1, pageLength = 10) {
@@ -33,7 +48,7 @@ const permissions = {
 	MANAGE_NICKNAMES: 'Manage nicknames',
 	MANAGE_EMOJIS: 'Manage emojis',
 	MANAGE_WEBHOOKS: 'Manage webhooks',
-	VIEW_CHANNEL: 'Read text channels and see voice channels',
+	VIEW_CHANNEL: 'View channels',
 	SEND_MESSAGES: 'Send messages',
 	SEND_TTS_MESSAGES: 'Send TTS messages',
 	MANAGE_MESSAGES: 'Manage messages',
@@ -48,12 +63,16 @@ const permissions = {
 	MUTE_MEMBERS: 'Mute members',
 	DEAFEN_MEMBERS: 'Deafen members',
 	MOVE_MEMBERS: 'Move members',
-	USE_VAD: 'Use voice activity'
+	USE_VAD: 'Use voice activity',
+	PRIORITY_SPEAKER: 'Priority speaker',
+	VIEW_GUILD_INSIGHTS: 'View server insights',
+	STREAM: 'Video'
 };
 
 module.exports = {
 	escapeRegex,
 	disambiguation,
 	paginate,
-	permissions
+	permissions,
+	isConstructor
 };

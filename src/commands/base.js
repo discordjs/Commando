@@ -361,7 +361,7 @@ class Command {
 	 * Creates/obtains the throttle object for a user, if necessary (owners are excluded)
 	 * @param {string} userID - ID of the user to throttle for
 	 * @return {?Object}
-	 * @private
+	 * @protected
 	 */
 	throttle(userID) {
 		if(!this.throttling || this.client.isOwner(userID)) return null;
@@ -407,7 +407,7 @@ class Command {
 	 */
 	isEnabledIn(guild, bypassGroup) {
 		if(this.guarded) return true;
-		if(!guild) return this.group._globalEnabled && this._globalEnabled;
+		if(!guild) return (bypassGroup || this.group._globalEnabled) && this._globalEnabled;
 		guild = this.client.guilds.resolve(guild);
 		return (bypassGroup || guild.isGroupEnabled(this.group)) && guild.isCommandEnabled(this);
 	}
@@ -480,17 +480,17 @@ class Command {
 	 */
 	static usage(command, prefix = null, user = null) {
 		const nbcmd = command.replace(/ /g, '\xa0');
-		if(!prefix && !user) return `\`\`${nbcmd}\`\``;
+		if(!prefix && !user) return `\`${nbcmd}\``;
 
 		let prefixPart;
 		if(prefix) {
 			if(prefix.length > 1 && !prefix.endsWith(' ')) prefix += ' ';
 			prefix = prefix.replace(/ /g, '\xa0');
-			prefixPart = `\`\`${prefix}${nbcmd}\`\``;
+			prefixPart = `\`${prefix}${nbcmd}\``;
 		}
 
 		let mentionPart;
-		if(user) mentionPart = `\`\`@${user.username.replace(/ /g, '\xa0')}#${user.discriminator}\xa0${nbcmd}\`\``;
+		if(user) mentionPart = `\`@${user.username.replace(/ /g, '\xa0')}#${user.discriminator}\xa0${nbcmd}\``;
 
 		return `${prefixPart || ''}${prefix && user ? ' or ' : ''}${mentionPart || ''}`;
 	}

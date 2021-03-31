@@ -28,12 +28,13 @@ class ArgumentType {
 	/**
 	 * Validates a value string against the type
 	 * @param {string} val - Value to validate
-	 * @param {CommandoMessage} msg - Message the value was obtained from
+	 * @param {CommandoMessage} originalMsg - Message that triggered the command
 	 * @param {Argument} arg - Argument the value was obtained from
+	 * @param {?CommandoMessage} [currentMsg=originalMsg] - Current response message
 	 * @return {boolean|string|Promise<boolean|string>} Whether the value is valid, or an error message
 	 * @abstract
 	 */
-	validate(val, msg, arg) { // eslint-disable-line no-unused-vars
+	validate(val, originalMsg, arg, currentMsg = originalMsg) { // eslint-disable-line no-unused-vars
 		throw new Error(`${this.constructor.name} doesn't have a validate() method.`);
 	}
 
@@ -41,12 +42,13 @@ class ArgumentType {
 	/**
 	 * Parses the raw value string into a usable value
 	 * @param {string} val - Value to parse
-	 * @param {CommandoMessage} msg - Message the value was obtained from
+	 * @param {CommandoMessage} originalMsg - Message that triggered the command
 	 * @param {Argument} arg - Argument the value was obtained from
+	 * @param {?CommandoMessage} [currentMsg=originalMsg] - Current response message
 	 * @return {*|Promise<*>} Usable value
 	 * @abstract
 	 */
-	parse(val, msg, arg) { // eslint-disable-line no-unused-vars
+	parse(val, originalMsg, arg, currentMsg = originalMsg) { // eslint-disable-line no-unused-vars
 		throw new Error(`${this.constructor.name} doesn't have a parse() method.`);
 	}
 
@@ -54,11 +56,12 @@ class ArgumentType {
 	 * Checks whether a value is considered to be empty. This determines whether the default value for an argument
 	 * should be used and changes the response to the user under certain circumstances.
 	 * @param {string} val - Value to check for emptiness
-	 * @param {CommandoMessage} msg - Message the value was obtained from
+	 * @param {CommandoMessage} originalMsg - Message that triggered the command
 	 * @param {Argument} arg - Argument the value was obtained from
+	 * @param {?CommandoMessage} [currentMsg=originalMsg] - Current response message
 	 * @return {boolean} Whether the value is empty
 	 */
-	isEmpty(val, msg, arg) { // eslint-disable-line no-unused-vars
+	isEmpty(val, originalMsg, arg, currentMsg = originalMsg) { // eslint-disable-line no-unused-vars
 		if(Array.isArray(val)) return val.length === 0;
 		return !val;
 	}
