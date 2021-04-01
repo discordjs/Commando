@@ -228,8 +228,6 @@ module.exports = Structures.extend('Message', Message => {
 					 * (if applicable - see {@link Command#run})
 					 */
 					this.client.emit('commandCancel', this.command, collResult.cancelled, this, collResult);
-					//
-					// return this.react('❌');
 					return this.reply(this.locale.extensions.message.cancelledCommand);
 				}
 				args = collResult.values;
@@ -497,7 +495,6 @@ module.exports = Structures.extend('Message', Message => {
 
 		/**
 		 * Deletes any prior responses that haven't been updated
-		 * @private
 		 */
 		deleteRemainingResponses() {
 			for(const id of Object.keys(this.responses)) {
