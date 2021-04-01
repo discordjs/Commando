@@ -174,8 +174,8 @@ class CommandDispatcher {
 		// Ignore partial messages
 		if(message.partial) return false;
 
-		if(message.author.bot && !this.client.options.readBots) return false;
 		if(message.author.id === this.client.user.id) return false;
+		if(message.author.bot && !this.client.options.readBots) return false;
 
 		// Ignore messages from users that the bot is already waiting for input from
 		if(this._awaiting.has(message.author.id + message.channel.id)) return false;
