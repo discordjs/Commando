@@ -48,6 +48,12 @@ module.exports = Structures.extend('Message', Message => {
 			 * @type {?Object}
 			 */
 			this.responsePositions = null;
+
+			/**
+			 * Response messages receives, mapped by channel ID (set by the dispatcher after running the command)
+			 * @type {?Object}
+			 */
+			this.userResponses = null;
 		}
 
 		get locale() {
@@ -205,6 +211,7 @@ module.exports = Structures.extend('Message', Message => {
 				const provided = this.constructor.parseArgs(this.argString.trim(), count, this.command.argsSingleQuotes);
 
 				collResult = await this.command.argsCollector.obtain(this, provided);
+				this.userResponses.push(...collResult.answers);
 				if(collResult.cancelled) {
 					if(collResult.prompts.length === 0 || collResult.cancelled === 'promptLimit') {
 						this.client.emit('commandCancel', this.command, collResult.cancelled, this, collResult);
