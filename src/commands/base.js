@@ -148,6 +148,13 @@ class Command {
 		this.channelType = info.channelType || 'any';
 
 		/**
+		 * Timeout of user and bot response deletion after command
+		 * completion, cancelation or time out
+		 */
+		// eslint-disable-next-line eqeqeq
+		this.autoDelete = info.autoDelete != null ? Number(info.autoDelete) : NaN;
+
+		/**
 		 * Whether the command can only be used by an owner
 		 * @type {boolean}
 		 */
