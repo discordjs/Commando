@@ -65,6 +65,11 @@ class CommandoClient extends discord.Client {
 		this.on('messageUpdate', (oldMessage, newMessage) => {
 			this.dispatcher.handleMessage(newMessage, oldMessage).catch(msgErr);
 		});
+		this.on('guildDelete', guild => {
+			if(this.provider) {
+				this.provider.clear(guild);
+			}
+		});
 
 		// Fetch the owner(s)
 		if(options.owner) {
