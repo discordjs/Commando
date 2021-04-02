@@ -83,6 +83,7 @@ declare module 'discord.js-commando' {
 		public groupID: string;
 		public guarded: boolean;
 		public channelType: 'dm' | 'guild' | 'any';
+		public autoDelete: number;
 		public hidden: boolean;
 		public memberName: string;
 		public name: string;
@@ -401,6 +402,7 @@ declare module 'discord.js-commando' {
 		examples?: string[];
 		nsfw?: boolean;
 		channelType?: 'dm' | 'guild' | 'any';
+		autoDelete?: number;
 		ownerOnly?: boolean;
 		clientPermissions?: PermissionResolvable[];
 		userPermissions?: PermissionResolvable[];
