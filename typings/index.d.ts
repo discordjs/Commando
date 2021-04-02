@@ -164,8 +164,10 @@ declare module 'discord.js-commando' {
 		public readonly guild: CommandoGuild;
 		public readonly client: CommandoClient;
 		public readonly locale: Object;
+		public deleteRemainingResponses(): void;
+		public deleteRemainingUserResponses(): void;
 
-		private deleteRemainingResponses(): void;
+
 		private editCurrentResponse(id: string, options: MessageEditOptions | Exclude<MessageAdditions, MessageAttachment>): Promise<CommandoMessage | CommandoMessage[]>;
 		private editResponse(response: CommandoMessage | CommandoMessage[], options: RespondEditOptions): Promise<CommandoMessage | CommandoMessage[]>;
 		private finalize(responses: (CommandoMessage | CommandoMessage[])[]): void;

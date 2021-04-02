@@ -511,6 +511,23 @@ module.exports = Structures.extend('Message', Message => {
 		}
 
 		/**
+		 * Deletes any prior user responses that haven't been updated
+		 */
+		deleteRemainingUserResponses() {
+			for(const id of Object.keys(this.userResponses)) {
+				const responses = this.responses[id];
+				for(let i = this.responsePositions[id] + 1; i < responses.length; i++) {
+					const response = responses[i];
+					if(response instanceof Array) {
+						for(const resp of response) resp.delete();
+					} else {
+						response.delete();
+					}
+				}
+			}
+		}
+
+		/**
 		 * Parses an argument string into an array of arguments
 		 * @param {string} argString - The argument string to parse
 		 * @param {number} [argCount] - The number of arguments to extract from the string
