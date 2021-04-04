@@ -121,7 +121,6 @@ declare module 'discord.js-commando' {
 
 		private buildCommandPattern(prefix: string): RegExp;
 		private cacheCommandoMessage(message: Message, oldMessage: Message, cmdMsg: CommandoMessage, responses: Message | Message[]): void;
-		private handleMessage(message: Message, oldMessage?: Message): Promise<void>;
 		private inhibit(cmdMsg: CommandoMessage): Inhibition;
 		private matchDefault(message: Message, pattern: RegExp, commandNameIndex?: number, prefixless?: boolean): CommandoMessage;
 		private parseMessage(message: Message): CommandoMessage;
@@ -131,6 +130,7 @@ declare module 'discord.js-commando' {
 		public inhibitors: Set<Function>;
 		public registry: CommandoRegistry;
 
+		public handleMessage(message: Message, oldMessage?: Message): Promise<void>;
 		public addInhibitor(inhibitor: Inhibitor): boolean;
 		public removeInhibitor(inhibitor: Inhibitor): boolean;
 	}
