@@ -1,7 +1,7 @@
 /* eslint-disable func-names */
 const path = require('path');
 
-const Util = require('../util.js');
+const { object: ObjectUtils } = require('@nowifi4u/utils');
 
 module.exports = class LocaleProvider {
 	/**
@@ -47,7 +47,7 @@ module.exports = class LocaleProvider {
 
 		const data = require(filepath);
 		if(typeof this.cache[data.name] !== 'object') this.cache[data.name] = {};
-		Util.assignDeepCheck(this.cache[data.name], data);
+		ObjectUtils.assignDeepCheck(this.cache[data.name], data);
 
 		return this;
 	}
