@@ -106,11 +106,6 @@ function makeCallback(func) {
 	};
 }
 
-const Collection = {
-	fromObject: function(...collections) {
-		return new Discord.Collection().concat(...collections.map(col => Object.entries(col)));
-	}
-};
 
 module.exports = {
 	escapeRegex,
@@ -122,5 +117,4 @@ module.exports = {
 	applyExtensionsLater,
 	execCallback,
 	makeCallback,
-	Collection
 };
