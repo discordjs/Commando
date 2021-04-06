@@ -1,7 +1,8 @@
 const path = require('path');
 const { escapeMarkdown } = require('discord.js');
 const ArgumentCollector = require('./collector');
-const { permissions, assignDeepCheck } = require('../util');
+const { permissions } = require('../util');
+const { object: { assignDeepCheck } } = require('@nowifi4u/utils');
 
 /** A command that can be run in a client */
 class Command {
