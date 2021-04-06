@@ -106,6 +106,14 @@ function makeCallback(func) {
 	};
 }
 
+/**
+ *
+ * @param {number} ms -
+ * @returns {Promise<any>}
+ */
+function sleep(ms) {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 module.exports = {
 	escapeRegex,
@@ -117,4 +125,5 @@ module.exports = {
 	applyExtensionsLater,
 	execCallback,
 	makeCallback,
+	sleep
 };
