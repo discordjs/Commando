@@ -97,7 +97,7 @@ function applyExtensionsLater(str) {
 }
 
 function execCallback(val, ...args) {
-	return (typeof val === 'function') ? val(...args) : val;
+	return typeof val === 'function' ? val(...args) : val;
 }
 
 function makeCallback(func) {
