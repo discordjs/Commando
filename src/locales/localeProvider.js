@@ -9,11 +9,13 @@ module.exports = class LocaleProvider {
 	 * @param {string[]} defaultConfigs Names of default configs to load
 	 * @param {string[]} loadConfigs Paths to locale file to load
 	 */
-	constructor(defaultConfigs = [], loadConfigs = []) {
+	constructor({ defaults = [], customs = [], fallback = 'en' } = {}) {
 		this.cache = {};
+		this._fallback = fallback;
 
-		defaultConfigs.forEach(val => { this.loadDefault(val); });
-		loadConfigs.forEach(val => { this.load(val); });
+		this.loadDefault(fallback);
+		defaults.forEach(val => { this.loadDefault(val); });
+		customs.forEach(val => { this.load(val); });
 	}
 
 	/**
@@ -46,7 +48,7 @@ module.exports = class LocaleProvider {
 		if(typeof filepath !== 'string') throw new TypeError(`Argument must be of type string, not ${typeof filepath}`);
 
 		const data = require(filepath);
-		if(typeof this.cache[data.name] !== 'object') this.cache[data.name] = {};
+		if(typeof this.cache[data.name] !== 'object') this.cache[data.name] = ObjectUtils.mapDeep(this.cache[this._fallback]);
 		ObjectUtils.assignDeepCheck(this.cache[data.name], data);
 
 		return this;

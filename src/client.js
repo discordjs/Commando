@@ -33,7 +33,7 @@ class CommandoClient extends discord.Client {
 
 		this._localeName = options.locale;
 
-		this.locales = new LocaleProvider([this._localeName]);
+		this.locales = new LocaleProvider({ defaults: [options.locale] });
 
 		/**
 		 * The client's command registry
