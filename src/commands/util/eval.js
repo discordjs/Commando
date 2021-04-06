@@ -19,7 +19,7 @@ module.exports = class EvalCommand extends Command {
 			args: [
 				{
 					key: 'script',
-					prompt: makeCallback(locale => locale.commands.util.eval.constructor.args[0].prompt),
+					prompt: makeCallback(locale => locale.commands.util.eval.constructor.args.script.prompt),
 					type: 'string'
 				}
 			]
@@ -61,7 +61,7 @@ module.exports = class EvalCommand extends Command {
 			this.lastResult = eval(args.script);
 			hrDiff = process.hrtime(hrStart);
 		} catch(err) {
-			return msg.reply(msg.locale.commands.util.eval.run.error({ err }));
+			return msg.reply(msg.locale.commands.util.eval.run.error({ err: `${err}\nStacktrace:\n${err.stack}` }));
 		}
 
 		// Prepare for callback time and respond

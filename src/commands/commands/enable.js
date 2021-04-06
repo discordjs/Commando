@@ -16,8 +16,8 @@ module.exports = class EnableCommandCommand extends Command {
 			args: [
 				{
 					key: 'cmdOrGrp',
-					label: makeCallback(locale => locale.commands.commands.enable.constructor.args[0].label),
-					prompt: makeCallback(locale => locale.commands.commands.enable.constructor.args[0].prompt),
+					label: makeCallback(locale => locale.commands.commands.enable.constructor.args.cmdOrGrp.label),
+					prompt: makeCallback(locale => locale.commands.commands.enable.constructor.args.cmdOrGrp.prompt),
 					type: 'group|command'
 				}
 			]

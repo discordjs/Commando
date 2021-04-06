@@ -16,8 +16,8 @@ module.exports = class DisableCommandCommand extends Command {
 			args: [
 				{
 					key: 'cmdOrGrp',
-					label: makeCallback(locale => locale.commands.commands.disable.constructor.args[0].label),
-					prompt: makeCallback(locale => locale.commands.commands.disable.constructor.args[0].prompt),
+					label: makeCallback(locale => locale.commands.commands.disable.constructor.args.cmdOrGrp.label),
+					prompt: makeCallback(locale => locale.commands.commands.disable.constructor.args.cmdOrGrp.prompt),
 					type: 'group|command'
 				}
 			]
@@ -34,7 +34,7 @@ module.exports = class DisableCommandCommand extends Command {
 			return msg.reply(
 				args.cmdOrGrp.group ?
 				msg.locale.commands.commands.disable.run.groupAlreadyDisabled({ name: args.cmdOrGrp.name }) :
-				msg.locale.commands.commands.disable.run.commandAlreadyDisabled({ name: args.cmdOrGrp.name })
+				msg.locale['commands.commands.disable.run.commandAlreadyDisabled']({ name: args.cmdOrGrp.name })
 			);
 		}
 		if(args.cmdOrGrp.guarded) {
@@ -47,8 +47,8 @@ module.exports = class DisableCommandCommand extends Command {
 		args.cmdOrGrp.setEnabledIn(msg.guild, false);
 		return msg.reply(
 			args.cmdOrGrp.group ?
-			msg.locale.commands.commands.disable.run.groupSuccess({ name: args.cmdOrGrp.name }) :
-			msg.locale.commands.commands.disable.run.commandSuccess({ name: args.cmdOrGrp.name })
+			msg.locale['commands.commands.disable.run.groupSuccess']({ name: args.cmdOrGrp.name }) :
+			msg.locale['commands.commands.disable.run.commandSuccess']({ name: args.cmdOrGrp.name })
 		);
 	}
 };

@@ -171,12 +171,12 @@ exports.commands = {
                     The argument must be the name/ID (partial or whole) of a command or command group.
                     ${exports.TEMPLATE.onlyAdministrator}
 			    `,
-				args: [
-					{
+				args: {
+					cmdOrGrp: {
 						label: exports.TEMPLATE.labelCommandGroup,
 						prompt: 'Which command or group would you like to disable?'
 					}
-				]
+				}
 			},
 			run: {
 				commandAlreadyDisabled: applyExtensionsLater('The \`{{name}}\` command is already disabled.'),
@@ -194,12 +194,12 @@ exports.commands = {
                     The argument must be the name/ID (partial or whole) of a command or command group.
                     ${exports.TEMPLATE.onlyAdministrator}
 			    `,
-				args: [
-					{
+				args: {
+					cmdOrGrp: {
 						label: exports.TEMPLATE.labelCommandGroup,
 						prompt: 'Which command or group would you like to enable?'
 					}
-				]
+				}
 			},
 			run: {
 				commandAlreadyEnabled: applyExtensionsLater('The \`{{name}}\` command is already enabled{{but}}.'),
@@ -225,14 +225,14 @@ exports.commands = {
                     The argument must be full name of the command in the format of \`group:memberName\`. 
                     ${exports.TEMPLATE.onlyOwner}
                 `,
-				args: [
-					{
+				args: {
+					command: {
 						prompt: 'Which command would you like to load?',
 						validate: {
 							alreadyRegistered: 'That command is already registered.'
 						}
 					}
-				]
+				}
 			},
 			run: {
 				errorShards: applyExtensionsLater('Loaded \`{{command}}\` command, but failed to load on other shards.'),
@@ -247,12 +247,12 @@ exports.commands = {
                     Providing a command group will reload all of the commands in that group. 
                     ${exports.TEMPLATE.onlyOwner}
                 `),
-				args: [
-					{
+				args: {
+					cmdOrGrp: {
 						label: 'command/group',
 						prompt: 'Which command or group would you like to reload?'
 					}
-				]
+				}
 			},
 			run: {
 				commandErrorShards: applyExtensionsLater('Reloaded \`{{name}}\` command, but failed to reload on other shards.'),
@@ -268,11 +268,11 @@ exports.commands = {
                     The argument must be the name/ID (partial or whole) of a command. 
                     ${exports.TEMPLATE.onlyOwner}
                 `,
-				args: [
-					{
+				args: {
+					command: {
 						prompt: 'Which command would you like to unload?'
 					}
-				]
+				}
 			},
 			run: {
 				errorShards: applyExtensionsLater('Unloaded \`{{name}}\` command, but failed to unload on other shards.'),
@@ -285,11 +285,11 @@ exports.commands = {
 			constructor: {
 				description: 'Executes JavaScript code.',
 				details: exports.TEMPLATE.onlyOwner,
-				args: [
-					{
+				args: {
+					script: {
 						prompt: 'What code would you like to evaluate?'
 					}
-				]
+				}
 			},
 			run: {
 				error: applyExtensionsLater('Error while evaluating: \`{{err}}\`'),
@@ -316,11 +316,11 @@ exports.commands = {
                     The command may be part of a command name or a whole command name.
                     If it isn't specified, all available commands will be listed.
 			    `,
-				args: [
-					{
+				args: {
+					command: {
 						prompt: 'Which command would you like to view the help for?'
 					}
-				]
+				}
 			},
 			run: {
 				onlyServers: ' (Usable only in servers)',
@@ -378,14 +378,14 @@ exports.commands = {
 					If the locale is "list", the list of available locales will be printed.
 					Only administrators may change the locale.
 				`,
-				args: [
-					{
+				args: {
+					locale: {
 						prompt: 'What would you like to the the bot\'s locale to?',
 						validate: {
 							invalidLocale: 'Invalid locale.'
 						}
 					}
-				]
+				}
 			},
 			run: {
 				listLocales: applyExtensionsLater('Available locales: {{locales}}'),
@@ -417,11 +417,11 @@ exports.commands = {
 					If the prefix is "none", the prefix will be removed entirely, only allowing mentions to run commands.
 					Only administrators may change the prefix.
 				`,
-				args: [
-					{
+				args: {
+					prefix: {
 						prompt: 'What would you like to set the bot\'s prefix to?'
 					}
-				]
+				}
 			},
 			run: {
 				prefixIs: applyExtensionsLater('The command prefix is \`\`{{prefix}}\`\`.'),

@@ -18,13 +18,13 @@ module.exports = class LoadCommandCommand extends Command {
 			args: [
 				{
 					key: 'command',
-					prompt: makeCallback(locale => locale.commands.commands.load.constructor.args[0].prompt),
+					prompt: makeCallback(locale => locale.commands.commands.load.constructor.args.command.prompt),
 					validate: (val, msg) => new Promise(resolve => {
 						if(!val) return resolve(false);
 						const split = val.split(':');
 						if(split.length !== 2) return resolve(false);
 						if(this.client.registry.findCommands(val).length > 0) {
-							return resolve(msg.locale.commands.commands.load.constructor.args[0].validate.alreadyRegistered);
+							return resolve(msg.locale.commands.commands.load.constructor.args.command.validate.alreadyRegistered);
 						}
 						const cmdPath = this.client.registry.resolveCommandPath(split[0], split[1]);
 						fs.access(cmdPath, fs.constants.R_OK, err => err ? resolve(false) : resolve(true));

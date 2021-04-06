@@ -171,12 +171,12 @@ exports.commands = {
 					Аргумент должен быть названием/ID (полным или частичным) команды или группы команд.
                     ${exports.TEMPLATE.onlyAdministrator}
 			    `,
-				args: [
-					{
+				args: {
+					cmdOrGrp: {
 						label: exports.TEMPLATE.labelCommandGroup,
 						prompt: 'Какую команду вы бы хотели выключить?'
 					}
-				]
+				}
 			},
 			run: {
 				commandAlreadyDisabled: applyExtensionsLater('Команда \`{{name}}\` уже выключена.'),
@@ -194,12 +194,12 @@ exports.commands = {
 					Аргумент должен быть названием/ID (полным или частичным) команды или группы команд.
                     ${exports.TEMPLATE.onlyAdministrator}
 			    `,
-				args: [
-					{
+				args: {
+					cmdOrGrp: {
 						label: exports.TEMPLATE.labelCommandGroup,
 						prompt: 'Какую команду вы бы хотели включить?'
 					}
-				]
+				}
 			},
 			run: {
 				commandAlreadyEnabled: applyExtensionsLater('Команда \`{{name}}\` уже включена{{but}}.'),
@@ -225,14 +225,14 @@ exports.commands = {
 					Аргумент должнын быть полным названием команды формата \`group:memberName\`.
                     ${exports.TEMPLATE.onlyOwner}
                 `,
-				args: [
-					{
+				args: {
+					command: {
 						prompt: 'Какую команду вы бы хотели загрузить?',
 						validate: {
 							alreadyRegistered: 'Данная команда уже зарегистрирована.'
 						}
 					}
-				]
+				}
 			},
 			run: {
 				errorShards: applyExtensionsLater('Команда \`{{command}}\` загружена, но произошла ошибка на других осколках.'),
@@ -247,12 +247,12 @@ exports.commands = {
 					При предоставлении группы команд все команды в данной группе будут перезагружены.
                     ${exports.TEMPLATE.onlyOwner}
                 `),
-				args: [
-					{
+				args: {
+					cmdOrGrp: {
 						label: exports.TEMPLATE.labelCommandGroup,
 						prompt: 'Какую команду или группу команд вы бы хотели перезагрузить?'
 					}
-				]
+				}
 			},
 			run: {
 				commandErrorShards: applyExtensionsLater('Команда \`{{name}}\` перезагружена, но произошла ошибка на других осколках.'),
@@ -268,11 +268,11 @@ exports.commands = {
 					Аргумент должнын быть полным названием команды формата \`group:memberName\`.
                     ${exports.TEMPLATE.onlyOwner}
                 `,
-				args: [
-					{
+				args: {
+					command: {
 						prompt: 'Какую команду вы бы хотели выгрузить?'
 					}
-				]
+				}
 			},
 			run: {
 				errorShards: applyExtensionsLater('Команда \`{{name}}\` выгружена, но произошла ошибка на других осколках.'),
@@ -285,11 +285,11 @@ exports.commands = {
 			constructor: {
 				description: 'Выполняет JavaScript код.',
 				details: exports.TEMPLATE.onlyOwner,
-				args: [
-					{
+				args: {
+					script: {
 						prompt: 'Что бы вы хотели выполнить?'
 					}
-				]
+				}
 			},
 			run: {
 				error: applyExtensionsLater('Ошибка при выполнении: \`{{err}}\`'),
@@ -316,11 +316,11 @@ exports.commands = {
 					Команда может быть частью названия команды или полным названием.
 					Если команда не указана, будет выведен весь список команд.
 			    `,
-				args: [
-					{
+				args: {
+					command: {
 						prompt: 'О какой команде вы бы хотели просмотреть информацию?'
 					}
-				]
+				}
 			},
 			run: {
 				onlyServers: ' (Только для сервера)',
@@ -378,14 +378,14 @@ exports.commands = {
 					Если язык будет "list", то будет показан список всех доступных языков.
 					Только администратор может изменять язык.
 				`,
-				args: [
-					{
+				args: {
+					locale: {
 						prompt: 'Какой язык для бота вы бы хотели установить?',
 						validate: {
 							invalidLocale: 'Неверный язык.'
 						}
 					}
-				]
+				}
 			},
 			run: {
 				listLocales: applyExtensionsLater('Доступные языки: {{locales}}'),
@@ -417,11 +417,11 @@ exports.commands = {
 					Если префикс будет "none", то префикс будет удалён полностью, позволяя только команды через упоминание.
 					Только администратор может изменять префикс.
 				`,
-				args: [
-					{
+				args: {
+					prefix: {
 						prompt: 'Какой префикс для бота вы бы хотели установить?'
 					}
-				]
+				}
 			},
 			run: {
 				prefixIs: applyExtensionsLater('Префикс команд: \`\`{{prefix}}\`\`.'),

@@ -17,7 +17,7 @@ module.exports = class HelpCommand extends Command {
 			args: [
 				{
 					key: 'command',
-					prompt: makeCallback(locale => locale.commands.util.help.constructor.args[0].prompt),
+					prompt: makeCallback(locale => locale.commands.util.help.constructor.args.command.prompt),
 					type: 'string',
 					default: ''
 				}

@@ -211,7 +211,7 @@ module.exports = Structures.extend('Message', Message => {
 				const provided = this.constructor.parseArgs(this.argString.trim(), count, this.command.argsSingleQuotes);
 
 				collResult = await this.command.argsCollector.obtain(this, provided);
-				this.userResponses.push(...collResult.answers);
+				// this.userResponses.push(...collResult.answers);
 				if(collResult.cancelled) {
 					if(collResult.prompts.length === 0 || collResult.cancelled === 'promptLimit') {
 						this.client.emit('commandCancel', this.command, collResult.cancelled, this, collResult);
@@ -255,11 +255,11 @@ module.exports = Structures.extend('Message', Message => {
 				this.client.emit('commandRun', this.command, promise, this, args, fromPattern, collResult);
 				const retVal = await promise;
 				if(!(retVal instanceof Message || retVal instanceof Array || retVal === null || retVal === undefined)) {
-					throw new TypeError(oneLine`
-						Command ${this.command.name}'s run() resolved with an unknown type
-						(${retVal !== null ? retVal && retVal.constructor ? retVal.constructor.name : typeof retVal : null}).
-						Command run methods must return a Promise that resolve with a Message, Array of Messages, or null/undefined.
-					`);
+					// throw new TypeError(oneLine`
+					// 	Command ${this.command.name}'s run() resolved with an unknown type
+					// 	(${retVal !== null ? retVal && retVal.constructor ? retVal.constructor.name : typeof retVal : null}).
+					// 	Command run methods must return a Promise that resolve with a Message, Array of Messages, or null/undefined.
+					// `);
 				}
 				return retVal;
 			} catch(err) {
@@ -475,6 +475,7 @@ module.exports = Structures.extend('Message', Message => {
 			if(this.responses) this.deleteRemainingResponses();
 			this.responses = {};
 			this.responsePositions = {};
+			this.userResponses = [];
 
 			if(responses instanceof Array) {
 				for(const response of responses) {
@@ -556,6 +557,12 @@ module.exports = Structures.extend('Message', Message => {
 	return CommandoMessage;
 });
 
+/**
+ *
+ * @param {string} argString -
+ * @param {boolean?} allowSingleQuote -
+ * @returns {string}
+ */
 function removeSmartQuotes(argString, allowSingleQuote = true) {
 	let replacementArgString = argString;
 	const singleSmartQuote = /[‘’]/g;
@@ -565,6 +572,11 @@ function removeSmartQuotes(argString, allowSingleQuote = true) {
 	.replace(doubleSmartQuote, '"');
 }
 
+/**
+ *
+ * @param {Channel} channel -
+ * @returns {string}
+ */
 function channelIDOrDM(channel) {
 	if(channel.type !== 'dm') return channel.id;
 	return 'dm';

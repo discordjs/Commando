@@ -17,7 +17,7 @@ module.exports = class UnloadCommandCommand extends Command {
 			args: [
 				{
 					key: 'command',
-					prompt: makeCallback(locale => locale.commands.commands.unload.constructor.args[0].prompt),
+					prompt: makeCallback(locale => locale.commands.commands.unload.constructor.args.command.prompt),
 					type: 'command'
 				}
 			]

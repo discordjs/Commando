@@ -15,13 +15,13 @@ module.exports = class LocaleCommand extends Command {
 			args: [
 				{
 					key: 'locale',
-					prompt: makeCallback(locale => locale.commands.util.locale.constructor.args[0].prompt),
+					prompt: makeCallback(locale => locale.commands.util.locale.constructor.args.locale.prompt),
 					validate: (val, msg) => new Promise(resolve => {
 						if(!val) return resolve(false);
 						const locale = val.toLowerCase();
 						if(locale === 'list') return resolve(true);
 						if(!this.client.locales.loaded(locale)) {
-							return resolve(msg.locale.commands.util.locale.constructor.args[0].validate.invalidLocale);
+							return resolve(msg.locale.commands.util.locale.constructor.args.locale.validate.invalidLocale);
 						}
 						return resolve(true);
 					}),

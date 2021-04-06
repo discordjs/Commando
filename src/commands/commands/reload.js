@@ -17,8 +17,8 @@ module.exports = class ReloadCommandCommand extends Command {
 			args: [
 				{
 					key: 'cmdOrGrp',
-					label: makeCallback(locale => locale.commands.commands.reload.constructor.args[0].label),
-					prompt: makeCallback(locale => locale.commands.commands.reload.constructor.args[0].prompt),
+					label: makeCallback(locale => locale.commands.commands.reload.constructor.args.cmdOrGrp.label),
+					prompt: makeCallback(locale => locale.commands.commands.reload.constructor.args.cmdOrGrp.prompt),
 					type: 'group|command'
 				}
 			]

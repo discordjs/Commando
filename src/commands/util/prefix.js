@@ -15,7 +15,7 @@ module.exports = class PrefixCommand extends Command {
 			args: [
 				{
 					key: 'prefix',
-					prompt: makeCallback(locale => locale.commands.util.prefix.constructor.args[0].prompt),
+					prompt: makeCallback(locale => locale.commands.util.prefix.constructor.args.prefix.prompt),
 					type: 'string',
 					max: 15,
 					default: ''
