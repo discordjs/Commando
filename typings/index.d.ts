@@ -1,5 +1,5 @@
 declare module 'discord.js-commando' {
-	import { Client, ClientEvents, ClientOptions, Collection, Guild, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEditOptions, MessageEmbed, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, Role, StringResolvable, User, UserResolvable } from 'discord.js';
+	import { Client, ClientEvents, ClientOptions, Collection, Guild, GuildMember, GuildResolvable, Message, MessageAttachment, MessageEditOptions, MessageEmbed, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, Role, StringResolvable, User, UserResolvable, DMChannel, TextChannel, NewsChannel, Snowflake } from 'discord.js';
 
 	export class Argument {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
@@ -195,6 +195,15 @@ declare module 'discord.js-commando' {
 		public static parseArgs(argString: string, argCount?: number, allowSingleQuote?: boolean): string[];
 	}
 
+	interface FetchMessagesOptions {
+		max?: number;
+		maxProcessed?: number;
+		cache?: boolean;
+		force?: boolean;
+		filter?: Function;
+		fetchSleep?: number;
+	}
+
 	export class CommandoClient extends Client {
 		public constructor(options?: CommandoClientOptions);
 
@@ -211,6 +220,7 @@ declare module 'discord.js-commando' {
 
 		public isOwner(user: UserResolvable): boolean;
 		public setProvider(provider: SettingProvider | Promise<SettingProvider>): Promise<void>;
+		public fetchMessages(channel: DMChannel | TextChannel | NewsChannel, options?: FetchMessagesOptions): Promise<Collection<Snowflake, Message>>;
 
 		public on<K extends keyof CommandoClientEvents>(event: K, listener: (...args: CommandoClientEvents[K]) => void): this;
 		public once<K extends keyof CommandoClientEvents>(event: K, listener: (...args: CommandoClientEvents[K]) => void): this;
@@ -218,6 +228,24 @@ declare module 'discord.js-commando' {
 	}
 
 	export { CommandoClient as Client };
+
+	export class CommandoTextChannel extends TextChannel {
+		public fetchMessages(options?: FetchMessagesOptions): Promise<Collection<Snowflake, Message>>;
+	}
+
+	export { CommandoTextChannel as TextChannel };
+
+	export class CommandoNewsChannel extends NewsChannel {
+		public fetchMessages(options?: FetchMessagesOptions): Promise<Collection<Snowflake, Message>>;
+	}
+
+	export { CommandoNewsChannel as NewsChannel };
+
+	export class CommandoDMChannel extends DMChannel {
+		public fetchMessages(options?: FetchMessagesOptions): Promise<Collection<Snowflake, Message>>;
+	}
+
+	export { CommandoDMChannel as DMChannel };
 
 	export class CommandoGuild extends Guild {
 		private _commandPrefix: string;
