@@ -32,7 +32,7 @@
 
 		"accessor-pairs": "warn",
 		"array-callback-return": "error",
-		"complexity": "warn",
+		"complexity": ["warn", 30],
 		"consistent-return": "error",
 		"curly": ["error", "multi-line", "consistent"],
 		"dot-location": ["error", "property"],
@@ -104,8 +104,8 @@
 				"switch": { "after": false }
 			}
 		}],
-		"max-depth": "error",
-		"max-len": ["error", 120, 2],
+		"max-depth": ["error", 6],
+		"max-len": ["error", 150, 2],
 		"max-nested-callbacks": ["error", { "max": 4 }],
 		"max-statements-per-line": ["error", { "max": 2 }],
 		"new-cap": "error",
