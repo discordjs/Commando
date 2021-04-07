@@ -189,29 +189,32 @@ class CommandoClient extends discord.Client {
 		if(this.provider) await this.provider.destroy();
 	}
 
-	async fetchMessages(channel, { max = 1000, maxProcessed = Infinity, cache = true, force = false, filter = () => true, fetchSleep = 5000 } = {}) {
+	async fetchMessages(channel, { max = 1000, maxProcessed = Infinity, cache = true, force = false, filter = () => true, fetchSleep = 5000, onChunk = async () => {}, batch = 100 } = {}) {
 		let messages = new discord.Collection();
 		let lastID;
 		let processed = 0;
 		while(messages.size < max && processed < maxProcessed) {
-			const todo = Math.min(100, maxProcessed - processed);
+			const todo = Math.min(batch, maxProcessed - processed);
 			console.log('todo', todo);
 			// eslint-disable-next-line no-await-in-loop
 			const fetched = await channel.messages.fetch({
 				limit: todo,
 				...lastID && { before: lastID }
 			}, cache, force);
-			if(fetched.size === 0) return messages;
 
 			processed += todo;
 			const filtered = fetched.filter(filter);
 			const toadd = max - messages.size;
 			if(toadd < filtered.size) {
-				messages = messages.concat(Array.from(filtered.values()).slice(-toadd).map(m => [m.id, m]));
+				const chunk = new discord.Collection(Array.from(filtered.values()).slice(-toadd).map(m => [m.id, m]));
+				onChunk(chunk);
+				messages = messages.concat(chunk);
 			} else {
+				onChunk(filtered);
 				messages = messages.concat(filtered);
 			}
 			lastID = fetched.lastKey();
+			if(fetched.size < todo) break;
 			await sleep(fetchSleep);
 		}
 		return messages;
