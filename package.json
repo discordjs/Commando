@@ -33,7 +33,6 @@
 	},
 	"devDependencies": {
 		"@types/node": "^12.7.3",
-		"discord.js": "^12.5.3",
 		"discord.js-docgen": "discordjs/docgen",
 		"eslint": "^6.3.0",
 		"typescript": "^3.6.2"
