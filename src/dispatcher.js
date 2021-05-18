@@ -130,6 +130,7 @@ class CommandDispatcher {
 				if(cmdMsg.command) {
 					if(!cmdMsg.command.isEnabledIn(message.guild)) {
 						if(!cmdMsg.command.unknown) {
+							this.client.emit('disabledCommandRun', cmdMsg);
 							responses = await cmdMsg.reply(`The \`${cmdMsg.command.name}\` command is disabled.`);
 						} else {
 							/**
