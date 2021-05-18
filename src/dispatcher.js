@@ -101,7 +101,6 @@ class CommandDispatcher {
 	 * @param {Message} message - The message to handle
 	 * @param {Message} [oldMessage] - The old message before the update
 	 * @return {Promise<void>}
-	 * @private
 	 */
 	async handleMessage(message, oldMessage) {
 		/* eslint-disable max-depth */
