@@ -41,7 +41,7 @@ class MemberArgumentType extends ArgumentType {
 
 	parse(val, msg) {
 		const matches = val.match(/^(?:<@!?)?([0-9]+)>?$/);
-		if(matches) return msg.guild.member(matches[1]) || null;
+		if(matches) return msg.guild.members.resolve(matches[1]) || null;
 		const search = val.toLowerCase();
 		const members = msg.guild.members.cache.filter(memberFilterInexact(search));
 		if(members.size === 0) return null;
