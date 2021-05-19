@@ -109,7 +109,7 @@ declare module 'discord.js-commando' {
 		public unload(): void;
 		public usage(argString?: string, prefix?: string, user?: User): string;
 
-		public static usage(command: string, prefix?: string, user?: User): string;
+		public static usage(command: string, prefix?: string, user?: User, mentionPrefix?: boolean): string;
 	}
 
 	export class CommandDispatcher {
@@ -119,7 +119,7 @@ declare module 'discord.js-commando' {
 		private _commandPatterns: object;
 		private _results: Map<string, CommandoMessage>;
 
-		private buildCommandPattern(prefix: string): RegExp;
+		private buildCommandPattern(prefix: string, mentionPrefix: boolean): RegExp;
 		private cacheCommandoMessage(message: Message, oldMessage: Message, cmdMsg: CommandoMessage, responses: Message | Message[]): void;
 		private handleMessage(message: Message, oldMessage?: Message): Promise<void>;
 		private inhibit(cmdMsg: CommandoMessage): Inhibition;
@@ -203,6 +203,7 @@ declare module 'discord.js-commando' {
 		public provider: SettingProvider;
 		public registry: CommandoRegistry;
 		public settings: GuildSettingsHelper;
+		public mentionPrefix: boolean;
 
 		public isOwner(user: UserResolvable): boolean;
 		public setProvider(provider: SettingProvider | Promise<SettingProvider>): Promise<void>;
