@@ -1,4 +1,5 @@
 const path = require('path');
+const ms = require('ms');
 const { escapeMarkdown } = require('discord.js');
 const { oneLine, stripIndents } = require('common-tags');
 const ArgumentCollector = require('./collector');
@@ -324,7 +325,7 @@ class Command {
 			}
 			case 'throttling': {
 				return message.reply(
-					`You may not use the \`${this.name}\` command again for another ${data.remaining.toFixed(1)} seconds.`
+					`You may not use the \`${this.name}\` command again for another ${ms(data.remaining * 1000, { long: true })}`
 				);
 			}
 			default:
