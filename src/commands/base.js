@@ -325,7 +325,7 @@ class Command {
 			}
 			case 'throttling': {
 				return message.reply(
-					`You may not use the \`${this.name}\` command again for another ${ms(data.remaining * 1000, { long: true })}`
+					`You may not use the \`${this.name}\` command again for another ${ms(data.remaining * 1000, { long: true })}.`
 				);
 			}
 			default:
