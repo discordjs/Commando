@@ -1,4 +1,4 @@
-const { Structures, escapeMarkdown, splitMessage, resolveString } = require('discord.js');
+const { Structures, escapeMarkdown, splitMessage, verifyString } = require('discord.js');
 const { oneLine } = require('common-tags');
 const Command = require('../commands/base');
 const FriendlyError = require('../errors/friendly');
@@ -283,7 +283,7 @@ module.exports = Structures.extend('Message', Message => {
 				}
 			}
 
-			content = resolveString(content);
+			content = verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', false)
 
 			switch(type) {
 				case 'plain':
