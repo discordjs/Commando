@@ -283,7 +283,7 @@ module.exports = Structures.extend('Message', Message => {
 				}
 			}
 
-			content = verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', false)
+			content = verifyString(this.options.content, RangeError, 'MESSAGE_CONTENT_TYPE', false);
 
 			switch(type) {
 				case 'plain':
