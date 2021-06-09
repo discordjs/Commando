@@ -26,16 +26,16 @@
 	"main": "src/index",
 	"types": "./typings/index.d.ts",
 	"dependencies": {
-		"common-tags": "^1.8.0",
-		"emoji-regex": "^9.2.0",
-		"is-promise": "^4.0.0",
-		"require-all": "^3.0.0"
+    		"common-tags": "^1.8.0",
+    		"emoji-regex": "^9.2.2",
+    		"is-promise": "^4.0.0",
+    		"require-all": "^3.0.0"
 	},
 	"devDependencies": {
-		"@types/node": "^12.7.3",
+		"@types/node": "^15.12.2",
 		"discord.js-docgen": "discordjs/docgen",
-		"eslint": "^6.3.0",
-		"typescript": "^3.6.2"
+    		"eslint": "^7.28.0",
+    		"typescript": "^4.3.2"
 	},
 	"engines": {
 		"node": ">=12.0.0"
