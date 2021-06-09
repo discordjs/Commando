@@ -363,7 +363,7 @@ module.exports = Structures.extend('Message', Message => {
 
 		/**
 		 * Responds with a plain message
-		 * @param {StringResolvable} content - Content for the message
+		 * @param {string} content - Content for the message
 		 * @param {MessageOptions} [options] - Options for the message
 		 * @return {Promise<Message|Message[]>}
 		 */
@@ -377,7 +377,7 @@ module.exports = Structures.extend('Message', Message => {
 
 		/**
 		 * Responds with a reply message
-		 * @param {StringResolvable} content - Content for the message
+		 * @param {string} content - Content for the message
 		 * @param {MessageOptions} [options] - Options for the message
 		 * @return {Promise<Message|Message[]>}
 		 */
@@ -391,7 +391,7 @@ module.exports = Structures.extend('Message', Message => {
 
 		/**
 		 * Responds with a direct message
-		 * @param {StringResolvable} content - Content for the message
+		 * @param {string} content - Content for the message
 		 * @param {MessageOptions} [options] - Options for the message
 		 * @return {Promise<Message|Message[]>}
 		 */
@@ -406,7 +406,7 @@ module.exports = Structures.extend('Message', Message => {
 		/**
 		 * Responds with a code message
 		 * @param {string} lang - Language for the code block
-		 * @param {StringResolvable} content - Content for the message
+		 * @param {string} content - Content for the message
 		 * @param {MessageOptions} [options] - Options for the message
 		 * @return {Promise<Message|Message[]>}
 		 */
@@ -423,7 +423,7 @@ module.exports = Structures.extend('Message', Message => {
 		/**
 		 * Responds with an embed
 		 * @param {RichEmbed|Object} embed - Embed to send
-		 * @param {StringResolvable} [content] - Content for the message
+		 * @param {string} [content] - Content for the message
 		 * @param {MessageOptions} [options] - Options for the message
 		 * @return {Promise<Message|Message[]>}
 		 */
@@ -436,7 +436,7 @@ module.exports = Structures.extend('Message', Message => {
 		/**
 		 * Responds with a mention + embed
 		 * @param {RichEmbed|Object} embed - Embed to send
-		 * @param {StringResolvable} [content] - Content for the message
+		 * @param {string} [content] - Content for the message
 		 * @param {MessageOptions} [options] - Options for the message
 		 * @return {Promise<Message|Message[]>}
 		 */
