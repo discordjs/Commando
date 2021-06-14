@@ -1,4 +1,4 @@
-const { Structures, escapeMarkdown, splitMessage, resolveString } = require('discord.js');
+const { Structures, escapeMarkdown, splitMessage, verifyString } = require('discord.js');
 const { oneLine } = require('common-tags');
 const Command = require('../commands/base');
 const FriendlyError = require('../errors/friendly');
@@ -283,7 +283,7 @@ module.exports = Structures.extend('Message', Message => {
 				}
 			}
 
-			content = resolveString(content);
+			content = verifyString(content);
 
 			switch(type) {
 				case 'plain':
@@ -372,7 +372,7 @@ module.exports = Structures.extend('Message', Message => {
 				options = content;
 				content = '';
 			}
-			return this.respond({ type: 'plain', content, options });
+			return this.respond({ type: 'plain', content: content, options });
 		}
 
 		/**
@@ -386,7 +386,7 @@ module.exports = Structures.extend('Message', Message => {
 				options = content;
 				content = '';
 			}
-			return this.respond({ type: 'reply', content, options });
+			return this.respond({ type: 'reply', content: content, options });
 		}
 
 		/**
@@ -400,7 +400,7 @@ module.exports = Structures.extend('Message', Message => {
 				options = content;
 				content = '';
 			}
-			return this.respond({ type: 'direct', content, options });
+			return this.respond({ type: 'direct', content: content, options });
 		}
 
 		/**
@@ -417,7 +417,7 @@ module.exports = Structures.extend('Message', Message => {
 			}
 			if(typeof options !== 'object') options = {};
 			options.code = lang;
-			return this.respond({ type: 'code', content, options });
+			return this.respond({ type: 'code', content: content, options });
 		}
 
 		/**
