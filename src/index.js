@@ -86,10 +86,6 @@ module.exports = {
  * @see {@link https://discord.js.org/#/docs/main/master/class/Role}
  */
 /**
- * @external StringResolvable
- * @see {@link https://discord.js.org/#/docs/main/master/typedef/StringResolvable}
- */
-/**
  * @external TextChannel
  * @see {@link https://discord.js.org/#/docs/main/master/class/TextChannel}
  */

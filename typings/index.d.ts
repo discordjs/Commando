@@ -1,5 +1,5 @@
 declare module 'discord.js-commando' {
-	import { Client, ClientEvents, ClientOptions, Collection, Guild, GuildResolvable, Message, MessageAttachment, MessageEditOptions, MessageEmbed, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, StringResolvable, User, UserResolvable } from 'discord.js';
+	import { Client, ClientEvents, ClientOptions, Collection, Guild, GuildResolvable, Message, MessageAttachment, MessageEditOptions, MessageEmbed, MessageOptions, MessageAdditions, MessageReaction, PermissionResolvable, PermissionString, User, UserResolvable } from 'discord.js';
 
 	export class Argument {
 		private constructor(client: CommandoClient, info: ArgumentInfo);
@@ -172,18 +172,18 @@ declare module 'discord.js-commando' {
 		public anyUsage(argString?: string, prefix?: string, user?: User): string;
 		public code: CommandoMessage['say'];
 		public direct: CommandoMessage['say'];
-		public embed(embed: MessageEmbed, content?: StringResolvable, options?: (MessageOptions & { split?: false }) | MessageAdditions): Promise<CommandoMessage>;
-		public embed(embed: MessageEmbed, content?: StringResolvable, options?: (MessageOptions & { split: true | Exclude<MessageOptions['split'], boolean> }) | MessageAdditions): Promise<CommandoMessage[]>;
+		public embed(embed: MessageEmbed, content?: string, options?: (MessageOptions & { split?: false }) | MessageAdditions): Promise<CommandoMessage>;
+		public embed(embed: MessageEmbed, content?: string, options?: (MessageOptions & { split: true | Exclude<MessageOptions['split'], boolean> }) | MessageAdditions): Promise<CommandoMessage[]>;
 		public initCommand(command?: Command, argString?: string[], patternMatches?: string[]): this;
 		public parseArgs(): string | string[];
 		public replyEmbed: CommandoMessage['embed'];
 		public run(): Promise<null | CommandoMessage | CommandoMessage[]>;
 		public say(
-			content: StringResolvable | (MessageOptions & { split?: false }) | MessageAdditions,
+			content: string | (MessageOptions & { split?: false }) | MessageAdditions,
 			options?: (MessageOptions & { split?: false }) | MessageAdditions
 		): Promise<CommandoMessage>;
 		public say(
-			content: StringResolvable | (MessageOptions & { split: true | Exclude<MessageOptions['split'], boolean> }) | MessageAdditions,
+			content: string | (MessageOptions & { split: true | Exclude<MessageOptions['split'], boolean> }) | MessageAdditions,
 			options?: (MessageOptions & { split: true | Exclude<MessageOptions['split'], boolean> }) | MessageAdditions
 		): Promise<CommandoMessage[]>;
 		public usage(argString?: string, prefix?: string, user?: User): string;
@@ -486,7 +486,7 @@ declare module 'discord.js-commando' {
 	type ResponseType = 'reply' | 'plain' | 'direct' | 'code';
 
 	interface RespondOptions {
-		content: StringResolvable | MessageOptions;
+		content: string | MessageOptions;
 		fromEdit?: boolean;
 		options?: MessageOptions;
 		lang?: string;
@@ -494,7 +494,7 @@ declare module 'discord.js-commando' {
 	}
 
 	interface RespondEditOptions {
-		content: StringResolvable | MessageEditOptions | Exclude<MessageAdditions, MessageAttachment>;
+		content: string | MessageEditOptions | Exclude<MessageAdditions, MessageAttachment>;
 		options?: MessageEditOptions | Exclude<MessageAdditions, MessageAttachment>;
 		type?: ResponseType;
 	}
