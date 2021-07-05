@@ -373,7 +373,7 @@ module.exports = Structures.extend('Message', Message => {
 				options = content;
 				content = '';
 			}
-			return this.respond({ type: 'plain', content: content, options });
+			return this.respond({ type: 'plain', content, options });
 		}
 
 		/**
@@ -387,7 +387,7 @@ module.exports = Structures.extend('Message', Message => {
 				options = content;
 				content = '';
 			}
-			return this.respond({ type: 'reply', content: content, options });
+			return this.respond({ type: 'reply', content, options });
 		}
 
 		/**
@@ -401,7 +401,7 @@ module.exports = Structures.extend('Message', Message => {
 				options = content;
 				content = '';
 			}
-			return this.respond({ type: 'direct', content: content, options });
+			return this.respond({ type: 'direct', content, options });
 		}
 
 		/**
@@ -418,7 +418,7 @@ module.exports = Structures.extend('Message', Message => {
 			}
 			if(typeof options !== 'object') options = {};
 			options.code = lang;
-			return this.respond({ type: 'code', content: content, options });
+			return this.respond({ type: 'code', content, options });
 		}
 
 		/**
