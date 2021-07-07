@@ -219,13 +219,19 @@ class Command {
 		 * @type {boolean}
 		 */
 		this.hidden = Boolean(info.hidden);
-
+		
 		/**
 		 * Whether the command will be run when an unknown command is used
 		 * @type {boolean}
 		 */
 		this.unknown = Boolean(info.unknown);
-
+		
+		/**
+		 * Whether bot should ignore commands from other bots
+		 * @type {Boolean}
+		 */
+        	this.ignoreBots = info.ignoreBots || true;
+		
 		/**
 		 * Whether the command is enabled globally
 		 * @type {boolean}
@@ -239,8 +245,6 @@ class Command {
 		 * @private
 		 */
 		this._throttles = new Map();
-
-        	this.ignoreBots = info.ignoreBots || true;
 	}
 
 	/**
