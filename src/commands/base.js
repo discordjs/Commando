@@ -240,7 +240,7 @@ class Command {
 		 */
 		this._throttles = new Map();
 
-        this.ignoreBots = info.ignoreBots || false;
+        	this.ignoreBots = info.ignoreBots || true;
 	}
 
 	/**
