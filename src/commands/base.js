@@ -239,6 +239,8 @@ class Command {
 		 * @private
 		 */
 		this._throttles = new Map();
+
+        this.ignoreBots = info.ignoreBots || false;
 	}
 
 	/**
@@ -519,6 +521,7 @@ class Command {
 		if(typeof info.description !== 'string') throw new TypeError('Command description must be a string.');
 		if('format' in info && typeof info.format !== 'string') throw new TypeError('Command format must be a string.');
 		if('details' in info && typeof info.details !== 'string') throw new TypeError('Command details must be a string.');
+		if('ignoreBots' in info && typeof info.ignoreBots !== Boolean) throw new TypeError('Command ignoreBots must be a string.');
 		if(info.examples && (!Array.isArray(info.examples) || info.examples.some(ex => typeof ex !== 'string'))) {
 			throw new TypeError('Command examples must be an Array of strings.');
 		}
