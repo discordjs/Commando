@@ -207,13 +207,13 @@ class Command {
 		 * @type {RegExp[]}
 		 */
 		this.patterns = info.patterns || null;
-
+		
 		/**
 		 * Whether the command is protected from being disabled
 		 * @type {boolean}
 		 */
 		this.guarded = Boolean(info.guarded);
-
+		
 		/**
 		 * Whether the command should be hidden from the help command
 		 * @type {boolean}
@@ -230,7 +230,7 @@ class Command {
 		 * Whether bot should ignore commands from other bots
 		 * @type {Boolean}
 		 */
-        	this.ignoreBots = info.ignoreBots || true;
+		this.ignoreBots = info.ignoreBots || true;
 		
 		/**
 		 * Whether the command is enabled globally
@@ -238,7 +238,7 @@ class Command {
 		 * @private
 		 */
 		this._globalEnabled = true;
-
+		
 		/**
 		 * Current throttle objects for the command, mapped by user ID
 		 * @type {Map<string, Object>}
@@ -525,7 +525,7 @@ class Command {
 		if(typeof info.description !== 'string') throw new TypeError('Command description must be a string.');
 		if('format' in info && typeof info.format !== 'string') throw new TypeError('Command format must be a string.');
 		if('details' in info && typeof info.details !== 'string') throw new TypeError('Command details must be a string.');
-		if('ignoreBots' in info && typeof info.ignoreBots !== Boolean) throw new TypeError('Command ignoreBots must be a string.');
+		if('ignoreBots' in info && typeof info.ignoreBots !== 'boolean') throw new TypeError('Command ignoreBots must be a boolean.');
 		if(info.examples && (!Array.isArray(info.examples) || info.examples.some(ex => typeof ex !== 'string'))) {
 			throw new TypeError('Command examples must be an Array of strings.');
 		}
