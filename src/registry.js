@@ -189,10 +189,19 @@ class CommandoRegistry {
 	registerCommandsIn(options) {
 		const obj = require('require-all')(options);
 		const commands = [];
+		function push(command) {
+			if(typeof command.default === 'function') command = command.default;
+			commands.push(command);
+		}
 		for(const group of Object.values(obj)) {
-			for(let command of Object.values(group)) {
-				if(typeof command.default === 'function') command = command.default;
-				commands.push(command);
+			for(let [name, command] of Object.entries(group)) {
+				if(options.subDirs && options.subDirs.includes(name)) {
+					for(let subCommand of Object.values(command)) {
+						push(subCommand);
+					}
+				} else {
+					push(command);
+				}
 			}
 		}
 		if(typeof options === 'string' && !this.commandsPath) this.commandsPath = options;
