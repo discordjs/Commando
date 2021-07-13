@@ -244,7 +244,7 @@ declare module 'discord.js-commando' {
 		public findGroups(searchString?: string, exact?: boolean): CommandGroup[];
 		public registerCommand(command: Command | Function): CommandoRegistry;
 		public registerCommands(commands: Command[] | Function[], ignoreInvalid?: boolean): CommandoRegistry;
-		public registerCommandsIn(options: string | { dirname: string, subDirs: []}): CommandoRegistry;
+		public registerCommandsIn(options: string | { dirname: string, subdirs: []}): CommandoRegistry;
 		public registerDefaultCommands(commands?: DefaultCommandsOptions): CommandoRegistry;
 		public registerDefaultGroups(): CommandoRegistry;
 		public registerDefaults(): CommandoRegistry;
