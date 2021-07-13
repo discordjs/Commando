@@ -195,7 +195,7 @@ class CommandoRegistry {
 		}
 		for(const group of Object.values(obj)) {
 			for(let [name, command] of Object.entries(group)) {
-				if(options.subDirs && options.subDirs.includes(name)) {
+				if(options.subdirs && options.subdirs.includes(name)) {
 					for(let subCommand of Object.values(command)) {
 						push(subCommand);
 					}
