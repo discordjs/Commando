@@ -78,7 +78,8 @@ module.exports = class EvalCommand extends Command {
 	makeResultMessages(result, hrDiff, input = null) {
 		const inspected = util.inspect(result, { depth: 0 })
 			.replace(nlPattern, '\n')
-			.replace(this.sensitivePattern, '--snip--');
+			.replace(this.sensitivePattern, '--snip--')
+			.replace(escapeRegex(`/${this.client.token}/gi`), "'--snip--'");
 		const split = inspected.split('\n');
 		const last = inspected.length - 1;
 		const prependPart = inspected[0] !== '{' && inspected[0] !== '[' && inspected[0] !== "'" ? split[0] : inspected[0];
