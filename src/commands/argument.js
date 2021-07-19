@@ -1,4 +1,4 @@
-const { escapeMarkdown } = require('discord.js');
+const { escapeMarkdown } = require('discord.js').Util;
 const { oneLine, stripIndents } = require('common-tags');
 const isPromise = require('is-promise');
 const ArgumentUnionType = require('../types/union');

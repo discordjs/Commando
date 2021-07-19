@@ -1,5 +1,5 @@
 const path = require('path');
-const { escapeMarkdown } = require('discord.js');
+const { escapeMarkdown } = require('discord.js').Util;
 const { oneLine, stripIndents } = require('common-tags');
 const ArgumentCollector = require('./collector');
 const { permissions } = require('../util');
@@ -371,7 +371,7 @@ class Command {
 			throttle = {
 				start: Date.now(),
 				usages: 0,
-				timeout: this.client.setTimeout(() => {
+				timeout: setTimeout(() => {
 					this._throttles.delete(userID);
 				}, this.throttling.duration * 1000)
 			};

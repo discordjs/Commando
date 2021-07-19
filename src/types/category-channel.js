@@ -1,6 +1,6 @@
 const ArgumentType = require('./base');
 const { disambiguation } = require('../util');
-const { escapeMarkdown } = require('discord.js');
+const { escapeMarkdown } = require('discord.js').Util;
 
 class CategoryChannelArgumentType extends ArgumentType {
 	constructor(client) {
