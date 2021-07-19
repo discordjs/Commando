@@ -1,5 +1,5 @@
 const util = require('util');
-const discord = require('discord.js');
+const { Util } = require('discord.js');
 const tags = require('common-tags');
 const { escapeRegex } = require('../../util');
 const Command = require('../base');
@@ -88,14 +88,14 @@ module.exports = class EvalCommand extends Command {
 		const prepend = `\`\`\`javascript\n${prependPart}\n`;
 		const append = `\n${appendPart}\n\`\`\``;
 		if(input) {
-			return discord.splitMessage(tags.stripIndents`
+			return Util.splitMessage(tags.stripIndents`
 				*Executed in ${hrDiff[0] > 0 ? `${hrDiff[0]}s ` : ''}${hrDiff[1] / 1000000}ms.*
 				\`\`\`javascript
 				${inspected}
 				\`\`\`
 			`, { maxLength: 1900, prepend, append });
 		} else {
-			return discord.splitMessage(tags.stripIndents`
+			return Util.splitMessage(tags.stripIndents`
 				*Callback executed after ${hrDiff[0] > 0 ? `${hrDiff[0]}s ` : ''}${hrDiff[1] / 1000000}ms.*
 				\`\`\`javascript
 				${inspected}
