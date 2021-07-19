@@ -3,11 +3,14 @@ const commando = require('../src');
 const path = require('path');
 const oneLine = require('common-tags').oneLine;
 const sqlite = require('sqlite');
+const sqlite3 = require('sqlite3')
 const token = require('./auth').token;
+const Discord = require('discord.js');
 
 const client = new commando.Client({
 	owner: '90997305578106880',
-	commandPrefix: 'cdev'
+	commandPrefix: 'cdev',
+	intents: ["GUILD_MESSAGES", "GUILDS", "GUILD_PRESENCES"]
 });
 
 client
@@ -51,7 +54,10 @@ client
 	});
 
 client.setProvider(
-	sqlite.open(path.join(__dirname, 'database.sqlite3')).then(db => new commando.SQLiteProvider(db))
+	sqlite.open({
+		filename: "database.sqlite3",
+		driver: sqlite3.Database
+	  }).then(db => new commando.SQLiteProvider(db))
 ).catch(console.error);
 
 client.registry
