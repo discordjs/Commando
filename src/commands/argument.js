@@ -1,4 +1,4 @@
-const { escapeMarkdown } = require('../extensions/extender').Util;
+const { escapeMarkdown } = require('discord.js').Util;
 const { oneLine, stripIndents } = require('common-tags');
 const isPromise = require('is-promise');
 const ArgumentUnionType = require('../types/union');
@@ -190,11 +190,11 @@ class Argument {
 			`));
 
 			// Get the user's response
-			const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
+			const responses = await msg.channel.awaitMessages({
+				filter: msg2 => msg2.author.id === msg.author.id,
 				max: 1,
 				time: wait
 			});
-
 			// Make sure they actually answered
 			if(responses && responses.size === 1) {
 				answers.push(responses.first());
@@ -288,7 +288,8 @@ class Argument {
 				}
 
 				// Get the user's response
-				const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
+				const responses = await msg.channel.awaitMessages({
+					filter: msg2 => msg2.author.id === msg.author.id,
 					max: 1,
 					time: wait
 				});
