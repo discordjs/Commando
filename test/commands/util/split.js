@@ -1,4 +1,5 @@
 const commando = require('../../../src');
+const { splitMessage } = require('discord.js').Util
 
 module.exports = class SplitCommand extends commando.Command {
 	constructor(client) {
@@ -24,6 +25,9 @@ module.exports = class SplitCommand extends commando.Command {
 	async run(msg, args) {
 		let content = '';
 		for(let i = 0; i < args.length; i++) content += `${i % 500 === 0 ? '\n' : ''}a`;
-		return [await msg.reply(content, { split: true })];
+
+		let splitContent = splitMessage(content)
+		splitContent.map(x => msg.reply(x));
+		return;
 	}
 };
