@@ -1,4 +1,6 @@
-const discord = require('discord.js');
+const Collection = require('@discordjs/collection');
+
+
 
 /** A group for commands. Whodathunkit? */
 class CommandGroup {
@@ -37,7 +39,7 @@ class CommandGroup {
 		 * The commands in this group (added upon their registration)
 		 * @type {Collection<string, Command>}
 		 */
-		this.commands = new discord.Collection();
+		this.commands = new Collection();
 
 		/**
 		 * Whether or not this group is protected from being disabled

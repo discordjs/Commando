@@ -1,5 +1,5 @@
 const path = require('path');
-const discord = require('discord.js');
+const Collection = require('@discordjs/collection');
 const Command = require('./commands/base');
 const CommandGroup = require('./commands/group');
 const CommandoMessage = require('./extensions/message');
@@ -22,19 +22,19 @@ class CommandoRegistry {
 		 * Registered commands, mapped by their name
 		 * @type {Collection<string, Command>}
 		 */
-		this.commands = new discord.Collection();
+		this.commands = new Collection();
 
 		/**
 		 * Registered command groups, mapped by their ID
 		 * @type {Collection<string, CommandGroup>}
 		 */
-		this.groups = new discord.Collection();
+		this.groups = new Collection();
 
 		/**
 		 * Registered argument types, mapped by their ID
 		 * @type {Collection<string, ArgumentType>}
 		 */
-		this.types = new discord.Collection();
+		this.types = new Collection();
 
 		/**
 		 * Fully resolved path to the bot's commands directory
