@@ -1,4 +1,4 @@
-const discord = require('discord.js');
+const discord = require('./extensions/extender')(require('discord.js'));
 const CommandoRegistry = require('./registry');
 const CommandDispatcher = require('./dispatcher');
 const GuildSettingsHelper = require('./providers/helper');
@@ -61,7 +61,9 @@ class CommandoClient extends discord.Client {
 
 		// Set up command handling
 		const msgErr = err => { this.emit('error', err); };
-		this.on('message', message => { this.dispatcher.handleMessage(message).catch(msgErr); });
+		this.on('messageCreate', message => { 
+			this.dispatcher.handleMessage(message).catch(msgErr); 
+		});
 		this.on('messageUpdate', (oldMessage, newMessage) => {
 			this.dispatcher.handleMessage(newMessage, oldMessage).catch(msgErr);
 		});
