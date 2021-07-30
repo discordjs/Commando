@@ -365,7 +365,7 @@ class Command {
 				return this.error(err, message, args, ownerList, invite);
 			} else {
 				return message.reply(stripIndents`
-				Unknown error happened. Incident code: \`${err.name}-${(new Date).valueOf()}\`
+				An unknown error occurred. Incident code: \`${err.name}-${(new Date).valueOf()}\`
 				You shouldn't ever receive an error like this.
 				Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
 				`);
