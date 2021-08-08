@@ -5,6 +5,13 @@
 [![Dependency status](https://david-dm.org/discordjs/Commando.svg)](https://david-dm.org/discordjs/Commando)
 [![Build status](https://github.com/discordjs/Commando/workflows/Testing/badge.svg)](https://github.com/discordjs/Commando/actions?query=workflow%3ATesting)
 
+# package.json
+```sh
+npm install git+https://github.com/nxg-org/discord.js-commando
+# or
+yarn add git+https://github.com/nxg-org/discord.js-commando
+```
+
 ## About
 Commando is the official command framework for [discord.js](https://github.com/discordjs/discord.js).
 It is flexible, fully object-oriented, easy to use, and makes it trivial to create your own powerful commands.
