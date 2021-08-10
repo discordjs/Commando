@@ -486,8 +486,8 @@ declare module 'discord.js-commando' {
 		invite?: string;
 		noErrorReply?: boolean;
 		ignorePermissions?: boolean;
-		throttle: (command: Command, user: User) => Promise<object | void>;
-		throttleUse: (command: Command, user: User) => Promise<void>;
+		throttle?: (command: Command, user: User) => Promise<object | void>;
+		throttleUse?: (command: Command, user: User) => Promise<void>;
 	}
 
 	type CommandResolvable = Command | string;
