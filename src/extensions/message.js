@@ -1,4 +1,4 @@
-const { Structures, escapeMarkdown, splitMessage, resolveString } = require('discord.js');
+const { Structures, escapeMarkdown, splitMessage, resolveString } = require('discord.js-v12');
 const { oneLine } = require('common-tags');
 const Command = require('../commands/base');
 const FriendlyError = require('../errors/friendly');
