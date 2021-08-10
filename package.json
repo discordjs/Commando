@@ -30,7 +30,7 @@
 		"common-tags": "^1.8.0",
 		"emoji-regex": "^9.2.0",
 		"is-promise": "^4.0.0",
-		"discord.js-v12": "discord.js@v12",
+		"discord.js-v12": "npm:discord.js@v12",
 		"require-all": "^3.0.0"
 	},
 	"devDependencies": {
