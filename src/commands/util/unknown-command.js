@@ -13,13 +13,17 @@ module.exports = class UnknownCommandCommand extends Command {
 		});
 	}
 
-	run(msg) {
-		return msg.reply(
-			`Unknown command. Use ${msg.anyUsage(
+	// eslint-disable-next-line
+	async run(msg) {
+		try {
+			return await msg.channel.send(
+				`Unknown command \`${msg.content}\`. Use ${msg.anyUsage(
 				'help',
 				msg.guild ? undefined : null,
 				msg.guild ? undefined : null
 			)} to view the command list.`
-		);
+			);
+			// eslint-disable-next-line
+		} catch(exception) { }
 	}
 };

@@ -9,6 +9,32 @@ const GuildSettingsHelper = require('./providers/helper');
  */
 class CommandoClient extends discord.Client {
 	/**
+	 * Result of throttle function, returned when the command should be blocked
+	 * @typedef {object} ThrottleResult
+	 * @property {{
+			start: number,
+			usages: number,
+			timeout: NodeJS.Timeout
+		}} throttle
+		@property {number} remaining - remaining seconds
+	 */
+
+	/**
+	 * Throttles the command usage
+	 * @callback Throttle
+	 * @param {Command} command - Command to throttle
+	 * @param {User} user - The user that triggered the command
+	 * @returns {Promise<ThrottleResult?>} - Whether to throttle the use or allow the command to run
+	 */
+	/**
+	 * Updates the throttle database after command use
+	 * @callback ThrottleUse
+	 * @param {Command} command - Command to throttle
+	 * @param {User} user - The user that triggered the command
+	 * @returns {Promise<void>}
+	 */
+
+	/**
 	 * Options for a CommandoClient
 	 * @typedef {ClientOptions} CommandoClientOptions
 	 * @property {string} [commandPrefix=!] - Default command prefix
@@ -16,6 +42,14 @@ class CommandoClient extends discord.Client {
 	 * @property {boolean} [nonCommandEditable=true] - Whether messages without commands can be edited to a command
 	 * @property {string|string[]|Set<string>} [owner] - ID of the bot owner's Discord user, or multiple IDs
 	 * @property {string} [invite] - Invite URL to the bot's support server
+	 * @property {boolean} [noErrorReply] - True if errors shouldn't send a message
+	 * (useful when using custom error handlers)
+	 * @property {boolean} [ignorePermissions] - True to not check for user permissions.
+	 * Useful when using custom inhibitors.
+	 * @property {Throttle} [throttle] - Used for custom throttling.
+	 * When object is returned, commando blocks the use of command.
+	 * @property {ThrottleUse} [throttleUse] - Used for custom throttling.
+	 * Called when the command is used,should increase the counter.
 	 */
 
 	/**
@@ -166,6 +200,10 @@ class CommandoClient extends discord.Client {
 		return undefined;
 	}
 
+	/**
+	 * Destroys the client and clears up memory.
+	 * @returns {Promise<void>}
+	 */
 	async destroy() {
 		await super.destroy();
 		if(this.provider) await this.provider.destroy();

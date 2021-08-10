@@ -23,6 +23,7 @@ class Command {
 	 * @property {string} [format] - The command usage format string - will be automatically generated if not specified,
 	 * and `args` is specified
 	 * @property {string} [details] - A detailed description of the command and its functionality
+	 * @property {string} [examplesName="examples"] - Title of examples in help command
 	 * @property {string[]} [examples] - Usage examples of the command
 	 * @property {boolean} [guildOnly=false] - Whether or not the command should only function in a guild channel
 	 * @property {boolean} [ownerOnly=false] - Whether or not the command is usable only by an owner
@@ -126,6 +127,12 @@ class Command {
 		 * @type {?string[]}
 		 */
 		this.examples = info.examples || null;
+
+		/**
+		 * Examples name in help
+		 * @type {?string}
+		 */
+		this.examplesName = info.examplesName || 'Examples';
 
 		/**
 		 * Whether the command can only be run in a guild channel
@@ -342,7 +349,7 @@ class Command {
 	 * (if applicable - see {@link Command#run})
 	 * @returns {Promise<?Message|?Array<Message>>}
 	 */
-	onError(err, message, args, fromPattern, result) { // eslint-disable-line no-unused-vars
+	onError(err, message, args, fromPattern, result) { // eslint-disable-line
 		const owners = this.client.owners;
 		const ownerList = owners ? owners.map((usr, i) => {
 			const or = i === owners.length - 1 && owners.length > 1 ? 'or ' : '';
@@ -350,18 +357,27 @@ class Command {
 		}).join(owners.length > 2 ? ', ' : ' ') : '';
 
 		const invite = this.client.options.invite;
-		return message.reply(stripIndents`
-			An error occurred while running the command: \`${err.name}: ${err.message}\`
-			You shouldn't ever receive an error like this.
-			Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
-		`);
+		/* Console warning
+		console.warn('[ERROR!]', err);
+		*/
+		if(!this.client.options.noErrorReply) {
+			if(typeof this.error === 'function') {
+				return this.error(err, message, args, ownerList, invite);
+			} else {
+				return message.reply(stripIndents`
+				An unknown error occurred. Incident code: \`${err.name}-${(new Date).valueOf()}\`
+				You shouldn't ever receive an error like this.
+				Please contact ${ownerList || 'the bot owner'}${invite ? ` in this server: ${invite}` : '.'}
+				`);
+			}
+		}
 	}
 
 	/**
 	 * Creates/obtains the throttle object for a user, if necessary (owners are excluded)
 	 * @param {string} userID - ID of the user to throttle for
-	 * @return {?Object}
-	 * @protected
+	 * @return {?ThrottleResult}
+	 * @private
 	 */
 	throttle(userID) {
 		if(!this.throttling || this.client.isOwner(userID)) return null;

@@ -40,6 +40,12 @@ class Argument {
 		this.constructor.validateInfo(client, info);
 
 		/**
+		 * The command client
+		 * @type {CommandoClient}
+		 */
+		this.client = client;
+
+		/**
 		 * Key for the argument
 		 * @type {string}
 		 */
@@ -145,6 +151,22 @@ class Argument {
 	 * @property {Message[]} answers - All of the user's messages that answered a prompt
 	 */
 
+
+	/**
+	 * Blocks command use and prompts the user and obtains the value for the argument
+	 * @param {CommandoMessage} msg - Message that triggered the command
+	 * @param {string} [val] - Pre-provided value for the argument
+	 * @param {number} [promptLimit=Infinity] - Maximum number of times to prompt for the argument
+	 * @return {Promise<ArgumentResult>}
+	 */
+	async promptArgument(msg, val, promptLimit = Infinity) {
+		this.client.dispatcher._awaiting.add(msg.author.id + msg.channel.id);
+		var result = await this.obtain(msg, val, promptLimit);
+		this.client.dispatcher._awaiting.delete(msg.author.id + msg.channel.id);
+
+		return result;
+	}
+
 	/**
 	 * Prompts the user and obtains the value for the argument
 	 * @param {CommandoMessage} msg - Message that triggered the command
@@ -180,14 +202,21 @@ class Argument {
 				};
 			}
 
-			// Prompt the user for a new value
-			prompts.push(await msg.reply(stripIndents`
-				${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
-				${oneLine`
-					Respond with \`cancel\` to cancel the command.
-					${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
-				`}
-			`));
+			if(prompts.length) {
+				// Prompt the user for a new value
+				prompts.push(await msg.reply(
+					empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`)
+				);
+			} else {
+				// Prompt the user for a new value
+				prompts.push(await msg.reply(stripIndents`
+					${empty ? this.prompt : valid ? valid : `You provided an invalid ${this.label}. Please try again.`}
+					${oneLine`
+						Respond with \`cancel\` to cancel the command.
+						${wait ? `The command will automatically be cancelled in ${this.wait} seconds.` : ''}
+					`}
+				`));
+			}
 
 			// Get the user's response
 			const responses = await msg.channel.awaitMessages(msg2 => msg2.author.id === msg.author.id, {
@@ -348,14 +377,12 @@ class Argument {
 	/**
 	 * Checks if a value is valid for the argument
 	 * @param {string} val - Value to check
-	 * @param {CommandoMessage} originalMsg - Message that triggered the command
-	 * @param {?CommandoMessage} [currentMsg=originalMsg] - Current response message
+	 * @param {CommandoMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage?} vmsg - Message of the response, may be missing
 	 * @return {boolean|string|Promise<boolean|string>}
 	 */
-	validate(val, originalMsg, currentMsg = originalMsg) {
-		const valid = this.validator ?
-			this.validator(val, originalMsg, this, currentMsg) :
-			this.type.validate(val, originalMsg, this, currentMsg);
+	validate(val, msg, vmsg) {
+		const valid = this.validator ? this.validator(val, msg, this, vmsg) : this.type.validate(val, msg, this, vmsg);
 		if(!valid || typeof valid === 'string') return this.error || valid;
 		if(isPromise(valid)) return valid.then(vld => !vld || typeof vld === 'string' ? this.error || vld : vld);
 		return valid;
@@ -364,25 +391,25 @@ class Argument {
 	/**
 	 * Parses a value string into a proper value for the argument
 	 * @param {string} val - Value to parse
-	 * @param {CommandoMessage} originalMsg - Message that triggered the command
-	 * @param {?CommandoMessage} [currentMsg=originalMsg] - Current response message
+	 * @param {CommandoMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage?} vmsg - Message of the response, may be missing
 	 * @return {*|Promise<*>}
 	 */
-	parse(val, originalMsg, currentMsg = originalMsg) {
-		if(this.parser) return this.parser(val, originalMsg, this, currentMsg);
-		return this.type.parse(val, originalMsg, this, currentMsg);
+	parse(val, msg, vmsg) {
+		if(this.parser) return this.parser(val, msg, this, vmsg);
+		return this.type.parse(val, msg, this, vmsg);
 	}
 
 	/**
 	 * Checks whether a value for the argument is considered to be empty
 	 * @param {string} val - Value to check for emptiness
-	 * @param {CommandoMessage} originalMsg - Message that triggered the command
-	 * @param {?CommandoMessage} [currentMsg=originalMsg] - Current response message
+	 * @param {CommandoMessage} msg - Message that triggered the command
+	 * @param {CommandoMessage?} vmsg - Message of the response, may be missing
 	 * @return {boolean}
 	 */
-	isEmpty(val, originalMsg, currentMsg = originalMsg) {
-		if(this.emptyChecker) return this.emptyChecker(val, originalMsg, this, currentMsg);
-		if(this.type) return this.type.isEmpty(val, originalMsg, this, currentMsg);
+	isEmpty(val, msg, vmsg) {
+		if(this.emptyChecker) return this.emptyChecker(val, msg, this, vmsg);
+		if(this.type) return this.type.isEmpty(val, msg, this, vmsg);
 		if(Array.isArray(val)) return val.length === 0;
 		return !val;
 	}

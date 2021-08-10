@@ -43,6 +43,12 @@ class CommandoRegistry {
 		this.commandsPath = null;
 
 		/**
+		 * Holds all the registered services
+		 * @type {Map}
+		 */
+		this.services = new Map();
+
+		/**
 		 * Command to run when an unknown command is used
 		 * @type {?Command}
 		 */
@@ -190,7 +196,9 @@ class CommandoRegistry {
 		const obj = require('require-all')(options);
 		const commands = [];
 		for(const group of Object.values(obj)) {
+			if(!group) continue;
 			for(let command of Object.values(group)) {
+				if(!command) continue;
 				if(typeof command.default === 'function') command = command.default;
 				commands.push(command);
 			}
@@ -489,9 +497,17 @@ class CommandoRegistry {
 
 		// Find all matches
 		const lcSearch = searchString.toLowerCase();
-		const matchedCommands = Array.from(this.commands.filter(
-			exact ? commandFilterExact(lcSearch) : commandFilterInexact(lcSearch)
-		).values());
+		var matchedCommands = Array.from(
+			this.commands
+			.filter(
+				exact ? commandFilterExact(lcSearch) : commandFilterInexact(lcSearch)
+			).values()
+		);
+		if(message && !this.client.isOwner(message.author)) {
+			matchedCommands = matchedCommands.filter(
+				command => command.ownerOnly
+			);
+		}
 		if(exact) return matchedCommands;
 
 		// See if there's an exact match
@@ -535,6 +551,98 @@ class CommandoRegistry {
 	 */
 	resolveCommandPath(group, memberName) {
 		return path.join(this.commandsPath, group, `${memberName}.js`);
+	}
+
+	/**
+	 * Loads and registers a service
+	 * @param {Service} service The service to register and load
+	 * @returns {CommandoRegistry}
+	 */
+	registerService(service) {
+		service.load();
+		service.appendHandlers();
+		this.services.set(service.name, service);
+		/**
+		 * Fired whenever a new service is registered and loaded
+		 * @event CommandoClient#serviceLoad
+		 * @param {Service} service - The service that got loaded.
+		 */
+		this.client.emit('serviceLoad', service);
+
+		return this;
+	}
+
+	/**
+	 * Loads and registers a service from path
+	 * @param {string} service path to load the service from
+	 * @return {CommandoRegistry}
+	 */
+	registerServiceFrom(service) {
+		var Service = require(service);
+		var srv = new Service(this.client);
+		srv.path = service;
+		this.registerService(srv);
+
+		return this;
+	}
+
+	/**
+	 * Loads all services in given directory (2 levels, services should be grouped in folders)
+	 * @param {string} dir Directory to load services from
+	 * @returns {CommandoRegistry}
+	 */
+	registerServicesIn(dir) {
+		var services = require('require-all')({
+			dirname: path.join(dir)
+		});
+		for(var groupID in services) {
+			for(var ServiceName in services[groupID]) {
+				const Service = services[groupID][ServiceName];
+				if(!Service) continue;
+				try {
+					var srv = new Service(this.client);
+					srv.path = path.join(dir, groupID, ServiceName);
+					this.registerService(srv);
+				} catch(err) {
+					/**
+					 * Emitted when a service fails to load
+					 * @event CommandoClient#serviceLoadError
+					 * @param {Error} err - The error
+					 * @param {Service} Service - The service class (not an instance)
+					 */
+					this.client.emit('serviceLoadError', err, Service);
+				}
+			}
+		}
+
+		return this;
+	}
+
+	/**
+	 * Unloads and unregisters service
+	 * @param {Service} service Unloads and unregisters a service
+	 * @returns {CommandoRegistry}
+	 */
+	unregisterService(service) {
+		service.unload();
+		this.services.remove(service.name, service);
+
+		return this;
+	}
+
+	/**
+	 * Unloads old and loads and registers new service.
+	 * @param {Service} service New service to load
+	 * @param {Service} current Current service to unload
+	 * @returns {CommandoRegistry}
+	 */
+	reregisterService(service, current) {
+		current.unload();
+		service.load();
+		service.appendHandlers();
+		this.services.set(service.name, service);
+
+		return this;
 	}
 }
 

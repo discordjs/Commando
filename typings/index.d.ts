@@ -23,10 +23,23 @@ declare module 'discord.js-commando' {
 		public validator: Function;
 		public wait: number;
 
-		public isEmpty(val: string, msg: CommandoMessage): boolean;
+		public promptArgument(msg: CommandoMessage, val?: string, promptLimit?: number): Promise<ArgumentResult>;
 		public obtain(msg: CommandoMessage, val?: string, promptLimit?: number): Promise<ArgumentResult>;
 		public parse(val: string, msg: CommandoMessage): any | Promise<any>;
 		public validate(val: string, msg: CommandoMessage): boolean | string | Promise<boolean | string>;
+	}
+
+	export abstract class Service {
+		private intervals: NodeJS.Timeout[];
+		public realClient: CommandoClient;
+		public client: CommandoClient;
+		public abstract name: string;
+
+		public setInterval(handler: Function, length: number): void;
+		public unload(): void;
+		public abstract load(): void;
+		public appendHandlers(): void;
+		public reload(): void;
 	}
 
 	export class ArgumentCollector {
@@ -161,7 +174,6 @@ declare module 'discord.js-commando' {
 		public responsePositions: { [key: string]: number } | null;
 		public responses: { [key: string]: CommandoMessage[] } | null;
 		public readonly guild: CommandoGuild;
-		public readonly client: CommandoClient;
 
 		private deleteRemainingResponses(): void;
 		private editCurrentResponse(id: string, options: MessageEditOptions | Exclude<MessageAdditions, MessageAttachment>): Promise<CommandoMessage | CommandoMessage[]>;
@@ -189,6 +201,30 @@ declare module 'discord.js-commando' {
 		public usage(argString?: string, prefix?: string, user?: User): string;
 
 		public static parseArgs(argString: string, argCount?: number, allowSingleQuote?: boolean): string[];
+	}
+
+	interface CommandoClientEvents extends ClientEvents {
+		commandBlock:
+		| [CommandoMessage, string, object?]
+		| [CommandoMessage, 'guildOnly' | 'nsfw']
+		| [CommandoMessage, 'permission', { response?: string }]
+		| [CommandoMessage, 'throttling', { throttle: object, remaining: number }]
+		| [CommandoMessage, 'clientPermissions', { missing: string }];
+		commandCancel: [Command, string, CommandoMessage];
+		commandError:
+		| [Command, Error, CommandoMessage, object | string | string[], false]
+		| [Command, Error, CommandoMessage, string[], true];
+		commandPrefixChange: [CommandoGuild, string];
+		commandRegister: [Command, CommandoRegistry];
+		commandReregister: [Command, Command];
+		commandRun: [Command, Promise<any>, CommandoMessage, object | string | string[], boolean];
+		commandStatusChange: [CommandoGuild, Command, boolean];
+		commandUnregister: [Command];
+		groupRegister: [CommandGroup, CommandoRegistry];
+		groupStatusChange: [CommandoGuild, CommandGroup, boolean];
+		typeRegister: [ArgumentType, CommandoRegistry];
+		unknownCommand: [CommandoMessage];
+		providerReady: [SettingProvider];
 	}
 
 	export class CommandoClient extends Client {
@@ -236,9 +272,11 @@ declare module 'discord.js-commando' {
 		public readonly client: CommandoClient;
 		public commands: Collection<string, Command>;
 		public commandsPath: string;
+		public evalobjects: object;
 		public groups: Collection<string, CommandGroup>;
 		public types: Collection<string, ArgumentType>;
 		public unknownCommand?: Command;
+		public services: Map<string, Service>;
 
 		public findCommands(searchString?: string, exact?: boolean, message?: Message | CommandoMessage): Command[];
 		public findGroups(searchString?: string, exact?: boolean): CommandGroup[];
@@ -248,7 +286,9 @@ declare module 'discord.js-commando' {
 		public registerDefaultCommands(commands?: DefaultCommandsOptions): CommandoRegistry;
 		public registerDefaultGroups(): CommandoRegistry;
 		public registerDefaults(): CommandoRegistry;
-		public registerDefaultTypes(types?: DefaultTypesOptions): CommandoRegistry;
+		public registerDefaultTypes(types?: { string?: boolean, integer?: boolean, float?: boolean, boolean?: boolean, user?: boolean, member?: boolean, role?: boolean, channel?: boolean, message?: boolean, command?: boolean, group?: boolean }): CommandoRegistry;
+		public registerEvalobject(key: string, obj: {}): CommandoRegistry;
+		public registerEvalobjects(obj: {}): CommandoRegistry;
 		public registerGroup(group: CommandGroup | Function | { id: string, name?: string, guarded?: boolean } | string, name?: string, guarded?: boolean): CommandoRegistry;
 		public registerGroups(groups: CommandGroup[] | Function[] | { id: string, name?: string, guarded?: boolean }[] | string[][]): CommandoRegistry;
 		public registerType(type: ArgumentType | Function): CommandoRegistry;
@@ -259,6 +299,11 @@ declare module 'discord.js-commando' {
 		public resolveCommandPath(group: string, memberName: string): string;
 		public resolveGroup(group: CommandGroupResolvable): CommandGroup;
 		public unregisterCommand(command: Command): void;
+		public registerService(service: Service): CommandoRegistry;
+		public registerServiceFrom(path: string): CommandoRegistry;
+		public registerServicesIn(path: string): CommandoRegistry;
+		public unregisterService(service: Service): CommandoRegistry;
+		public reregisterService(service: Service, current: Service): CommandoRegistry;
 	}
 
 	export class FriendlyError extends Error {
@@ -439,6 +484,10 @@ declare module 'discord.js-commando' {
 		nonCommandEditable?: boolean;
 		owner?: string | string[] | Set<string>;
 		invite?: string;
+		noErrorReply?: boolean;
+		ignorePermissions?: boolean;
+		throttle: (command: Command, user: User) => Promise<object | void>;
+		throttleUse: (command: Command, user: User) => Promise<void>;
 	}
 
 	type CommandResolvable = Command | string;

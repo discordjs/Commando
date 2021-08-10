@@ -14,6 +14,12 @@ module.exports = Structures.extend('Message', Message => {
 			super(...args);
 
 			/**
+			 * Alias which invoked the command, if any
+			 * @type {?string}
+			 */
+			this.alias = null;
+
+			/**
 			 * Whether the message contains a command (even an unknown one)
 			 * @type {boolean}
 			 */
@@ -55,14 +61,16 @@ module.exports = Structures.extend('Message', Message => {
 	 	 * @param {Command} [command] - Command the message triggers
 	 	 * @param {string} [argString] - Argument string for the command
 	 	 * @param {?Array<string>} [patternMatches] - Command pattern matches (if from a pattern trigger)
+		 * @param {?string} alias - alias used for command
 		 * @return {Message} This message
 		 * @private
 		 */
-		initCommand(command, argString, patternMatches) {
+		initCommand(command, argString, patternMatches, alias = null) {
 			this.isCommand = true;
 			this.command = command;
 			this.argString = argString;
 			this.patternMatches = patternMatches;
+			this.alias = alias && alias.length ? alias : command ? command.name : null;
 			return this;
 		}
 
@@ -156,12 +164,14 @@ module.exports = Structures.extend('Message', Message => {
 				return this.command.onBlock(this, 'nsfw');
 			}
 
-			// Ensure the user has permission to use the command
-			const hasPermission = this.command.hasPermission(this);
-			if(!hasPermission || typeof hasPermission === 'string') {
-				const data = { response: typeof hasPermission === 'string' ? hasPermission : undefined };
-				this.client.emit('commandBlock', this, 'permission', data);
-				return this.command.onBlock(this, 'permission', data);
+			if(!this.client.options.ignorePermissions) {
+				// Ensure the user has permission to use the command
+				const hasPermission = this.command.hasPermission(this);
+				if(!hasPermission || typeof hasPermission === 'string') {
+					const data = { response: typeof hasPermission === 'string' ? hasPermission : undefined };
+					this.client.emit('commandBlock', this, 'permission', data);
+					return this.command.onBlock(this, 'permission', data);
+				}
 			}
 
 			// Ensure the client user has the required permissions
@@ -174,13 +184,23 @@ module.exports = Structures.extend('Message', Message => {
 				}
 			}
 
-			// Throttle the command
-			const throttle = this.command.throttle(this.author.id);
-			if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
-				const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
-				const data = { throttle, remaining };
-				this.client.emit('commandBlock', this, 'throttling', data);
-				return this.command.onBlock(this, 'throttling', data);
+			let throttle;
+
+			if(typeof this.client.options.throttle === 'function') {
+				throttle = await this.client.options.throttle(this.command, this.author);
+				if(throttle) {
+					this.client.emit('commandBlock', this, 'throttling', throttle);
+					return this.command.onBlock(this, 'throttling', throttle);
+				}
+			} else {
+				// Throttle the command
+				throttle = this.command.throttle(this.author.id);
+				if(throttle && throttle.usages + 1 > this.command.throttling.usages) {
+					const remaining = (throttle.start + (this.command.throttling.duration * 1000) - Date.now()) / 1000;
+					const data = { throttle, remaining };
+					this.client.emit('commandBlock', this, 'throttling', data);
+					return this.command.onBlock(this, 'throttling', data);
+				}
 			}
 
 			// Figure out the command arguments
@@ -194,7 +214,7 @@ module.exports = Structures.extend('Message', Message => {
 				collResult = await this.command.argsCollector.obtain(this, provided);
 				if(collResult.cancelled) {
 					if(collResult.prompts.length === 0 || collResult.cancelled === 'promptLimit') {
-						this.client.emit('commandCancel', this.command, collResult.cancelled, this, collResult);
+						//this.client.emit('commandCancel', this.command, collResult.cancelled, this, collResult);
 						const err = new CommandFormatError(this);
 						return this.reply(err.message);
 					}
@@ -215,8 +235,12 @@ module.exports = Structures.extend('Message', Message => {
 			if(!args) args = this.parseArgs();
 			const fromPattern = Boolean(this.patternMatches);
 
-			// Run the command
-			if(throttle) throttle.usages++;
+			if(typeof this.client.options.throttleUse === 'function') {
+				await this.client.options.throttleUse(this.command, this.author);
+			} else if(throttle) {
+				throttle.usages++;
+			}
+
 			const typingCount = this.channel.typingCount;
 			try {
 				this.client.emit('debug', `Running command ${this.command.groupID}:${this.command.memberName}.`);
@@ -264,6 +288,7 @@ module.exports = Structures.extend('Message', Message => {
 			}
 		}
 
+		/* eslint-disable complexity*/
 		/**
 		 * Responds to the command message
 		 * @param {Object} [options] - Options for the response
@@ -520,6 +545,12 @@ module.exports = Structures.extend('Message', Message => {
 	return CommandoMessage;
 });
 
+/**
+ * Removes smart quotes from string, replacing with normal quotes
+ * @param {string} argString - The string to remove smart quotes from
+ * @param {boolean} allowSingleQuote - Whether to allow single quotes or not
+ * @return {string}
+ */
 function removeSmartQuotes(argString, allowSingleQuote = true) {
 	let replacementArgString = argString;
 	const singleSmartQuote = /[‘’]/g;

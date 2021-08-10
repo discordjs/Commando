@@ -1,3 +1,4 @@
+const { Message } = require('discord.js');
 const { escapeRegex } = require('./util');
 const isPromise = require('is-promise');
 
@@ -53,7 +54,7 @@ class CommandDispatcher {
 	/**
 	 * @typedef {Object} Inhibition
 	 * @property {string} reason - Identifier for the reason the command is being blocked
-	 * @property {?Promise<Message>} response - Response being sent to the user
+	 * @property {?Promise<Message>|Message} response - Response being sent to the user
 	 */
 
 	/**
@@ -124,7 +125,7 @@ class CommandDispatcher {
 		// Run the command, or reply with an error
 		let responses;
 		if(cmdMsg) {
-			const inhibited = this.inhibit(cmdMsg);
+			const inhibited = await this.inhibit(cmdMsg);
 
 			if(!inhibited) {
 				if(cmdMsg.command) {
@@ -192,16 +193,18 @@ class CommandDispatcher {
 	 * @return {?Inhibition}
 	 * @private
 	 */
-	inhibit(cmdMsg) {
+	async inhibit(cmdMsg) {
 		for(const inhibitor of this.inhibitors) {
-			let inhibit = inhibitor(cmdMsg);
+			// eslint-disable-next-line no-await-in-loop
+			let inhibit = await inhibitor(cmdMsg);
 			if(inhibit) {
 				if(typeof inhibit !== 'object') inhibit = { reason: inhibit, response: undefined };
 
 				const valid = typeof inhibit.reason === 'string' && (
 					typeof inhibit.response === 'undefined' ||
 					inhibit.response === null ||
-					isPromise(inhibit.response)
+					inhibit.response instanceof Promise ||
+					inhibit.response instanceof Message
 				);
 				if(!valid) {
 					throw new TypeError(
@@ -249,7 +252,7 @@ class CommandDispatcher {
 			if(!command.patterns) continue;
 			for(const pattern of command.patterns) {
 				const matches = pattern.exec(message.content);
-				if(matches) return message.initCommand(command, null, matches);
+				if(matches) return message.initCommand(command, null, matches, '-pattern-');
 			}
 		}
 
@@ -275,10 +278,14 @@ class CommandDispatcher {
 		if(!matches) return null;
 		const commands = this.registry.findCommands(matches[commandNameIndex], true);
 		if(commands.length !== 1 || !commands[0].defaultHandling) {
-			return message.initCommand(this.registry.unknownCommand, prefixless ? message.content : matches[1]);
+			return message.initCommand(
+				this.registry.unknownCommand,
+				prefixless ? message.content : matches[1],
+				matches[commandNameIndex]
+			);
 		}
 		const argString = message.content.substring(matches[1].length + (matches[2] ? matches[2].length : 0));
-		return message.initCommand(commands[0], argString);
+		return message.initCommand(commands[0], argString, null, matches[commandNameIndex]);
 	}
 
 	/**

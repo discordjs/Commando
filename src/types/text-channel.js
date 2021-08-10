@@ -11,7 +11,7 @@ class TextChannelArgumentType extends ArgumentType {
 		const matches = val.match(/^(?:<#)?([0-9]+)>?$/);
 		if(matches) {
 			try {
-				const channel = msg.client.channels.resolve(matches[1]);
+				const channel = msg.guild.channels.resolve(matches[1]);
 				if(!channel || channel.type !== 'text') return false;
 				if(arg.oneOf && !arg.oneOf.includes(channel.id)) return false;
 				return true;

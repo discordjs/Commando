@@ -65,6 +65,7 @@ class ArgumentCollector {
 	async obtain(msg, provided = [], promptLimit = this.promptLimit) {
 		this.client.dispatcher._awaiting.add(msg.author.id + msg.channel.id);
 		const values = {};
+		msg.arguments = values;
 		const results = [];
 
 		try {
